@@ -1,4 +1,4 @@
-/* R2 standalone userscript adapter: no external dependencies, MIT. */
+/* R3 standalone userscript adapter: no external dependencies, MIT. */
 (() => {
 'use strict';
 if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders)return;
@@ -14,7 +14,7 @@ panel.dataset.tlsUi='true';panel.style.cssText='position:fixed;right:10px;top:10
 const shadow=panel.attachShadow({mode:'closed'});
 const wrap=document.createElement('div');
 wrap.style.cssText='background:#fff;color:#183247;border:1px solid #94a3b8;box-shadow:0 4px 18px #0003;padding:8px;border-radius:12px;font:12px/1.5 system-ui,sans-serif;max-width:250px';
-const title=document.createElement('div');title.textContent='TLS 臺灣繁中化';title.style.fontWeight='700';
+const title=document.createElement('div');title.textContent='TLS 臺灣繁中化 R3';title.style.fontWeight='700';
 const status=document.createElement('div');status.setAttribute('aria-live','polite');status.style.cssText='margin:4px 0;max-width:230px;overflow-wrap:anywhere';
 const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select');
 for(const btn of [pause,modeButton])btn.style.cssText='padding:5px 8px;border:0;border-radius:7px;color:#fff;background:#0f766e;cursor:pointer;margin:3px 3px 3px 0;font:12px system-ui';
