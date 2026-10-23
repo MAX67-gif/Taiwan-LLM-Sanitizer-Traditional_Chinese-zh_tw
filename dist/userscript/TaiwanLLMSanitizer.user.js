@@ -222,11 +222,15 @@ function protect(text) {
   tokenized+=text.slice(cursor);
   return {ok:true,text:tokenized,restore(result) {
     if(typeof result!=='string'||!result.trim()||result.length>MAX*5)return {ok:false,reason:'INVALID_RESULT'};
-    let restored=result;
-    for(const {token,literal} of spans) {
-      if(restored.split(token).length!==2)return {ok:false,reason:'TOKEN_MISSING_OR_DUPLICATED'};
-      restored=restored.replace(token,literal);
+    let last=-1;
+    for(const {token} of spans){
+      if(result.split(token).length!==2)return {ok:false,reason:'TOKEN_MISSING_OR_DUPLICATED'};
+      const position=result.indexOf(token);
+      if(position<=last)return {ok:false,reason:'TOKEN_ORDER_CHANGED'};
+      last=position;
     }
+    let restored=result;
+    for(const {token,literal} of spans)restored=restored.replace(token,literal);
     if(/⟪TLS\d+LOCK⟫/u.test(restored))return {ok:false,reason:'UNEXPECTED_TOKEN'};
     return {ok:true,text:restored};
   }};
@@ -435,7 +439,8 @@ function createWebLocalizer(doc,options={}){
   async function updateAttrs(el,myEpoch){
     if(!safeElement(el)||!el.isConnected)return;
     for(const name of ATTRS){
-      if(!running||myEpoch!==epoch||!el.hasAttribute(name))return;
+      if(!running||myEpoch!==epoch)return;
+      if(!el.hasAttribute(name))continue;
       let before=el.getAttribute(name);
       if(!before||before.length>MAX_TEXT)continue;
       const existing=changedAttrs.get(el);

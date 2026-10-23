@@ -86,7 +86,8 @@ function createWebLocalizer(doc,options={}){
   async function updateAttrs(el,myEpoch){
     if(!safeElement(el)||!el.isConnected)return;
     for(const name of ATTRS){
-      if(!running||myEpoch!==epoch||!el.hasAttribute(name))return;
+      if(!running||myEpoch!==epoch)return;
+      if(!el.hasAttribute(name))continue;
       let before=el.getAttribute(name);
       if(!before||before.length>MAX_TEXT)continue;
       const existing=changedAttrs.get(el);

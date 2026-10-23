@@ -41,6 +41,8 @@ jobs:
               assert set(z.namelist())=={p.name for p in chrome.iterdir() if p.is_file()}
           print('R2 BUILD/DELIVERY INTEGRITY PASS')
           PY
+      - name: Verify committed install files are reproducible
+        run: git diff --exit-code -- dist/chrome dist/userscript
       - name: JavaScript syntax checks
         run: |
           for f in src/core/*.js src/chrome/*.js src/userscript/*.js dist/chrome/*.js dist/userscript/*.js tools/*.js; do node --check "$f"; done
