@@ -1,4 +1,4 @@
-name: R1 build and tests
+name: R2 shared engine, providers and delivery integrity
 on:
   push:
   pull_request:
@@ -13,16 +13,43 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: node --test tests/test_engine.js tests/test_cli.js
-      - run: python tools/build.py
-      - name: Verify both delivery adapters originate from the same core
+      - name: Run shared engine, CLI and local Provider unit tests
+        run: node --test tests/*.js
+      - name: Build Chrome + single userscript
+        run: python tools/build.py
+      - name: Verify artifact parity and syntax
         run: |
           python - <<'PY'
           from pathlib import Path
-          a=Path('src/core/engine.js').read_text(encoding='utf-8')
-          c=Path('dist/chrome/engine.js').read_text(encoding='utf-8')
-          u=Path('dist/userscript/TaiwanLLMSanitizer.user.js').read_text(encoding='utf-8')
-          assert a == c and a in u and u.count('// ==UserScript==') == 1
-          assert '// @require' not in u and '// @connect' not in u
-          print('R1 SHARED CORE BUILD PASS')
+          from zipfile import ZipFile
+          import json
+          root=Path('src/core')
+          chrome=Path('dist/chrome')
+          us=Path('dist/userscript/TaiwanLLMSanitizer.user.js').read_text(encoding='utf-8')
+          for name in ('engine.js','provider.js','web_adapter.js'):
+              a=(root/name).read_text(encoding='utf-8')
+              assert (chrome/name).read_text(encoding='utf-8')==a, name
+              assert a in us, name
+          assert us.count('// ==UserScript==')==1
+          assert '// @require' not in us and '// @connect' not in us
+          meta=json.loads((chrome/'manifest.json').read_text(encoding='utf-8'))
+          assert meta['version']=='0.2.0'
+          assert meta['manifest_version']==3
+          assert 'storage' in meta['permissions']
+          with ZipFile('dist/TLS_Chrome_MV3_R2_20261023.zip') as z:
+              assert z.testzip() is None
+              assert set(z.namelist())=={p.name for p in chrome.iterdir() if p.is_file()}
+          print('R2 BUILD/DELIVERY INTEGRITY PASS')
           PY
+      - name: JavaScript syntax checks
+        run: |
+          for f in src/core/*.js src/chrome/*.js src/userscript/*.js dist/chrome/*.js dist/userscript/*.js tools/*.js; do node --check "$f"; done
+      - name: Upload Chrome and Userscript install bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: Taiwan-LLM-Sanitizer-R2-Install
+          path: |
+            dist/TLS_Chrome_MV3_R2_20261023.zip
+            dist/userscript/TaiwanLLMSanitizer.user.js
+            dist/SHA256SUMS_R2_20261023.txt
+          if-no-files-found: error
