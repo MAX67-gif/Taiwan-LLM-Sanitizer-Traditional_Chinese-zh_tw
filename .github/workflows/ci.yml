@@ -1,4 +1,4 @@
-name: TLS R5 core + R6 quality + R7 demo + R8 context + R9 user choice
+name: TLS R5 core + R6/R7 + R8/R9 + R10 provenance review
 on:
   push:
   pull_request:
@@ -42,6 +42,16 @@ jobs:
         run: node tools/build_context_review_r8.js --check
       - name: Verify R9 standalone user-choice workbench reproducibility
         run: node tools/build_user_terms_r9.js --check
+      - name: Verify R10 original-context provenance, strict schema and reproducible offline page
+        run: node tools/build_context_governance_r10.js --check
+      - name: Upload R10 safe offline provenance review page
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R10_Context_Provenance_Offline_Review
+          path: |
+            examples/TW_Context_Governance_Lab_R10_20261024.html
+            lexicon/context_provenance_r10_manifest.json
+          if-no-files-found: error
       - name: Upload R9 offline user-choice HTML preview
         uses: actions/upload-artifact@v4
         with:
@@ -113,6 +123,20 @@ jobs:
             dist/SHA256SUMS_R5_20261024.txt
           if-no-files-found: error
 
+      - name: Bundle public tracked source for reproducible private handoff
+        run: |
+          mkdir -p "$RUNNER_TEMP/tls-public-snapshot"
+          git archive --format=zip --output="$RUNNER_TEMP/tls-public-snapshot/TLS_PUBLIC_SOURCE_R10_20261024.zip" HEAD
+          (cd "$RUNNER_TEMP/tls-public-snapshot" && sha256sum TLS_PUBLIC_SOURCE_R10_20261024.zip > SHA256SUMS.txt)
+      - name: Upload versioned public source snapshot (public files only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R10_Public_Source_Snapshot
+          path: |
+            ${{ runner.temp }}/tls-public-snapshot/TLS_PUBLIC_SOURCE_R10_20261024.zip
+            ${{ runner.temp }}/tls-public-snapshot/SHA256SUMS.txt
+          if-no-files-found: error
+
   browser-integration:
     runs-on: ubuntu-latest
     needs: verify
@@ -135,6 +159,7 @@ jobs:
       - run: python tests/test_explorer_browser_r3.py
       - run: python tests/test_context_review_r8.py
       - run: python tests/test_user_terms_browser_r9.py
+      - run: python tests/test_context_governance_browser_r10.py
       - run: python tests/test_visual_progress_browser_r5.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
@@ -281,4 +306,35 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R9 臺灣用語自行選詞與原文對照（完全本機單檔）" \
               --notes "Offline HTML only: manual context choice, original-vs-preview diff and portable user term JSON. User preferences are never silently uploaded; source text is not saved. R5 core, R6 frozen benchmark, R7.1 and R8 remain separate. The 28 editorial cases are not independently verified."
+          fi
+
+  r10-context-governance-release:
+    name: Publish R10 standalone provenance review after full regressions
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify R10 content and SHA-bound review pack
+        run: node tools/build_context_governance_r10.js --check
+      - name: Create immutable and independently downloadable R10 HTML asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp examples/TW_Context_Governance_Lab_R10_20261024.html TLS_Context_Governance_R10_20261024.html
+          sha256sum TLS_Context_Governance_R10_20261024.html > TLS_Context_Governance_R10_20261024.sha256
+          if gh release view "r10-context-governance-preview-v1" >/dev/null 2>&1; then
+            echo "R10 preview already exists; published assets must not be overwritten"
+          else
+            gh release create "r10-context-governance-preview-v1" \
+              TLS_Context_Governance_R10_20261024.html \
+              TLS_Context_Governance_R10_20261024.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "R10 臺灣語境來源追溯與反例人工審查（離線獨立預覽）" \
+              --notes "40 project-original editorial context cases (28 exact R9 references + 12 new), 0 independently verified. Offline SHA-bound voluntary manual decisions and JSON export/import, no external content transfer, no auto-apply, no website modification. R5/R6/R7.1/R8/R9 unchanged."
           fi

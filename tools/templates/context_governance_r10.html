@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'">
+<title>R10 臺灣用語・來源追溯與人工審查工作台｜Taiwan-LLM-Sanitizer</title>
+<style>
+:root{color-scheme:light;--bg:#f4f7fc;--surface:#fff;--line:#dbe3ef;--ink:#142238;--muted:#5a6a80;--accent:#1558aa;--accent-bg:#e9f1ff;--warn:#895300;--warn-bg:#fff6e5;--green:#166534;--green-bg:#e8f7eb;--focus:#1667d4}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font:15px/1.7 -apple-system,BlinkMacSystemFont,"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:1100px;margin:0 auto;padding:26px 20px 60px}.hero{padding:28px;border-radius:22px;background:linear-gradient(120deg,#163b77,#155fa7);color:white}
+.eyebrow{font-size:12px;letter-spacing:.1em;font-weight:800}.hero h1{font-size:clamp(1.35rem,3.5vw,2rem);line-height:1.4;margin:8px 0 10px}.hero p{max-width:68ch;margin:4px 0}.hero small{color:#d5e6fb}
+.notice{border:1px solid #efca7b;background:var(--warn-bg);padding:14px 16px;border-radius:14px;margin:20px 0;color:#67420a}
+.card,.toolbar,.metrics,.howto{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.metric{padding:7px 11px;border-left:3px solid #8bafd8}.metric strong{display:block;font-size:1.3rem;font-variant-numeric:tabular-nums}.metric span{display:block;color:var(--muted);font-size:12px}
+.toolbar{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;align-items:end;margin:16px 0}.field{display:flex;flex-direction:column;gap:5px}.field span,.field label{font-weight:750;font-size:13px;color:var(--muted)}
+input,select,textarea,button{font:inherit}input,select,textarea{width:100%;min-height:40px;border:1px solid #bfcadd;border-radius:10px;padding:8px 11px;background:#fff;color:#142238}textarea{resize:vertical;min-height:54px}input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.buttons{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.button,button{appearance:none;cursor:pointer;border-radius:9px;border:1px solid #9db8d6;padding:9px 13px;background:var(--accent-bg);color:#164b91;font-weight:700}
+button:hover{background:#dceaff}button.primary{background:#1c5caf;color:#fff;border-color:#1c5caf}button.primary:hover{background:#0c4b9a}button.warn{background:#fff7e8;border-color:#e3c08c;color:#734900}button.neutral{background:#f7f9fd;color:#3b536e}button:disabled{opacity:.45;cursor:not-allowed}
+#live-status{font-size:13px;color:var(--muted);min-height:24px}.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:14px 0}.case{display:flex;flex-direction:column;gap:9px}.case-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.word{font-size:1.35rem;font-weight:800;overflow-wrap:anywhere}.pill{font-size:12px;border-radius:15px;padding:2px 10px;background:#e7edf9;color:#2a5483;white-space:nowrap}.pill.risk-high{background:#fff0e6;color:#91491b}
+.tags{display:flex;gap:8px;flex-wrap:wrap}.tag{font-size:12px;color:#51647b;background:#eef2f8;border-radius:7px;padding:2px 7px}.subhead{font-size:12px;font-weight:800;color:var(--muted)}
+.examples{border-left:3px solid #9cb9df;padding:5px 10px;background:#f5f8fe;border-radius:3px 9px 9px 3px}.examples p{margin:4px 0;overflow-wrap:anywhere}.source{font-size:12px;color:#526a86;word-break:break-word}.decision{background:#eef7f4;color:#245b48;border:1px solid #c7e2d6;border-radius:9px;padding:7px 10px;font-size:13px}.review-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.card h2{margin:0}.howto{margin-top:15px}.howto h2{font-size:1rem}.howto p{margin:4px 0;color:var(--muted)}.meta-note{font-size:12px;color:var(--muted)}
+footer{margin-top:28px;color:var(--muted);font-size:12px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:780px){main{padding:14px}.toolbar{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.cases{grid-template-columns:1fr}.hero{padding:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#101924;--surface:#182536;--line:#384c63;--ink:#f0f6ff;--muted:#b5c5d8;--accent:#78b2ff;--accent-bg:#263f5f;--warn-bg:#382b1a;--green-bg:#20382b}input,select,textarea{background:#192b40;color:#f1f6ff;border-color:#536780}.card .examples{background:#213349}.tag,.pill{background:#283c54;color:#c1d8f7}button{color:#d9eaff}.button,button.neutral{background:#283b56;color:#d9eaff}button.warn{background:#49351d;color:#f4d59f}.decision{background:#23433c;color:#c3eddd}}
+@media print{body{background:#fff}.hero{background:#fff;color:#000}.buttons,.toolbar,.review-choice,footer{display:none}.cases{grid-template-columns:1fr}.case{break-inside:avoid}.card{border-color:#bbb} }
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <div class="eyebrow">TAIWAN-LLM-SANITIZER / R10 REVIEW ONLY</div>
+  <h1>臺灣用語・來源追溯與人工審查工作台</h1>
+  <p>每個詞都要看情境與反例。你可以接受建議、保留原詞、要求更多資訊，或拒絕不合適的建議。沒有任何詞被列為禁語。</p>
+  <small>完全離線單一 HTML · 不登入、不自動儲存、不送出閱讀內容 · 這不是自動翻譯或正式詞庫認證</small>
+</header>
+<div class="notice" role="note"><strong>重要界線：</strong>這些都是本專案自行撰寫、尚未經獨立人工雙審的示例。按下「暫時採用」只保存這張離線頁面的人工審查草稿，不會修改任何其他網頁、程式或正式翻譯詞庫。匯出備註可能包含你自己輸入的敏感資料，請自行檢查。</div>
+<section class="metrics" aria-label="資料概況">
+<div class="metric"><strong id="total-count">40</strong><span>編輯草稿案例</span></div>
+<div class="metric"><strong id="r9-count">28</strong><span>追溯至 R9</span></div>
+<div class="metric"><strong id="new-count">12</strong><span>新撰寫 R10</span></div>
+<div class="metric"><strong id="review-count">0 / 40</strong><span>本頁已作的選擇</span></div>
+</section>
+<section class="toolbar" aria-label="查詢設定">
+<label class="field"><span>搜尋原詞、建議說法或說明</span><input id="search" placeholder="例如：menu、質量、後台" maxlength="100" autocomplete="off"></label>
+<label class="field"><span>適用領域</span><select id="domain"><option value="all">全部領域</option></select></label>
+<label class="field"><span>審查狀態</span><select id="review-filter"><option value="all">全部</option><option value="pending">尚未決定</option><option value="decided">已有選擇</option></select></label>
+</section>
+<div class="buttons" aria-label="私人審查檔操作">
+ <button class="primary" id="export">匯出本機審查 JSON</button>
+ <label class="button" for="import-file" style="cursor:pointer">選擇審查 JSON 匯入</label>
+ <input class="sr-only" id="import-file" type="file" accept=".json,application/json">
+ <button id="clear" class="neutral">清除本頁全部選擇</button>
+</div>
+<div id="live-status" role="status" aria-live="polite">僅顯示原創編輯案例，沒有任何自動套用權限。</div>
+<section id="case-list" class="cases" aria-label="人工審查案例"></section>
+<section class="howto">
+<h2>資料來源與匯出限制</h2>
+<p>這份離線頁面的 40 筆案例，28 筆逐欄引用現有 R9 原創草稿，另有 12 筆新撰寫的對照情境。出處只是追溯記錄，不是外部專家查核。</p>
+<p>匯出檔只包含你選擇的案例編號、狀態與自行寫入的備註，不會自動包含網頁、聊天訊息、瀏覽紀錄或第三方私有內容。只有你主動下載時才建立檔案。</p>
+<p>匯入須手動選檔，檔案與資料版本不符會拒絕；整份資料不會自動保存至瀏覽器儲存空間。重新整理後，未匯出的決定會消失。</p>
+</section>
+<footer>Taiwan-LLM-Sanitizer · R10 editorial evidence v1 · MIT original examples · 由 CA L. 維護公開專案；本工具不提供法律或語言權威認證。</footer>
+</main>
+<script type="application/json" id="evidence-pack">__TLS_R10_PACK_JSON__</script>
+<script>
+__TLS_R10_CORE_JS__
+</script>
+<script>
+(function(){
+'use strict';
+const PACK_HASH='__TLS_R10_PACK_SHA256__';
+const api=globalThis.TLSEvidenceR10;
+const pack=JSON.parse(document.getElementById('evidence-pack').textContent);
+const packInfo=api.validatePack(pack),byId=new Map(pack.entries.map(x=>[x.id,x]));
+const qs=id=>document.getElementById(id),list=qs('case-list');
+let decisions=[];
+function say(msg){qs('live-status').textContent=msg;}
+function el(tag,cls,value){const x=document.createElement(tag);if(cls)x.className=cls;if(value!==undefined)x.textContent=String(value);return x;}
+function button(txt,action,selected){const b=el('button',selected?'primary':'neutral',txt);b.type='button';b.addEventListener('click',action);return b;}
+function updateMetrics(){qs('review-count').textContent=decisions.length+' / '+packInfo.cases;}
+function render(){
+ const q=qs('search').value.trim().toLocaleLowerCase('zh-TW');
+ const domain=qs('domain').value,only=qs('review-filter').value;
+ const filtered=pack.entries.filter(x=>(domain==='all'||x.domain===domain)&&
+  (!q||[x.source_term,x.suggested_term,x.meaning_note,x.domain].join(' ').toLocaleLowerCase('zh-TW').includes(q))&&
+  (only==='all'||(only==='pending'?!decisions.some(y=>y.case_id===x.id):decisions.some(y=>y.case_id===x.id))));
+ list.replaceChildren();updateMetrics();
+ if(!filtered.length){list.append(el('p','meta-note','沒有符合條件的案例；可以調整搜尋字詞或領域。'));return;}
+ for(const rec of filtered){
+  const state=decisions.find(x=>x.case_id===rec.id);
+  const card=el('article','card case');card.dataset.caseId=rec.id;
+  const top=el('div','case-top');top.append(el('div','word',rec.source_term));
+  top.append(el('span','pill'+(rec.risk_tier==='high'?' risk-high':''),rec.domain));card.append(top);
+  const tags=el('div','tags');tags.append(el('span','tag','建議：'+rec.suggested_term));
+  tags.append(el('span','tag',rec.risk_tier==='high'?'高歧義':'需語境審查'));card.append(tags);
+  card.append(el('div','subhead','語意界線'));card.append(el('p','',rec.meaning_note));
+  const examples=el('div','examples');examples.append(el('p','','適用示例：'+rec.positive_example));
+  examples.append(el('p','','不適用／須小心：'+rec.counter_example));card.append(examples);
+  card.append(el('div','source','案例 '+rec.id+' · '+(rec.evidence_origin==='r9_editorial_reference'?'源自 R9 原創草稿：':'R10 新增原創草稿：')+rec.source_path+'#'+rec.source_case_id));
+  card.append(el('div','meta-note',api.explain(rec)));
+  const field=el('label','field');field.append(el('span','','備註（僅在選擇後存入你手動匯出的 JSON）'));
+  const note=el('textarea');note.maxLength=160;note.rows=2;note.placeholder='例如：此介面維持原詞較自然';note.value=state?state.note:'';note.dataset.noteFor=rec.id;field.append(note);card.append(field);
+  const choices=el('div','review-choice');
+  for(const [key,label] of [['SUGGEST_ONLY','暫時採用建議'],['KEEP_ORIGINAL','保留原詞'],['CONTEXT_REQUIRED','需要更多語境'],['REJECT_SUGGESTION','拒絕這項建議']]){
+   const b=button(label,()=>{
+    try{decisions=api.decide(decisions,rec.id,key,note.value,pack);render();say('已在本頁記錄 '+rec.id+' 的人工選擇；尚未修改任何外部內容。');}
+    catch(err){say('未能保存：'+err.message);}
+   },!!state&&state.outcome===key);b.dataset.decision=key;choices.append(b);
+  }
+  card.append(choices);
+  if(state){card.append(el('div','decision','目前選擇：'+({SUGGEST_ONLY:'暫時接受建議',KEEP_ORIGINAL:'保留原詞',CONTEXT_REQUIRED:'待補語境',REJECT_SUGGESTION:'拒絕建議'}[state.outcome])));
+   const reset=button('清除此項選擇',()=>{decisions=decisions.filter(x=>x.case_id!==rec.id);render();say('此項選擇已清除。');},false);reset.dataset.clearCase=rec.id;card.append(reset);}
+  list.append(card);
+ }
+}
+qs('total-count').textContent=packInfo.cases;
+qs('r9-count').textContent=packInfo.referencedR9;
+qs('new-count').textContent=packInfo.originalR10;
+const domains=[...new Set(pack.entries.map(x=>x.domain))].sort();
+for(const x of domains){const opt=el('option','',x);opt.value=x;qs('domain').append(opt);}
+for(const id of ['search','domain','review-filter'])qs(id).addEventListener(id==='search'?'input':'change',render);
+qs('clear').addEventListener('click',()=>{decisions=[];render();say('本頁選擇已清除，未觸及任何本機或外部檔案。');});
+qs('export').addEventListener('click',()=>{
+ try{
+  const out=api.exportLedger(decisions,pack,PACK_HASH);const blob=new Blob([out],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='TLS_R10_Manual_Review_Ledger_20261024.json';
+  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
+  say('已手動匯出 '+decisions.length+' 筆選擇；檔內只含案例 ID、狀態與你自己寫的備註。');
+ }catch(err){say('匯出失敗：'+err.message);}
+});
+qs('import-file').addEventListener('change',async function(){
+ const selected=this.files&&this.files[0];if(!selected)return;
+ try{
+  if(selected.size>api.MAX_IMPORT_BYTES)throw new Error('REVIEW_FILE_TOO_LARGE');
+  const content=await selected.text();const incoming=api.importLedger(content,pack,PACK_HASH);
+  decisions=incoming;render();say('已匯入 '+decisions.length+' 筆已保存的審查選擇；未上傳或修改其他資料。');
+ }catch(err){say('匯入遭拒絕：'+err.message);}
+ finally{this.value='';}
+});
+render();
+})();
+</script>
+</body>
+</html>

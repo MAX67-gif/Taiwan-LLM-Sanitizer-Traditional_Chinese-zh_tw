@@ -1,0 +1,12 @@
+{
+  "schema": "tls.term-evidence-manifest.v1",
+  "pack_id": "r10-evidence-editorial-20261024-v1",
+  "source_path": "lexicon/context_provenance_r10.json",
+  "source_sha256": "c09223e2138c965982d3ce3ae2761e5a24ee382c66d5c3113af73996167aa51f",
+  "case_count": 40,
+  "referenced_r9": 28,
+  "new_editorial": 12,
+  "runtime_permission": "NONE",
+  "independent_validation": false,
+  "never_promote_candidates": true
+}
