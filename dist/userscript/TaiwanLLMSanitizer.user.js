@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Taiwan-LLM-Sanitizer｜臺灣繁中在地化 R1
+// @name         Taiwan-LLM-Sanitizer｜通用臺灣繁中化 R2
 // @namespace    https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw
-// @version      0.1.0
-// @description  使用者逐站啟用的離線術語／介面詞彙在地化。非完整全文 AI 翻譯。
+// @version      0.2.0
+// @description  通用離線字詞校正及使用者可選 Chrome 本機 AI 翻譯；逐站啟用，不傳送頁面文字到雲端。
 // @author       MAX67-gif contributors
 // @match        http://*/*
 // @match        https://*/*
@@ -14,10 +14,10 @@
 // @homepageURL  https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw
 // ==/UserScript==
 
-/* Taiwan-LLM-Sanitizer R1 shared browser core: offline rules, no network. MIT. */
+/* Taiwan-LLM-Sanitizer R2 shared browser core: offline rules, no network. MIT. */
 (function (global) {
   'use strict';
-  const VERSION = '0.1.0';
+  const VERSION = '0.2.0';
   if (global.TLSCore && global.TLSCore.VERSION === VERSION) return;
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
@@ -187,44 +187,415 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
-/* Tampermonkey controller. Build combines this with src/core/engine.js. */
+/* Taiwan-LLM-Sanitizer R2 MIT: on-device Provider routing. Never calls cloud. */
+(function(global) {
+'use strict';
+const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
+if(!core) throw new Error('TLSCore must load first');
+const VERSION='0.2.0', TARGET='zh-Hant', MAX=1800;
+const VALID=new Set(['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','it','nl','ar','id','uk','tr']);
+const PROTECTED=/(\{\{[^{}]{1,250}\}\}|\$\{[^}]{1,250}\}|<%[\s\S]{0,250}?%>|<\/?[A-Za-z][^>]{0,250}>|https?:\/\/[^\s<>]+|\x60[^\x60\n]{1,250}\x60|%\d*\$?[sdif]|\{[A-Za-z_$][\w.$-]*\})/gu;
+const STATES=Object.freeze({TERMS:'LOCALIZED_TERMS',MODEL:'LOCALIZED_MODEL',UNCHANGED:'UNCHANGED',
+  DEFERRED:'DEFERRED',UNSUPPORTED:'UNSUPPORTED_PROVIDER',SOURCE_UNKNOWN:'SOURCE_UNKNOWN',
+  GUARD_REJECTED:'GUARD_REJECTED',ERROR:'PROVIDER_ERROR',PROTECTED:'PROTECTED'});
+function selected(mode,sourceLanguage) {
+  return {mode:mode==='local-ai'?'local-ai':'terms',sourceLanguage:VALID.has(sourceLanguage)?sourceLanguage:'auto'};
+}
+function normalizeLanguage(value) {
+  if(typeof value!=='string') return '';
+  const raw=value.trim().toLowerCase().replaceAll('_','-');
+  if(['zh-tw','zh-hant','zh-hant-tw'].includes(raw)) return 'zh-Hant';
+  if(raw.startsWith('zh-'))return raw.includes('hant')?'zh-Hant':'zh';
+  const primary=raw.split('-')[0];
+  return VALID.has(primary)&&primary!=='auto'?primary:'';
+}
+function protect(text) {
+  if(typeof text!=='string'||!text||text.length>MAX) return {ok:false,reason:'SIZE_OR_TYPE'};
+  const spans=[];let tokenized='',cursor=0;
+  for(const match of text.matchAll(PROTECTED)) {
+    const token='⟪TLS'+spans.length+'LOCK⟫';
+    if(text.includes(token))return {ok:false,reason:'TOKEN_COLLISION'};
+    tokenized+=text.slice(cursor,match.index)+token;
+    spans.push({token,literal:match[0]});
+    cursor=match.index+match[0].length;
+  }
+  tokenized+=text.slice(cursor);
+  return {ok:true,text:tokenized,restore(result) {
+    if(typeof result!=='string'||!result.trim()||result.length>MAX*5)return {ok:false,reason:'INVALID_RESULT'};
+    let restored=result;
+    for(const {token,literal} of spans) {
+      if(restored.split(token).length!==2)return {ok:false,reason:'TOKEN_MISSING_OR_DUPLICATED'};
+      restored=restored.replace(token,literal);
+    }
+    if(/⟪TLS\d+LOCK⟫/u.test(restored))return {ok:false,reason:'UNEXPECTED_TOKEN'};
+    return {ok:true,text:restored};
+  }};
+}
+function termResult(text,fallbackState) {
+  const out=core.translateText(text);
+  return {text:out,state:out===text?(fallbackState||STATES.UNCHANGED):STATES.TERMS,provider:'offline-terms'};
+}
+class BrowserLocalProvider {
+  constructor(opts={}) {
+    this.env=opts.environment||global;this.sourceLanguage=selected('local-ai',opts.sourceLanguage).sourceLanguage;
+    this.documentLanguage=opts.documentLanguage||'';this.onProgress=typeof opts.onProgress==='function'?opts.onProgress:()=>{};
+    this.pairs=new Map();this.pending=new Map();this.cache=new Map();this.closed=false;
+    this.failures=0;this.lastIssue='';this.downloading=false;
+  }
+  async detectSource(text) {
+    if(this.sourceLanguage!=='auto')return normalizeLanguage(this.sourceLanguage);
+    const lang=normalizeLanguage(this.documentLanguage);
+    if(lang)return lang;
+    if(/[\u3040-\u30ff]/u.test(text))return 'ja';
+    if(/[\uac00-\ud7af]/u.test(text))return 'ko';
+    if(/[\u0600-\u06ff]/u.test(text))return 'ar';
+    const D=this.env.LanguageDetector;
+    if(D&&typeof D.create==='function') {
+      try {
+        const status=typeof D.availability==='function'?await D.availability():'available';
+        if(status==='available'){
+          const detector=await D.create();
+          try {
+            const candidates=await detector.detect(text);
+            if(Array.isArray(candidates)&&candidates[0]?.confidence>=0.75)
+              return normalizeLanguage(candidates[0].detectedLanguage);
+          } finally {detector.destroy?.();}
+        }
+      } catch (_) {/* no unreliable guess */}
+    }
+    return '';
+  }
+  async availability(sourceLanguage) {
+    const T=this.env.Translator;
+    if(this.closed||!T||typeof T.create!=='function')return 'unavailable';
+    if(typeof T.availability!=='function')return 'unknown';
+    try{return await T.availability({sourceLanguage,targetLanguage:TARGET});}
+    catch(e){this.lastIssue=String(e?.message||e);return 'unavailable';}
+  }
+  async translator(sourceLanguage) {
+    if(this.closed)throw new Error('PROVIDER_CLOSED');
+    if(this.pairs.has(sourceLanguage))return this.pairs.get(sourceLanguage);
+    if(this.pending.has(sourceLanguage))return this.pending.get(sourceLanguage);
+    const job=(async()=>{
+      const T=this.env.Translator;
+      if(!T||typeof T.create!=='function')throw new Error('UNSUPPORTED_TRANSLATOR_API');
+      const availability=await this.availability(sourceLanguage);
+      if(['unavailable','unknown'].includes(availability))throw new Error('MODEL_UNAVAILABLE');
+      const downloadable=availability==='downloadable'||availability==='downloading';
+      this.downloading=downloadable;
+      this.onProgress({state:downloadable?'MODEL_DOWNLOAD':'MODEL_READY',loaded:downloadable?0:1});
+      const instance=await T.create({sourceLanguage,targetLanguage:TARGET,monitor:(m)=>{
+        m?.addEventListener?.('downloadprogress',(event)=>{
+          this.onProgress({state:'MODEL_DOWNLOAD',loaded:Math.max(0,Math.min(1,Number(event.loaded)||0))});
+        });
+      }});
+      if(this.closed){instance.destroy?.();throw new Error('PROVIDER_CLOSED');}
+      this.pairs.set(sourceLanguage,instance);
+      this.onProgress({state:'MODEL_READY',loaded:1});
+      return instance;
+    })();
+    this.pending.set(sourceLanguage,job);
+    try{return await job;}finally{this.pending.delete(sourceLanguage);this.downloading=false;}
+  }
+  async translate(text) {
+    const fallback=()=>termResult(text);
+    if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
+    if(typeof text!=='string'||text.length>MAX)return {...fallback(),reason:'TEXT_TOO_LONG'};
+    if(this.failures>=3)return {...fallback(),reason:'CIRCUIT_OPEN'};
+    const source=await this.detectSource(text);
+    if(!source)return {...fallback(),reason:STATES.SOURCE_UNKNOWN};
+    if(source==='zh-Hant')return fallback();
+    const key=source+'\0'+text;
+    if(this.cache.has(key))return this.cache.get(key);
+    const guard=protect(text);
+    if(!guard.ok)return {...fallback(),reason:guard.reason};
+    try{
+      const instance=await this.translator(source);
+      const translated=await instance.translate(guard.text);
+      if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
+      const restored=guard.restore(translated);
+      if(!restored.ok)return {...fallback(),reason:STATES.GUARD_REJECTED,guardReason:restored.reason};
+      const out=core.translateText(restored.text);
+      const result={text:out,state:out===text?STATES.UNCHANGED:STATES.MODEL,provider:'chrome-built-in',sourceLanguage:source};
+      this.cache.set(key,result);
+      if(this.cache.size>512)this.cache.delete(this.cache.keys().next().value);
+      this.failures=0;
+      return result;
+    }catch(e){
+      this.failures++;this.lastIssue=String(e?.message||e);
+      return {...fallback(),reason:this.lastIssue,providerState:STATES.UNSUPPORTED};
+    }
+  }
+  status(){return {state:this.closed?'CLOSED':this.downloading?'MODEL_DOWNLOAD':this.failures>=3?'DEGRADED':'READY',
+    pairsReady:this.pairs.size,cacheEntries:this.cache.size,lastIssue:this.lastIssue,failures:this.failures};}
+  destroy(){
+    this.closed=true;
+    for(const t of this.pairs.values())try{t.destroy?.();}catch(_){}
+    this.cache.clear();this.pairs.clear();this.pending.clear();
+  }
+}
+function createRouter(opts={}) {
+  const cfg=selected(opts.mode,opts.sourceLanguage);
+  const browser=cfg.mode==='local-ai'?new BrowserLocalProvider(opts):null;
+  return {translate:text=>browser?browser.translate(text):Promise.resolve(termResult(text)),
+    status:()=>browser?browser.status():{state:'TERMS_ONLY',cacheEntries:0},
+    destroy:()=>browser?.destroy(),mode:cfg.mode,sourceLanguage:cfg.sourceLanguage};
+}
+const api=Object.freeze({VERSION,TARGET,STATES,normalizeLanguage,protect,selected,
+  BrowserLocalProvider,createRouter,termResult});
+global.TLSProviders=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+/* Taiwan-LLM-Sanitizer R2: DOM Adapter for asynchronous providers, MIT. */
+(function(global){
+'use strict';
+const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
+const providers=global.TLSProviders || (typeof require==='function'?require('./provider.js'):null);
+if(!core||!providers)throw new Error('TLSCore and TLSProviders must load first');
+const SKIP='script,style,noscript,textarea,select,option,pre,code,kbd,samp,svg,canvas,math,template,input,[hidden],[aria-hidden="true"],[contenteditable],[translate="no"],[data-no-translate],[data-tls-ui],.monaco-editor,.cm-editor';
+const ATTRS=['title','aria-label','alt'];
+const MAX_QUEUED=4200, MAX_RECORDS=6000, MAX_TEXT=1800;
+function safeElement(el){
+  if(!el||el.nodeType!==1)return false;
+  try{return !el.closest(SKIP)&&!el.isContentEditable;}
+  catch(_){return false;}
+}
+function createWebLocalizer(doc,options={}){
+  if(!doc?.documentElement||typeof doc.createTreeWalker!=='function')
+    throw new TypeError('Valid browser document required');
+  let opts={...options},running=false,epoch=0,router=null,observer=null,timer=null,working=false;
+  const changedTexts=new Map(),changedAttrs=new Map(),queue=[],queued=new Set();
+  let stats={scanned:0,converted:0,unchanged:0,errors:0,skipped:0,overflow:0,lastState:'IDLE',lastReason:'',modelProgress:0};
+  function publish(){
+    try{opts.onStatus?.(getStatus());}catch(_){}
+  }
+  function skipText(node){
+    return !node?.parentElement||!safeElement(node.parentElement)||!node.isConnected;
+  }
+  function enqueue(target){
+    if(!running||!target)return;
+    if(queue.length>=MAX_QUEUED){stats.overflow++;stats.lastState='LIMIT_REACHED';return;}
+    if(!queued.has(target)){queued.add(target);queue.push(target);}
+    if(timer===null&&!working)timer=setTimeout(drain,20);
+  }
+  function scan(root){
+    if(!running||!root)return;
+    if(root.nodeType===3){enqueue(root);return;}
+    if(![1,9,11].includes(root.nodeType))return;
+    if(root.nodeType===1&&!safeElement(root))return;
+    if(root.nodeType===1)enqueueAttr(root);
+    const walker=doc.createTreeWalker(root,5);
+    let cur,limit=0;
+    while((cur=walker.nextNode())&&limit++<25000){
+      if(cur.nodeType===3)enqueue(cur);
+      else if(cur.nodeType===1)enqueueAttr(cur);
+    }
+    if(limit>=25000)stats.overflow++;
+  }
+  const attrQueue=[],attrQueued=new Set();
+  function enqueueAttr(el){
+    if(!safeElement(el)||attrQueued.has(el)||attrQueue.length>=MAX_QUEUED)return;
+    attrQueued.add(el);attrQueue.push(el);
+    if(timer===null&&!working)timer=setTimeout(drain,20);
+  }
+  function restore(){
+    for(const [node,record] of changedTexts){
+      if(node.isConnected&&node.data===record.after)node.data=record.before;
+    }
+    for(const [el,group] of changedAttrs){
+      if(!el.isConnected)continue;
+      for(const [name,record] of Object.entries(group))
+        if(el.getAttribute(name)===record.after)el.setAttribute(name,record.before);
+    }
+    changedTexts.clear();changedAttrs.clear();
+  }
+  function prune(){
+    if(changedTexts.size+changedAttrs.size<=MAX_RECORDS)return;
+    for(const node of changedTexts.keys())if(!node.isConnected)changedTexts.delete(node);
+    for(const el of changedAttrs.keys())if(!el.isConnected)changedAttrs.delete(el);
+    if(changedTexts.size+changedAttrs.size>MAX_RECORDS)stats.lastReason='記錄已達上限；不再修改新節點';
+  }
+  async function updateText(node,myEpoch){
+    if(skipText(node))return;
+    let before=node.data;
+    if(!before||!before.trim()||before.length>MAX_TEXT){stats.skipped++;return;}
+    const old=changedTexts.get(node);
+    if(old?.after===before)return;
+    if(old)changedTexts.delete(node);
+    if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
+    const result=await router.translate(before);
+    if(!running||myEpoch!==epoch||skipText(node)||node.data!==before)return;
+    stats.scanned++;stats.lastState=result.state||'UNKNOWN';stats.lastReason=result.reason||'';
+    if(typeof result.text==='string'&&result.text!==before){
+      changedTexts.set(node,{before,after:result.text});
+      node.data=result.text;stats.converted++;
+    }else stats.unchanged++;
+  }
+  async function updateAttrs(el,myEpoch){
+    if(!safeElement(el)||!el.isConnected)return;
+    for(const name of ATTRS){
+      if(!running||myEpoch!==epoch||!el.hasAttribute(name))return;
+      let before=el.getAttribute(name);
+      if(!before||before.length>MAX_TEXT)continue;
+      const existing=changedAttrs.get(el);
+      if(existing?.[name]?.after===before)continue;
+      if(existing?.[name]){delete existing[name];if(!Object.keys(existing).length)changedAttrs.delete(el);}
+      if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
+      const result=await router.translate(before);
+      if(!running||myEpoch!==epoch||!el.isConnected||el.getAttribute(name)!==before)continue;
+      if(typeof result.text==='string'&&result.text!==before){
+        const group=changedAttrs.get(el)||{};
+        group[name]={before,after:result.text};changedAttrs.set(el,group);
+        el.setAttribute(name,result.text);stats.converted++;
+      }
+    }
+  }
+  async function drain(){
+    timer=null;
+    if(!running||working)return;
+    working=true;
+    const currentEpoch=epoch;
+    let iterations=0;
+    try{
+      while(running&&epoch===currentEpoch&&(queue.length||attrQueue.length)){
+        if(queue.length){
+          const node=queue.shift();queued.delete(node);
+          try{await updateText(node,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e);}
+        }else{
+          const el=attrQueue.shift();attrQueued.delete(el);
+          try{await updateAttrs(el,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e);}
+        }
+        if(++iterations%16===0){
+          prune();publish();
+          // Yield to the browser; prevent translation work from blocking the site.
+          await new Promise(resolve=>setTimeout(resolve,0));
+        }
+      }
+    } finally {
+      working=false;publish();
+      if(running&&(queue.length||attrQueue.length)&&timer===null)
+        timer=setTimeout(drain,20);
+    }
+  }
+  function start(){
+    if(running)return;
+    epoch++;running=true;
+    router=opts.router||providers.createRouter({
+      mode:opts.mode,sourceLanguage:opts.sourceLanguage,
+      documentLanguage:opts.documentLanguage||doc.documentElement.lang,
+      environment:opts.environment||global,
+      onProgress:(event)=>{stats.lastState=event.state;stats.modelProgress=event.loaded;publish();}
+    });
+    observer=new MutationObserver(records=>{
+      for(const m of records){
+        if(m.type==='childList')for(const n of m.addedNodes)scan(n);
+        else if(m.type==='characterData')enqueue(m.target);
+        else if(m.type==='attributes')enqueueAttr(m.target);
+      }
+    });
+    observer.observe(doc.documentElement,{subtree:true,childList:true,characterData:true,
+      attributes:true,attributeFilter:ATTRS});
+    scan(doc.documentElement);publish();
+  }
+  function stop(){
+    running=false;epoch++;
+    if(observer)observer.disconnect();observer=null;
+    if(timer!==null)clearTimeout(timer);timer=null;
+    queue.length=0;queued.clear();attrQueue.length=0;attrQueued.clear();
+    if(router && !opts.router)router.destroy();
+    router=null;
+    restore();stats.lastState='STOPPED';publish();
+  }
+  function configure(next){
+    const wasRunning=running;
+    if(wasRunning)stop();
+    opts={...opts,...next};
+    if(wasRunning)start();
+  }
+  function getStatus(){
+    return Object.freeze({version:'0.2.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
+      sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
+      queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
+      ...stats,provider:router?.status()||{state:'INACTIVE'}});
+  }
+  return Object.freeze({start,stop,pause:stop,resume:start,configure,getStatus,
+    isRunning:()=>running,translateText:core.translateText});
+}
+const api=Object.freeze({VERSION:'0.2.0',createWebLocalizer});
+global.TLSWeb=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+/* R2 standalone userscript adapter: no external dependencies, MIT. */
 (() => {
-  'use strict';
-  if(window.top!==window.self) return;
-  const key='tls-enabled:'+location.origin;
-  let enabled=Boolean(GM_getValue(key,false));
-  let paused=false;
-  const ctrl=globalThis.TLSCore.createLocalizer(document);
-  const panel=document.createElement('div');
-  panel.setAttribute('data-tls-ui','true');
-  panel.style.cssText='position:fixed;right:8px;top:8px;z-index:2147483646;pointer-events:auto';
-  const shadow=panel.attachShadow({mode:'closed'});
-  const button=document.createElement('button');
-  button.type='button';
-  button.style.cssText='background:#155e75;color:white;border:1px solid white;border-radius:18px;padding:5px 10px;font:12px system-ui;cursor:pointer;box-shadow:0 2px 8px #0003';
-  shadow.appendChild(button);
-  function render() {
-    button.textContent=paused?'繁中｜已暫停（點此恢復）':'繁中｜執行中（點此暫停）';
-    if(enabled&&!panel.isConnected) (document.body||document.documentElement).appendChild(panel);
-    if(!enabled&&panel.isConnected) panel.remove();
-  }
-  function setEnabled(next) {
-    enabled=Boolean(next);
-    GM_setValue(key,enabled);
-    paused=false;
-    if(enabled) ctrl.start(); else ctrl.stop();
-    render();
-  }
-  button.addEventListener('click',()=>{
-    if(!enabled) return;
-    paused=!paused;
-    if(paused) ctrl.stop(); else ctrl.start();
-    render();
-  });
-  GM_registerMenuCommand('TLS：切換本站啟用／停用（停用還原）',()=>setEnabled(!enabled));
-  GM_registerMenuCommand('TLS：暫停／恢復本站',()=>{
-    if(enabled) button.click();
-  });
-  if(enabled) ctrl.start();
+'use strict';
+if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders)return;
+const origin=location.origin;
+const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin;
+let enabled=Boolean(GM_getValue(activeKey,false)),paused=false;
+let mode=GM_getValue(modeKey,'terms')==='local-ai'?'local-ai':'terms';
+let sourceLanguage=GM_getValue(sourceKey,'auto');
+const sources=['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','id','ar'];
+if(!sources.includes(sourceLanguage))sourceLanguage='auto';
+const panel=document.createElement('div');
+panel.dataset.tlsUi='true';panel.style.cssText='position:fixed;right:10px;top:10px;z-index:2147483646;pointer-events:auto';
+const shadow=panel.attachShadow({mode:'closed'});
+const wrap=document.createElement('div');
+wrap.style.cssText='background:#fff;color:#183247;border:1px solid #94a3b8;box-shadow:0 4px 18px #0003;padding:8px;border-radius:12px;font:12px/1.5 system-ui,sans-serif;max-width:250px';
+const title=document.createElement('div');title.textContent='TLS 臺灣繁中化';title.style.fontWeight='700';
+const status=document.createElement('div');status.setAttribute('aria-live','polite');status.style.cssText='margin:4px 0;max-width:230px;overflow-wrap:anywhere';
+const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select');
+for(const btn of [pause,modeButton])btn.style.cssText='padding:5px 8px;border:0;border-radius:7px;color:#fff;background:#0f766e;cursor:pointer;margin:3px 3px 3px 0;font:12px system-ui';
+sourceSelect.style.cssText='margin:4px 0;width:100%;padding:5px;border-radius:7px;background:white;color:#111;border:1px solid #94a3b8';
+for(const lang of sources){
+  const option=document.createElement('option');option.value=lang;option.textContent='原文：'+lang;
+  sourceSelect.appendChild(option);
+}
+sourceSelect.value=sourceLanguage;
+wrap.append(title,status,pause,modeButton,sourceSelect);shadow.appendChild(wrap);
+const ctrl=globalThis.TLSWeb.createWebLocalizer(document,{
+  mode,sourceLanguage,onStatus:(snapshot)=>renderStatus(snapshot)
+});
+function renderStatus(snapshot){
+  if(!snapshot)return;
+  const translated=snapshot.converted||0;
+  const progress=snapshot.lastState==='MODEL_DOWNLOAD'?'（下載本機語言模型中）':'';
+  status.textContent=(mode==='local-ai'?'本機 AI：':'離線詞彙：')+
+    (paused?'已暫停':'已處理 '+translated+' 處')+progress;
+  if(snapshot.provider?.state==='DEGRADED')status.textContent+='（模型不可用，僅保留安全轉換）';
+}
+function render(){
+  pause.textContent=paused?'恢復':'暫停／還原';
+  modeButton.textContent=mode==='local-ai'?'改用詞彙模式':'改用本機 AI';
+  if(enabled&&!panel.isConnected)(document.body||document.documentElement).appendChild(panel);
+  if(!enabled&&panel.isConnected)panel.remove();
+  renderStatus(ctrl.getStatus());
+}
+function apply(){
+  if(!enabled)return;
+  ctrl.configure({mode,sourceLanguage});if(!paused)ctrl.start();
   render();
+}
+function setEnabled(next){
+  enabled=Boolean(next);GM_setValue(activeKey,enabled);paused=false;
+  if(enabled){ctrl.configure({mode,sourceLanguage});ctrl.start();}
+  else ctrl.stop();
+  render();
+}
+pause.addEventListener('click',()=>{if(!enabled)return;paused=!paused;if(paused)ctrl.stop();else ctrl.start();render();});
+modeButton.addEventListener('click',()=>{
+  if(!enabled)return;
+  mode=mode==='terms'?'local-ai':'terms';GM_setValue(modeKey,mode);apply();
+});
+sourceSelect.addEventListener('change',()=>{
+  if(!enabled)return;
+  sourceLanguage=sources.includes(sourceSelect.value)?sourceSelect.value:'auto';
+  GM_setValue(sourceKey,sourceLanguage);apply();
+});
+GM_registerMenuCommand('TLS：啟用／停用本站',()=>setEnabled(!enabled));
+GM_registerMenuCommand('TLS：暫停／恢復',()=>{if(enabled)pause.click();});
+GM_registerMenuCommand('TLS：離線詞彙／Chrome 本機 AI 模式',()=>{if(enabled)modeButton.click();});
+if(enabled)ctrl.start();
+render();
 })();
