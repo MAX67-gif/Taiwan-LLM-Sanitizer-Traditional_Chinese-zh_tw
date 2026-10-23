@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: node --test tests/test_engine.js
+      - run: node --test tests/test_engine.js tests/test_cli.js
       - run: python tools/build.py
       - name: Verify both delivery adapters originate from the same core
         run: |
