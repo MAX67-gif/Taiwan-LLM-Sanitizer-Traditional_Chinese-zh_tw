@@ -83,3 +83,11 @@ test('unavailable model circuit breaker protects resources',async()=>{
   for(let i=0;i<4;i++)assert.equal((await p.translate('こんにちは')).text,'こんにちは');
   assert.equal(calls,0);assert.equal(p.status().failures,3);p.destroy();
 });
+
+test('protected placeholders must retain their relative order',()=>{
+  const p=protect('Choose {{first}} then {{second}}');
+  assert.equal(p.ok,true);
+  const reversed=p.text.replace('⟪TLS0LOCK⟫','TEMP_SLOT')
+    .replace('⟪TLS1LOCK⟫','⟪TLS0LOCK⟫').replace('TEMP_SLOT','⟪TLS1LOCK⟫');
+  assert.deepEqual(p.restore(reversed),{ok:false,reason:'TOKEN_ORDER_CHANGED'});
+});
