@@ -13,17 +13,17 @@ ROOT=Path(__file__).resolve().parents[1]
 DEMO=ROOT/"src/demos/pokebonk"
 DEST=ROOT/"dist/pokebonk"
 CHROME=DEST/"chrome"
-VERSION="0.1.0"
+VERSION="0.1.1"
 STAMP=(2026,10,24,0,0,0)
-FILENAME="TLS_Pokebonk_TW_Demo_R7_Chrome_20261024.zip"
-TM_FILENAME="TLS_Pokebonk_TW_Demo_R7_Tampermonkey_20261024.user.js"
-SHA_FILENAME="TLS_Pokebonk_TW_Demo_R7_SHA256SUMS_20261024.txt"
+FILENAME="TLS_Pokebonk_TW_Demo_R7_1_Chrome_20261024.zip"
+TM_FILENAME="TLS_Pokebonk_TW_Demo_R7_1_Tampermonkey_20261024.user.js"
+SHA_FILENAME="TLS_Pokebonk_TW_Demo_R7_1_SHA256SUMS_20261024.txt"
 REPO="https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw"
 
 HEADER="""// ==UserScript==
 // @name         Taiwan-LLM-Sanitizer · PokéBonk 臺灣繁中示範（顯示層）
 // @namespace    https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw
-// @version      0.1.0
+// @version      0.1.1
 // @description  僅改一般網頁文字；需手動啟用，不變更遊戲程式、戰鬥、帳號或網路
 // @match        https://pokebonk.com/*
 // @match        https://www.pokebonk.com/*
@@ -101,7 +101,7 @@ def build():
         blob=(DEST/name).read_bytes()
         digests.append(hashlib.sha256(blob).hexdigest()+"  "+name)
     write(DEST/SHA_FILENAME,"\n".join(digests)+"\n")
-    print("R7 DEMO BUILD PASS",len(json.loads(read_utf8(DEMO/"profile.json"))["entries"]),"entries")
+    print("R7.1 DEMO BUILD PASS",len(json.loads(read_utf8(DEMO/"profile.json"))["entries"]),"entries")
     for line in digests:print(line)
     return digests
 

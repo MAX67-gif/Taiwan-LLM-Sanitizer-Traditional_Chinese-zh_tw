@@ -1,7 +1,7 @@
 {
   "schema": "tls.site_profile.pokebonk.v1",
   "id": "pokebonk-taiwan-traditional-demo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "date": "2026-10-24",
   "source_host": "pokebonk.com",
   "supported_paths": [

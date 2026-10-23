@@ -54,6 +54,21 @@ test('input labels and user/chat fields are not modified',()=>{
  assert.equal(profile.eligibleAttr({nodeType:1,closest:()=>null,matches:()=>false},'title'),true);
  assert.equal(profile.eligibleAttr({nodeType:1,closest:()=>null,matches:()=>false},'href'),false);
 });
+test('R7.1 shared boundary: protected player, chat, hidden, inert and CSS-hidden attrs',()=>{
+ assert.equal(profile.VERSION,'0.1.1');
+ for(const marker of ['[class*="player-name"]','[class*="chat"]','[data-user-content]','[hidden]','[aria-hidden="true"]','[inert]']){
+  const el={nodeType:1,closest:sel=>sel.includes(marker)?{}:null,matches:()=>false};
+  assert.equal(profile.eligibleText({nodeType:3,parentElement:el}),false,marker);
+  assert.equal(profile.eligibleAttr(el,'title'),false,marker);
+  assert.equal(profile.eligibleAttr(el,'aria-label'),false,marker);
+ }
+ const hidden={nodeType:1,closest:()=>null,matches:()=>false,style:{display:'none'}};
+ assert.equal(profile.eligibleText({nodeType:3,parentElement:hidden}),false);
+ assert.equal(profile.eligibleAttr(hidden,'title'),false);
+ const visible={nodeType:1,closest:()=>null,matches:()=>false,style:{display:'block'}};
+ assert.equal(profile.eligibleAttr(visible,'title'),true);
+ assert.equal(profile.eligibleText({nodeType:3,parentElement:visible}),true);
+});
 test('disallowed activity absent from published sample runtime and builder',()=>{
  const runtime=fs.readFileSync(path.join(__dirname,'../src/demos/pokebonk/runtime.js'),'utf8');
  const builder=fs.readFileSync(path.join(__dirname,'../tools/build_pokebonk_demo_r7.py'),'utf8');

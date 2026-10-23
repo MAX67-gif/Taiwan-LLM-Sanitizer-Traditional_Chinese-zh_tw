@@ -1,4 +1,4 @@
-# PokéBonk 臺灣繁中顯示層示範｜R7
+# PokéBonk 臺灣繁中顯示層示範｜R7.1
 
 這是 **Taiwan-LLM-Sanitizer 的可選擇示範 Profile**，用來展示保守、明確的臺灣繁體中文在地化。**它不是遊戲修改器，也不是完整 PokéBonk 中文版。** 實作只處理一般網頁 DOM 的可見文字與少數顯示屬性，**不讀取帳號、密碼、存檔，不修改遊戲戰鬥、抽獎、網路封包或其他遊戲狀態**。PokéBonk 在 [官方網站](https://pokebonk.com/) 遊玩。
 
@@ -12,7 +12,7 @@
 
 ### 方法 A：Chrome 擴充功能
 
-1. [前往專用示範 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r7-pokebonk-demo-0.1.0) 下載 `TLS_Pokebonk_TW_Demo_R7_Chrome_20261024.zip`。
+1. [前往專用示範 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r7-pokebonk-demo-0.1.1) 下載 `TLS_Pokebonk_TW_Demo_R7_1_Chrome_20261024.zip`。
 2. 解壓縮 ZIP；解壓後必須有 `manifest.json` 與 `content.js`。
 3. 在桌面 Chrome 手動輸入 `chrome://extensions`，開啟「開發人員模式」，按「載入未封裝項目」，選取剛剛解壓的資料夾。
 4. 打開 `https://pokebonk.com/`，頁面右下角會有小小的「臺」字圓形按鈕，先點開，再按 **啟用臺灣用語**。在按下之前不改動任何遊戲文字。
@@ -20,7 +20,7 @@
 
 ### 方法 B：Tampermonkey
 
-1. 從同一個 Release 下載 `TLS_Pokebonk_TW_Demo_R7_Tampermonkey_20261024.user.js`。
+1. 從同一個 Release 下載 `TLS_Pokebonk_TW_Demo_R7_1_Tampermonkey_20261024.user.js`。
 2. 在 Tampermonkey 的管理面板匯入 `.user.js`；此腳本自含完整程式，沒有 `@require`、`@connect`，不必執行第二段初始化。
 3. 開啟遊戲網頁、點右下角「臺」，再按 **啟用臺灣用語**。重開網頁後需要重新手動啟用。
 4. 若同頁也已啟用通用 TLS R5 擴充功能，建議先停用 R5 在本站的功能，避免兩套文字還原機制互相干擾。
@@ -57,3 +57,7 @@
 後續產品方向是經驗證後以可選擇的 **Site Profile** 接入通用擴充功能；本次先維持獨立安裝，避免影響其他網站的通用翻譯。
 
 專案署名：**CA L.** · MIT 原創顯示層程式（不包含第三方遊戲和商標權利）。
+
+## R7.1 顯示範圍修補（2026-10-24）
+
+R7 0.1.0 私人離線合成測試發現兩個問題：玩家／聊天區的文字排除與 title／aria-label 排除不一致；帶有 hidden 等標記的非可見文字仍被替換。R7.1 將文字與屬性共用同一個排除函式，新增 hidden、aria-hidden、inert 與 CSS `display:none`／`visibility:hidden` 的防護與測試。公開 PR 僅新增原創合成反例；沒有上傳測試者的私人回傳包、網站原始碼、帳號或遊戲素材。**舊版 0.1.0 Release 保持不變，不可視為已修復。** 這仍不是遊戲真站驗收或官方許可。

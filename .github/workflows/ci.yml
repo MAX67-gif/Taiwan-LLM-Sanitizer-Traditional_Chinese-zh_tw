@@ -28,15 +28,15 @@ jobs:
       - name: Build reproducible PokéBonk demo ZIP and single-file userscript
         run: python tools/build_pokebonk_demo_r7.py
       - name: Verify PokéBonk committed installers match built output
-        run: git diff --exit-code -- dist/pokebonk/chrome dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_Tampermonkey_20261024.user.js
+        run: git diff --exit-code -- dist/pokebonk/chrome dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_Tampermonkey_20261024.user.js
       - name: Upload optional R7 site demo installers (display-only, not full game)
         uses: actions/upload-artifact@v4
         with:
-          name: TLS_R7_Pokebonk_TW_Display_Demo_Installers
+          name: TLS_R7_1_Pokebonk_TW_Display_Demo_Installers
           path: |
-            dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_Chrome_20261024.zip
-            dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_Tampermonkey_20261024.user.js
-            dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_SHA256SUMS_20261024.txt
+            dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_Chrome_20261024.zip
+            dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_Tampermonkey_20261024.user.js
+            dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_SHA256SUMS_20261024.txt
           if-no-files-found: error
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
@@ -197,14 +197,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "r7-pokebonk-demo-0.1.0" >/dev/null 2>&1; then
+          if gh release view "r7-pokebonk-demo-0.1.1" >/dev/null 2>&1; then
             echo "Demo release already exists, do not replace prior assets."
           else
-            gh release create "r7-pokebonk-demo-0.1.0" \
-              dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_Chrome_20261024.zip \
-              dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_Tampermonkey_20261024.user.js \
-              dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_SHA256SUMS_20261024.txt \
+            gh release create "r7-pokebonk-demo-0.1.1" \
+              dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_Chrome_20261024.zip \
+              dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_Tampermonkey_20261024.user.js \
+              dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_SHA256SUMS_20261024.txt \
               --target "$GITHUB_SHA" \
-              --title "R7 PokéBonk 臺灣用語（非官方、顯示層試玩版）" \
-              --notes "Optional display-only sample. Explicit user opt-in; exact-match, reversible DOM wording, 136 editorial examples. Not an official Pokémon or PokéBonk product. DOES NOT modify the game's canvas/WebGL, account, save, combat, network or hidden game state. Real current-site compatibility and the game's Terms must be assessed by the user. General TLS R5 extension and R6 evaluator remain unchanged."
+              --title "R7.1 PokéBonk 臺灣用語（非官方、顯示層試玩版）" \
+              --notes "R7.1 patch: shared text/attribute exclusion checks and hidden-content regression; older 0.1.0 frozen. Explicit opt-in, 136 illustrative terms. Real-site permission and end-to-end compatibility not established. Not an official Pokémon or PokéBonk product. DOES NOT modify the game's canvas/WebGL, account, save, combat, network or hidden game state. Real current-site compatibility and the game's Terms must be assessed by the user. General TLS R5 extension and R6 evaluator remain unchanged."
           fi
