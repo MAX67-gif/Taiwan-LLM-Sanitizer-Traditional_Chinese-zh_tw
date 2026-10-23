@@ -24,6 +24,17 @@
 
 **網站右下角的固定圓形狀態**：轉動代表正在處理；勾號代表目前可翻譯的區域已完成；橘色表示有部分區域未完成。它不會因出現長訊息而推擠站上其他按鈕。Chrome 設定視窗中的操作列也固定在底部，不會因狀態變動而位移。
 
+## R6：如何知道翻譯真的自然、沒有翻壞？
+
+**R6 是獨立的翻譯品質評測預覽，不更動目前正式 R5 0.4.0 翻譯引擎。** 我們已準備 100 題公開凍結測試，涵蓋技術文件、商務、網頁、專有名稱及 Prompt，每類 20 題；並提供完全本機的自動 QA、雙語人工審閱和桌面 Chrome 本機 Translator API 執行入口。
+
+- [閱讀公開評測方式與重要限制](docs/QUALITY_EVALUATION.md)
+- [雙語審閱室（可在手機閱讀／離線操作）](examples/TW_R6_Bilingual_Quality_Review_20261024.html)
+- [桌面 Chrome 真實本機 Translator API 測試頁](examples/TW_R6_Local_Chrome_Model_Run_20261024.html)
+- [100 題凍結 JSONL](benchmarks/r6/public_frozen_v1.jsonl) · [資料集 SHA256](benchmarks/r6/frozen_manifest_v1.json)
+
+**重要：目前只完成測試設施，還沒有經獨立評審驗證的真實模型自然度成績。** R5 的離線詞彙模式不是全文翻譯模型；QA 通過也不代表譯文已忠實且自然。
+
 ## 你可以用它做什麼？
 
 | 使用方式 | 現況 | 適用情境 |
