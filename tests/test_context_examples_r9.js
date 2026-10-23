@@ -2,7 +2,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
-const doc=JSON.parse(fs.readFileSync(path.join(__dirname,'../lexicon/context_evidence_r9.json'),'utf8'));
+const doc=JSON.parse(fs.readFileSync(path.join(__dirname,'../lexicon/context_examples_r9.json'),'utf8'));
 test('context examples have paired positive and counter examples, no auto rules',()=>{
  assert.equal(doc.schema,'tls.context-evidence.v1');
  assert.ok(doc.entries.length>=24);

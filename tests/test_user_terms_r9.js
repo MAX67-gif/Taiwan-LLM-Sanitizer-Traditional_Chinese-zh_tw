@@ -1,7 +1,7 @@
 /* TLS R9 manual glossary and reversible preview tests. */
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
-const path=require('node:path'),gloss=require('../src/core/personal_glossary.js');
+const path=require('node:path'),gloss=require('../src/core/user_terms_r9.js');
 const review=require('../src/core/term_review.js').review;
 const roots=p=>JSON.parse(fs.readFileSync(path.join(__dirname,'../lexicon',p),'utf8')).entries;
 const catalog=[...roots('approved_r3.json'),...roots('candidates_r3.json')];
