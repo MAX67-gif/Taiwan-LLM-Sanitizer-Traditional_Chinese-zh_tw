@@ -25,7 +25,7 @@ function createWebLocalizer(doc,options={}){
     throw new TypeError('Valid browser document required');
   let opts={...options},running=false,epoch=0,router=null,observer=null,timer=null,working=false;
   const changedTexts=new Map(),changedAttrs=new Map(),queue=[],queued=new Set();
-  const requestedDomain=(el)=>opts.domain&&opts.domain!=='auto'?opts.domain:requestedDomain(el);
+  const requestedDomain=(el)=>opts.domain&&opts.domain!=='auto'?opts.domain:domainOf(el);
   let stats={scanned:0,converted:0,unchanged:0,errors:0,skipped:0,overflow:0,lastState:'IDLE',lastReason:'',modelProgress:0};
   function publish(){
     try{opts.onStatus?.(getStatus());}catch(_){}
