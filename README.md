@@ -1,12 +1,20 @@
 # Taiwan-LLM-Sanitizer｜臺灣繁中網頁／AI 技術內容在地化
 
-> **Status: R3 preview 0.3.0 / 原型驗證中** · 2026-10-23 · MIT open core · zh-TW first
+> **Status: R3 preview 0.3.0 / 原型驗證中** · 2026-10-24 · MIT open core · zh-TW first
 
 Taiwan-LLM-Sanitizer is an independent open-source project for making browser interfaces, open-source technical documents and AI prompts easier to use in **Traditional Chinese as used in Taiwan (zh-TW)**. It prioritizes meaning preservation, syntax safety, privacy, and reversible changes.
 
 **This is an independent project; it is not affiliated with OpenAI, Google, Tampermonkey, any particular website, game or translation service. No funding or approval is claimed.**
 
-**正式定位：通用型臺灣繁體中文在地化平台。沒有任何指定網站、遊戲或產業是產品的必要條件；Tampermonkey 只是其中一個可選擇的轉接器，不是產品本身。**
+**不管是逛國外網站、閱讀開源專案文件，還是整理自己的資料，你都能選擇順眼、自然的臺灣繁體中文。** Chrome 擴充功能、Tampermonkey 腳本和本機 CLI 都是使用方式，沒有綁定任何網站或遊戲。你可以保留原用語，不用照著工具認定的「正確中文」閱讀。
+
+## 專案發起、開源與使用者自由
+
+**專案發起及產品治理：CA L.**，詳見 [AUTHORS.md](AUTHORS.md)。既有 MIT 授權及其他貢獻者的合法權利保持不變。公開的基礎詞庫可供 MIT 條件下重用；未來真正獨立開發的進階詞庫／企業服務才另行授權。任何內部開發歷史與商業備忘資料不放進此公開 Repository。
+
+**中文偏好**：保留原用語／輕度臺灣化／自然平衡／臺灣用語優先。文風偏好是另一個設定：忠於原文／自然順口／正式專業／輕鬆口語；**目前 Chrome 本機 Translator 不保證支援語氣控制**，介面先保存偏好，不會偽稱模型已按指定語氣改寫。
+
+[離線風格設定泡泡示範（人工譯例）](examples/TW_Translation_Style_Lab_R3_20261024.html) · [詞庫探索器（無網路連線）](examples/TW_Lexicon_Explorer_R3_20261024.html)
 
 ## R3 新功能：臺灣語境詞庫與非文字審查原則（2026-10-24）
 
