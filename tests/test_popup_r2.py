@@ -49,7 +49,7 @@ with sync_playwright() as pw:
     assert page.evaluate("window.__mock.permissions")==1
     assert page.evaluate("window.__mock.injections")==1
     assert page.evaluate("window.__mock.registry[0].js")==[
-        "lexicon_pack.js","preferences.js","engine.js","provider.js","web_adapter.js","content.js"]
+        "lexicon_pack.js","preferences.js","entities.js","engine.js","provider.js","web_adapter.js","progress_ui.js","content.js"]
     assert "停用" in page.locator("#toggle").inner_text()
     page.locator("#mode").select_option("local-ai")
     page.locator("#source").select_option("ja")
