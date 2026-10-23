@@ -14,7 +14,7 @@ with sync_playwright() as pw:
       <pre id="code">菜单</pre><input id="input" value="菜单">
       <div id="updates"></div>
       </body></html>""")
-    for name in ("lexicon_pack.js","engine.js","provider.js","web_adapter.js"):
+    for name in ("lexicon_pack.js","preferences.js","engine.js","provider.js","web_adapter.js"):
         page.add_script_tag(content=(ROOT/"src/core"/name).read_text(encoding="utf-8"))
     page.evaluate("""() => {
       window.__r3=TLSWeb.createWebLocalizer(document,{mode:'terms'});
