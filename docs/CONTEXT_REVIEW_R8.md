@@ -20,3 +20,7 @@
 - 不會因單次離線詞庫命中就宣稱真人自然度、模型品質或新詞條語意已驗證。
 
 下一步：建立獨立的語義／反例人工覆核資料、允許使用者自行匯出偏好（需明確操作）、設計原文與用語建議的對照 UI，並以 R6 模型真實評測評估品質。
+
+## 一般使用者下載方式
+
+到 [R8 獨立發布頁](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r8-context-review-preview-0.1.0) 的 Assets 下載單檔 `TLS_Taiwan_Context_Review_R8_20261024.html`，保留原本副檔名，雙擊使用瀏覽器開啟即可。另一個 `.sha256` 是供完整性校驗，不必安裝程式。R8 不是 Chrome／Tampermonkey 擴充功能，不要誤下載 R5 或 R7 進行詞彙審查。
