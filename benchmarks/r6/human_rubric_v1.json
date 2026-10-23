@@ -1,0 +1,75 @@
+{
+  "schema": "tls.r6.human_review_rubric.v1",
+  "based_on": "MQM-inspired simplified categories (independent editorial instructions, not an official MQM implementation)",
+  "scope": "Taiwanese Traditional Chinese translation of publicly authored R6 prompts",
+  "review_axes": {
+    "meaning": {
+      "label": "原意與事實忠實度",
+      "scale": {
+        "1": "重要資訊錯誤、增加虛假承諾或否定反轉",
+        "2": "存在明顯漏譯或錯譯",
+        "3": "大致正確但有待修正之處",
+        "4": "正確，僅極少小問題",
+        "5": "語意完整且正確"
+      }
+    },
+    "naturalness": {
+      "label": "自然順口程度",
+      "scale": {
+        "1": "極度生硬難懂",
+        "2": "機翻感強且不自然",
+        "3": "能理解但有生硬處",
+        "4": "自然清楚，少量可改善",
+        "5": "可作為自然的臺灣中文文章"
+      }
+    },
+    "taiwan_locale": {
+      "label": "臺灣語境與合理用語",
+      "scale": {
+        "1": "多處不適用或嚴重誤用",
+        "2": "明顯混用、不符合情境",
+        "3": "可理解，部分用語需調整",
+        "4": "多數用法適合臺灣讀者",
+        "5": "完全契合語境且保留合理變體"
+      }
+    },
+    "register": {
+      "label": "語氣、用途與資訊格式",
+      "scale": {
+        "1": "口吻與用途嚴重不符",
+        "2": "明顯不合適",
+        "3": "大致合適但需潤飾",
+        "4": "基本合適",
+        "5": "符合文本用途並忠於重要格式"
+      }
+    }
+  },
+  "issue_categories": {
+    "ACCURACY_OMISSION": "漏掉重要內容",
+    "ACCURACY_ADDITION": "加入來源不存在的資訊",
+    "ACCURACY_DISTORTION": "錯譯含義或條件",
+    "NEGATION_OR_NUMBER": "否定、數字、時間或單位錯誤",
+    "BRAND_ENTITY": "品牌／專有名稱被錯譯",
+    "CODE_STRUCTURE": "URL、程式碼、Prompt、占位符遭破壞",
+    "TERMINOLOGY": "技術術語不精確",
+    "NATURALNESS": "不自然、生硬或難讀",
+    "LOCALE_CONTEXT": "沒有依臺灣語境或合理用法選詞",
+    "REGISTER_TONE": "商務或技術語氣不適當",
+    "OTHER": "其他，可於備註說明"
+  },
+  "critical_error_examples": [
+    "改掉人名/產品名",
+    "否定語意反轉",
+    "漏掉法律/業務限制",
+    "破壞 API 參數",
+    "捏造不存在的保證"
+  ],
+  "review_principles": [
+    "先看源文與候選譯文，避免先看到編輯參考譯文",
+    "每題至少兩名獨立評審並記錄裁決，不可憑假 ID 假裝已通過",
+    "標準答案不是唯一正解，合理臺灣變體應被接受",
+    "模型身份與運行參數先登記並凍結，再看測試結果",
+    "公開 R6 已曝光，只能做公開回歸，不能冒充 Fresh OOS",
+    "任何程式結構通過都不等於翻譯品質已通過"
+  ]
+}
