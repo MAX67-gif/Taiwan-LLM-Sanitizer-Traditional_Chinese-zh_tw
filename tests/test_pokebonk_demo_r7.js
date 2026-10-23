@@ -48,9 +48,9 @@ test('old game build changes only warn, not block safe DOM matching',()=>{
  }).hostAllowed,false);
 });
 test('input labels and user/chat fields are not modified',()=>{
- const parent={closest:(sel)=>sel.includes('[class*="nickname"]')?{}:null};
+ const parent={nodeType:1,closest:(sel)=>sel.includes('[class*="nickname"]')?{}:null};
  assert.equal(profile.eligibleText({nodeType:3,parentElement:parent}),false);
- assert.equal(profile.eligibleText({nodeType:3,parentElement:{closest:()=>null}}),true);
+ assert.equal(profile.eligibleText({nodeType:3,parentElement:{nodeType:1,closest:()=>null}}),true);
  assert.equal(profile.eligibleAttr({nodeType:1,closest:()=>null,matches:()=>false},'title'),true);
  assert.equal(profile.eligibleAttr({nodeType:1,closest:()=>null,matches:()=>false},'href'),false);
 });
