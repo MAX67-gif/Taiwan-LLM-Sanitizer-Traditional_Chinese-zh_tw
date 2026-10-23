@@ -13,7 +13,7 @@ HEADER=f"""// ==UserScript==
 // @namespace    {HOMEPAGE}
 // @version      {VERSION}
 // @description  通用離線字詞校正及使用者可選 Chrome 本機 AI 翻譯；逐站啟用，不傳送頁面文字到雲端。
-// @author       MAX67-gif contributors
+// @author       CA L. and Taiwan-LLM-Sanitizer contributors
 // @match        http://*/*
 // @match        https://*/*
 // @run-at       document-idle
