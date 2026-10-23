@@ -1,7 +1,7 @@
 """R6 offline UI acceptance: bilingual review and local Chrome Translator runner (mock only)."""
 from pathlib import Path
 import json
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 ROOT=Path(__file__).resolve().parents[1]
 BENCH=ROOT/"benchmarks/r6/public_frozen_v1.jsonl"
@@ -19,10 +19,10 @@ with sync_playwright() as pw:
     requests=[]
     page.on("request",lambda req:requests.append(req.url))
     page.set_content(REVIEW.read_text(encoding="utf-8"))
-    page.wait_for_function("document.querySelector('#item').options.length === 15")
+    expect(page.locator('#item option')).to_have_count(15)
     assert "Codex" not in page.locator("#source").inner_text()
     page.locator("#family").select_option("named")
-    page.wait_for_function("document.querySelector('#item').options.length === 3")
+    expect(page.locator('#item option')).to_have_count(3)
     assert "Codex for Open Source" in page.locator("#source").inner_text()
     assert page.locator("#save").is_disabled()
     assert page.locator("#referenceBox").get_attribute("open") is None
@@ -34,7 +34,7 @@ with sync_playwright() as pw:
                          "translation":"Codex for Open Source 支援符合資格的開源維護者。"},ensure_ascii=False)
     page.locator("#candidates").set_input_files({"name":"candidates.jsonl",
          "mimeType":"text/plain","buffer":(mockline+"\n").encode("utf-8")})
-    page.wait_for_function("document.querySelector('#save').disabled === false")
+    expect(page.locator('#save')).to_be_enabled()
     page.locator("#reviewer").fill("reviewer_local")
     for name in ("meaning","naturalness","taiwan_locale","register"):
         page.locator("#"+name).select_option("4")
@@ -54,7 +54,7 @@ with sync_playwright() as pw:
     runner_requests=[]
     runner.on("request",lambda req:runner_requests.append(req.url))
     runner.set_content(RUNNER.read_text(encoding="utf-8"))
-    runner.wait_for_function("document.querySelector('#dataset')!==null")
+    expect(runner.locator('#dataset')).to_be_attached()
     runner.evaluate("delete window.Translator")
     runner.get_by_role("button",name="檢查 Chrome Translator API").click()
     assert "沒有提供" in runner.locator("#capability").inner_text()
@@ -71,10 +71,10 @@ with sync_playwright() as pw:
       };
     }""")
     runner.get_by_role("button",name="檢查 Chrome Translator API").click()
-    runner.wait_for_function("document.querySelector('#start').disabled === false")
+    expect(runner.locator('#start')).to_be_enabled()
     runner.get_by_role("button",name="開始翻譯（可能下載模型）").click()
-    runner.wait_for_function("document.querySelector('#download').disabled === false",timeout=10000)
-    runner.wait_for_function("document.querySelector('#start').disabled === false")
+    expect(runner.locator('#download')).to_be_enabled(timeout=10000)
+    expect(runner.locator('#start')).to_be_enabled()
     assert "5" in runner.locator("#results").inner_text()
     with runner.expect_download() as download_result:
         runner.get_by_role("button",name="下載候選譯文 JSONL").click()
