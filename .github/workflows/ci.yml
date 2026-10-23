@@ -36,7 +36,7 @@ jobs:
       - name: Compute local-only offline term baseline (not model translation quality)
         run: |
           mkdir -p "$RUNNER_TEMP/tls-r6-baseline"
-          node tools/r6_benchmark.js baseline --output "$RUNNER_TEMP/tls-r6-baseline/offline_terms.jsonl" --report "$RUNNER_TEMP/tls-r6-baseline/structural_report.json"
+          node tools/r6_benchmark.js baseline --output "$RUNNER_TEMP/tls-r6-baseline/offline_terms.jsonl" --report benchmarks/r6/R6_STRUCTURAL_BASELINE.json
       - name: Upload R6 public frozen quality kit (not a ranked model report)
         uses: actions/upload-artifact@v4
         with:
@@ -52,7 +52,7 @@ jobs:
             tools/translation_qa.js
             src/core/
             lexicon/
-            ${{ runner.temp }}/tls-r6-baseline/structural_report.json
+            benchmarks/r6/R6_STRUCTURAL_BASELINE.json
           if-no-files-found: error
       - name: Build Chrome + single userscript
         run: python tools/build.py
