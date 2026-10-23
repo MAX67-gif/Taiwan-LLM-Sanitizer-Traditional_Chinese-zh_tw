@@ -17,6 +17,19 @@ jobs:
         run: |
           python tools/publication_guard.py --self-test
           python tools/publication_guard.py
+      - name: Bundle public tracked source for reproducible private handoff
+        run: |
+          mkdir -p "$RUNNER_TEMP/tls-public-snapshot"
+          git archive --format=zip --output="$RUNNER_TEMP/tls-public-snapshot/TLS_PUBLIC_SOURCE_R10_20261024.zip" HEAD
+          (cd "$RUNNER_TEMP/tls-public-snapshot" && sha256sum TLS_PUBLIC_SOURCE_R10_20261024.zip > SHA256SUMS.txt)
+      - name: Upload versioned public source snapshot (public files only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R10_Public_Source_Snapshot
+          path: |
+            ${{ runner.temp }}/tls-public-snapshot/TLS_PUBLIC_SOURCE_R10_20261024.zip
+            ${{ runner.temp }}/tls-public-snapshot/SHA256SUMS.txt
+          if-no-files-found: error
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Check human-readable lexicon and compiled glossary match
