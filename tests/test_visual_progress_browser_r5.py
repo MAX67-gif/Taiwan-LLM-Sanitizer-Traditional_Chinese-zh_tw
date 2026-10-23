@@ -61,6 +61,12 @@ with sync_playwright() as pw:
     dock=page.locator("[data-tls-indicator]")
     dock.wait_for()
     initial=dock.bounding_box()
+    page.mouse.click(initial["x"]+26,initial["y"]+26)
+    assert page.locator("section[data-tls-ui]").is_visible()
+    after_open=dock.bounding_box()
+    assert abs(initial["x"]-after_open["x"])<1 and abs(initial["y"]-after_open["y"])<1
+    page.mouse.click(initial["x"]+26,initial["y"]+26)
+    assert not page.locator("section[data-tls-ui]").is_visible()
     page.wait_for_function("document.querySelector('#first').textContent==='選單'")
     page.evaluate("document.querySelector('#first').textContent='菜单'")
     page.wait_for_function("document.querySelector('#first').textContent==='選單'")
