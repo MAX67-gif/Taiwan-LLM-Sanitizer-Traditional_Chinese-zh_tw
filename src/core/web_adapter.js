@@ -122,10 +122,10 @@ function createWebLocalizer(doc,options={}){
       while(running&&epoch===currentEpoch&&(queue.length||attrQueue.length)){
         if(queue.length){
           const node=queue.shift();queued.delete(node);
-          try{await updateText(node,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e);}
+          try{await updateText(node,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e?.stack||e).slice(0,2500);}
         }else{
           const el=attrQueue.shift();attrQueued.delete(el);
-          try{await updateAttrs(el,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e);}
+          try{await updateAttrs(el,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e?.stack||e).slice(0,2500);}
         }
         if(++iterations%16===0){
           prune();publish();
