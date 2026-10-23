@@ -17,7 +17,11 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 - **沒有文字獄**：使用者有權選擇原文、臺灣說法或其他慣用語。技術詞庫是可審查的語言資料，不是強制語言正確性清單。
 - **Privacy-first 架構**：不自行蒐集或外傳造訪內容，不安插背景追蹤；逐站模式設定僅本機保存。瀏覽器可能下載翻譯語言包，應與「偷偷上傳頁面文字」分開理解。
 
-說明： [詞庫治理](docs/LEXICON_GOVERNANCE_R3.md) · [市場差異化](docs/COMPETITIVE_RESEARCH_R3.md) · [網頁 Overlay 規格（尚未完成）](docs/WEBSITE_OVERLAY_ARCHITECTURE_R3.md) · [隱私技術契約](docs/PRIVACY_FIRST_TRANSLATION_R3.md)。
+**不用寫程式的離線示範：** 下載並開啟 [臺灣語境詞庫探索器（單一 HTML）](examples/TW_Lexicon_Explorer_R3_20261024.html)。它提供 883 筆候選搜尋、領域與審核狀態篩選，資料完全內嵌、不呼叫網路。亦可從 GitHub Raw 下載原始 HTML。
+
+**瀏覽器新增功能：** 使用者可在 Chrome 擴充功能或 Tampermonkey 面板自行選擇「自動／介面／餐飲／AI／軟體／金融等詞彙領域」，設定只存在本機且可停用；CLI 可使用 `--domain` 指定相同範圍。
+
+說明： [詞庫治理](docs/LEXICON_GOVERNANCE_R3.md) · [市場差異化](docs/COMPETITIVE_RESEARCH_R3.md) · [網頁 Overlay 規格（尚未完成）](docs/WEBSITE_OVERLAY_ARCHITECTURE_R3.md) · [隱私技術契約](docs/PRIVACY_FIRST_TRANSLATION_R3.md) · [R3 階段接續](docs/R3_PHASE_HANDOFF_20261024.md)。
 
 ## R2 操作重點
 
