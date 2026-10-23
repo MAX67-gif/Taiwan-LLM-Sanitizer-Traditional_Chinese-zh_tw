@@ -44,6 +44,10 @@ with sync_playwright() as pw:
     page.add_script_tag(content=(ROOT/"src/chrome/popup.js").read_text(encoding="utf-8"))
     page.wait_for_function("document.querySelector('#toggle').disabled===false")
     assert page.locator("#host").inner_text()=="example.org"
+    button_before=page.locator("#toggle").bounding_box()
+    page.evaluate("document.querySelector('#state').textContent='很長的進度狀態：'.repeat(20)")
+    button_after=page.locator("#toggle").bounding_box()
+    assert abs(button_before["y"]-button_after["y"])<1
     page.locator("#toggle").click()
     page.wait_for_function("window.__mock.registry.length===1")
     assert page.evaluate("window.__mock.permissions")==1
