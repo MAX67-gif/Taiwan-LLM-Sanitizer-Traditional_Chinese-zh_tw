@@ -1,5 +1,14 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R7 · 2026-10-24 · Opt-in PokéBonk display-only demo (separate release)
+
+- 新增可選用、非官方的 136 筆臺灣用語對照，僅供特定網站的文字顯示層精確配對。
+- 顯示層使用者必須手動啟用；可嘗試安全還原原本呈現的內容，版本與舊快照不同只提示，結構不符只略過受影響區塊。
+- 由同一份原創資料產出 Chrome MV3 壓縮包及完全自含的 Tampermonkey 腳本，另行獨立 Release，不改 R5 通用翻譯主鏈路。
+- 無遊戲戰鬥、帳號、存檔、網路、Canvas/WebGL 操作。真實最新版網頁尚未端到端驗證；PokéBonk 官方使用條款可能禁止修改遊戲。
+- R6 實測結果僅在私人研究文件進行分析，**沒有提交原始候選、AI 評審資料、真人資訊或商業備忘至 GitHub**。
+
+
 ## R6 · 2026-10-24 · Quality evaluation infrastructure (no runtime engine promotion)
 
 - 建立 100 筆公開凍結的原創編輯測試題，五類各 20 題，SHA256 封存，不可偷改已曝光 V1。

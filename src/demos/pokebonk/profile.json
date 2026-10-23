@@ -1,0 +1,841 @@
+{
+  "schema": "tls.site_profile.pokebonk.v1",
+  "id": "pokebonk-taiwan-traditional-demo",
+  "version": "0.1.0",
+  "date": "2026-10-24",
+  "source_host": "pokebonk.com",
+  "supported_paths": [
+    "/"
+  ],
+  "required_user_action": "explicit_opt_in_button_every_session",
+  "operating_scope": "visible_DOM_text_and_display_attributes_only",
+  "reference_snapshot": {
+    "observed_date": "2026-10-18",
+    "old_game_bundle": "main-CmuSC2AB-mvd1mlac.js",
+    "i18n_module": "i18n-DtjQO0zE-mvd1mlac.js",
+    "availability": "i18n module absent from user's archive; latest live structure not independently verified"
+  },
+  "privacy": "no_network_requests_no_storage_no_tracking_no_game_state",
+  "licensing": "Standalone independently authored example mappings; identifies third-party trademarks without claiming ownership. No sprites or game code republished.",
+  "verified_current_game": false,
+  "authoritative_official_pokemon_translation": false,
+  "note": "PokéBonk and PokéSurvivor are separate projects. Exact-match conservative display only. Terms not in this map remain unchanged. Content is illustrative; verify each term and local gameplay UI before broader release.",
+  "entries": [
+    {
+      "from": "妙蛙种子",
+      "to": "妙蛙種子",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "小火龙",
+      "to": "小火龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "火恐龙",
+      "to": "火恐龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "喷火龙",
+      "to": "噴火龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "杰尼龟",
+      "to": "傑尼龜",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "卡咪龟",
+      "to": "卡咪龜",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "水箭龟",
+      "to": "水箭龜",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "绿毛虫",
+      "to": "綠毛蟲",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "独角虫",
+      "to": "獨角蟲",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "大针蜂",
+      "to": "大針蜂",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "比比鸟",
+      "to": "比比鳥",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "大比鸟",
+      "to": "大比鳥",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "小拉达",
+      "to": "小拉達",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "尼多兰",
+      "to": "尼多蘭",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "尼多力诺",
+      "to": "尼多力諾",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "猫老大",
+      "to": "貓老大",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "可达鸭",
+      "to": "可達鴨",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "哥达鸭",
+      "to": "哥達鴨",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "风速狗",
+      "to": "風速狗",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "凯西",
+      "to": "凱西",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "飞天螳螂",
+      "to": "飛天螳螂",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "鲤鱼王",
+      "to": "鯉魚王",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "暴鲤龙",
+      "to": "暴鯉龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "卡比兽",
+      "to": "卡比獸",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "急冻鸟",
+      "to": "急凍鳥",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "闪电鸟",
+      "to": "閃電鳥",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "火焰鸟",
+      "to": "火焰鳥",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "迷你龙",
+      "to": "迷你龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "哈克龙",
+      "to": "哈克龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "快龙",
+      "to": "快龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "超梦",
+      "to": "超夢",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "梦幻",
+      "to": "夢幻",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Bulbasaur",
+      "to": "妙蛙種子",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Charmander",
+      "to": "小火龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Squirtle",
+      "to": "傑尼龜",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Pikachu",
+      "to": "皮卡丘",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Charizard",
+      "to": "噴火龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Eevee",
+      "to": "伊布",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Gengar",
+      "to": "耿鬼",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Dragonite",
+      "to": "快龍",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Mewtwo",
+      "to": "超夢",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "Mew",
+      "to": "夢幻",
+      "kind": "pokemon",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "十万伏特",
+      "to": "十萬伏特",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "喷射火焰",
+      "to": "噴射火焰",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "冰冻光束",
+      "to": "冰凍光束",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "水枪",
+      "to": "水槍",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "飞叶快刀",
+      "to": "飛葉快刀",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "种子炸弹",
+      "to": "種子炸彈",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "火焰旋涡",
+      "to": "火焰旋渦",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "雷电拳",
+      "to": "雷電拳",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "冰冻拳",
+      "to": "冰凍拳",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "精神强念",
+      "to": "精神強念",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "精神冲击",
+      "to": "精神衝擊",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "影子球",
+      "to": "暗影球",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "龙之舞",
+      "to": "龍之舞",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "龙之波动",
+      "to": "龍之波動",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "龙爪",
+      "to": "龍爪",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "尖石攻击",
+      "to": "尖石攻擊",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "金属爪",
+      "to": "金屬爪",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "加农光炮",
+      "to": "加農光炮",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "近身战",
+      "to": "近身戰",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "真气弹",
+      "to": "真氣彈",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "剑舞",
+      "to": "劍舞",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "高速移动",
+      "to": "高速移動",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "电光一闪",
+      "to": "電光一閃",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "冲浪",
+      "to": "衝浪",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "破坏光线",
+      "to": "破壞光線",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "终极冲击",
+      "to": "終極衝擊",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "暴风雪",
+      "to": "暴風雪",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "毒击",
+      "to": "毒擊",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "落英缤纷",
+      "to": "落英繽紛",
+      "kind": "move",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "主菜单",
+      "to": "主選單",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "游戏菜单",
+      "to": "遊戲選單",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "选项菜单",
+      "to": "選項選單",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "设置",
+      "to": "設定",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "语言设置",
+      "to": "語言設定",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "游戏语言",
+      "to": "遊戲語言",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "简体中文",
+      "to": "簡體中文",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "繁体中文",
+      "to": "繁體中文",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "战斗",
+      "to": "戰鬥",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "对战",
+      "to": "對戰",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "开始游戏",
+      "to": "開始遊戲",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "继续游戏",
+      "to": "繼續遊戲",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "退出游戏",
+      "to": "離開遊戲",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "结束本局",
+      "to": "結束本局",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "暂停游戏",
+      "to": "暫停遊戲",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "返回主页",
+      "to": "返回首頁",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "重新加载",
+      "to": "重新載入",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "保存",
+      "to": "儲存",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "确认",
+      "to": "確認",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "是否退出？",
+      "to": "確定要離開嗎？",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "重新开始",
+      "to": "重新開始",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "查看详情",
+      "to": "查看詳情",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "个人资料",
+      "to": "個人資料",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "训练家",
+      "to": "訓練家",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "训练师",
+      "to": "訓練家",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "宝可梦图鉴",
+      "to": "寶可夢圖鑑",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "精灵图鉴",
+      "to": "寶可夢圖鑑",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "技能图鉴",
+      "to": "招式圖鑑",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "技能",
+      "to": "招式",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "技能升级",
+      "to": "招式升級",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "终极技能",
+      "to": "終極招式",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "招式列表",
+      "to": "招式清單",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "装备",
+      "to": "裝備",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "物品",
+      "to": "道具",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "升级",
+      "to": "升級",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "等级",
+      "to": "等級",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "经验值",
+      "to": "經驗值",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "生命值",
+      "to": "體力",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "攻击力",
+      "to": "攻擊力",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "防御力",
+      "to": "防禦力",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "移动速度",
+      "to": "移動速度",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "暴击率",
+      "to": "擊中要害機率",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "暴击伤害",
+      "to": "擊中要害傷害",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "冷却时间",
+      "to": "冷卻時間",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "伤害",
+      "to": "傷害",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "防御",
+      "to": "防禦",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "抽奖",
+      "to": "抽獎",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "联赛",
+      "to": "聯盟",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "赛季",
+      "to": "賽季",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "每日任务",
+      "to": "每日任務",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "每周任务",
+      "to": "每週任務",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "状态",
+      "to": "狀態",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "设置与隐私",
+      "to": "設定與隱私",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "继续",
+      "to": "繼續",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "加载中",
+      "to": "載入中",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "加载中…",
+      "to": "載入中…",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "更新日志",
+      "to": "更新紀錄",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "更改语言",
+      "to": "切換語言",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "队伍",
+      "to": "隊伍",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "伙伴",
+      "to": "夥伴",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "精灵球",
+      "to": "精靈球",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "闪光宝可梦",
+      "to": "閃光寶可夢",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "异色宝可梦",
+      "to": "閃光寶可夢",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "宝可梦",
+      "to": "寶可夢",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    },
+    {
+      "from": "当前版本",
+      "to": "目前版本",
+      "kind": "ui",
+      "confidence": "illustrative_unreviewed"
+    }
+  ]
+}
