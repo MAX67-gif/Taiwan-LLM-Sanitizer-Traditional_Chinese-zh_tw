@@ -91,3 +91,16 @@ test('protected placeholders must retain their relative order',()=>{
     .replace('⟪TLS1LOCK⟫','⟪TLS0LOCK⟫').replace('TEMP_SLOT','⟪TLS1LOCK⟫');
   assert.deepEqual(p.restore(reversed),{ok:false,reason:'TOKEN_ORDER_CHANGED'});
 });
+
+test('preserve-original user choice disables model and dictionary changes',async()=>{
+  let modelCalls=0;
+  const env={Translator:{availability:async()=> 'available',create:async()=>{modelCalls++;return {translate:async()=> '翻譯'}}}};
+  const provider=new BrowserLocalProvider({environment:env,sourceLanguage:'en'});
+  const input='Search 软件 {{user}}';
+  const result=await provider.translate(input,{regionalPreference:'original',domain:'ui'});
+  assert.equal(result.text,input);
+  assert.equal(result.state,'UNCHANGED');
+  assert.equal(result.reason,'PRESERVE_ORIGINAL');
+  assert.equal(modelCalls,0);
+  provider.destroy();
+});
