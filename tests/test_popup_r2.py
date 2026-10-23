@@ -53,10 +53,11 @@ with sync_playwright() as pw:
     assert "停用" in page.locator("#toggle").inner_text()
     page.locator("#mode").select_option("local-ai")
     page.locator("#source").select_option("ja")
+    page.locator("#domain").select_option("food")
     page.locator("#apply").click()
     page.wait_for_function("window.__mock.sent.some(x=>x.kind==='TLS_CONFIG')")
     config=page.evaluate("window.__mock.storage['tls-site-config-v2:https://example.org']")
-    assert config=={"mode":"local-ai","sourceLanguage":"ja"}
+    assert config=={"mode":"local-ai","sourceLanguage":"ja","domain":"food"}
     page.locator("#toggle").click()
     page.wait_for_function("window.__mock.registry.length===0")
     assert page.evaluate("window.__mock.removed")==1
