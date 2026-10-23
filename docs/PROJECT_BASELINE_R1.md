@@ -16,7 +16,7 @@
 - **主要使用者**：臺灣一般網頁使用者、開源維護者、技術文件閱讀者、AI Prompt 作者、RAG／資料工程開發者。
 - **核心差異**：不是通用「簡轉繁」、不是新語言模型、不是遊戲修改器；重視技術結構安全、語境及可逆性。
 - **可檢驗指標**：可正常開關／還原、字詞準確率、程式區塊誤改數=0、UI 中斷率、相同輸入的重複轉換穩定性；後續獨立採用者、Issue／PR 與持續維護紀錄。
-- **不宣稱**：已獲 OpenAI 贊助、已有使用者、100% 翻譯所有網頁、官方授權 PokéBonk 或取得其私有素材。
+- **不宣稱**：已獲 OpenAI 贊助、已有使用者、100% 翻譯所有網頁，或取得任何第三方平台的正式授權。
 
 ## 2. 已鎖定的四條能力主線
 
@@ -24,7 +24,7 @@
 
 **M2 Context-Aware Prompt Tuner（規劃）**：多語 Prompt 在地化；保留 system/developer/user 邊界、Markdown code fences、JSON keys、指令語意、role、佔位符與資料界線。未取得足夠品質驗證不得自動覆寫原 Prompt；預設先提供預覽。
 
-**M3 Structured Data Pipeline（規劃）**：文件去雜訊、保留出處／權限／授權、可追溯 chunk metadata、JSON／JSONL，防止機密資料上傳及 RAG 垃圾內容污染。R1 不宣稱已完成 PDF OCR 或複雜版面還原。
+**M3 Structured Data Pipeline（R1 基礎 CLI 已實作／完整管線規劃）**：文件去雜訊、保留出處／權限／授權、可追溯 chunk metadata、JSON／JSONL，防止機密資料上傳及 RAG 垃圾內容污染。R1 不宣稱已完成 PDF OCR 或複雜版面還原。
 
 **M4 Browser Adapters（R1 優先）**：Chrome Manifest V3 擴充功能及單檔 Tampermonkey userscript，採共用文字詞彙與 DOM 節點處理核心；翻譯引擎可插拔，先本機／離線優先。
 
@@ -48,7 +48,7 @@ R1 策略：Chrome 擴充功能按頁面點擊後啟用；Tampermonkey 單檔腳
 
 ## 4. 通用性與使用自由（2026-10-23 最新決策）
 
-使用者可以自行選擇任何合法且可存取的網站、文件或應用程式。**不得針對 PokeBonk、任一遊戲或網站硬編碼支援限制、商標或站點特有行為**。Chrome／Tampermonkey 是不同介面，專案真正核心是通用在地化引擎與其可插拔 Provider。安全授權控制屬瀏覽器要求，不構成產品用途限制。
+使用者可以自行選擇任何合法且可存取的網站、文件或應用程式。**不得針對任一遊戲、網站、行業或產品硬編碼支援限制、商標或站點特有行為**。Chrome／Tampermonkey 是不同介面，專案真正核心是通用在地化引擎與其可插拔 Provider。安全授權控制屬瀏覽器要求，不構成產品用途限制。
 
 Canvas／WebGL、OCR、跨來源 iframe、文件及桌面等屬未來需獨立適配的 Render/Input Surface；不得虛稱已能通用翻譯所有介面。產品需要 `SUPPORTED_LOCAL`、`PARTIAL_SAFE`、`PROTECTED`、`DEFERRED`、`UNSUPPORTED_SURFACE`、`BLOCKED_BY_PERMISSION` 等非二元路由，優先保留不能安全處理的原文。
 
@@ -67,15 +67,15 @@ Canvas／WebGL、OCR、跨來源 iframe、文件及桌面等屬未來需獨立�
 
 ## 7. 版次與交付
 
-- R1：GitHub 產品基準、MIT、Chrome／TM 離線 DOM 原型、隱私、測試、來源標示；多語整頁翻譯、文件/SDK/OCR 等不在已實作能力清單。
+- R1：GitHub 產品基準、MIT、Chrome／TM 離線 DOM 原型、共用核心的保守 Node.js CLI（Markdown／TXT／部分 JSON/JSONL）、隱私、測試、來源標示；多語整頁翻譯、完整文件／SDK／OCR 等不在已實作能力清單。
 - R2（需驗證再升級）：翻譯品質研究、語言偵測穩健性、差異預覽、Chrome 翻譯可用性矩陣、對 Shadow DOM／受限網頁的支援研究。
-- R3（長期）：多檔技術文檔與 Prompt 管道、JSONL、插件 API、獨立詞庫品質評測與社群詞彙貢獻流程。
+- R3（長期）：強化現有 CLI 的語法級文件解析、多檔技術文檔與 Prompt 管道、JSONL 語意驗證、插件 API、獨立詞庫品質評測與社群詞彙貢獻流程。
 
-**禁區**：不得以 MIT 限商；不得引用虛構用戶數／申請成功；不得將付費功能依賴本專案所獲 OSS API credits 作私人研發；不得把翻譯功能包裝為未授權遊戲修改器。
+**禁區**：不得以 MIT 限商；不得引用虛構用戶數／申請成功；不得將付費功能依賴本專案所獲 OSS API credits 作私人研發；不得假借在地化名義宣稱取得第三方系統控制權。
 
 ## 8. 完成與未完成
 
-目前完成：規格基準及概念定義，並規劃實作可下載原型。未完成：跨語言全部語料翻譯的全面驗證、Chrome Web Store 發布、任意目標網站逐一完整驗證、真實開源採用率與 OpenAI 申請通過證據。應逐步以可重現結果更新，不可提前宣稱成功。
+目前完成：規格基準、MIT 開源核心、瀏覽器兩種原型、保守 CLI、單元測試與 CI 建置。未完成：跨語言全部語料翻譯的全面驗證、Chrome Web Store 發布、任意目標網站逐一完整驗證、真實開源採用率與 OpenAI 申請通過證據。應逐步以可重現結果更新，不可提前宣稱成功。
 
 ## 9. 參考來源
 
