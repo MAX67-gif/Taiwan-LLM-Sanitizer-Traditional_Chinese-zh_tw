@@ -32,14 +32,14 @@ def build():
     for name in ("manifest.json","popup.html","popup.js","content.js"):
         copyfile(ROOT/"src"/"chrome"/name,chrome/name)
     pieces={}
-    for name in ("lexicon_pack.js","engine.js","provider.js","web_adapter.js"):
+    for name in ("lexicon_pack.js","preferences.js","engine.js","provider.js","web_adapter.js"):
         pieces[name]=(ROOT/"src"/"core"/name).read_text(encoding="utf-8")
         (chrome/name).write_text(pieces[name],encoding="utf-8")
     output=DIST/"userscript"
     output.mkdir(parents=True,exist_ok=True)
     adapter=(ROOT/"src"/"userscript"/"adapter.js").read_text(encoding="utf-8")
     script=output/"TaiwanLLMSanitizer.user.js"
-    script.write_text(HEADER+"\n".join([pieces["lexicon_pack.js"],pieces["engine.js"],pieces["provider.js"],
+    script.write_text(HEADER+"\n".join([pieces["lexicon_pack.js"],pieces["preferences.js"],pieces["engine.js"],pieces["provider.js"],
                                            pieces["web_adapter.js"],adapter]),encoding="utf-8")
     archive=DIST/"TLS_Chrome_MV3_R3_20261024.zip"
     with zipfile.ZipFile(archive,"w",compression=zipfile.ZIP_DEFLATED) as z:
