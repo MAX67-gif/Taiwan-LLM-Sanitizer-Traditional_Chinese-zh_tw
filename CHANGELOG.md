@@ -1,5 +1,15 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R3 · 2026-10-24 · Preview 0.3.0
+
+- 新增 883 筆跨 16 領域的編輯候選（`suggestion_only`，待人工審核），67 筆小型啟用種子；沒有任何地區用詞審查或「禁用詞」。
+- `src/core/lexicon_pack.js` 提供有限的語境/領域路由、長詞優先、英文單詞邊界與用語候選說明；對 menu/菜单 在 UI 與餐飲之間保守區分。
+- Chrome／Tampermonkey 共用新詞庫，沿用 R2 Provider 與回復機制；CLI 增加 `--domain` 明確選擇。
+- 加入大型詞庫驗證、上下文回歸、R3 Chromium navigation/food 案例、詞庫資料與編譯檔一致性檢查。
+- 產品與市場競品研究、零隱私蒐集契約、Overlay 產品規格與下一步里程碑；**Overlay 尚未完成，不作已發布宣稱**。
+- MIT／Open-Core 授權保持不變；R1/R2 歷史完整保留。候選詞資料不能拿來宣稱已經官方驗證，也未複製第三方受限辭典。
+
+
 ## R2 · 2026-10-23 · Preview 0.2.0
 
 - 新增 `src/core/provider.js`：可插拔 BrowserLocalProvider、Chrome Translator API 可用性檢測、下載狀態、來源語言選擇、詞彙 fallback、session cache、連續失敗降級。
