@@ -20,14 +20,14 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 
 **Chrome 擴充功能（尚未上架 Chrome Web Store）**
 
-1. 在 [Repository](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw) 下載原始碼 ZIP 並解壓縮，執行 `python tools/build.py` 產生 `dist/` 安裝檔案。
+1. 在 [Repository](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw) 下載 ZIP 並解壓縮；已內附 `dist/chrome/`，不需要額外執行程式。
 2. 開啟 Chrome `chrome://extensions` → 開發人員模式 →「載入未封裝項目」→ 指定 **`dist/chrome/`** 目錄。
 3. 開啟一般 HTTP(S) 網站後點擴充功能圖示 → **啟用本站繁中化**，授權此網站。
 4. 可隨時按 **停用本站並還原**；其他已開啟分頁可能需重新整理。
 
 **Tampermonkey（可獨立安裝）**
 
-1. 安裝 Tampermonkey，執行 `python tools/build.py`，再匯入產生的 `dist/userscript/TaiwanLLMSanitizer.user.js` 單檔。
+1. 安裝 Tampermonkey，直接匯入倉庫內的 [單檔腳本](dist/userscript/TaiwanLLMSanitizer.user.js)；不必另外產生驅動程式。
 2. 到任意一般 HTTP(S) 網站，從 Tampermonkey 腳本選單按 **切換本站啟用／停用**；預設所有網站都不會主動改寫。
 3. 浮動按鈕可暫停／恢復，停用時還原目前仍由工具修改的文字。
 
@@ -36,6 +36,8 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 ### 通用、自由且可擴充的使用原則
 
 本工具不把任何特定網站、遊戲、產業或框架做成必須匹配的條件。使用者自行選擇合法且技術上能處理的頁面、文件與應用流程；Chrome 的逐網站權限與 Userscript 的逐站啟用，是保護使用者的安全同意機制，不是對用途的限制。對畫布、圖片、跨來源 iframe、封閉 Shadow DOM、PDF、程式語意等未支援介面，後續以獨立轉接器與可選翻譯供應者擴充，**不是宣稱現階段百分之百完整適配**。
+
+已提交的 `dist/` 檔案可直接安裝；維護者修改 `src/` 後可用 `python tools/build.py` 重新產生，兩者應保持一致。
 
 ## 本機批次轉換（R1 已有基本功能）
 
