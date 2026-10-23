@@ -25,6 +25,7 @@ function createWebLocalizer(doc,options={}){
     throw new TypeError('Valid browser document required');
   let opts={...options},running=false,epoch=0,router=null,observer=null,timer=null,working=false;
   const changedTexts=new Map(),changedAttrs=new Map(),queue=[],queued=new Set();
+  const requestedDomain=(el)=>opts.domain&&opts.domain!=='auto'?opts.domain:requestedDomain(el);
   let stats={scanned:0,converted:0,unchanged:0,errors:0,skipped:0,overflow:0,lastState:'IDLE',lastReason:'',modelProgress:0};
   function publish(){
     try{opts.onStatus?.(getStatus());}catch(_){}
@@ -83,7 +84,7 @@ function createWebLocalizer(doc,options={}){
     if(old?.after===before)return;
     if(old)changedTexts.delete(node);
     if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-    const result=await router.translate(before,{domain:domainOf(node.parentElement)});
+    const result=await router.translate(before,{domain:requestedDomain(node.parentElement)});
     if(!running||myEpoch!==epoch||skipText(node)||node.data!==before)return;
     stats.scanned++;stats.lastState=result.state||'UNKNOWN';stats.lastReason=result.reason||'';
     if(typeof result.text==='string'&&result.text!==before){
@@ -102,7 +103,7 @@ function createWebLocalizer(doc,options={}){
       if(existing?.[name]?.after===before)continue;
       if(existing?.[name]){delete existing[name];if(!Object.keys(existing).length)changedAttrs.delete(el);}
       if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-      const result=await router.translate(before,{domain:domainOf(el)});
+      const result=await router.translate(before,{domain:requestedDomain(el)});
       if(!running||myEpoch!==epoch||!el.isConnected||el.getAttribute(name)!==before)continue;
       if(typeof result.text==='string'&&result.text!==before){
         const group=changedAttrs.get(el)||{};
@@ -176,6 +177,7 @@ function createWebLocalizer(doc,options={}){
   function getStatus(){
     return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
+      domain:opts.domain||'auto',
       queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
   }
