@@ -57,7 +57,7 @@ with sync_playwright() as pw:
     page.locator("#apply").click()
     page.wait_for_function("window.__mock.sent.some(x=>x.kind==='TLS_CONFIG')")
     config=page.evaluate("window.__mock.storage['tls-site-config-v2:https://example.org']")
-    assert config=={"mode":"local-ai","sourceLanguage":"ja","domain":"food"}
+    assert config=={"mode":"local-ai","sourceLanguage":"ja","domain":"food","regionalPreference":"balanced","tone":"faithful"}
     page.locator("#toggle").click()
     page.wait_for_function("window.__mock.registry.length===0")
     assert page.evaluate("window.__mock.removed")==1
