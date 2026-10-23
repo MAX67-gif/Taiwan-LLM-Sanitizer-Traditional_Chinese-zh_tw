@@ -24,7 +24,7 @@ with sync_playwright() as pw:
         }})
       };
     }""")
-    for rel in ["src/core/lexicon_pack.js","src/core/preferences.js","src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
+    for rel in ["src/core/lexicon_pack.js","src/core/preferences.js","src/core/entities.js","src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
         page.add_script_tag(content=(ROOT/rel).read_text(encoding="utf-8"))
     page.evaluate("""() => {
       window.__r2=TLSWeb.createWebLocalizer(document,{mode:'local-ai',sourceLanguage:'en'});
