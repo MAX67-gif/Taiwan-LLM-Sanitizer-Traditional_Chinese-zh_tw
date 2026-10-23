@@ -1,5 +1,16 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R2 · 2026-10-23 · Preview 0.2.0
+
+- 新增 `src/core/provider.js`：可插拔 BrowserLocalProvider、Chrome Translator API 可用性檢測、下載狀態、來源語言選擇、詞彙 fallback、session cache、連續失敗降級。
+- 新增 `src/core/web_adapter.js`：支援 async Provider 的 DOM 更新、MutationObserver、修改原文還原、停用後舊請求不得覆寫網站新內容。
+- Chrome MV3 Popup 新增詞彙／本機 AI 模式、來源語言、持續逐站設定；預設不請求所有網站，儲存設定但不向外部翻譯 API 傳頁面內容。
+- Tampermonkey 仍為**一個完全自含單檔**，增加本機翻譯模式與來源語言控制；不依賴 CDN、第二段驅動碼。
+- 既有 Node CLI 與原 `TLSCore.createLocalizer` 相容保留。
+- Node unit tests + 真實 Chromium／Userscript stub regression + reproducible ZIP/checksums/Actions artifact。
+- 修復動態 DOM 某些元素因沒有 `title` 而跳過 `aria-label` 的漏譯缺陷。
+- 仍為 Preview，模型環境差異、語意保真及全網覆蓋未獲得廣泛用戶驗證。
+
 ## R1 · 2026-10-23 · Prototype 0.1.0
 
 **專案定位：通用臺灣繁體中文在地化平台**，不限定任何特定網站、遊戲或 Tampermonkey。

@@ -1,6 +1,6 @@
 # Taiwan-LLM-Sanitizer｜臺灣繁中網頁／AI 技術內容在地化
 
-> **Status: R1 prototype / 原型驗證中** · 2026-10-23 · MIT open core · zh-TW first
+> **Status: R2 preview 0.2.0 / 原型驗證中** · 2026-10-23 · MIT open core · zh-TW first
 
 Taiwan-LLM-Sanitizer is an independent open-source project for making browser interfaces, open-source technical documents and AI prompts easier to use in **Traditional Chinese as used in Taiwan (zh-TW)**. It prioritizes meaning preservation, syntax safety, privacy, and reversible changes.
 
@@ -8,13 +8,19 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 
 **正式定位：通用型臺灣繁體中文在地化平台。沒有任何指定網站、遊戲或產業是產品的必要條件；Tampermonkey 只是其中一個可選擇的轉接器，不是產品本身。**
 
+## R2 操作重點
+
+**一般使用者不用寫程式。** 下載倉庫 ZIP，Chrome 直接載入 `dist/chrome/` 或 Tampermonkey 直接安裝 `dist/userscript/TaiwanLLMSanitizer.user.js`。離線詞彙模式不需模型；想做英／日／韓等完整句子翻譯時，手動切換到「Chrome 本機 AI（實驗性）」並選擇原文語言。R2 使用 Chrome Translator API，本機模型功能依實際瀏覽器能力提供；可撤回、可還原、無遠端 API 金鑰。
+
+**哪些仍未完成：** Canvas／WebGL／圖片 OCR、跨來源受限頁面、完整 HTML/PDF 文件處理、Prompt 安全語意重構、人工審稿品質承諾、Firefox 本機模型相容。完整需求仍在 roadmap，不會為了短期發布而限制你能使用的合法網站。
+
 ## 第一個交付介面：網頁文字在地化（非產品範圍上限）
 
 - **Chrome / Chromium Manifest V3 擴充功能**：使用者點擊工具列按鈕，選擇「翻譯此頁」或「還原原文」。僅使用 `activeTab` 的暫時權限，不要求讀取所有網站。
 - **單檔 Tampermonkey 使用者腳本**：可按網站分別啟用、停用與還原；安裝後不需要第二個驅動腳本。
 - **共用核心**：語境詞庫、文字保護、DOM 監控採同一原始碼，避免 Chrome 與 Tampermonkey 產生兩套互相矛盾的規則。
 - **動態頁面**：監控新增與更新的可見 DOM 文字；跳過程式碼、編輯欄、密碼輸入、script/style/canvas 等。
-- **翻譯策略：** R1 提供保守離線詞彙轉換；完整多語自然語言翻譯、瀏覽器內建 Translator API、可選自有 Provider 仍須逐一開發並驗證，不宣稱已完成或保證每頁可用。
+- **翻譯策略：** R2 提供兩種明確模式：R1 離線詞彙與通用 UI 短詞校正，以及使用者自行切換、依環境可用性執行的 Chrome 本機 AI 翻譯（R2 Preview）。不會把頁面內容私自傳送到雲端。來源語言不明、模型不可用或佔位符錯亂時，保留原文或安全降級為離線詞彙。
 
 ### 快速開始
 
@@ -22,16 +28,16 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 
 1. 在 [Repository](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw) 下載 ZIP 並解壓縮；已內附 `dist/chrome/`，不需要額外執行程式。
 2. 開啟 Chrome `chrome://extensions` → 開發人員模式 →「載入未封裝項目」→ 指定 **`dist/chrome/`** 目錄。
-3. 開啟一般 HTTP(S) 網站後點擴充功能圖示 → **啟用本站繁中化**，授權此網站。
+3. 開啟一般 HTTP(S) 網站後點擴充功能圖示。先選 **離線詞彙** 或 **Chrome 本機 AI（實驗性）**，可選來源語言，再按 **啟用本站繁中化** 並確認授權。
 4. 可隨時按 **停用本站並還原**；其他已開啟分頁可能需重新整理。
 
 **Tampermonkey（可獨立安裝）**
 
 1. 安裝 Tampermonkey，直接匯入倉庫內的 [單檔腳本](dist/userscript/TaiwanLLMSanitizer.user.js)；不必另外產生驅動程式。
 2. 到任意一般 HTTP(S) 網站，從 Tampermonkey 腳本選單按 **切換本站啟用／停用**；預設所有網站都不會主動改寫。
-3. 浮動按鈕可暫停／恢復，停用時還原目前仍由工具修改的文字。
+3. 浮動工具有 **暫停／還原、切換離線／本機 AI、選擇原文語言**；或從 Tampermonkey 選單操作。停用會還原仍由工具控制的文字。
 
-**注意**：目前是開發版本。對於 Canvas／WebGL 繪製的遊戲內文字、跨來源 iframe、封閉 Shadow DOM、瀏覽器保護頁或圖片內文字，沒有保證可翻譯。跨語言全文翻譯依賴 Chrome 本機 Translator API 的實際可用性。尚未完成跨網站的大規模相容性實測。
+**注意**：目前是開發版本。對於 Canvas／WebGL 繪製的遊戲內文字、跨來源 iframe、封閉 Shadow DOM、瀏覽器保護頁或圖片內文字，沒有保證可翻譯。R2 本機翻譯取決於 **桌面 Chrome 138+** 與語言模型是否可用；瀏覽器首次使用可能下載語言包。自動來源語言辨識無把握時請手動指定。Chrome/Edge/Firefox 的實際支援不同，不代表所有 Chromium 瀏覽器皆可使用本機模型。尚未完成跨網站的大規模相容性實測。
 
 ### 通用、自由且可擴充的使用原則
 
@@ -49,10 +55,12 @@ node tools/localize_cli.js --input ./data.json --output ./localized --json-strin
 node tools/localize_cli.js --input ./documents --output ./localized --dry-run
 ```
 
-支援部分 `.md/.txt/.json/.jsonl`。Markdown 程式碼區塊與程式用特殊字串會保留；JSON 預設不做內容變動，只有使用 `--json-strings` 才轉換部分人類可讀的值；欄位鍵名和機器識別欄位不修改。輸出必須是不同資料夾。R1 仍只支援少量離線常見字詞，不是任意英文全文翻譯。
+支援部分 `.md/.txt/.json/.jsonl`。Markdown 程式碼區塊與程式用特殊字串會保留；JSON 預設不做內容變動，只有使用 `--json-strings` 才轉換部分人類可讀的值；欄位鍵名和機器識別欄位不修改。輸出必須是不同資料夾。CLI 目前仍只支援少量離線常見字詞，不是任意英文全文翻譯。
 
 ## 開發規格及路線
 
+- [R2 Provider 架構與使用限制](docs/PROVIDER_ARCHITECTURE_R2.md)
+- [R2 驗收與已知限制](docs/R2_RELEASE_VERIFICATION.md)
 - [R1 產品／授權正式基準](docs/PROJECT_BASELINE_R1.md)
 - [Open-Core 與著作權政策](docs/OPEN_CORE_POLICY_R1.md)
 - [通用多通路架構與狀態路由](docs/UNIVERSAL_ADAPTERS_R1.md)
@@ -75,4 +83,4 @@ Source and license references: [MIT](https://opensource.org/license/mit) · [Chr
 
 ## 使用者真正需要的完整平台願景
 
-長期採「一個可重用本地化核心＋多種獨立轉接器」架構：Chrome／Edge／Firefox、Tampermonkey、Markdown／HTML／PDF 文件、CLI／批次工具、Python API／SDK、AI Prompt、JSON／JSONL 與具隱私選項的翻譯 Provider／OCR。R1 已完成部分 DOM 字詞轉換、Chrome／Userscript 原型及保守 CLI；其餘大型功能仍是 roadmap。詳見 [通用適配契約](docs/UNIVERSAL_ADAPTERS_R1.md)。
+長期採「一個可重用本地化核心＋多種獨立轉接器」架構：Chrome／Edge／Firefox、Tampermonkey、Markdown／HTML／PDF 文件、CLI／批次工具、Python API／SDK、AI Prompt、JSON／JSONL 與具隱私選項的翻譯 Provider／OCR。R2 已增加可選 Chrome 本機翻譯 Provider、非同步 DOM、防停用後競態覆寫與回歸測試，但不保證每個 Chrome 環境都有模型；文件 SDK／OCR 等大型功能仍屬 roadmap。詳見 [通用適配契約](docs/UNIVERSAL_ADAPTERS_R1.md)。
