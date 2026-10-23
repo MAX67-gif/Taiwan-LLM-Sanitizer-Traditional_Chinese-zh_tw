@@ -14,7 +14,7 @@ assert "TLS_Tampermonkey_R5_20261024.user.js" in header
 for p in ("README.md","docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md"):
     s=read(p)
     assert "https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases" in s,p
-    assert "dist/chrome" in s or "TLS_Chrome_MV3_R5_20261024.zip" in s,p
+    assert ("dist/chrome" in s or "TLS_Chrome_MV3_R5_20261024.zip" in s) if p!="docs/INSTALL_TAMPERMONKEY.md" else (".user.js" in s),p
 assert "chrome://extensions" in read("docs/INSTALL_CHROME.md")
 assert "Tampermonkey" in read("docs/INSTALL_TAMPERMONKEY.md")
 assert "Codex for Open Source" in read("docs/AI_INTEGRATION.md")
