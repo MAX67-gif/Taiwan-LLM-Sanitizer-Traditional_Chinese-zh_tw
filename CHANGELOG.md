@@ -1,5 +1,10 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R8 分發改善 · 2026-10-24
+
+- GitHub Actions 通過驗證後，自動建立獨立的 R8 離線工作台 Release，包含單一 HTML 與 SHA256，不覆寫先前已發布的資產。
+- README 加入一般使用者直接下載入口；R5/R6/R7 下載維持各自獨立。
+
 ## R8 · 2026-10-24 · 離線臺灣語境審查工作台（獨立 Preview）
 
 - 重用 883 筆候選詞、67 筆編輯種子；一詞多義採語境提示、不把候選直接升級為 runtime 自動替換。

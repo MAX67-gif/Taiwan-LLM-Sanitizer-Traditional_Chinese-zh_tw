@@ -211,3 +211,36 @@ jobs:
               --title "R7.1 PokéBonk 臺灣用語（非官方、顯示層試玩版）" \
               --notes "R7.1 patch: shared text/attribute exclusion checks and hidden-content regression; older 0.1.0 frozen. Explicit opt-in, 136 illustrative terms. Real-site permission and end-to-end compatibility not established. Not an official Pokémon or PokéBonk product. DOES NOT modify the game's canvas/WebGL, account, save, combat, network or hidden game state. Real current-site compatibility and the game's Terms must be assessed by the user. General TLS R5 extension and R6 evaluator remain unchanged."
           fi
+
+  r8-context-review-release:
+    name: Publish R8 offline term review as standalone downloadable HTML
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check shipped R8 HTML is built deterministically
+        run: node tools/build_context_review_r8.js --check
+      - name: Create checksum for the exact standalone download
+        run: |
+          cp examples/TW_Context_Review_Lab_R8_20261024.html TLS_Taiwan_Context_Review_R8_20261024.html
+          sha256sum TLS_Taiwan_Context_Review_R8_20261024.html > TLS_Taiwan_Context_Review_R8_20261024.sha256
+      - name: Publish immutable standalone review workbench
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "r8-context-review-preview-0.1.0" >/dev/null 2>&1; then
+            echo "R8 preview release exists; never silently replace a published artifact"
+          else
+            gh release create "r8-context-review-preview-0.1.0" \
+              TLS_Taiwan_Context_Review_R8_20261024.html \
+              TLS_Taiwan_Context_Review_R8_20261024.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "R8 臺灣用語離線語境審查工作台（建議模式）" \
+              --notes "Download the standalone HTML and open it locally in a browser. No install, API key, network, or account is needed. It reviews 883 unverified candidate terms and 67 editorial seeds without automatic text replacement. This preview is NOT a neural translator, validated market benchmark, or official language standard. R5 browser runtime and R6 frozen study cohort remain unchanged."
+          fi

@@ -40,7 +40,7 @@
 
 ## R8：離線語境審查工作台（建議模式）
 
-**[開啟臺灣用語語境審查工作台](examples/TW_Context_Review_Lab_R8_20261024.html)**：貼上自己的文字，查看原有 883 筆候選與 67 筆編輯種子的建議、不同領域和歧義提示。**只有建議、不自動替換、不上傳資料，也沒有禁詞**。這是獨立 R8 Preview，不更動 R5 v0.4.0 通用擴充功能、R6 凍結品質題庫或 R7 特定網站示範。[功能邊界](docs/CONTEXT_REVIEW_R8.md) · [公開產品定位](docs/PRODUCT_POSITIONING_R8.md)。
+**[下載可直接開啟的 R8 單檔 HTML（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r8-context-review-preview-0.1.0)**，或[查看 GitHub 原始檔](examples/TW_Context_Review_Lab_R8_20261024.html)。直接下載 HTML，雙擊用瀏覽器開啟即可。貼上自己的文字，查看原有 883 筆候選與 67 筆編輯種子的建議、不同領域和歧義提示。**只有建議、不自動替換、不上傳資料，也沒有禁詞**。這是獨立 R8 Preview，不更動 R5 v0.4.0 通用擴充功能、R6 凍結品質題庫或 R7 特定網站示範。[功能邊界](docs/CONTEXT_REVIEW_R8.md) · [公開產品定位](docs/PRODUCT_POSITIONING_R8.md)。
 
 ## PokéBonk 臺灣繁中示範（獨立可選用）
 
