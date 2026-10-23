@@ -83,3 +83,6 @@ benchmarks/r6/unseen/
 *_model_output.jsonl
 *_review_template.jsonl
 *_structural_report.json
+
+# Generated public-cohort structural baseline; never commit generated result
+benchmarks/r6/R6_STRUCTURAL_BASELINE.json
