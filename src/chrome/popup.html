@@ -1,65 +1,75 @@
-<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TLS R3｜通用繁中化</title>
+<!doctype html>
+<html lang="zh-Hant-TW"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Taiwan-LLM-Sanitizer R5｜臺灣繁中化</title>
 <style>
-:root{font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;color-scheme:light}
-body{margin:0;padding:16px;width:330px;background:#f8fafc;color:#17243c;font-size:13px;line-height:1.6}
-h1{font-size:18px;line-height:1.35;margin:0 0 2px}p{margin:6px 0}
-small,.muted{color:#516277}
-label{display:block;margin-top:10px;font-weight:600}
-select{display:block;width:100%;border:1px solid #cbd5e1;background:white;color:#17243c;border-radius:8px;padding:8px;font-size:14px;margin-top:3px}
-button{padding:9px 10px;cursor:pointer;border:0;border-radius:8px;font-weight:700}
-#toggle{background:#0f766e;color:white;width:100%;margin-top:12px}
-#apply{background:#164e63;color:#fff;flex:1}
-#refresh{background:#e2e8f0;color:#183247;flex:1}
-#state{margin:10px 0;padding:8px 9px;background:#eef2ff;border-radius:8px;overflow-wrap:anywhere;min-height:24px}
-.actions{display:flex;gap:7px;margin-top:7px}button:disabled{opacity:.5;cursor:default}
-.hint{border-top:1px solid #cbd5e1;margin-top:10px;padding-top:8px;font-size:12px}
-#host{word-break:break-all}
-.preference{border:1px solid #cbd5e1;border-radius:12px;padding:9px;margin:12px 0 4px}
-.preference legend{font-weight:700;color:#25495b}
-.bubble-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-.bubble{display:block;margin:0;min-width:0;font-weight:500;position:relative}
+:root{font-family:system-ui,"Microsoft JhengHei",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{width:340px;height:580px;margin:0;background:#f8fafc;color:#173148;font-size:13px;line-height:1.55;overflow:hidden}
+.frame{display:flex;flex-direction:column;height:100%;max-height:100%;min-height:0}
+.head{flex:0 0 auto;padding:13px 15px 9px;background:#edf7f7;border-bottom:1px solid #cfe3e6}
+h1{font-size:17px;line-height:1.35;margin:0 0 4px}
+#host{font-size:12px;color:#456477;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.config{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:10px 15px 14px}
+label{display:block;margin:7px 0 3px;font-weight:600}
+select{display:block;width:100%;border:1px solid #c1d5de;background:#fff;color:#173148;border-radius:8px;padding:8px;font-size:13px}
+select:focus-visible,button:focus-visible,.bubble input:focus-visible+span{outline:3px solid #2686c0;outline-offset:2px}
+fieldset{border:1px solid #cedfe6;border-radius:12px;margin:12px 0;padding:9px}
+legend{font-weight:700;color:#21465b;padding:0 5px}
+.bubbles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.bubble{position:relative;display:block;margin:0;font-weight:500}
 .bubble input{position:absolute;opacity:0;width:1px;height:1px}
-.bubble span{display:block;text-align:center;padding:9px 5px;border:1px solid #bdd2db;background:#f7fcff;color:#1b4356;border-radius:999px;font-size:12px;transition:transform .12s ease,background .12s ease}
-.bubble input:checked+span{background:#0f766e;color:white;border-color:#0f766e}
-.bubble input:focus-visible+span{outline:3px solid #3984bf;outline-offset:2px}
-.bubble:hover span{background:#d8eff2}
-.bubble input:checked:hover+span{background:#0f766e}
-@media(prefers-reduced-motion:reduce){.bubble span{transition:none}}
-@media(max-width:360px){body{width:min(330px,calc(100vw - 32px));padding:12px}}
-</style></head><body>
-<h1>Taiwan-LLM-Sanitizer <span class="muted">R3</span></h1>
-<p id="host" class="muted">確認網站中…</p>
-<label for="mode">處理模式</label>
-<select id="mode"><option value="terms">離線臺灣用語／介面詞彙</option><option value="local-ai">Chrome 本機 AI 全句翻譯（實驗性）</option></select>
+.bubble span{display:flex;align-items:center;justify-content:center;text-align:center;
+ padding:8px 5px;min-height:40px;border:1px solid #c0d7df;background:#f9feff;
+ border-radius:999px;font-size:12px;cursor:pointer}
+.bubble input:checked+span{color:white;background:#0f766e;border-color:#0f766e;font-weight:700}
+small,.hint{color:#576f7d;font-size:11px;display:block;line-height:1.45}
+.bottom{flex:0 0 188px;height:188px;min-height:188px;border-top:1px solid #c6d7df;background:#fff;padding:10px 13px}
+.progress-line{display:flex;align-items:center;gap:10px;height:45px;min-height:45px}
+.progress-indicator{width:36px;height:36px;min-width:36px;border:4px solid #b5c8d1;
+border-top-color:#1381aa;border-radius:50%;display:grid;place-items:center;color:#176041;font-size:17px;font-weight:800}
+.progress-indicator[data-phase=running]{animation:spin .85s linear infinite}
+.progress-indicator[data-phase=done]{border-color:#21925a;background:#e4f7ed}
+.progress-indicator[data-phase=warning]{border-color:#d9901a;background:#fff0ce}
+.progress-indicator[data-phase=paused]{border-color:#b8c4d2;background:#ecf0f5}
+.progress-indicator[data-phase=download]{border:4px solid #1979a7;background:#eaf6ff}
+.progress-indicator[data-phase=idle]{border-color:#bbcbd7}
+@keyframes spin{to{transform:rotate(360deg)}}
+#state{height:46px;max-height:46px;min-height:46px;overflow:auto;font-size:12px;word-break:break-word}
+button{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:8px;min-height:38px}
+button:disabled{opacity:.5;cursor:default}
+#toggle{display:block;width:100%;background:#0f766e;color:#fff;height:40px;margin:2px 0 6px}
+.actions{display:flex;gap:8px;height:35px}
+.actions button{flex:1;min-height:35px}
+#apply{background:#165a72;color:white}
+#refresh{background:#edf2f7;color:#234352}
+.hint{font-size:10px;margin-top:7px}
+@media(prefers-reduced-motion:reduce){.progress-indicator[data-phase=running]{animation:none;border-style:dashed}}
+@media(max-width:360px){body{width:min(340px,100vw)}}
+</style></head>
+<body><div class="frame">
+<header class="head"><h1>Taiwan-LLM-Sanitizer · R5</h1>
+<p id="host">確認網站中…</p></header>
+<div class="config">
+<label for="mode">翻譯模式</label>
+<select id="mode"><option value="terms">離線臺灣詞彙與介面</option><option value="local-ai">Chrome 本機 AI 翻譯（實驗性）</option></select>
 <label for="source">原文語言</label>
-<select id="source">
-<option value="auto">自動：依網站宣告／偵測</option><option value="en">英文</option><option value="ja">日文</option>
-<option value="ko">韓文</option><option value="zh">中文（來源需繁中化）</option><option value="fr">法文</option>
-<option value="de">德文</option><option value="es">西班牙文</option><option value="ru">俄文</option>
-<option value="vi">越南文</option><option value="th">泰文</option><option value="pt">葡萄牙文</option>
-<option value="id">印尼文</option><option value="it">義大利文</option><option value="ar">阿拉伯文</option>
-</select>
-<label for="domain">臺灣用語領域（不強制、可自由選擇）</label>
-<select id="domain"><option value="auto">自動判斷（最保守）</option><option value="general">一般／不限定</option><option value="ui">介面與選單</option><option value="software">軟體</option><option value="engineering">程式開發</option><option value="ai">AI 與資料</option><option value="security">資安</option><option value="ecommerce">購物</option><option value="finance">金融</option><option value="food">餐飲</option><option value="travel">交通旅遊</option><option value="education">教育</option><option value="medicine">醫療</option><option value="media">社群影音</option><option value="office">辦公文件</option><option value="public">公共行政</option><option value="games">遊戲</option><option value="industry">工業</option></select>
-<fieldset class="preference" aria-describedby="preferenceHint">
-<legend>臺灣用語偏好</legend>
-<div class="bubble-options" role="radiogroup" aria-label="臺灣用語偏好">
+<select id="source"><option value="auto">自動判斷／網站語言</option><option value="en">英文</option><option value="ja">日文</option><option value="ko">韓文</option><option value="zh">中文</option><option value="fr">法文</option><option value="de">德文</option><option value="es">西班牙文</option><option value="ru">俄文</option><option value="vi">越南文</option><option value="th">泰文</option><option value="pt">葡萄牙文</option><option value="id">印尼文</option><option value="it">義大利文</option><option value="ar">阿拉伯文</option></select>
+<label for="domain">用語情境</label>
+<select id="domain"><option value="auto">自動判斷（保守）</option><option value="general">一般</option><option value="ui">操作介面</option><option value="software">軟體</option><option value="engineering">程式開發</option><option value="ai">AI 技術</option><option value="security">資安</option><option value="ecommerce">購物</option><option value="finance">金融</option><option value="food">餐飲</option><option value="travel">旅遊</option><option value="education">教育</option><option value="medicine">醫療</option><option value="media">影音</option><option value="office">辦公</option><option value="public">公共服務</option><option value="games">遊戲</option><option value="industry">工業</option></select>
+<fieldset><legend>臺灣用語偏好</legend><div class="bubbles">
 <label class="bubble"><input type="radio" name="regionalPreference" value="original"><span>保留原用語</span></label>
 <label class="bubble"><input type="radio" name="regionalPreference" value="light"><span>輕度臺灣化</span></label>
 <label class="bubble"><input type="radio" name="regionalPreference" value="balanced" checked><span>自然平衡</span></label>
-<label class="bubble"><input type="radio" name="regionalPreference" value="taiwan"><span>臺灣用語優先</span></label>
+<label class="bubble"><input type="radio" name="regionalPreference" value="taiwan"><span>臺灣優先</span></label>
+</div><small>用語選擇不是禁語或語言正確性評分。</small></fieldset>
+<label for="tone">譯文語氣（模型控制尚未支援）</label>
+<select id="tone"><option value="faithful">忠於原文</option><option value="natural">自然順口</option><option value="formal">正式專業</option><option value="casual">輕鬆口語</option></select>
+<small>模型可能不支援指定語氣；此項只保存本機偏好。</small>
 </div>
-<small id="preferenceHint" class="muted">這是用語選擇，不是禁語或語言正確性評分；同一段文字在不同強度下也可能相同。</small>
-</fieldset>
-<label for="tone">譯文語氣（偏好已可保存，模型語氣控制尚待支援）</label>
-<select id="tone">
-<option value="faithful">忠於原文（預設）</option>
-<option value="natural">自然順口</option>
-<option value="formal">正式專業</option>
-<option value="casual">輕鬆口語</option>
-</select>
-<p id="state" role="status" aria-live="polite">檢查中…</p>
+<footer class="bottom">
+<div class="progress-line"><div class="progress-indicator" id="visual" data-phase="paused" role="img" aria-label="尚未啟用"><span id="glyph" aria-hidden="true">Ⅱ</span></div><div id="state" role="status" aria-live="polite">本站尚未啟用</div></div>
 <button type="button" id="toggle" disabled>啟用本站</button>
-<div class="actions"><button type="button" id="apply" disabled>套用設定</button><button type="button" id="refresh">重新確認狀態</button></div>
-<div class="hint">預設僅執行保守的臺灣詞彙校正；大量候選詞庫不會自動套用。選擇 Chrome 本機 AI 模式後，瀏覽器可能下載語言模型；網頁文字不會被本擴充功能送到雲端。沒有可用模型時將自動保留原文或只做離線詞彙校正。可隨時停用還原。</div>
-<script src="popup.js"></script><p class="muted" style="font-size:11px;margin-top:10px">Taiwan-LLM-Sanitizer · CA L. · R3</p></body></html>
+<div class="actions"><button type="button" id="apply" disabled>套用設定</button><button type="button" id="refresh">檢查狀態</button></div>
+<div class="hint">右下角固定圓環也會顯示處理中／完成／警告；翻譯內容只在你的瀏覽器處理。</div>
+</footer></div><script src="popup.js"></script></body></html>
