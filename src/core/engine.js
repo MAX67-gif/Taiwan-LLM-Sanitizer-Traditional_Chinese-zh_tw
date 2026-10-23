@@ -1,13 +1,16 @@
-/* Taiwan-LLM-Sanitizer R3 shared browser core: offline rules, no network. MIT. */
+/* Taiwan-LLM-Sanitizer R5 shared browser core: offline rules, no network. MIT. */
 (function (global) {
   'use strict';
-  const VERSION = '0.3.0';
+  const VERSION = '0.4.0';
   if (global.TLSCore && global.TLSCore.VERSION === VERSION) return;
   const LEXICON = global.TLSLexicon || (
     typeof module !== 'undefined' && module.exports ? require('./lexicon_pack.js') : null
   );
   const PREFS = global.TLSPreferences || (
     typeof module !== 'undefined' && module.exports ? require('./preferences.js') : null
+  );
+  const NAMES = global.TLSNames || (
+    typeof module !== 'undefined' && module.exports ? require('./entities.js') : null
   );
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
@@ -53,13 +56,20 @@
   }
   function translateText(text, options={}) {
     if (typeof text !== 'string' || !text || text.length > 20000) return text;
+    const original = text;
+    const guarded = NAMES ? NAMES.mask(text) : null;
+    if(guarded && !guarded.ok) return original;
+    if(guarded) text=guarded.text;
     let out = '', at = 0;
     PROTECT.lastIndex = 0;
     for (const match of text.matchAll(PROTECT)) {
       out += translateSegment(text.slice(at, match.index),options) + match[0];
       at = match.index + match[0].length;
     }
-    return out + translateSegment(text.slice(at),options);
+    out += translateSegment(text.slice(at),options);
+    if(!guarded) return out;
+    const restored=guarded.restore(out);
+    return restored.ok?restored.text:original;
   }
   function blocked(el) {
     if (!el || el.nodeType !== 1) return true;
