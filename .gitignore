@@ -68,3 +68,6 @@ dist/*SUMS*.txt
 
 # Existing tracked files are not removed by .gitignore.
 # tools/publication_guard.py enforces a stricter fail-closed public allowlist.
+
+# R5 generated release Userscript alias (attached to GitHub Release)
+dist/TLS_Tampermonkey_R*_*.user.js
