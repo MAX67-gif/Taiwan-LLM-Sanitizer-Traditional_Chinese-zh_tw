@@ -10,8 +10,10 @@ with sync_playwright() as pw:
     browser=pw.chromium.launch(**args)
     page=browser.new_page()
     page.on("pageerror",lambda exc:print("PAGE_ERROR",str(exc)))
+    page.on("console",lambda msg:print("PAGE_CONSOLE",msg.text) if msg.type=="error" else None)
     page.set_content((ROOT/"tests/fixtures/demo.html").read_text(encoding="utf-8"))
     page.evaluate("""() => {
+      window.__TLS_DEBUG_TEST=true;
       window.Translator={
         availability:async()=> 'available',
         create:async()=>({translate:async text=>{
