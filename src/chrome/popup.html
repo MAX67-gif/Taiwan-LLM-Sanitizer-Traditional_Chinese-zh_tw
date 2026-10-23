@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TLS R2｜通用繁中化</title>
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TLS R3｜通用繁中化</title>
 <style>
 :root{font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;color-scheme:light}
 body{margin:0;padding:16px;width:330px;background:#f8fafc;color:#17243c;font-size:13px;line-height:1.6}
@@ -15,7 +15,7 @@ button{padding:9px 10px;cursor:pointer;border:0;border-radius:8px;font-weight:70
 .hint{border-top:1px solid #cbd5e1;margin-top:10px;padding-top:8px;font-size:12px}
 #host{word-break:break-all}
 </style></head><body>
-<h1>Taiwan-LLM-Sanitizer <span class="muted">R2</span></h1>
+<h1>Taiwan-LLM-Sanitizer <span class="muted">R3</span></h1>
 <p id="host" class="muted">確認網站中…</p>
 <label for="mode">處理模式</label>
 <select id="mode"><option value="terms">離線臺灣用語／介面詞彙</option><option value="local-ai">Chrome 本機 AI 全句翻譯（實驗性）</option></select>
@@ -30,5 +30,5 @@ button{padding:9px 10px;cursor:pointer;border:0;border-radius:8px;font-weight:70
 <p id="state" role="status" aria-live="polite">檢查中…</p>
 <button type="button" id="toggle" disabled>啟用本站</button>
 <div class="actions"><button type="button" id="apply" disabled>套用設定</button><button type="button" id="refresh">重新確認狀態</button></div>
-<div class="hint">預設只做少量離線用語校正。選擇 Chrome 本機 AI 模式後，瀏覽器可能下載語言模型；網頁文字不會被本擴充功能送到雲端。沒有可用模型時將自動保留原文或只做離線詞彙校正。可隨時停用還原。</div>
+<div class="hint">預設僅執行保守的臺灣詞彙校正；大量候選詞庫不會自動套用。選擇 Chrome 本機 AI 模式後，瀏覽器可能下載語言模型；網頁文字不會被本擴充功能送到雲端。沒有可用模型時將自動保留原文或只做離線詞彙校正。可隨時停用還原。</div>
 <script src="popup.js"></script></body></html>
