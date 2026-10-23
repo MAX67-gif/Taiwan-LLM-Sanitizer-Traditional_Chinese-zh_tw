@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Taiwan-LLM-Sanitizer R1: local batch adapter using the shared MIT engine. */
+/* Taiwan-LLM-Sanitizer R3: local batch adapter using the shared MIT engine. */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
@@ -12,23 +12,28 @@ const machineFields = new Set([
   'checksum','signature','token','api_key'
 ]);
 const MAX_BYTES = 2 * 1024 * 1024;
+const domains=new Set(['general','ui','software','engineering','ai','security','ecommerce','finance','food','travel','education','medicine','media','office','public','games','industry']);
 function argsOf(argv) {
-  const opts = {input:null, output:null, jsonStrings:false, dryRun:false};
+  const opts = {input:null, output:null, jsonStrings:false, dryRun:false, domain:'general'};
   for (let i=0; i<argv.length; i++) {
     const a=argv[i];
     if (a==='--input' || a==='--output') {
       if (!argv[i+1]) throw new Error('Missing value for '+a);
       opts[a.slice(2)] = argv[++i];
+    } else if (a==='--domain') {
+      const domain=argv[++i];
+      if (!domains.has(domain)) throw new Error('Unknown domain; use general, ui, food, software, engineering, ai or other documented domains');
+      opts.domain=domain;
     } else if (a==='--json-strings') opts.jsonStrings=true;
     else if (a==='--dry-run') opts.dryRun=true;
     else if (a==='--help' || a==='-h') opts.help=true;
     else throw new Error('Unknown option: '+a);
   }
   if (!opts.help && (!opts.input || !opts.output))
-    throw new Error('Usage: node tools/localize_cli.js --input FILE_OR_DIR --output NEW_DIR [--json-strings] [--dry-run]');
+    throw new Error('Usage: node tools/localize_cli.js --input FILE_OR_DIR --output NEW_DIR [--json-strings] [--dry-run] [--domain general|ui|food|...]');
   return opts;
 }
-function markdown(text) {
+function markdown(text,domain='general') {
   let fence = null, frontMatter = false;
   return text.split(/(\r\n|\n|\r)/u).map((line,i,parts) => {
     if (i%2) return line;
@@ -44,29 +49,29 @@ function markdown(text) {
         line.trim().replace(/^[\x60~]+/u,'').trim()==='') fence=null;
       return line;
     }
-    return fence ? line : core.translateText(line);
+    return fence ? line : core.translateText(line,{domain});
   }).join('');
 }
-function jsonValues(value, key='', enabled=false) {
+function jsonValues(value, key='', enabled=false,domain='general') {
   if (!enabled) return value;
-  if (Array.isArray(value)) return value.map(x=>jsonValues(x,key,true));
+  if (Array.isArray(value)) return value.map(x=>jsonValues(x,key,true,domain));
   if(value && typeof value==='object') {
     const result={};
     for(const [name, item] of Object.entries(value))
-      result[name]=machineFields.has(name.toLowerCase())?item:jsonValues(item,name,true);
+      result[name]=machineFields.has(name.toLowerCase())?item:jsonValues(item,name,true,domain);
     return result;
   }
   return typeof value==='string' && !machineFields.has(key.toLowerCase())
-    ?core.translateText(value):value;
+    ?core.translateText(value,{domain}):value;
 }
-function convert(source,ext,jsonStrings=false) {
-  if(ext==='.md'||ext==='.markdown') return markdown(source);
+function convert(source,ext,jsonStrings=false,domain='general') {
+  if(ext==='.md'||ext==='.markdown') return markdown(source,domain);
   if(ext==='.json') return jsonStrings
-    ?JSON.stringify(jsonValues(JSON.parse(source),'',true),null,2)+'\n':source;
+    ?JSON.stringify(jsonValues(JSON.parse(source),'',true,domain),null,2)+'\n':source;
   if(ext==='.jsonl') return jsonStrings
-    ?source.split(/\r?\n/u).map(x=>x.trim()?JSON.stringify(jsonValues(JSON.parse(x),'',true)):x).join('\n')
+    ?source.split(/\r?\n/u).map(x=>x.trim()?JSON.stringify(jsonValues(JSON.parse(x),'',true,domain)):x).join('\n')
     :source;
-  return source.split(/(\r\n|\n|\r)/u).map((s,i)=>i%2?s:core.translateText(s)).join('');
+  return source.split(/(\r\n|\n|\r)/u).map((s,i)=>i%2?s:core.translateText(s,{domain})).join('');
 }
 function gather(filename,base,acc=[]) {
   const st=fs.lstatSync(filename);
@@ -84,7 +89,7 @@ function gather(filename,base,acc=[]) {
 }
 function main(argv=process.argv.slice(2)){
   const opts=argsOf(argv);
-  if(opts.help){ console.log('node tools/localize_cli.js --input PATH --output DIRECTORY [--json-strings] [--dry-run]');return;}
+  if(opts.help){ console.log('node tools/localize_cli.js --input PATH --output DIRECTORY [--json-strings] [--dry-run] [--domain general|ui|food|...]');return;}
   const input=path.resolve(opts.input), output=path.resolve(opts.output);
   if(!fs.existsSync(input)||fs.lstatSync(input).isSymbolicLink())
     throw new Error('Input missing or symlink is not accepted');
@@ -98,7 +103,7 @@ function main(argv=process.argv.slice(2)){
     const source=fs.readFileSync(entry.filename,'utf8');
     if(source.includes('\u0000')){skipped++;continue;}
     let target;
-    try {target=convert(source,path.extname(entry.filename).toLowerCase(),opts.jsonStrings);}
+    try {target=convert(source,path.extname(entry.filename).toLowerCase(),opts.jsonStrings,opts.domain);}
     catch(err){skipped++;console.error('Skipped invalid file: '+entry.relative);continue;}
     if(target===source) unchanged++;else changed++;
     if(!opts.dryRun){
@@ -108,7 +113,7 @@ function main(argv=process.argv.slice(2)){
       fs.writeFileSync(outfile,target,'utf8');
     }
   }
-  console.log(JSON.stringify({core_version:core.VERSION,processed:changed+unchanged,changed,unchanged,skipped,dryRun:opts.dryRun,jsonStrings:opts.jsonStrings}));
+  console.log(JSON.stringify({core_version:core.VERSION,processed:changed+unchanged,changed,unchanged,skipped,dryRun:opts.dryRun,jsonStrings:opts.jsonStrings,domain:opts.domain}));
 }
 if(require.main===module){try{main();}catch(err){console.error(err.message);process.exitCode=1;}}
 module.exports={argsOf,markdown,jsonValues,convert,main};
