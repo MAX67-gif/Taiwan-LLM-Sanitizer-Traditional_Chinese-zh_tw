@@ -84,7 +84,7 @@ function createWebLocalizer(doc,options={}){
     if(old?.after===before)return;
     if(old)changedTexts.delete(node);
     if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-    const result=await router.translate(before,{domain:requestedDomain(node.parentElement)});
+    const result=await router.translate(before,{domain:requestedDomain(node.parentElement),regionalPreference:opts.regionalPreference,tone:opts.tone});
     if(!running||myEpoch!==epoch||skipText(node)||node.data!==before)return;
     stats.scanned++;stats.lastState=result.state||'UNKNOWN';stats.lastReason=result.reason||'';
     if(typeof result.text==='string'&&result.text!==before){
@@ -103,7 +103,7 @@ function createWebLocalizer(doc,options={}){
       if(existing?.[name]?.after===before)continue;
       if(existing?.[name]){delete existing[name];if(!Object.keys(existing).length)changedAttrs.delete(el);}
       if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-      const result=await router.translate(before,{domain:requestedDomain(el)});
+      const result=await router.translate(before,{domain:requestedDomain(el),regionalPreference:opts.regionalPreference,tone:opts.tone});
       if(!running||myEpoch!==epoch||!el.isConnected||el.getAttribute(name)!==before)continue;
       if(typeof result.text==='string'&&result.text!==before){
         const group=changedAttrs.get(el)||{};
@@ -178,6 +178,7 @@ function createWebLocalizer(doc,options={}){
     return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
       domain:opts.domain||'auto',
+      regionalPreference:opts.regionalPreference||'balanced',tone:opts.tone||'faithful',
       queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
   }
