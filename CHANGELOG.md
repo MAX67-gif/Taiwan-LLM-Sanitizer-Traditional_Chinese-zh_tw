@@ -1,5 +1,15 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R6 · 2026-10-24 · Quality evaluation infrastructure (no runtime engine promotion)
+
+- 建立 100 筆公開凍結的原創編輯測試題，五類各 20 題，SHA256 封存，不可偷改已曝光 V1。
+- 新增零雲端依賴的 QA 評測 CLI、保守離線詞彙基線、資料覆蓋/結構損壞報告；**不把這些分數當作翻譯品質**。
+- 新增真人四維評分 rubric、離線雙語人工審閱室與本機 JSONL 匯出。
+- 新增桌面 Chrome Built-in Translator API 的使用者自行測試頁，可下載真實候選譯文，但 CI 只測試模擬 API，沒有完成獨立的真實模型品質測試。
+- 新增 benchmark 公開檔案白名單與私密結果 .gitignore。**R5 0.4.0 Chrome/Tampermonkey 正式執行行為未修改**。
+- 公開基準資料屬回歸測試，不等於 Fresh OOS。參考譯文仍待人工獨立審稿；未獲任何策略/模型「升級」結論。
+
+
 ## R5 · 2026-10-24 · Preview 0.4.0
 
 - 新增專案／品牌名稱保護，修正「Codex for Open Source → 開源法典」等不可接受的直譯，且不全域封鎖一般詞語。

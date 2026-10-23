@@ -71,3 +71,21 @@ dist/*SUMS*.txt
 
 # R5 generated release Userscript alias (attached to GitHub Release)
 dist/TLS_Tampermonkey_R*_*.user.js
+
+# R6 local benchmark results, outputs, reviewer notes and future unseen items
+r6_results/
+R6_LOCAL_RESULTS/
+benchmarks/r6/private/
+benchmarks/r6/results/
+benchmarks/r6/unseen/
+*_R6_PRIVATE_*
+*LOCAL_HUMAN_REVIEWS*
+*_model_output.jsonl
+*_review_template.jsonl
+*_structural_report.json
+
+# Generated public-cohort structural baseline; never commit generated result
+benchmarks/r6/R6_STRUCTURAL_BASELINE.json
+
+# R6 reproducible study kit checksum
+dist/*.sha256

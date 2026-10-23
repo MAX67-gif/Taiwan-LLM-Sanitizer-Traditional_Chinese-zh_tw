@@ -1,0 +1,179 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';connect-src 'none';img-src 'none';font-src 'none';object-src 'none';base-uri 'none'">
+<title>R6 桌面 Chrome 本機模型評測｜離線輸出</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,'Microsoft JhengHei',sans-serif;background:#f3faf8;color:#174150}
+*{box-sizing:border-box}
+body{margin:0}main{max-width:900px;margin:0 auto;padding:clamp(15px,3vw,30px)}
+h1{margin:0 0 8px;font-size:clamp(24px,4vw,32px)}
+h2{font-size:18px}
+section{margin:14px 0;padding:18px;background:white;border:1px solid #d1e5df;border-radius:16px}
+p{line-height:1.65}
+.warn{background:#fff8e9;border-color:#edcf8b}
+.muted{color:#52707a;font-size:13px}
+label{display:block;font-weight:600;margin:8px 0 5px}
+input[type=file],button{font:inherit;border:1px solid #b4d1cd;border-radius:9px;padding:10px;background:white}
+input[type=file]{max-width:100%;width:100%}
+button{cursor:pointer}
+button.primary{color:white;background:#0a7169;border-color:#0a7169;font-weight:700}
+button:disabled{opacity:.52;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid #1c76c7;outline-offset:3px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+progress{width:100%;height:21px;accent-color:#138273}
+.status{min-height:33px;white-space:pre-wrap}
+.summary{background:#f5fbff;padding:15px;border-radius:12px;border:1px solid #d4e6f1}
+a{color:#096b63}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head>
+<body><main>
+<h1>R6 Chrome 本機模型評測</h1>
+<p>這是選用 Chrome 內建 Translator API 的**真實模型輸出工具**，不是由測試程式模擬翻譯結果。是否能啟動模型、語言包是否可下載，取決於你的桌面 Chrome 環境。R6 目前沒有在我們的 CI 上拿到真實本機語言模型翻譯品質結果。</p>
+<section class="warn"><strong>隱私與重要限制</strong><p>本頁沒有自己的伺服器，也不含外部 JS、追蹤、上傳或對外翻譯 API。你按下「開始」後，<strong>Chrome 可能自行下載本機語言模型</strong>。翻譯文字交由瀏覽器內建的 Translator API 處理，不會由本工具上傳至我們的服務。桌面 Chrome 才可能提供這個 API；手機 Chrome 不支援。讀取的檔案只存在本頁記憶體，請只選公開測試題，不要選個人文件。</p></section>
+<section><h2>1. 選擇公開凍結題庫</h2>
+<label for="dataset">public_frozen_v1.jsonl（可選，不選時僅跑 5 題示範）</label>
+<input type="file" id="dataset" accept=".jsonl,.txt">
+<p class="muted" id="count">目前是 5 題公開示範。</p>
+</section>
+<section><h2>2. 確認是否支援模型</h2>
+<div id="capability" class="summary" role="status">尚未檢查。請先按「檢查 Chrome Translator API」。</div>
+<div class="controls">
+<button type="button" id="check">檢查 Chrome Translator API</button>
+<button class="primary" type="button" id="start" disabled>開始翻譯（可能下載模型）</button>
+<button type="button" id="stop" disabled>停止下一題</button>
+</div>
+<progress id="progress" max="5" value="0" aria-label="題目翻譯進度"></progress>
+<p class="status" id="status" role="status" aria-live="polite">不會在背景自動執行。</p>
+</section>
+<section><h2>3. 自行下載結果</h2>
+<p>只有實際取得模型譯文的題目才會被輸出；不支援的語言組合只計入執行資訊，不會假造翻譯。匯出 JSONL 可直接交給本專案的本機品質檢查工具，或在雙語人工審閱室打開。</p>
+<div class="controls"><button type="button" id="download" disabled>下載候選譯文 JSONL</button><button type="button" id="details" disabled>下載本機執行摘要 JSON</button></div>
+<div class="summary" id="results" aria-live="polite">尚無執行結果。</div>
+</section>
+<footer class="muted">CA L. / Taiwan-LLM-Sanitizer R6. 本工具不宣稱測得任何人機翻譯勝率、自然度或語意正確性。完整模型結果須通過凍結輸入校驗，並接受獨立人工審閱。</footer>
+<script id="demo-data" type="application/json">[{"id":"R6-TECHNICAL-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"technical","source_locale":"en","target_locale":"zh-Hant-TW","context":"伺服器操作指示","source_text":"Restart the server only after saving the configuration file.","reference_zh_tw":"儲存設定檔後，才能重新啟動伺服器。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["terminology","meaning","structure"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-BUSINESS-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"business","source_locale":"en","target_locale":"zh-Hant-TW","context":"禮貌商務請求","source_text":"Could you share the revised proposal by Thursday?","reference_zh_tw":"方便在星期四前提供修訂後的提案嗎？","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["meaning","register","naturalness"],"user_preference":"balanced","language_register":"professional","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-WEBUI-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"webui","source_locale":"en","target_locale":"zh-Hant-TW","context":"軟體網站導覽","source_text":"Open the menu to change your language settings.","reference_zh_tw":"開啟選單以調整語言設定。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["locale","naturalness","clarity"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-NAMED-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"named","source_locale":"en","target_locale":"zh-Hant-TW","context":"OpenAI 正式計畫名稱","source_text":"Codex for Open Source supports eligible open-source maintainers.","reference_zh_tw":"Codex for Open Source 支援符合資格的開源專案維護者。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["Codex for Open Source"],"review_focus":["named_entities","meaning","locale"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-PROMPT-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"prompt","source_locale":"en","target_locale":"zh-Hant-TW","context":"Prompt 變數保護","source_text":"Rewrite this notice in zh-TW. Keep {{user_name}} unchanged.","reference_zh_tw":"將這則通知改寫為臺灣繁體中文，並保留 {{user_name}} 不變。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["{{user_name}}"],"review_focus":["meaning","structure","prompt_boundaries"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"}]</script>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+let items=JSON.parse($('demo-data').textContent),running=false,stopped=false,checked=false;
+let results=[],errors=[],started=false,instances=[];
+const say=x=>$('status').textContent=x;
+const bytes2File=(name,content,type)=>{
+ const blob=new Blob([content],{type});
+ const href=URL.createObjectURL(blob),anchor=document.createElement('a');
+ anchor.download=name;anchor.href=href;anchor.click();URL.revokeObjectURL(href);
+};
+function render(){
+ $('progress').max=items.length;$('progress').value=results.length+errors.length;
+ $('count').textContent='題目數：'+items.length+'（目前保留實際成功 '+results.length+' 筆）';
+ $('results').textContent='已獲得譯文 '+results.length+' 題、跳過或失敗 '+errors.length+' 題；未取得候選語句的題目不會假裝成功。';
+ $('download').disabled=!results.length;
+ $('details').disabled=!started;
+}
+async function readDataset(){
+ const file=$('dataset').files?.[0];if(!file)return;
+ if(file.size>2000000){say('檔案超過 2MB，不予載入。');return;}
+ try{
+ const rows=(await file.text()).split(/\r?\n/).filter(x=>x.trim()).map(JSON.parse);
+ if(!rows.length||rows.length>1000||!rows.every(x=>
+   typeof x.id==='string'&&typeof x.source_text==='string'&&['en','zh-CN'].includes(x.source_locale)))
+    throw Error('題庫格式錯誤');
+ if(new Set(rows.map(x=>x.id)).size!==rows.length)throw Error('重複題號');
+ items=rows;results=[];errors=[];started=false;
+ render();say('已載入本地題庫。檢查 API 後才能開始真實翻譯。');
+ }catch(_){say('載入失敗，請確認 JSONL 格式。');}
+}
+$('dataset').addEventListener('change',readDataset);
+$('check').addEventListener('click',async()=>{
+ const T=globalThis.Translator;
+ if(!T||typeof T.create!=='function'||typeof T.availability!=='function'){
+   checked=false;$('start').disabled=true;
+   $('capability').textContent='這個瀏覽器沒有提供 Chrome Translator API；不可自動改用雲端。';
+   return;
+ }
+ const sources=[...new Set(items.map(x=>x.source_locale==='zh-CN'?'zh':'en'))];
+ const statuses=[];
+ for(const sourceLanguage of sources){
+   try{
+    const capability=await T.availability({sourceLanguage,targetLanguage:'zh-Hant'});
+    statuses.push(sourceLanguage+' → zh-Hant：'+String(capability));
+   }catch(_){statuses.push(sourceLanguage+' → zh-Hant：檢查失敗');}
+ }
+ checked=true;$('start').disabled=false;
+ $('capability').textContent='本機功能已找到。'+statuses.join('；')+
+  '。檢查結果不代表模型已下載，也不代表每個語言組合都能成功翻譯。';
+});
+$('stop').addEventListener('click',()=>{stopped=true;say('已要求停止；目前正在執行的這一題可能仍需結束。');});
+$('start').addEventListener('click',async()=>{
+ if(running||!checked)return;
+ running=true;stopped=false;started=true;results=[];errors=[];
+ $('check').disabled=true;$('start').disabled=true;$('stop').disabled=false;render();
+ const buckets=new Map();
+ for(const row of items){
+   const language=row.source_locale==='zh-CN'?'zh':'en';
+   if(!buckets.has(language))buckets.set(language,[]);
+   buckets.get(language).push(row);
+ }
+ try{
+ for(const [language,rows] of buckets){
+   if(stopped)break;
+   let instance;
+   try{
+     const status=await Translator.availability({sourceLanguage:language,targetLanguage:'zh-Hant'});
+     if(status==='unavailable'||status==='unknown'){
+       errors.push(...rows.map(x=>({id:x.id,code:'PAIR_UNAVAILABLE'})));
+       render();continue;
+     }
+     say('準備 '+language+' → zh-Hant 的本機模型；Chrome 可能下載語言包…');
+     instance=await Translator.create({sourceLanguage:language,targetLanguage:'zh-Hant',
+       monitor(m){
+         m?.addEventListener?.('downloadprogress',event=>{
+           const percent=Math.round(Math.max(0,Math.min(1,Number(event.loaded)||0))*100);
+           say('Chrome 正在準備模型：'+percent+'%。');
+         });
+       }});
+     instances.push(instance);
+   }catch(_){
+     errors.push(...rows.map(x=>({id:x.id,code:'MODEL_CREATE_FAILED'})));
+     render();continue;
+   }
+   for(const c of rows){
+     if(stopped)break;
+     say('正在翻譯 '+(results.length+errors.length+1)+'／'+items.length+' 題（'+c.family+'）');
+     try{
+       const translated=await instance.translate(c.source_text);
+       if(stopped)break;
+       if(typeof translated==='string'&&translated.trim()){
+         results.push({id:c.id,translation:translated});
+       }else errors.push({id:c.id,code:'EMPTY_MODEL_RESULT'});
+     }catch(_){errors.push({id:c.id,code:'MODEL_TRANSLATE_FAILED'});}
+     render();
+   }
+ }
+ }finally{
+   for(const instance of instances)try{instance.destroy?.();}catch(_){}
+   instances=[];running=false;$('check').disabled=false;$('start').disabled=false;$('stop').disabled=true;
+   render();
+   say(stopped?'已停止，只有已完成的題目可以下載。':'本機模型執行結束。仍須另外進行結構檢查與真人品質評分。');
+ }
+});
+$('download').addEventListener('click',()=>{
+ if(!results.length)return;
+ bytes2File('TLS_R6_CHROME_TRANSLATOR_CANDIDATES.jsonl',
+ results.map(x=>JSON.stringify(x)).join('\n')+'\n','application/x-ndjson;charset=utf-8');
+});
+$('details').addEventListener('click',()=>{
+ if(!started)return;
+ bytes2File('TLS_R6_LOCAL_RUN_SUMMARY.json',JSON.stringify({
+ schema:'tls.r6.local_run_summary.v1',
+ model_provider:'Chrome built-in Translator API',
+ target_language:'zh-Hant',attempted:items.length,translated:results.length,
+ skipped:errors.length,failures:errors,
+ data_uploaded_by_this_tool:false,
+ quality_evaluated:false,
+ note:'Not an independently assessed model quality result; browser/model availability varies.'
+ },null,2),'application/json;charset=utf-8');
+});
+render();
+})();
+</script></main></body></html>

@@ -22,10 +22,16 @@ DOCS_PUBLIC={
     "docs/GLOSSARY.md",
     "docs/ROADMAP.md",
     "docs/DEVELOPER_GUIDE.md",
+    "docs/QUALITY_EVALUATION.md",
     "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
     "docs/AI_INTEGRATION.md","docs/NAME_PROTECTION.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
+PUBLIC_BENCHMARK_FILES={
+    "benchmarks/r6/public_frozen_v1.jsonl",
+    "benchmarks/r6/frozen_manifest_v1.json",
+    "benchmarks/r6/human_rubric_v1.json",
+}
 BAD_PATH=re.compile(
     r"(?i)(?:^|[/_.-])(?:private|internal|handoff|evidence|"
     r"grant|application|funding|codex_oss|competitive_research|"
@@ -56,7 +62,7 @@ def allowed_path(name:str)->bool:
         return False
     if name.lower().endswith(BAD_EXT):
         return False
-    if name in ROOT_PUBLIC or name in DOCS_PUBLIC:
+    if name in ROOT_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES:
         return True
     if name.startswith("docs/"):
         return False
@@ -134,6 +140,9 @@ def self_test():
     assert allowed_path(".agents/skills/taiwan-zh-tw-localization/SKILL.md")
     assert allowed_path(".claude/skills/taiwan-zh-tw-localization/SKILL.md")
     assert allowed_path("docs/INSTALL_CHROME.md")
+    assert allowed_path("docs/QUALITY_EVALUATION.md")
+    assert allowed_path("benchmarks/r6/public_frozen_v1.jsonl")
+    assert not allowed_path("benchmarks/r6/private_model_results.jsonl")
     assert not allowed_path("docs/CODEX_OSS_EVIDENCE_R1.md")
     assert not allowed_path("docs/PRIVATE_ROADMAP.md")
     assert not allowed_path("docs/NEW_INTERNAL.md")

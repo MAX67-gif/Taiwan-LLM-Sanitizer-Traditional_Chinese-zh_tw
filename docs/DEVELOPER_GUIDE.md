@@ -38,3 +38,14 @@ python tools/publication_guard.py
 ## 授權
 
 本公開核心依 [MIT](../LICENSE)。CA L. 是專案發起與產品治理負責人；他人合法貢獻、原有 MIT 授權及第三方素材的權利不受此身份影響。
+
+## R6 公開品質測試
+
+```bash
+node tools/r6_benchmark.js validate
+node --test tests/test_r6_benchmark.js
+```
+
+R6 的 frozen_manifest SHA256 與 100 題原文在發布後不可原地修改；如發現需修正的題目，建立新版公開 cohort 並保留舊 hash。自動 QA 只涵蓋有限的結構／專有名稱檢查，不等於模型品質分數；人工自然度須獨立審閱。使用者的模型輸出與評論資料不應提交公開儲存庫。
+
+[評分說明](QUALITY_EVALUATION.md)

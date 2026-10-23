@@ -1,0 +1,32 @@
+{
+  "schema": "tls.r6.public_benchmark_manifest.v1",
+  "benchmark_id": "R6_PUBLIC_FROZEN_V1",
+  "frozen_on": "2026-10-24",
+  "frozen_input_path": "benchmarks/r6/public_frozen_v1.jsonl",
+  "exact_sha256_utf8": "b8929e1954cbea1940f1f7a67560d660262d0ee04d6c9c0031f1d8c714baf708",
+  "git_blob_sha1": "d5a65ef55c72333b528088a5187701c93d9d8a62",
+  "record_count": 100,
+  "family_counts": {
+    "technical": 20,
+    "business": 20,
+    "webui": 20,
+    "named": 20,
+    "prompt": 20
+  },
+  "target_locale": "zh-Hant-TW",
+  "reference_origin": "original_editorial_examples",
+  "reference_review_status": "not_independently_verified",
+  "accepted_use": "public_deterministic_regression_and_human_review_queue",
+  "not_accepted_use": "claim_model_translation_quality_or_accuracy_without_external_review",
+  "frozen_version_policy": "NEVER_EDIT_EXISTING_FROZEN_V1; create v2 + new hash and version for updates",
+  "privacy": "no_user_text_collected_or_transmitted",
+  "evaluation_only": true,
+  "mandatory_human_axes": [
+    "meaning",
+    "naturalness",
+    "taiwan_locale",
+    "register"
+  ],
+  "future_untouched_test": "Freeze separately before gathering results; never tune on already-exposed V1",
+  "licensed_as": "Original MIT editorial examples; no copied outside corpora"
+}
