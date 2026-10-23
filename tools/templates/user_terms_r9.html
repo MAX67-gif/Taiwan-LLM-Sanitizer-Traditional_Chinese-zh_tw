@@ -1,0 +1,198 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<title>臺灣用語個人選擇與語境對照工作台｜R9</title>
+<style>
+:root{font-family:system-ui,"Microsoft JhengHei",sans-serif;line-height:1.55;color-scheme:light dark}
+*{box-sizing:border-box}body{max-width:1180px;margin:auto;padding:22px;background:Canvas;color:CanvasText}
+h1{font-size:clamp(24px,3vw,34px);margin:0 0 8px}h2{font-size:21px;margin:28px 0 8px}
+p{max-width:1000px}.lead{font-size:1.06rem}.quiet{color:GrayText}.panel{border:1px solid #8899aa66;border-radius:13px;padding:17px;margin:15px 0}
+label{display:grid;gap:5px;font-weight:600;flex:1;min-width:150px}textarea,select,input,button{font:inherit;border:1px solid #8a9ba9;border-radius:8px;padding:10px;background:Canvas;color:CanvasText}
+textarea{width:100%;min-height:125px;resize:vertical}button{cursor:pointer;font-weight:600}button.primary{background:#126c68;color:white;border-color:#126c68}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #268ec8;outline-offset:2px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.scroller{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px;text-align:left;vertical-align:top;border-bottom:1px solid #9997;font-size:.95rem}th{white-space:nowrap}
+td select{width:100%;min-width:140px}td button{white-space:nowrap}.paired{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.note{font-size:.85rem;color:GrayText;margin:3px 0}details{max-width:360px;margin-top:7px;font-size:.85rem}
+details summary{cursor:pointer;text-decoration:underline}#status,#profileStatus,#previewStatus{min-height:22px}
+#diff li{margin-bottom:5px}#savedList button{padding:5px 9px}
+@media(max-width:720px){body{padding:11px}.panel{padding:11px}.paired{grid-template-columns:1fr}td,th{padding:6px;font-size:.86rem}}
+</style></head><body>
+<h1>臺灣用語・我的選擇工作台 <small>R9 Preview</small></h1>
+<p class="lead">對照原文、臺灣語境與其他地區說法，<strong>由你決定要採用哪一種詞。</strong>「選單」「菜單」以及原文 menu 都可以保留，這不是禁詞或審查工具。</p>
+<div class="panel"><strong>本機隱私說明</strong>：不連線、不上傳、不自動儲存輸入文字，也不讀取其他網頁。只有按下「匯出詞彙偏好」時，才會產生你自己選擇的詞條 JSON；匯出檔會包含你寫的詞語及備註，請勿填入私人密碼或客戶資料。關閉此頁後，未匯出的選擇不保留。</div>
+<section class="panel" aria-labelledby="reviewHeading"><h2 id="reviewHeading">1. 檢視語境並逐項選詞</h2>
+<label for="source">原始文字（最多 12,000 字元）</label>
+<textarea id="source" maxlength="12000" placeholder="例如：點開 menu 進入主菜单；餐廳 menu 上有甜點。"></textarea>
+<div class="controls"><label for="domain">這段文字的領域<select id="domain"><option value="auto">未指定／混合（不自動猜）</option></select></label>
+<label for="stage">提示範圍<select id="stage"><option value="all">編輯種子＋待審候選＋我的詞</option><option value="editorial_seed">僅編輯種子</option><option value="candidate">待審候選＋我的詞</option></select></label></div>
+<div class="actions"><button type="button" id="analyze" class="primary">分析語境（不更動文字）</button><button type="button" id="previewBtn">依勾選產生預覽</button><button type="button" id="clearSource">清空本次原文</button></div>
+<p id="status" role="status" aria-live="polite">按「分析語境」後才會在本機檢視。</p>
+<div class="scroller"><table><thead><tr><th>原文位置</th><th>候選與對比資料</th><th>信任狀態</th><th>本次選擇</th><th>記住我的偏好</th></tr></thead><tbody id="results"></tbody></table></div>
+</section>
+<section class="panel" aria-labelledby="previewHeading"><h2 id="previewHeading">2. 原文／自選文字對照</h2>
+<p class="quiet">未選擇的詞一律維持原文。修改只發生在以下預覽框，不會覆寫上面的原始輸入，更不會改動你的其他檔案。</p>
+<div class="paired"><label for="sourceMirror">原文（唯讀）<textarea id="sourceMirror" readonly></textarea></label>
+<label for="previewText">我的預覽（唯讀）<textarea id="previewText" readonly></textarea></label></div>
+<p id="previewStatus" role="status" aria-live="polite">尚未建立預覽。</p><ol id="diff"></ol></section>
+<section class="panel" aria-labelledby="profileHeading"><h2 id="profileHeading">3. 建立與帶走我的用語偏好</h2>
+<p>這是**你個人的語言選擇**，不會加入公開字典，也不會自動套用到全部網站。可新增未列在內建詞庫的詞。</p>
+<div class="controls"><label for="termFrom">原來的詞<input id="termFrom" maxlength="90" placeholder="例如：快捷入口"></label>
+<label for="termTo">我偏好的說法<input id="termTo" maxlength="120" placeholder="例如：快速入口"></label>
+<label for="termDomain">僅適用領域<select id="termDomain"></select></label>
+<label for="termAction">我的動作<select id="termAction"><option value="replace">顯示我偏好的詞</option><option value="keep">保留原本用語</option></select></label></div>
+<label for="termNote">備註（選填，不要填入私人資料）<input id="termNote" maxlength="160" placeholder="例如：團隊文件偏好"></label>
+<div class="actions"><button id="addTerm" type="button">加入／更新我的詞</button><button id="export" class="primary" type="button">匯出詞彙偏好 JSON</button>
+<label for="importFile">從本機選擇 JSON<input id="importFile" type="file" accept=".json,application/json"></label><button id="importApply" type="button">匯入並取代本頁偏好</button><button id="wipe" type="button">清空本頁偏好</button></div>
+<p id="profileStatus" role="status" aria-live="polite">目前尚未加入個人詞條，所有修改只在此頁記憶體。</p>
+<div class="scroller"><table><thead><tr><th>領域</th><th>來源詞</th><th>動作</th><th>偏好／備註</th><th>操作</th></tr></thead><tbody id="savedList"></tbody></table></div></section>
+<p class="quiet">資料來源：原創編輯對比例句（未經獨立語言審查），R3 的 883 筆待審候選和 67 筆編輯種子。此頁只提供詞彙建議及選取預覽，不是完整機器翻譯，也不代表自然度、可靠度或著作權審核已通過。</p>
+<script id="catalog" type="application/json">__TLS_R9_CATALOG__</script>
+<script id="examples" type="application/json">__TLS_R9_EXAMPLES__</script>
+<script>__TLS_R9_REVIEW_ENGINE__</script>
+<script>__TLS_R9_TERMS_ENGINE__</script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const core=globalThis.TLSPersonalGlossary;
+const catalog=JSON.parse($('catalog').textContent);
+const examples=JSON.parse($('examples').textContent).entries;
+let records=[],last=null,sourceSnapshot='';
+for(const domain of core.DOMAINS)for(const target of [$('domain'),$('termDomain')]){
+ const opt=document.createElement('option');opt.value=domain;opt.textContent=domain;target.append(opt);
+}
+const explain={CONTEXT_REQUIRED:'多義待選',DOMAIN_UNCERTAIN:'領域不符',
+ EDITORIAL_SEED:'編輯種子（未認證）',UNREVIEWED_CANDIDATE:'未審候選（勿盲用）'};
+function message(id,text){$(id).textContent=text;}
+function cell(tr,text){const td=document.createElement('td');td.textContent=text;tr.append(td);return td;}
+function refreshSaved(){
+ const tbody=$('savedList');tbody.replaceChildren();
+ for(const record of records){
+  const tr=document.createElement('tr');
+  cell(tr,record.domain);cell(tr,record.source);cell(tr,record.action==='keep'?'保留原詞':'採用我的寫法');
+  cell(tr,(record.action==='replace'?record.replacement:'保留原文')+(record.note?'｜'+record.note:''));
+  const td=document.createElement('td'),button=document.createElement('button');
+  button.type='button';button.textContent='移除此條';
+  button.addEventListener('click',()=>{
+   records=core.remove(records,record.source,record.domain);
+   refreshSaved();analyze();
+  });td.append(button);tr.append(td);tbody.append(tr);
+ }
+ if(!records.length){const tr=document.createElement('tr');const td=cell(tr,'尚未記錄個人詞。');td.colSpan=5;tbody.append(tr);}
+ message('profileStatus','本頁目前有 '+records.length+' 筆個人偏好；沒有自動儲存或同步。');
+}
+function choiceOf(select,item){
+ const value=select.value;
+ if(!value)return null;
+ const index=Number(value.slice(4));
+ return item.alternatives[index]||null;
+}
+function analyze(){
+ const text=$('source').value,tbody=$('results');tbody.replaceChildren();
+ try{
+  last=TLSContextReview.review(text,[...catalog,...core.reviewRows(records)],
+   {domain:$('domain').value,stage:$('stage').value});
+  sourceSnapshot=text;
+  const domain=$('domain').value;
+  for(const [index,item] of last.suggestions.entries()){
+   const tr=document.createElement('tr');cell(tr,item.found+'（位置 '+item.start+'）');
+   const proposals=item.alternatives.filter(x=>domain==='auto'||x.domain===domain||x.scope==='general');
+   const td=cell(tr,proposals.map(x=>x.to+' ['+x.domain+'／'+(x.id.startsWith('personal_')?'我的選擇':x.stage==='candidate'?'待審':'編輯種子')+']').join('；')||'沒有足夠領域證據');
+   const proof=examples.filter(x=>x.from.toLocaleLowerCase('en-US')===item.found.toLocaleLowerCase('en-US')&&(domain==='auto'||x.domain===domain)).slice(0,2);
+   if(proof.length){
+    const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='查看情境與反例（原創草稿）';details.append(summary);
+    for(const example of proof){
+     const p=document.createElement('p');p.textContent=example.domain+'：'+example.reason+'。適用例：'+example.positive_example+'；反例：'+example.counter_example;
+     details.append(p);
+    }td.append(details);
+   }
+   cell(tr,explain[item.decision]||item.decision);
+   const chooser=document.createElement('select');chooser.dataset.index=String(index);chooser.setAttribute('aria-label','位置 '+item.start+' 的人工選詞');
+   const keep=document.createElement('option');keep.value='';keep.textContent='保留原文（預設）';chooser.append(keep);
+   for(const [n,x] of item.alternatives.entries()){
+    if(domain!=='auto'&&x.domain!==domain&&x.scope!=='general')continue;
+    const o=document.createElement('option');o.value='alt:'+n;
+    o.textContent=x.to+'（'+x.domain+'／'+(x.id.startsWith('personal_')?'我的詞':x.stage==='candidate'?'待審':'種子')+'）';chooser.append(o);
+    if(domain!=='auto'){
+     const mine=core.find(records,item.found,x.domain);
+     if(mine?.action==='replace'&&mine.replacement===x.to)chooser.value=o.value;
+    }
+   }
+   const pick=document.createElement('td');pick.append(chooser);tr.append(pick);
+   const saveTd=document.createElement('td'),save=document.createElement('button');
+   save.type='button';save.textContent='記住這個選擇';
+   save.addEventListener('click',()=>{
+    const chosen=choiceOf(chooser,item);
+    const applicable=chosen?.domain||(domain==='auto'?'':domain);
+    if(!applicable){message('status','要記住「保留原文」，請先指定適用領域，避免對所有情境生效。');return;}
+    try{
+     records=core.upsert(records,{source:item.found,domain:applicable,
+      action:chosen?'replace':'keep',replacement:chosen?.to||''});
+     refreshSaved();message('status','已在本頁記住 '+item.found+'（'+applicable+'）。匯出才會存成檔案。');
+    }catch(err){message('status','無法儲存：'+err.message);}
+   });saveTd.append(save);tr.append(saveTd);tbody.append(tr);
+  }
+  if(!last.suggestions.length){
+   const tr=document.createElement('tr'),td=cell(tr,'目前未找到詞庫建議，不代表原文一定正確。');
+   td.colSpan=5;tbody.append(tr);
+  }
+  message('status','找到 '+last.stats.found+' 處，其中 '+last.stats.ambiguous+
+   ' 處可能有多種意思；本次原文保持不變。'+(last.stats.truncated?'已達顯示上限。':''));
+ }catch(err){last=null;message('status','分析失敗：'+err.message);}
+}
+$('analyze').addEventListener('click',analyze);
+$('previewBtn').addEventListener('click',()=>{
+ if(!last||$('source').value!==sourceSnapshot){
+  message('previewStatus','原文已更新，請重新按「分析語境」再預覽。');return;
+ }
+ try{
+  const choices=[];
+  for(const select of $('results').querySelectorAll('select[data-index]')){
+   const index=Number(select.dataset.index),value=choiceOf(select,last.suggestions[index]);
+   if(value)choices.push({index,domain:value.domain,to:value.to});
+  }
+  const result=core.preview(sourceSnapshot,last.suggestions,choices);
+  $('sourceMirror').value=sourceSnapshot;$('previewText').value=result.text;
+  const list=$('diff');list.replaceChildren();
+  for(const x of result.changes){const li=document.createElement('li');li.textContent='位置 '+x.start+'：'+x.original+' → '+x.suggested+'（'+x.domain+'）';list.append(li);}
+  message('previewStatus','只在預覽中更換 '+result.changed+' 處；原文未變。'+
+   (result.changed?'以下列出逐項差異。':'未指定改寫，全部保留原文。'));
+ }catch(err){message('previewStatus','無法建立預覽：'+err.message);}
+});
+$('clearSource').addEventListener('click',()=>{
+ $('source').value='';$('sourceMirror').value='';$('previewText').value='';
+ $('diff').replaceChildren();last=null;$('results').replaceChildren();message('status','已清空本次輸入，不影響個人偏好。');
+});
+$('addTerm').addEventListener('click',()=>{
+ try{
+  records=core.upsert(records,{source:$('termFrom').value,replacement:$('termAction').value==='keep'?'':$('termTo').value,
+   domain:$('termDomain').value,action:$('termAction').value,note:$('termNote').value});
+  refreshSaved();analyze();
+  message('profileStatus','已加入本頁偏好。需要按匯出才會建立檔案；目前共有 '+records.length+' 筆。');
+ }catch(err){message('profileStatus','新增失敗：'+err.message);}
+});
+$('export').addEventListener('click',()=>{
+ try{
+  const data=core.exportProfile(records),url=URL.createObjectURL(new Blob([data],{type:'application/json;charset=utf-8'}));
+  const a=document.createElement('a');a.href=url;a.download='TLS_User_Terms_R9_20261024.json';
+  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  message('profileStatus','已要求下載個人詞彙 JSON（'+records.length+' 筆）；不包含輸入全文。');
+ }catch(err){message('profileStatus','匯出失敗：'+err.message);}
+});
+$('importApply').addEventListener('click',async()=>{
+ const file=$('importFile').files?.[0];if(!file){message('profileStatus','請先選擇 JSON 檔案。');return;}
+ if(file.size>core.MAX_JSON_BYTES){message('profileStatus','匯入失敗：檔案超過 64 KiB 上限。');return;}
+ try{
+  const next=core.importProfile(await file.text());
+  records=next;refreshSaved();analyze();message('profileStatus','已匯入 '+records.length+' 筆；只取代本頁偏好，不更動原始檔案。');
+ }catch(err){message('profileStatus','匯入拒絕：'+err.message);}
+ $('importFile').value='';
+});
+$('wipe').addEventListener('click',()=>{
+ if(records.length&& !window.confirm('清空目前頁面的詞彙選擇？已匯出的 JSON 不受影響。'))return;
+ records=[];refreshSaved();analyze();
+});
+refreshSaved();
+})();
+</script></body></html>
