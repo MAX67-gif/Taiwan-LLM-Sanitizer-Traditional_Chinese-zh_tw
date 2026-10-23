@@ -6,7 +6,7 @@
 
 Input Adapter → Capability Probe → Structure/Code Protector → Language Detection → Translation Provider + Tech-Term Localizer → Semantic Integrity Guard → Preview/Diff → Output Adapter → Rollback/Audit。
 
-**R1 實作只有：DOM Adapter + 少量離線規則替換 + 部分結構保護 + 關閉還原。** 不可把上述架構圖當作已完整實作。
+**R1 實作包含：DOM Adapter、少量離線規則替換、部分結構保護、關閉還原，以及共用核心的本機檔案 CLI（保守模式）。** 不可把上述架構圖當作已完整實作。
 
 ## Adapter 與 Provider 擴充契約（規劃）
 
@@ -22,12 +22,12 @@ Input Adapter → Capability Probe → Structure/Code Protector → Language Det
 | Chrome／Chromium MV3 | 各種網頁、SPA | PROTOTYPE：有限 DOM 字詞 |
 | Tampermonkey | 任意使用者自行選擇之普通網頁 | PROTOTYPE：有限 DOM 字詞 |
 | Edge／Firefox | 跨瀏覽器 | PLANNED；Chromium 相容不等於已完成驗證 |
-| Markdown／HTML 文件 | 專案 README、開源文件、說明書 | PLANNED |
+| Markdown／HTML 文件 | 專案 README、開源文件、說明書 | Markdown 部分詞彙轉換為 PROTOTYPE；HTML 文件解析仍 PLANNED |
 | PDF／Office／圖片 | 文件與 OCR | PLANNED／RESEARCH |
-| CLI／批次處理 | 本地檔案批次、Pipeline | PLANNED |
+| CLI／批次處理 | 本地檔案批次、Pipeline | PROTOTYPE：Node.js CLI 保守處理部分 Markdown／TXT／JSON／JSONL |
 | API／Python SDK | 供任何其他開源專案重用 | PLANNED |
 | AI Prompt Tuner | 保留角色與結構語意 | PLANNED |
-| JSON／JSONL | Structured Data Pipeline | PLANNED |
+| JSON／JSONL | Structured Data Pipeline | PROTOTYPE：明確加 --json-strings 才修改部分字串值，保留欄位鍵與機器識別 |
 | Translation Providers | Chrome 本地模型／自訂本地模型／使用者授權雲端 | PLANNED；本版只提供簡單離線規則 |
 
 ## 非二元路由
@@ -46,3 +46,7 @@ Input Adapter → Capability Probe → Structure/Code Protector → Language Det
 ## 使用體驗路線
 
 跨介面相同詞庫／規則、自訂詞彙、兩欄 diff、單擊還原、逐站設定、離線與使用者選擇的翻譯提供者、使用前安全預覽、效能上限、無障礙與正規化 UTF-8；真正有使用者的社群回報後，才考慮擴充產品範圍。
+
+## R1 已實作的第三種入口：本機 CLI
+
+`node tools/localize_cli.js --input ./documents --output ./localized` 可處理部分 Markdown/TXT，`--json-strings` 可以明確選擇轉換 JSON／JSONL 的非機器識別字串。`--dry-run` 不寫檔。核心規則與瀏覽器同源，不依賴 Tampermonkey、網路翻譯 API 或 Python 外部套件；輸出不可指向來源資料夾，程式碼區塊、網址及部分佔位符受保護。這是離線詞彙原型，不是任意語言全文翻譯。
