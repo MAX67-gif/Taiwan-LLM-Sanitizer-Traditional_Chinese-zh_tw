@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Taiwan-LLM-Sanitizer｜臺灣繁中通用在地化",
+  "name": "Taiwan-LLM-Sanitizer｜自然臺灣繁中翻譯",
   "short_name": "TLS 繁中化",
-  "version": "0.3.0",
-  "description": "通用本機翻譯＋可選臺灣語境詞庫。預設不蒐集頁面內容，逐站授權。",
+  "version": "0.4.0",
+  "description": "逐站啟用的臺灣用語及 Chrome 本機 AI 翻譯，保護 Codex／Claude 等專有名稱；不自行上傳網頁內容。",
   "minimum_chrome_version": "102",
   "permissions": [
     "activeTab",
