@@ -3,12 +3,18 @@
 'use strict';
 if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders)return;
 const origin=location.origin;
-const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin;
+const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin,domainKey='tls-domain-r3:'+origin;
 let enabled=Boolean(GM_getValue(activeKey,false)),paused=false;
 let mode=GM_getValue(modeKey,'terms')==='local-ai'?'local-ai':'terms';
 let sourceLanguage=GM_getValue(sourceKey,'auto');
 const sources=['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','id','ar'];
 if(!sources.includes(sourceLanguage))sourceLanguage='auto';
+const domains=['auto','general','ui','software','engineering','ai','security','ecommerce','finance','food','travel','education','medicine','media','office','public','games','industry'];
+const domainLabels={auto:'自動判斷',general:'一般',ui:'介面選單',software:'軟體',engineering:'程式開發',
+ ai:'AI',security:'資安',ecommerce:'購物',finance:'金融',food:'餐飲',travel:'交通旅遊',
+ education:'教育',medicine:'醫療',media:'社群影音',office:'辦公',public:'公共行政',games:'遊戲',industry:'工業'};
+let domain=GM_getValue(domainKey,'auto');
+if(!domains.includes(domain))domain='auto';
 const panel=document.createElement('div');
 panel.dataset.tlsUi='true';panel.style.cssText='position:fixed;right:10px;top:10px;z-index:2147483646;pointer-events:auto';
 const shadow=panel.attachShadow({mode:'closed'});
@@ -16,17 +22,23 @@ const wrap=document.createElement('div');
 wrap.style.cssText='background:#fff;color:#183247;border:1px solid #94a3b8;box-shadow:0 4px 18px #0003;padding:8px;border-radius:12px;font:12px/1.5 system-ui,sans-serif;max-width:250px';
 const title=document.createElement('div');title.textContent='TLS 臺灣繁中化 R3';title.style.fontWeight='700';
 const status=document.createElement('div');status.setAttribute('aria-live','polite');status.style.cssText='margin:4px 0;max-width:230px;overflow-wrap:anywhere';
-const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select');
+const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select'),domainSelect=document.createElement('select');
 for(const btn of [pause,modeButton])btn.style.cssText='padding:5px 8px;border:0;border-radius:7px;color:#fff;background:#0f766e;cursor:pointer;margin:3px 3px 3px 0;font:12px system-ui';
 sourceSelect.style.cssText='margin:4px 0;width:100%;padding:5px;border-radius:7px;background:white;color:#111;border:1px solid #94a3b8';
+domainSelect.style.cssText=sourceSelect.style.cssText;
+for(const d of domains){
+  const option=document.createElement('option');option.value=d;option.textContent='領域：'+domainLabels[d];
+  domainSelect.appendChild(option);
+}
+domainSelect.value=domain;
 for(const lang of sources){
   const option=document.createElement('option');option.value=lang;option.textContent='原文：'+lang;
   sourceSelect.appendChild(option);
 }
 sourceSelect.value=sourceLanguage;
-wrap.append(title,status,pause,modeButton,sourceSelect);shadow.appendChild(wrap);
+wrap.append(title,status,pause,modeButton,sourceSelect,domainSelect);shadow.appendChild(wrap);
 const ctrl=globalThis.TLSWeb.createWebLocalizer(document,{
-  mode,sourceLanguage,onStatus:(snapshot)=>renderStatus(snapshot)
+  mode,sourceLanguage,domain,onStatus:(snapshot)=>renderStatus(snapshot)
 });
 function renderStatus(snapshot){
   if(!snapshot)return;
@@ -45,7 +57,7 @@ function render(){
 }
 function apply(){
   if(!enabled)return;
-  ctrl.configure({mode,sourceLanguage});if(!paused)ctrl.start();
+  ctrl.configure({mode,sourceLanguage,domain});if(!paused)ctrl.start();
   render();
 }
 function setEnabled(next){
@@ -63,6 +75,11 @@ sourceSelect.addEventListener('change',()=>{
   if(!enabled)return;
   sourceLanguage=sources.includes(sourceSelect.value)?sourceSelect.value:'auto';
   GM_setValue(sourceKey,sourceLanguage);apply();
+});
+domainSelect.addEventListener('change',()=>{
+  if(!enabled)return;
+  domain=domains.includes(domainSelect.value)?domainSelect.value:'auto';
+  GM_setValue(domainKey,domain);apply();
 });
 GM_registerMenuCommand('TLS：啟用／停用本站',()=>setEnabled(!enabled));
 GM_registerMenuCommand('TLS：暫停／恢復',()=>{if(enabled)pause.click();});
