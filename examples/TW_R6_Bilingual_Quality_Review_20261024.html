@@ -1,0 +1,210 @@
+<!doctype html><html lang="zh-Hant-TW"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';connect-src 'none';img-src 'none';font-src 'none';object-src 'none';base-uri 'none'">
+<title>R6 臺灣自然中文・雙語品質審閱</title>
+<style>
+:root{font-family:system-ui,'Microsoft JhengHei',sans-serif;color-scheme:light;background:#f3f8fc;color:#16374a}
+*{box-sizing:border-box}body{margin:0}main{max-width:1140px;margin:auto;padding:clamp(12px,3vw,28px)}
+h1{font-size:clamp(22px,4vw,34px);margin:0 0 7px}
+h2{font-size:18px;margin:0 0 12px}
+p{line-height:1.65;margin:6px 0 13px}
+section{border:1px solid #cfe1e9;background:white;border-radius:17px;padding:clamp(12px,2vw,20px);margin:14px 0}
+.intro{background:#e9f7f3}.muted{color:#4b6676;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+label{display:block;font-size:13px;font-weight:600;margin:8px 0 5px}
+input[type=file],input[type=text],select,textarea{font:inherit;color:#16374a;background:white;width:100%;border:1px solid #b8d2de;border-radius:9px;padding:9px}
+button{cursor:pointer;font:inherit;border:1px solid #bed4e0;border-radius:9px;color:#16465c;background:#f0f7f9;padding:9px 12px}
+button.primary{background:#0b7069;color:white;border-color:#0b7069;font-weight:700}
+button[aria-pressed=true]{background:#155c72;color:#fff}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #1669c2;outline-offset:2px}
+.subtle{min-height:24px;font-size:12px;color:#5c7180}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.views{display:flex;gap:5px;flex-wrap:wrap}
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.compare.stacked,.compare.translation-only{grid-template-columns:1fr}
+.compare.translation-only .source-panel{display:none}
+.panel{background:#f9fcfd;border:1px solid #d2e4e9;border-radius:14px;padding:16px;min-width:0;min-height:130px}
+.panel h3{font-size:14px;margin:0 0 10px}
+.panel p{font-size:15px;white-space:pre-wrap;overflow-wrap:anywhere}
+.ratings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.flags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.flags label{padding:7px 9px;border:1px solid #c3d8e1;border-radius:99px;margin:0;background:#f4f9fb;display:flex;gap:5px;align-items:center}
+.flags input{accent-color:#0b7069}
+#status{min-height:22px;color:#155b53;font-weight:600}
+details{margin:14px 0}summary{cursor:pointer;font-weight:600}
+footer{color:#586f7a;font-size:13px;padding:8px 0 20px}
+@media(max-width:740px){.grid,.compare,.ratings{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body><main>
+<header><h1>臺灣自然中文・雙語品質審閱室</h1>
+<p class="muted">Taiwan-LLM-Sanitizer R6｜CA L.｜原文、譯文與評分全部留在目前瀏覽器中，不會被本頁上傳。</p></header>
+<section class="intro"><strong>先看原文與候選譯文，再判斷是否自然、忠於原意。</strong>
+<p>預設有 15 題公開示範。完整評估請自行載入公開凍結的 100 題 JSONL 和模型輸出 JSONL。示範用的編輯參考譯文並不是模型翻譯，不能將其評分冒充真實模型成果。</p>
+</section>
+<section><h2>1. 讀取自己的資料</h2><div class="grid">
+<div><label for="dataset">公開測試集（public_frozen_v1.jsonl）</label><input type="file" id="dataset" accept=".jsonl,.txt">
+<div class="subtle" id="datasetInfo">目前載入 15 題公開示範。</div></div>
+<div><label for="candidates">模型或人工翻譯結果（id／translation）</label><input type="file" id="candidates" accept=".jsonl,.txt">
+<div class="subtle" id="candidateInfo">尚無真實候選譯文，預覽僅顯示編輯草稿。</div></div>
+</div></section>
+<section><h2>2. 比較內容</h2><div class="grid">
+<div><label for="family">內容類別</label><select id="family"></select></div>
+<div><label for="item">測試題</label><select id="item"></select></div>
+</div>
+<div class="actions" style="justify-content:space-between;align-items:center">
+<div id="counter" class="muted">審閱進度</div>
+<div class="views" role="group" aria-label="顯示方式">
+<button type="button" data-view="side" aria-pressed="true">雙語並排</button>
+<button type="button" data-view="stacked" aria-pressed="false">上下排列</button>
+<button type="button" data-view="translation-only" aria-pressed="false">只看譯文</button></div></div>
+<div class="compare" id="compare">
+<div class="panel source-panel"><h3>原文與情境</h3><p id="source"></p><span id="context" class="muted"></span></div>
+<div class="panel"><h3>候選譯文</h3><p id="translation"></p><span id="candidateLabel" class="muted"></span></div>
+</div>
+<details id="referenceBox"><summary>展開編輯參考譯文（可能影響盲評）</summary>
+<p id="reference"></p><p class="muted">只是編輯草稿，不是唯一正解，也沒有經獨立審稿。</p></details>
+</section>
+<section><h2>3. 人工評分</h2>
+<div class="grid">
+<div><label for="reviewer">匿名評審代號（勿輸入個資）</label><input id="reviewer" type="text" maxlength="48" autocomplete="off" placeholder="例如 reviewer_A"></div>
+<div><label for="note">簡短備註（選填，不含私人資料）</label><textarea id="note" rows="2" maxlength="500"></textarea></div>
+</div>
+<div class="ratings" id="ratings"></div>
+<p class="muted">1＝嚴重問題；3＝尚可理解但需修正；5＝非常合適。只有載入真實候選譯文後才能儲存評分。</p>
+<strong>錯誤類別（可複選）</strong><div class="flags" id="flags"></div>
+<div class="actions">
+<button type="button" class="primary" id="save">儲存本題評分</button>
+<button type="button" id="export">下載我的 JSONL 評分檔</button>
+<button type="button" id="clear">清除本頁未匯出的評分</button></div>
+<p id="status" role="status" aria-live="polite">資料只存在此頁，離開前請自行匯出。</p>
+</section><footer>本頁無帳號、廣告、外部程式碼、遠端字型、Cookie 或自動傳輸；人工評分也不代表通過了獨立第三方驗證。© 2026 CA L. / Taiwan-LLM-Sanitizer。</footer>
+<script id="demo-data" type="application/json">[{"id":"R6-TECHNICAL-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"technical","source_locale":"en","target_locale":"zh-Hant-TW","context":"伺服器操作指示","source_text":"Restart the server only after saving the configuration file.","reference_zh_tw":"儲存設定檔後，才能重新啟動伺服器。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["terminology","meaning","structure"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-TECHNICAL-002","cohort":"R6_PUBLIC_FROZEN_V1","family":"technical","source_locale":"en","target_locale":"zh-Hant-TW","context":"API 文件","source_text":"The new API endpoint returns a 403 response when the token is missing.","reference_zh_tw":"缺少權杖時，新的 API 端點會回傳 403 回應。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["API","403"],"review_focus":["terminology","meaning","structure"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-TECHNICAL-003","cohort":"R6_PUBLIC_FROZEN_V1","family":"technical","source_locale":"en","target_locale":"zh-Hant-TW","context":"指令說明","source_text":"Run `node tools/build.py` only in a test environment.","reference_zh_tw":"只在測試環境中執行 `node tools/build.py`。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["`node tools/build.py`"],"review_focus":["terminology","meaning","structure"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-BUSINESS-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"business","source_locale":"en","target_locale":"zh-Hant-TW","context":"禮貌商務請求","source_text":"Could you share the revised proposal by Thursday?","reference_zh_tw":"方便在星期四前提供修訂後的提案嗎？","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["meaning","register","naturalness"],"user_preference":"balanced","language_register":"professional","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-BUSINESS-002","cohort":"R6_PUBLIC_FROZEN_V1","family":"business","source_locale":"en","target_locale":"zh-Hant-TW","context":"商務詢價","source_text":"Please confirm whether the quoted price includes tax.","reference_zh_tw":"請確認報價是否含稅。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["meaning","register","naturalness"],"user_preference":"balanced","language_register":"professional","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-BUSINESS-003","cohort":"R6_PUBLIC_FROZEN_V1","family":"business","source_locale":"en","target_locale":"zh-Hant-TW","context":"採購審核通知","source_text":"We cannot approve the purchase order until legal reviews the terms.","reference_zh_tw":"法務完成條款審查之前，我們無法核准採購單。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["meaning","register","naturalness"],"user_preference":"balanced","language_register":"professional","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-WEBUI-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"webui","source_locale":"en","target_locale":"zh-Hant-TW","context":"軟體網站導覽","source_text":"Open the menu to change your language settings.","reference_zh_tw":"開啟選單以調整語言設定。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["locale","naturalness","clarity"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-WEBUI-002","cohort":"R6_PUBLIC_FROZEN_V1","family":"webui","source_locale":"en","target_locale":"zh-Hant-TW","context":"餐廳網站","source_text":"Browse the menu before ordering your meal.","reference_zh_tw":"點餐前請先查看菜單。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["locale","naturalness","clarity"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-WEBUI-003","cohort":"R6_PUBLIC_FROZEN_V1","family":"webui","source_locale":"en","target_locale":"zh-Hant-TW","context":"電子商務提示","source_text":"Your cart is empty. Continue shopping?","reference_zh_tw":"購物車是空的，要繼續購物嗎？","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":[],"review_focus":["locale","naturalness","clarity"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-NAMED-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"named","source_locale":"en","target_locale":"zh-Hant-TW","context":"OpenAI 正式計畫名稱","source_text":"Codex for Open Source supports eligible open-source maintainers.","reference_zh_tw":"Codex for Open Source 支援符合資格的開源專案維護者。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["Codex for Open Source"],"review_focus":["named_entities","meaning","locale"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-NAMED-002","cohort":"R6_PUBLIC_FROZEN_V1","family":"named","source_locale":"en","target_locale":"zh-Hant-TW","context":"產品名稱","source_text":"OpenAI Codex helps developers work with code.","reference_zh_tw":"OpenAI Codex 協助開發者處理程式碼工作。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["OpenAI Codex"],"review_focus":["named_entities","meaning","locale"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-NAMED-003","cohort":"R6_PUBLIC_FROZEN_V1","family":"named","source_locale":"en","target_locale":"zh-Hant-TW","context":"AI 程式工具","source_text":"Use Claude Code to inspect the project before editing.","reference_zh_tw":"編輯前，先使用 Claude Code 檢查專案。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["Claude Code"],"review_focus":["named_entities","meaning","locale"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-PROMPT-001","cohort":"R6_PUBLIC_FROZEN_V1","family":"prompt","source_locale":"en","target_locale":"zh-Hant-TW","context":"Prompt 變數保護","source_text":"Rewrite this notice in zh-TW. Keep {{user_name}} unchanged.","reference_zh_tw":"將這則通知改寫為臺灣繁體中文，並保留 {{user_name}} 不變。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["{{user_name}}"],"review_focus":["meaning","structure","prompt_boundaries"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-PROMPT-002","cohort":"R6_PUBLIC_FROZEN_V1","family":"prompt","source_locale":"en","target_locale":"zh-Hant-TW","context":"URL 鎖定","source_text":"Translate the sentence, but do not modify the URL https://example.com/hello.","reference_zh_tw":"翻譯這個句子，但不要修改網址 https://example.com/hello。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["https://example.com/hello"],"review_focus":["meaning","structure","prompt_boundaries"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"},{"id":"R6-PROMPT-003","cohort":"R6_PUBLIC_FROZEN_V1","family":"prompt","source_locale":"en","target_locale":"zh-Hant-TW","context":"JSON 鍵保護","source_text":"Return a JSON object with keys `id` and `status`. Translate only the user-facing value.","reference_zh_tw":"回傳包含 `id` 與 `status` 鍵名的 JSON 物件，只翻譯顯示給使用者的值。","reference_status":"editorial_draft_not_independently_reviewed","preserve_exact":["`id`","`status`","JSON"],"review_focus":["meaning","structure","prompt_boundaries"],"user_preference":"balanced","language_register":"faithful","rights":"original_editorial_example","external_review_status":"pending"}]</script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const families={technical:'技術文件',business:'商務英文',webui:'一般網站',named:'專有名稱',prompt:'Prompt 結構'};
+const axes={meaning:'原意與事實',naturalness:'中文自然度',taiwan_locale:'臺灣語境',register:'用途與語氣'};
+const issueTypes={ACCURACY_OMISSION:'漏譯',ACCURACY_ADDITION:'多加內容',ACCURACY_DISTORTION:'語意偏離',
+ NEGATION_OR_NUMBER:'否定／數字',BRAND_ENTITY:'專有名稱',CODE_STRUCTURE:'技術結構',
+ TERMINOLOGY:'技術詞彙',NATURALNESS:'機翻感',LOCALE_CONTEXT:'臺灣語境',REGISTER_TONE:'語氣不合'};
+let items=JSON.parse($('demo-data').textContent);
+let candidates=new Map(),reviews=new Map(),selected=null;
+const say=text=>$('status').textContent=text;
+function option(select,value,caption){const o=document.createElement('option');o.value=value;o.textContent=caption;select.append(o);}
+function parseJsonl(text){return text.split(/\r?\n/).filter(x=>x.trim()).map(x=>JSON.parse(x));}
+function drawFamilies(){
+ $('family').textContent='';option($('family'),'','全部類別');
+ for(const [id,label] of Object.entries(families))if(items.some(x=>x.family===id))option($('family'),id,label);
+ drawItems();
+}
+function drawItems(){
+ const current=$('family').value;
+ const found=items.filter(x=>!current||x.family===current);
+ $('item').textContent='';
+ for(const c of found)option($('item'),c.id,c.id+'｜'+c.context);
+ if(found.length)show(found[0].id);
+}
+function resetFields(){
+ for(const x of document.querySelectorAll('#ratings select'))x.value='';
+ for(const x of document.querySelectorAll('#flags input'))x.checked=false;
+ $('note').value='';
+}
+function show(id){
+ selected=items.find(x=>x.id===id)||null;
+ if(!selected)return;
+ $('item').value=id;
+ $('source').textContent=selected.source_text;
+ $('context').textContent=selected.context;
+ const candidate=candidates.get(id);
+ $('translation').textContent=candidate===undefined?selected.reference_zh_tw:candidate;
+ $('candidateLabel').textContent=candidate===undefined?'編輯示範，不是模型輸出':'來自使用者選擇的本機候選檔';
+ $('reference').textContent=selected.reference_zh_tw;
+ $('referenceBox').open=false;
+ resetFields();
+ const found=reviews.get(id);
+ if(found){
+   for(const axis of Object.keys(axes))$(axis).value=String(found[axis]);
+   $('note').value=found.comment||'';
+   for(const cb of document.querySelectorAll('#flags input'))cb.checked=found.error_categories.includes(cb.value);
+ }
+ $('save').disabled=candidate===undefined;
+ $('export').disabled=reviews.size===0;
+ $('counter').textContent='目前 '+items.length+' 題｜本頁已評分 '+reviews.size+' 題';
+}
+async function loadFile(input,type){
+ const file=input.files&&input.files[0];if(!file)return;
+ if(file.size>2000000){say('檔案超過 2 MB，不予載入。');return;}
+ try {
+  const parsed=parseJsonl(await file.text());
+  if(!parsed.length||parsed.length>1000)throw Error('資料筆數不合理');
+  if(type==='dataset'){
+    if(!parsed.every(x=>typeof x.id==='string'&&typeof x.source_text==='string'&&
+      typeof x.reference_zh_tw==='string'&&families[x.family]))throw Error('資料集欄位缺失');
+    if(new Set(parsed.map(x=>x.id)).size!==parsed.length)throw Error('重複題號');
+    items=parsed;reviews.clear();
+    $('datasetInfo').textContent='讀入 '+items.length+' 題。真正的凍結 SHA 驗證請使用本地 CLI。';
+    drawFamilies();
+  }else{
+    if(!parsed.every(x=>typeof x.id==='string'&&typeof x.translation==='string'&&x.translation.length<50001))
+      throw Error('譯文格式錯誤');
+    if(new Set(parsed.map(x=>x.id)).size!==parsed.length)throw Error('候選題號重複');
+    candidates=new Map(parsed.map(x=>[x.id,x.translation]));reviews.clear();
+    $('candidateInfo').textContent='讀入 '+candidates.size+' 筆本機候選，不會上傳。';
+    show(selected?selected.id:items[0].id);
+  }
+  say('已在目前頁面的記憶體中開啟檔案，沒有上傳。');
+ }catch(_){say('載入失敗：請確認 JSONL 格式與欄位。');}
+}
+$('dataset').addEventListener('change',()=>loadFile($('dataset'),'dataset'));
+$('candidates').addEventListener('change',()=>loadFile($('candidates'),'candidates'));
+$('family').addEventListener('change',drawItems);
+$('item').addEventListener('change',()=>show($('item').value));
+for(const b of document.querySelectorAll('[data-view]'))b.addEventListener('click',()=>{
+ const style=b.dataset.view;
+ $('compare').className='compare'+(style==='side'?'':' '+style);
+ for(const other of document.querySelectorAll('[data-view]'))other.setAttribute('aria-pressed',String(other===b));
+});
+for(const [id,label] of Object.entries(axes)){
+ const root=document.createElement('div'),title=document.createElement('label'),select=document.createElement('select');
+ title.htmlFor=id;title.textContent=label;select.id=id;option(select,'','尚未評分');
+ for(let n=1;n<=5;n++)option(select,String(n),String(n)+' 分');
+ root.append(title,select);$('ratings').append(root);
+}
+for(const [code,label] of Object.entries(issueTypes)){
+ const parent=document.createElement('label'),checkbox=document.createElement('input');
+ checkbox.type='checkbox';checkbox.value=code;
+ parent.append(checkbox,document.createTextNode(label));$('flags').append(parent);
+}
+$('save').addEventListener('click',()=>{
+ if(!selected||!candidates.has(selected.id)){say('尚未載入候選譯文，不能記錄模型評分。');return;}
+ const reviewer=$('reviewer').value.trim();if(!reviewer){say('請填匿名評審代號。');return;}
+ const entry={id:selected.id,reviewer_id:reviewer};
+ for(const key of Object.keys(axes)){
+   const value=Number($(key).value);
+   if(!Number.isInteger(value)||value<1||value>5){say('請完整填寫四項 1～5 分。');return;}
+   entry[key]=value;
+ }
+ entry.error_categories=[...document.querySelectorAll('#flags input:checked')].map(x=>x.value);
+ entry.comment=$('note').value.slice(0,500);
+ reviews.set(selected.id,entry);
+ $('counter').textContent='目前 '+items.length+' 題｜本頁已評分 '+reviews.size+' 題';
+ $('export').disabled=false;say('本頁評分已暫存，請自行下載 JSONL。');
+});
+$('export').addEventListener('click',()=>{
+ if(!reviews.size){say('目前沒有可下載的評分。');return;}
+ const payload=[...reviews.values()].map(x=>JSON.stringify(x)).join('\n')+'\n';
+ const blob=new Blob([payload],{type:'application/x-ndjson;charset=utf-8'});
+ const href=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=href;a.download='TLS_R6_LOCAL_HUMAN_REVIEWS.jsonl';a.click();
+ URL.revokeObjectURL(href);say('評分檔已交給瀏覽器下載，沒有上傳。');
+});
+$('clear').addEventListener('click',()=>{
+ if(!reviews.size)return;
+ if(!confirm('確定清除未下載的本頁評分嗎？'))return;
+ reviews.clear();show(selected.id);say('已清除暫存評分。');
+});
+drawFamilies();$('export').disabled=true;
+})();
+</script></main></body></html>
