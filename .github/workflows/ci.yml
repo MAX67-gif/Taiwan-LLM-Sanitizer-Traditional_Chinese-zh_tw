@@ -1,4 +1,4 @@
-name: R5 named entities, fixed translation progress and agent skills
+name: TLS R5 core + R6 quality + R7 demo + R8 context + R9 user choice
 on:
   push:
   pull_request:
@@ -40,6 +40,14 @@ jobs:
           if-no-files-found: error
       - name: Check R8 contextual review standalone HTML reproducibility
         run: node tools/build_context_review_r8.js --check
+      - name: Verify R9 standalone user-choice workbench reproducibility
+        run: node tools/build_user_terms_r9.js --check
+      - name: Upload R9 offline user-choice HTML preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R9_Taiwan_Term_Choice_Offline_Preview
+          path: examples/TW_User_Context_Lab_R9_20261024.html
+          if-no-files-found: error
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
       - name: Verify user install, ZIP identity and version strings
@@ -126,6 +134,7 @@ jobs:
       - run: python tests/test_browser_lexicon_r3.py
       - run: python tests/test_explorer_browser_r3.py
       - run: python tests/test_context_review_r8.py
+      - run: python tests/test_user_terms_browser_r9.py
       - run: python tests/test_visual_progress_browser_r5.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
@@ -243,4 +252,33 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R8 臺灣用語離線語境審查工作台（建議模式）" \
               --notes "Download the standalone HTML and open it locally in a browser. No install, API key, network, or account is needed. It reviews 883 unverified candidate terms and 67 editorial seeds without automatic text replacement. This preview is NOT a neural translator, validated market benchmark, or official language standard. R5 browser runtime and R6 frozen study cohort remain unchanged."
+          fi
+
+  r9-user-terms-release:
+    name: Publish independent R9 Taiwan user-word choice offline HTML
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tools/build_user_terms_r9.js --check
+      - name: Publish without overwriting any earlier release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha256sum examples/TW_User_Context_Lab_R9_20261024.html > examples/TW_User_Context_Lab_R9_20261024.html.sha256
+          if gh release view "r9-user-terms-preview-v1" >/dev/null 2>&1; then
+            echo "Existing R9 release is immutable; skip overwrite"
+          else
+            gh release create "r9-user-terms-preview-v1" \
+              examples/TW_User_Context_Lab_R9_20261024.html \
+              examples/TW_User_Context_Lab_R9_20261024.html.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "R9 臺灣用語自行選詞與原文對照（完全本機單檔）" \
+              --notes "Offline HTML only: manual context choice, original-vs-preview diff and portable user term JSON. User preferences are never silently uploaded; source text is not saved. R5 core, R6 frozen benchmark, R7.1 and R8 remain separate. The 28 editorial cases are not independently verified."
           fi
