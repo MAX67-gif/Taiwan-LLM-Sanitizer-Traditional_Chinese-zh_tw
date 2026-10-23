@@ -853,7 +853,7 @@ pane.style.cssText='position:fixed;right:12px;bottom:76px;width:min(295px,calc(1
 pane.hidden=true;
 const shadow=pane.attachShadow({mode:'closed'});
 const css=document.createElement('style');
-css.textContent=':host{all:initial} .box{background:#fff;color:#17354b;border:1px solid #99b6c3;'+
+css.textContent=':host{all:initial}:host([hidden]){display:none!important} .box{background:#fff;color:#17354b;border:1px solid #99b6c3;'+
  'border-radius:13px;box-shadow:0 7px 30px #082a4238;padding:11px;box-sizing:border-box;'+
  'display:flex;flex-direction:column;max-height:min(66vh,570px);font:12px/1.55 system-ui,sans-serif}'+
  '.header{font-weight:700;font-size:14px;flex:none} .scroll{overflow:auto;flex:1;min-height:0}'+
