@@ -15,7 +15,7 @@ test('large categorized but non-prescriptive public candidate corpus',()=>{
  }
 });
 test('browser pack exactly mirrors safe editorial seed',()=>{
- assert.equal(pack.VERSION,'0.3.0');
+ assert.equal(pack.VERSION,'0.4.0');
  assert.equal(pack.ENTRIES.length,approved.entries.length);
  const slim=approved.entries.map(({id,from,to,domain,scope,source_locale})=>({id,from,to,domain,scope,source_locale}));
  assert.deepEqual(pack.ENTRIES,slim);
