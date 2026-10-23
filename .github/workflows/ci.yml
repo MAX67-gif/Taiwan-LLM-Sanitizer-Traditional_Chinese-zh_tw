@@ -37,21 +37,15 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/tls-r6-baseline"
           node tools/r6_benchmark.js baseline --output "$RUNNER_TEMP/tls-r6-baseline/offline_terms.jsonl" --report benchmarks/r6/R6_STRUCTURAL_BASELINE.json
-      - name: Upload R6 public frozen quality kit (not a ranked model report)
+      - name: Build reproducible public frozen quality kit ZIP
+        run: python tools/build_r6_quality.py
+      - name: Upload standalone R6 public quality kit (not a model leaderboard)
         uses: actions/upload-artifact@v4
         with:
-          name: TLS_R6_Public_Quality_Evaluation_Kit
+          name: TLS_R6_Public_Quality_Evaluation_Kit_V1
           path: |
-            benchmarks/r6/public_frozen_v1.jsonl
-            benchmarks/r6/frozen_manifest_v1.json
-            benchmarks/r6/human_rubric_v1.json
-            examples/TW_R6_Bilingual_Quality_Review_20261024.html
-            examples/TW_R6_Local_Chrome_Model_Run_20261024.html
-            docs/QUALITY_EVALUATION.md
-            tools/r6_benchmark.js
-            tools/translation_qa.js
-            src/core/
-            lexicon/
+            dist/TLS_R6_PUBLIC_QUALITY_KIT_V1_20261024.zip
+            dist/TLS_R6_PUBLIC_QUALITY_KIT_V1_20261024.zip.sha256
             benchmarks/r6/R6_STRUCTURAL_BASELINE.json
           if-no-files-found: error
       - name: Build Chrome + single userscript
@@ -140,4 +134,33 @@ jobs:
             echo "v0.4.0 already published; do not overwrite release files"
           else
             gh release create "v0.4.0"               dist/TLS_Chrome_MV3_R5_20261024.zip               dist/TLS_Tampermonkey_R5_20261024.user.js               dist/SHA256SUMS_R5_20261024.txt               --target "$GITHUB_SHA"               --title "Taiwan-LLM-Sanitizer v0.4.0 (R5 Preview)"               --notes "R5: keep Codex for Open Source and AI brand names intact; provide visual progress, portable Codex/Claude skills and fixed controls. Chrome ZIP: extract, then use chrome://extensions > Load unpacked. Tampermonkey: import the standalone .user.js. On-device model availability varies. Not Chrome Web Store reviewed. Source text is not sent by this extension to our servers."
+          fi
+
+  r6-quality-release:
+    name: Publish R6 public quality evaluation kit only
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen input and construct reproducible study kit
+        run: python tools/build_r6_quality.py
+      - name: Create distinct R6 evaluation-only release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "r6-quality-v1" >/dev/null 2>&1; then
+            echo "R6 quality release exists; never silently replace a frozen dataset."
+          else
+            gh release create "r6-quality-v1" \
+              "dist/TLS_R6_PUBLIC_QUALITY_KIT_V1_20261024.zip" \
+              "dist/TLS_R6_PUBLIC_QUALITY_KIT_V1_20261024.zip.sha256" \
+              --target "$GITHUB_SHA" \
+              --title "R6 臺灣自然中文品質評測工具包（100 題公開凍結版）" \
+              --notes "Evaluation-only public toolkit: 100 original editorial test cases in five domains, SHA256 freeze, offline structural QA, human review rubric, bilingual review page and optional Chrome built-in Translator runner. No independent real-model quality result has been established. This release does not change R5 browser runtime v0.4.0. No automatic uploading of user texts."
           fi
