@@ -27,6 +27,7 @@ DOCS_PUBLIC={
     "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
     "docs/AI_INTEGRATION.md","docs/NAME_PROTECTION.md",
     "docs/CONTEXT_REVIEW_R8.md","docs/PRODUCT_POSITIONING_R8.md",
+    "docs/R9_USER_TERMS.md","docs/R9_PRODUCT_STRATEGY.md","docs/R9_STAGE_CHECK.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
 PUBLIC_BENCHMARK_FILES={
