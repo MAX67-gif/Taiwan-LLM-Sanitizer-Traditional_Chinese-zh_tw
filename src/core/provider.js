@@ -113,6 +113,9 @@ class BrowserLocalProvider {
     try{return await job;}finally{this.pending.delete(sourceLanguage);this.downloading=false;}
   }
   async translate(text,context={}) {
+    // Explicit user preference wins over every model mode and glossary rule.
+    if(context?.regionalPreference==='original')
+      return {text,state:STATES.UNCHANGED,provider:'user-choice',reason:'PRESERVE_ORIGINAL'};
     const fallback=()=>termResult(text,undefined,context);
     if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
     if(typeof text!=='string'||text.length>MAX)return {...fallback(),reason:'TEXT_TOO_LONG'};
