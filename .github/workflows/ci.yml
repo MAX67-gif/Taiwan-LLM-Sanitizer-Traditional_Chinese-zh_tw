@@ -19,6 +19,8 @@ jobs:
         run: node --test tests/*.js
       - name: Verify offline public lexicon explorer corpus and privacy
         run: python tests/test_explorer_data_r3.py
+      - name: Check local-only privacy and least-privilege contract
+        run: python tests/test_privacy_contract_r3.py
       - name: Build Chrome + single userscript
         run: python tools/build.py
       - name: Verify artifact parity and syntax
