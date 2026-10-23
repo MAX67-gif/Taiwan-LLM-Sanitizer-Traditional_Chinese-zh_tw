@@ -1,12 +1,70 @@
+# Local tooling
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 node_modules/
+.venv/
+venv/
 .DS_Store
 *.log
+
+# Credentials and auth configuration
 .env
 .env.*
 !*.env.example
 *.pem
 *.key
 *.p12
+*.pfx
+*.p8
+*.jks
+id_rsa*
+id_ed25519*
+secrets.*
+credentials.*
+*.token
+.token
+
+# PRIVATE / INTERNAL: these must never be added to the public project.
+private/
+Private/
+PRIVATE/
+_internal/
+internal/
+research_private/
+handoff_private/
+private_docs/
+docs/internal/
+docs/private/
+.local/
+.local_backup/
+*.private.*
+*_PRIVATE_*
+*PRIVATE_HISTORY*
+*INTERNAL_ONLY*
+*DO_NOT_PUBLISH*
+*handoff_private*
+*research_private*
+*.conversation.html
+conversation*.html
+Google_AI_AI_Content_*
+*ARCHIVE_PRIVATE*
+*PRIVATE*.zip
+
+# Personal documents and internal snapshots
+notes_private/
+*.personal.md
+*_internal.md
+*_handoff.md
+*_research_memo.md
+*_grant_application.md
+*_evidence_private.md
+
+# Generated release packs are uploaded as GitHub Actions artifacts, not tracked.
+dist/*.zip
+dist/*SUMS*.txt
+
+# Existing tracked files are not removed by .gitignore.
+# tools/publication_guard.py enforces a stricter fail-closed public allowlist.

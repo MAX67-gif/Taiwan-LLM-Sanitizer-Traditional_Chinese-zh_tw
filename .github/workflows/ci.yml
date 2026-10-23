@@ -13,6 +13,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Enforce public-only files and no hidden data upload
+        run: |
+          python tools/publication_guard.py --self-test
+          python tools/publication_guard.py
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Check human-readable lexicon and compiled glossary match
