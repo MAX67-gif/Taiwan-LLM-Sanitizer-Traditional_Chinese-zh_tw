@@ -23,6 +23,8 @@ jobs:
         run: python tools/generate_lexicon_r3.py --check
       - name: Validate protected named-entity registry and browser bundle
         run: python tools/generate_names_r5.py --check
+      - name: Verify R6 frozen SHA256 and five-family balanced cohort
+        run: node tools/r6_benchmark.js validate
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
       - name: Verify user install, ZIP identity and version strings
@@ -94,6 +96,7 @@ jobs:
       - run: python tests/test_browser_lexicon_r3.py
       - run: python tests/test_explorer_browser_r3.py
       - run: python tests/test_visual_progress_browser_r5.py
+      - run: python tests/test_r6_browser.py
  
   release:
     name: Publish one public installer release per version
