@@ -33,6 +33,27 @@ jobs:
         run: python tests/test_explorer_data_r3.py
       - name: Check local-only privacy and least-privilege contract
         run: python tests/test_privacy_contract_r3.py
+      - name: Compute local-only offline term baseline (not model translation quality)
+        run: |
+          mkdir -p "$RUNNER_TEMP/tls-r6-baseline"
+          node tools/r6_benchmark.js baseline --output "$RUNNER_TEMP/tls-r6-baseline/offline_terms.jsonl" --report "$RUNNER_TEMP/tls-r6-baseline/structural_report.json"
+      - name: Upload R6 public frozen quality kit (not a ranked model report)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R6_Public_Quality_Evaluation_Kit
+          path: |
+            benchmarks/r6/public_frozen_v1.jsonl
+            benchmarks/r6/frozen_manifest_v1.json
+            benchmarks/r6/human_rubric_v1.json
+            examples/TW_R6_Bilingual_Quality_Review_20261024.html
+            examples/TW_R6_Local_Chrome_Model_Run_20261024.html
+            docs/QUALITY_EVALUATION.md
+            tools/r6_benchmark.js
+            tools/translation_qa.js
+            src/core/
+            lexicon/
+            ${{ runner.temp }}/tls-r6-baseline/structural_report.json
+          if-no-files-found: error
       - name: Build Chrome + single userscript
         run: python tools/build.py
       - name: Verify artifact parity and syntax
