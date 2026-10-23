@@ -2,8 +2,8 @@
 (() => {
 'use strict';
 const $=selector=>document.querySelector(selector);
-const mode=$('#mode'),source=$('#source'),domain=$('#domain'),state=$('#state'),host=$('#host'),toggle=$('#toggle'),apply=$('#apply');
-const files=['lexicon_pack.js','engine.js','provider.js','web_adapter.js','content.js'];
+const mode=$('#mode'),source=$('#source'),domain=$('#domain'),tone=$('#tone'),state=$('#state'),host=$('#host'),toggle=$('#toggle'),apply=$('#apply');
+const files=['lexicon_pack.js','preferences.js','engine.js','provider.js','web_adapter.js','content.js'];
 let tab=null,pattern='',origin='',siteId='',enabled=false,busy=false;
 function siteHash(value){
   let hash=2166136261;
@@ -11,7 +11,9 @@ function siteHash(value){
   return 'tls_site_'+hash.toString(16);
 }
 function settingsKey(){return 'tls-site-config-v2:'+origin;}
-function siteConfig(){return {mode:mode.value==='local-ai'?'local-ai':'terms',sourceLanguage:source.value,domain:domain.value};}
+function siteConfig(){return {mode:mode.value==='local-ai'?'local-ai':'terms',sourceLanguage:source.value,domain:domain.value,
+  regionalPreference:document.querySelector('input[name="regionalPreference"]:checked')?.value||'balanced',
+  tone:tone.value};}
 function view(message){
   if(message)state.textContent=message;
   toggle.disabled=busy||!tab;
@@ -60,6 +62,11 @@ async function initialize(){
     if([...source.options].some(x=>x.value===wanted))source.value=wanted;
     const savedDomain=data[settingsKey()]?.domain||'auto';
     if([...domain.options].some(x=>x.value===savedDomain))domain.value=savedDomain;
+    const preferences=data[settingsKey()]||{};
+    const preferred=preferences.regionalPreference||'balanced';
+    const option=document.querySelector('input[name="regionalPreference"][value="'+preferred+'"]');
+    if(option)option.checked=true;
+    if([...tone.options].some(x=>x.value===preferences.tone))tone.value=preferences.tone;
     const scripts=await chrome.scripting.getRegisteredContentScripts({ids:[siteId]});
     enabled=scripts.some(x=>x.matches.includes(pattern));
     if(enabled){

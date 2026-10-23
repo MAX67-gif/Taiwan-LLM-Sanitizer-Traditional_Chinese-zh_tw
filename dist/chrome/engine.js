@@ -6,6 +6,9 @@
   const LEXICON = global.TLSLexicon || (
     typeof module !== 'undefined' && module.exports ? require('./lexicon_pack.js') : null
   );
+  const PREFS = global.TLSPreferences || (
+    typeof module !== 'undefined' && module.exports ? require('./preferences.js') : null
+  );
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
     'settings':'設定','options':'選項','save':'儲存','cancel':'取消',
@@ -36,11 +39,15 @@
   const ATTRS = ['title','aria-label','alt'];
 
   function translateSegment(text, options={}) {
+    const preference = PREFS ? PREFS.levelFor(options) : (options.regionalPreference||'balanced');
+    if (preference==='original') return text;
     const m = text.match(/^(\s*)([\s\S]*?)(\s*)$/);
     if (!m) return text;
     const exact = ENGLISH_LABELS[m[2].toLocaleLowerCase('en-US')];
     if (exact) return m[1] + exact + m[3];
-    let result = LEXICON ? LEXICON.normalize(text,options).text : text;
+    // Low intervention: keep the legacy high-confidence technical pairs,
+    // while avoiding the context-scoped R3 glossary. Never use candidate_r3.
+    let result = preference==='light'?text:(LEXICON ? LEXICON.normalize(text,options).text : text);
     for (const pair of CHINESE_TERMS) result = result.split(pair[0]).join(pair[1]);
     return result;
   }

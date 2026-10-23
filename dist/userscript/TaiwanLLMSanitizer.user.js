@@ -3,7 +3,7 @@
 // @namespace    https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw
 // @version      0.3.0
 // @description  通用離線字詞校正及使用者可選 Chrome 本機 AI 翻譯；逐站啟用，不傳送頁面文字到雲端。
-// @author       MAX67-gif contributors
+// @author       CA L. and Taiwan-LLM-Sanitizer contributors
 // @match        http://*/*
 // @match        https://*/*
 // @run-at       document-idle
@@ -66,6 +66,54 @@ global.TLSLexicon=api;
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 })(typeof globalThis!=="undefined"?globalThis:this);
 
+/* Taiwan-LLM-Sanitizer — original MIT open-core R3 preference contract.
+ * Stewardship: CA L.  No censorship or hidden network calls. */
+(function(global) {
+  'use strict';
+  const VERSION='0.3.0';
+  const LEVELS=Object.freeze(['original','light','balanced','taiwan']);
+  const TONES=Object.freeze(['faithful','natural','formal','casual']);
+  const DOMAINS=Object.freeze(['auto','general','ui','software','engineering','ai','security',
+    'ecommerce','finance','food','travel','education','medicine','media','office',
+    'public','games','industry']);
+  const DEFAULTS=Object.freeze({regionalPreference:'balanced',tone:'faithful',domain:'auto'});
+  const DESCRIPTIONS=Object.freeze({
+    original:'保留原用語',light:'輕度臺灣化',balanced:'自然平衡',taiwan:'臺灣用語優先'
+  });
+  const TONE_LABELS=Object.freeze({
+    faithful:'忠於原文',natural:'自然順口',formal:'正式專業',casual:'輕鬆口語'
+  });
+  function normalize(input={}) {
+    const a=(input && typeof input==='object')?input:{};
+    return {
+      regionalPreference:LEVELS.includes(a.regionalPreference)?a.regionalPreference:DEFAULTS.regionalPreference,
+      tone:TONES.includes(a.tone)?a.tone:DEFAULTS.tone,
+      domain:DOMAINS.includes(a.domain)?a.domain:DEFAULTS.domain
+    };
+  }
+  function levelFor(options={}) {
+    return normalize(options).regionalPreference;
+  }
+  function explainPolicy(options={}) {
+    const s=normalize(options);
+    return Object.freeze({
+      ...s,
+      regionalDescription:DESCRIPTIONS[s.regionalPreference],
+      toneDescription:TONE_LABELS[s.tone],
+      // Chrome Translator API does not expose natural/formal/casual style controls.
+      toneAppliedByChromeTranslator:false,
+      candidateCorpusAutoApplied:false,
+      preservesUserChoice:true
+    });
+  }
+  const api=Object.freeze({
+    VERSION,LEVELS,TONES,DOMAINS,DEFAULTS,DESCRIPTIONS,TONE_LABELS,
+    normalize,levelFor,explainPolicy
+  });
+  global.TLSPreferences=api;
+  if(typeof module!=='undefined' && module.exports) module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
 /* Taiwan-LLM-Sanitizer R3 shared browser core: offline rules, no network. MIT. */
 (function (global) {
   'use strict';
@@ -73,6 +121,9 @@ if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if (global.TLSCore && global.TLSCore.VERSION === VERSION) return;
   const LEXICON = global.TLSLexicon || (
     typeof module !== 'undefined' && module.exports ? require('./lexicon_pack.js') : null
+  );
+  const PREFS = global.TLSPreferences || (
+    typeof module !== 'undefined' && module.exports ? require('./preferences.js') : null
   );
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
@@ -104,11 +155,15 @@ if(typeof module!=="undefined"&&module.exports)module.exports=api;
   const ATTRS = ['title','aria-label','alt'];
 
   function translateSegment(text, options={}) {
+    const preference = PREFS ? PREFS.levelFor(options) : (options.regionalPreference||'balanced');
+    if (preference==='original') return text;
     const m = text.match(/^(\s*)([\s\S]*?)(\s*)$/);
     if (!m) return text;
     const exact = ENGLISH_LABELS[m[2].toLocaleLowerCase('en-US')];
     if (exact) return m[1] + exact + m[3];
-    let result = LEXICON ? LEXICON.normalize(text,options).text : text;
+    // Low intervention: keep the legacy high-confidence technical pairs,
+    // while avoiding the context-scoped R3 glossary. Never use candidate_r3.
+    let result = preference==='light'?text:(LEXICON ? LEXICON.normalize(text,options).text : text);
     for (const pair of CHINESE_TERMS) result = result.split(pair[0]).join(pair[1]);
     return result;
   }
@@ -433,7 +488,7 @@ function createWebLocalizer(doc,options={}){
     throw new TypeError('Valid browser document required');
   let opts={...options},running=false,epoch=0,router=null,observer=null,timer=null,working=false;
   const changedTexts=new Map(),changedAttrs=new Map(),queue=[],queued=new Set();
-  const requestedDomain=(el)=>opts.domain&&opts.domain!=='auto'?opts.domain:requestedDomain(el);
+  const requestedDomain=(el)=>opts.domain&&opts.domain!=='auto'?opts.domain:domainOf(el);
   let stats={scanned:0,converted:0,unchanged:0,errors:0,skipped:0,overflow:0,lastState:'IDLE',lastReason:'',modelProgress:0};
   function publish(){
     try{opts.onStatus?.(getStatus());}catch(_){}
@@ -492,7 +547,7 @@ function createWebLocalizer(doc,options={}){
     if(old?.after===before)return;
     if(old)changedTexts.delete(node);
     if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-    const result=await router.translate(before,{domain:requestedDomain(node.parentElement)});
+    const result=await router.translate(before,{domain:requestedDomain(node.parentElement),regionalPreference:opts.regionalPreference,tone:opts.tone});
     if(!running||myEpoch!==epoch||skipText(node)||node.data!==before)return;
     stats.scanned++;stats.lastState=result.state||'UNKNOWN';stats.lastReason=result.reason||'';
     if(typeof result.text==='string'&&result.text!==before){
@@ -511,7 +566,7 @@ function createWebLocalizer(doc,options={}){
       if(existing?.[name]?.after===before)continue;
       if(existing?.[name]){delete existing[name];if(!Object.keys(existing).length)changedAttrs.delete(el);}
       if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-      const result=await router.translate(before,{domain:requestedDomain(el)});
+      const result=await router.translate(before,{domain:requestedDomain(el),regionalPreference:opts.regionalPreference,tone:opts.tone});
       if(!running||myEpoch!==epoch||!el.isConnected||el.getAttribute(name)!==before)continue;
       if(typeof result.text==='string'&&result.text!==before){
         const group=changedAttrs.get(el)||{};
@@ -586,6 +641,7 @@ function createWebLocalizer(doc,options={}){
     return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
       domain:opts.domain||'auto',
+      regionalPreference:opts.regionalPreference||'balanced',tone:opts.tone||'faithful',
       queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
   }
@@ -600,9 +656,9 @@ if(typeof module!=='undefined'&&module.exports)module.exports=api;
 /* R3 standalone userscript adapter: no external dependencies, MIT. */
 (() => {
 'use strict';
-if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders)return;
+if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders || !globalThis.TLSPreferences)return;
 const origin=location.origin;
-const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin,domainKey='tls-domain-r3:'+origin;
+const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin,domainKey='tls-domain-r3:'+origin,preferenceKey='tls-regional-r3:'+origin,toneKey='tls-tone-r3:'+origin;
 let enabled=Boolean(GM_getValue(activeKey,false)),paused=false;
 let mode=GM_getValue(modeKey,'terms')==='local-ai'?'local-ai':'terms';
 let sourceLanguage=GM_getValue(sourceKey,'auto');
@@ -614,6 +670,9 @@ const domainLabels={auto:'自動判斷',general:'一般',ui:'介面選單',softw
  education:'教育',medicine:'醫療',media:'社群影音',office:'辦公',public:'公共行政',games:'遊戲',industry:'工業'};
 let domain=GM_getValue(domainKey,'auto');
 if(!domains.includes(domain))domain='auto';
+let regionalPreference=GM_getValue(preferenceKey,'balanced'),tone=GM_getValue(toneKey,'faithful');
+const initial=globalThis.TLSPreferences.normalize({regionalPreference,tone});
+regionalPreference=initial.regionalPreference;tone=initial.tone;
 const panel=document.createElement('div');
 panel.dataset.tlsUi='true';panel.style.cssText='position:fixed;right:10px;top:10px;z-index:2147483646;pointer-events:auto';
 const shadow=panel.attachShadow({mode:'closed'});
@@ -621,10 +680,26 @@ const wrap=document.createElement('div');
 wrap.style.cssText='background:#fff;color:#183247;border:1px solid #94a3b8;box-shadow:0 4px 18px #0003;padding:8px;border-radius:12px;font:12px/1.5 system-ui,sans-serif;max-width:250px';
 const title=document.createElement('div');title.textContent='TLS 臺灣繁中化 R3';title.style.fontWeight='700';
 const status=document.createElement('div');status.setAttribute('aria-live','polite');status.style.cssText='margin:4px 0;max-width:230px;overflow-wrap:anywhere';
-const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select'),domainSelect=document.createElement('select');
+const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select'),domainSelect=document.createElement('select'),preferenceSelect=document.createElement('select'),toneSelect=document.createElement('select');
 for(const btn of [pause,modeButton])btn.style.cssText='padding:5px 8px;border:0;border-radius:7px;color:#fff;background:#0f766e;cursor:pointer;margin:3px 3px 3px 0;font:12px system-ui';
 sourceSelect.style.cssText='margin:4px 0;width:100%;padding:5px;border-radius:7px;background:white;color:#111;border:1px solid #94a3b8';
 domainSelect.style.cssText=sourceSelect.style.cssText;
+preferenceSelect.style.cssText=sourceSelect.style.cssText;
+toneSelect.style.cssText=sourceSelect.style.cssText;
+preferenceSelect.setAttribute('aria-label','臺灣用語偏好');
+toneSelect.setAttribute('aria-label','譯文語氣偏好（尚未由 Chrome 模型控制）');
+for(const level of globalThis.TLSPreferences.LEVELS){
+  const opt=document.createElement('option');opt.value=level;
+  opt.textContent='用語：'+globalThis.TLSPreferences.DESCRIPTIONS[level];
+  preferenceSelect.appendChild(opt);
+}
+preferenceSelect.value=regionalPreference;
+for(const value of globalThis.TLSPreferences.TONES){
+  const opt=document.createElement('option');opt.value=value;
+  opt.textContent='語氣偏好：'+globalThis.TLSPreferences.TONE_LABELS[value];
+  toneSelect.appendChild(opt);
+}
+toneSelect.value=tone;
 for(const d of domains){
   const option=document.createElement('option');option.value=d;option.textContent='領域：'+domainLabels[d];
   domainSelect.appendChild(option);
@@ -635,9 +710,12 @@ for(const lang of sources){
   sourceSelect.appendChild(option);
 }
 sourceSelect.value=sourceLanguage;
-wrap.append(title,status,pause,modeButton,sourceSelect,domainSelect);shadow.appendChild(wrap);
+const warning=document.createElement('small');
+warning.textContent='語氣偏好先保存在本機；目前 Chrome 本機模型無法保證依此改寫，請勿用於需要精確措辭的敏感文件。';
+warning.style.cssText='display:block;opacity:.72;margin-top:4px;line-height:1.35';
+wrap.append(title,status,pause,modeButton,sourceSelect,domainSelect,preferenceSelect,toneSelect,warning);shadow.appendChild(wrap);
 const ctrl=globalThis.TLSWeb.createWebLocalizer(document,{
-  mode,sourceLanguage,domain,onStatus:(snapshot)=>renderStatus(snapshot)
+  mode,sourceLanguage,domain,regionalPreference,tone,onStatus:(snapshot)=>renderStatus(snapshot)
 });
 function renderStatus(snapshot){
   if(!snapshot)return;
@@ -656,12 +734,12 @@ function render(){
 }
 function apply(){
   if(!enabled)return;
-  ctrl.configure({mode,sourceLanguage,domain});if(!paused)ctrl.start();
+  ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});if(!paused)ctrl.start();
   render();
 }
 function setEnabled(next){
   enabled=Boolean(next);GM_setValue(activeKey,enabled);paused=false;
-  if(enabled){ctrl.configure({mode,sourceLanguage});ctrl.start();}
+  if(enabled){ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});ctrl.start();}
   else ctrl.stop();
   render();
 }
@@ -679,6 +757,14 @@ domainSelect.addEventListener('change',()=>{
   if(!enabled)return;
   domain=domains.includes(domainSelect.value)?domainSelect.value:'auto';
   GM_setValue(domainKey,domain);apply();
+});
+preferenceSelect.addEventListener('change',()=>{
+  regionalPreference=globalThis.TLSPreferences.normalize({regionalPreference:preferenceSelect.value}).regionalPreference;
+  GM_setValue(preferenceKey,regionalPreference);apply();
+});
+toneSelect.addEventListener('change',()=>{
+  tone=globalThis.TLSPreferences.normalize({tone:toneSelect.value}).tone;
+  GM_setValue(toneKey,tone);apply();
 });
 GM_registerMenuCommand('TLS：啟用／停用本站',()=>setEnabled(!enabled));
 GM_registerMenuCommand('TLS：暫停／恢復',()=>{if(enabled)pause.click();});
