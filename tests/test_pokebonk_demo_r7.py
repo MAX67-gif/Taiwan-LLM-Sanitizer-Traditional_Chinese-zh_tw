@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright,expect
 ROOT=Path(__file__).resolve().parents[1]
 SRC=ROOT/"dist/pokebonk/chrome/content.js"
 MARKER="#tls-pokebonk-r7-display-demo"
-HTML="""<!doctype html><html><body>
+HTML="""<!doctype html><html><head><meta charset="utf-8"></head><body>
 <script type="application/x-disabled-module" src="/assets/main-future-build.js"></script>
 <h1 id="heading">主菜单</h1><div id="creature">妙蛙种子</div>
 <div id="attack" aria-label="十万伏特">喷射火焰</div>
@@ -20,7 +20,7 @@ with sync_playwright() as pw:
     page=browser.new_page(viewport={"width":390,"height":800},accept_downloads=True)
     network=[]
     page.on("request",lambda req:network.append(req.url))
-    page.route("https://pokebonk.com/*",lambda route:route.fulfill(status=200,content_type="text/html",body=HTML))
+    page.route("https://pokebonk.com/*",lambda route:route.fulfill(status=200,content_type="text/html; charset=utf-8",body=HTML))
     page.goto("https://pokebonk.com/")
     content=SRC.read_text(encoding="utf-8")
     page.add_script_tag(content=content)
