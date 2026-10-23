@@ -28,6 +28,9 @@ with sync_playwright() as pw:
     assert page.locator("#input").input_value()=="菜单"
     page.evaluate("document.querySelector('#updates').innerHTML='<nav><span id=added>主菜单</span></nav>'")
     page.wait_for_function("document.querySelector('#added').textContent==='主選單'")
+    page.evaluate("window.__r3.configure({domain:'food'})")
+    page.wait_for_function("document.querySelector('#food').textContent==='菜單'")
+    assert page.locator("#ui").inner_text()=="菜單"
     page.evaluate("window.__r3.stop()")
     assert page.locator("#ui").inner_text()=="菜单"
     assert page.locator("#ui_en").inner_text()=="menu"
