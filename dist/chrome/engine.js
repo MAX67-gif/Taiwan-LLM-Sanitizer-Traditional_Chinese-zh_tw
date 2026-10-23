@@ -1,7 +1,7 @@
-/* Taiwan-LLM-Sanitizer R1 shared browser core: offline rules, no network. MIT. */
+/* Taiwan-LLM-Sanitizer R2 shared browser core: offline rules, no network. MIT. */
 (function (global) {
   'use strict';
-  const VERSION = '0.1.0';
+  const VERSION = '0.2.0';
   if (global.TLSCore && global.TLSCore.VERSION === VERSION) return;
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
