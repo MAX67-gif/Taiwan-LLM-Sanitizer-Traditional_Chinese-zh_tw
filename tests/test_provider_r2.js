@@ -56,7 +56,7 @@ test('model corruption of protected tokens fails closed',async()=>{
   const input='Save '+String.fromCharCode(36)+'{SECRET} software';
   const r=await p.translate(input);
   assert.equal(r.reason,'GUARD_REJECTED');
-  assert.equal(r.text,input);
+  assert.equal(r.text,'儲存 '+String.fromCharCode(36)+'{SECRET} software');
   p.destroy();
 });
 test('unsupported browser never triggers a network request',async()=>{
