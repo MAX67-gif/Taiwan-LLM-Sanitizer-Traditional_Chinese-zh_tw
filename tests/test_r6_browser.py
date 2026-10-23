@@ -55,6 +55,7 @@ with sync_playwright() as pw:
     runner.on("request",lambda req:runner_requests.append(req.url))
     runner.set_content(RUNNER.read_text(encoding="utf-8"))
     runner.wait_for_function("document.querySelector('#dataset')!==null")
+    runner.evaluate("delete window.Translator")
     runner.get_by_role("button",name="檢查 Chrome Translator API").click()
     assert "沒有提供" in runner.locator("#capability").inner_text()
     assert runner.locator("#start").is_disabled()
