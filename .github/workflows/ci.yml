@@ -17,6 +17,8 @@ jobs:
         run: python tools/generate_lexicon_r3.py --check
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
+      - name: Verify offline public lexicon explorer corpus and privacy
+        run: python tests/test_explorer_data_r3.py
       - name: Build Chrome + single userscript
         run: python tools/build.py
       - name: Verify artifact parity and syntax
@@ -77,3 +79,4 @@ jobs:
       - run: python tests/test_userscript_browser.py
       - run: python tests/test_popup_r2.py
       - run: python tests/test_browser_lexicon_r3.py
+      - run: python tests/test_explorer_browser_r3.py
