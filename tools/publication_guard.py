@@ -4,6 +4,7 @@ No third-party dependencies. This is a supplemental static control, not a
 guarantee that every future change or browser behavior is risk-free.
 """
 import argparse
+import posixpath
 import re
 import subprocess
 import sys
@@ -105,7 +106,7 @@ def validate(paths:list[str])->list[str]:
         for href in re.findall(r"\]\(([^)\s]+)(?:\s+[^)]*)?\)",value):
             if "://" in href or href.startswith(("#","mailto:")):continue
             linked=(Path(name).parent/href.split("#",1)[0]).as_posix()
-            linked=str(Path(linked))
+            linked=posixpath.normpath(linked)
             if linked not in present and linked not in ("","." ) and not (ROOT/linked).is_dir():
                 errors.append(f"{name}: broken local link {href}")
     return errors
