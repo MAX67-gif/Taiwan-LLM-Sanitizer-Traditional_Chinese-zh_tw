@@ -1,8 +1,11 @@
-/* Taiwan-LLM-Sanitizer R2 shared browser core: offline rules, no network. MIT. */
+/* Taiwan-LLM-Sanitizer R3 shared browser core: offline rules, no network. MIT. */
 (function (global) {
   'use strict';
-  const VERSION = '0.2.0';
+  const VERSION = '0.3.0';
   if (global.TLSCore && global.TLSCore.VERSION === VERSION) return;
+  const LEXICON = global.TLSLexicon || (
+    typeof module !== 'undefined' && module.exports ? require('./lexicon_pack.js') : null
+  );
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
     'settings':'設定','options':'選項','save':'儲存','cancel':'取消',
@@ -32,24 +35,24 @@
   const SKIP = 'script,style,noscript,textarea,select,option,pre,code,kbd,samp,svg,canvas,math,template,[contenteditable],[translate="no"],[data-no-translate],[data-tls-ui],.monaco-editor,.cm-editor';
   const ATTRS = ['title','aria-label','alt'];
 
-  function translateSegment(text) {
+  function translateSegment(text, options={}) {
     const m = text.match(/^(\s*)([\s\S]*?)(\s*)$/);
     if (!m) return text;
     const exact = ENGLISH_LABELS[m[2].toLocaleLowerCase('en-US')];
     if (exact) return m[1] + exact + m[3];
-    let result = text;
+    let result = LEXICON ? LEXICON.normalize(text,options).text : text;
     for (const pair of CHINESE_TERMS) result = result.split(pair[0]).join(pair[1]);
     return result;
   }
-  function translateText(text) {
+  function translateText(text, options={}) {
     if (typeof text !== 'string' || !text || text.length > 20000) return text;
     let out = '', at = 0;
     PROTECT.lastIndex = 0;
     for (const match of text.matchAll(PROTECT)) {
-      out += translateSegment(text.slice(at, match.index)) + match[0];
+      out += translateSegment(text.slice(at, match.index),options) + match[0];
       at = match.index + match[0].length;
     }
-    return out + translateSegment(text.slice(at));
+    return out + translateSegment(text.slice(at),options);
   }
   function blocked(el) {
     if (!el || el.nodeType !== 1) return true;

@@ -3,7 +3,7 @@
 'use strict';
 const $=selector=>document.querySelector(selector);
 const mode=$('#mode'),source=$('#source'),state=$('#state'),host=$('#host'),toggle=$('#toggle'),apply=$('#apply');
-const files=['engine.js','provider.js','web_adapter.js','content.js'];
+const files=['lexicon_pack.js','engine.js','provider.js','web_adapter.js','content.js'];
 let tab=null,pattern='',origin='',siteId='',enabled=false,busy=false;
 function siteHash(value){
   let hash=2166136261;
