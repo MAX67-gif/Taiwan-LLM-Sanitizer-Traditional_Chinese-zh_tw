@@ -1,5 +1,12 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R7.1 · 2026-10-24 · 顯示範圍安全修補（獨立選用示範）
+
+- 修正玩家／聊天欄位的 title、aria-label 與可見文字適用範圍不一致問題。
+- 對 hidden、aria-hidden、inert 及 CSS 隱藏元素不再執行字串改寫，增加合成回歸測試。
+- 新發布版本為 `0.1.1`，不覆寫原本 `0.1.0`；通用 TLS R5 引擎與 R6 凍結題庫不變。
+- 此版本仍未驗證實際遊戲相容或網站官方允許；未匯入任何私人回傳／受著作權保護遊戲資產。
+
 ## R7 · 2026-10-24 · Opt-in PokéBonk display-only demo (separate release)
 
 - 新增可選用、非官方的 136 筆臺灣用語對照，僅供特定網站的文字顯示層精確配對。

@@ -3,7 +3,7 @@
  * The profile is generated from src/demos/pokebonk/profile.json at build time. */
 (function(global){
 'use strict';
-const VERSION="0.1.0";
+const VERSION="0.1.1";
 const ALLOWED_HOSTS=new Set(["pokebonk.com","www.pokebonk.com"]);
 function compile(entries) {
  if(!Array.isArray(entries))throw Error("PROFILE_DATA_REQUIRED");
@@ -38,18 +38,35 @@ function compatibility(doc){
     :"版本與來源未充分驗證；僅可試用顯示層文字，不保證 WebGL／Canvas 覆蓋。"
  };
 }
+// Keep the same content and ancestry boundaries for text AND display attributes.
+// This also excludes semantically hidden UI and common CSS-hidden nodes.
+const SKIP_COMMON='script,style,noscript,code,pre,textarea,select,option,svg,canvas,iframe,video,audio,template,[contenteditable],[translate="no"],[data-tls-pokebonk-demo]';
+const SKIP_PERSONAL='[class*="trainer-name"],[class*="player-name"],[class*="nickname"],[class*="chat"],[id*="nickname"],[id*="password"],[data-user-content]';
+const SKIP_HIDDEN='[hidden],[aria-hidden="true"],[inert]';
+function excluded(el,forText) {
+ if(!el||el.nodeType!==1)return true;
+ try{
+  const selectors=SKIP_COMMON+','+SKIP_PERSONAL+','+SKIP_HIDDEN+(forText?',input':'');
+  if(el.closest(selectors)||el.isContentEditable)return true;
+  for(let p=el;p&&p.nodeType===1;p=p.parentElement){
+   const local=p.style;
+   if(local&&(local.display==='none'||local.visibility==='hidden'||local.visibility==='collapse'))return true;
+   if(typeof global.getComputedStyle==='function'){
+    const css=global.getComputedStyle(p);
+    if(css&&(css.display==='none'||css.visibility==='hidden'||css.visibility==='collapse'))return true;
+   }
+  }
+  return false;
+ }catch(_){return true;}
+}
 function eligibleText(node) {
- if(!node||node.nodeType!==3||!node.parentElement)return false;
- const e=node.parentElement;
- if(e.closest('script,style,noscript,code,pre,textarea,input,select,option,svg,canvas,iframe,video,audio,template,[contenteditable],[translate="no"],[data-tls-pokebonk-demo]'))return false;
- if(e.closest('[class*="trainer-name"],[class*="player-name"],[class*="nickname"],[class*="chat"],[id*="nickname"],[id*="password"],[data-user-content]'))return false;
- return true;
+ return !!node&&node.nodeType===3&&!!node.parentElement&&!excluded(node.parentElement,true);
 }
 function eligibleAttr(el,name) {
  if(!el||el.nodeType!==1||!['title','aria-label','placeholder','alt'].includes(name))return false;
- if(el.closest('[data-tls-pokebonk-demo],script,style,textarea,[contenteditable],[translate="no"],[data-user-content]'))return false;
- if(el.matches('input[type="password"],input[type="email"],input[name*="password"]'))return false;
- return true;
+ if(excluded(el,false))return false;
+ if(typeof el.matches!=='function')return false;
+ return !el.matches('input[type="password"],input[type="email"],input[name*="password"]');
 }
 const PUBLIC_API=Object.freeze({VERSION,ALLOWED_HOSTS,compile,translateExact,compatibility,eligibleText,eligibleAttr});
 global.TLSPokebonkProfile=PUBLIC_API;

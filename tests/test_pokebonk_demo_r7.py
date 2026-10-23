@@ -8,7 +8,10 @@ HTML="""<!doctype html><html><head><meta charset="utf-8"></head><body>
 <script type="application/x-disabled-module" src="/assets/main-future-build.js"></script>
 <h1 id="heading">主菜单</h1><div id="creature">妙蛙种子</div>
 <div id="attack" aria-label="十万伏特">喷射火焰</div>
-<div class="player-name" id="player">小火龙</div>
+<div class="player-name" id="player" title="设置">小火龙</div>
+<div class="chat-stream" id="chat" aria-label="主菜单">主菜单</div>
+<div id="semantically-hidden" hidden aria-label="主菜单">主菜单</div>
+<div id="css-hidden" style="display:none" title="设置">主菜单</div>
 <input type="text" id="nick" value="小火龙" placeholder="账号名">
 <input type="password" id="password" value="test">
 <p id="unknown">这个句子包含技能，但不是独立词条。</p>
@@ -42,6 +45,13 @@ with sync_playwright() as pw:
     expect(page.locator("#attack")).to_have_text("噴射火焰")
     expect(page.locator("#attack")).to_have_attribute("aria-label","十萬伏特")
     expect(page.locator("#player")).to_have_text("小火龙")
+    expect(page.locator("#player")).to_have_attribute("title","设置")
+    expect(page.locator("#chat")).to_have_text("主菜单")
+    expect(page.locator("#chat")).to_have_attribute("aria-label","主菜单")
+    expect(page.locator("#semantically-hidden")).to_have_text("主菜单")
+    expect(page.locator("#semantically-hidden")).to_have_attribute("aria-label","主菜单")
+    expect(page.locator("#css-hidden")).to_have_text("主菜单")
+    expect(page.locator("#css-hidden")).to_have_attribute("title","设置")
     expect(page.locator("#nick")).to_have_value("小火龙")
     expect(page.locator("#password")).to_have_value("test")
     expect(page.locator("#unknown")).to_have_text("这个句子包含技能，但不是独立词条。")

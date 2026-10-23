@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TLS PokéBonk 臺灣繁中試玩版（非官方）",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Opt-in, display-only Taiwanese terminology demo. No game/state/network changes.",
   "permissions": [],
   "content_scripts": [
