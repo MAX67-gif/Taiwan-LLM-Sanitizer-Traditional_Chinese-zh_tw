@@ -3,8 +3,8 @@
   "benchmark_id": "R6_PUBLIC_FROZEN_V1",
   "frozen_on": "2026-10-24",
   "frozen_input_path": "benchmarks/r6/public_frozen_v1.jsonl",
-  "exact_sha256_utf8": "7a558b78b92a6952673ecefec50854de9755d5d42dff29b8e76d3cdef3b2f7d4",
-  "git_blob_sha1": "3ad9b7a02743502e17732bf1340ce41c51991322",
+  "exact_sha256_utf8": "e41e2589404ad8699bde7a4363eb9a6d81b1492c490d0f69de65a3fc67f403c1",
+  "git_blob_sha1": "13abcec571fa6d9594be3dac2da8d4593ea0feef",
   "record_count": 100,
   "family_counts": {
     "technical": 20,
