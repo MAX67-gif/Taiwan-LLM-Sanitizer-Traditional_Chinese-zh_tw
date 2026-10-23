@@ -38,6 +38,12 @@
 
 **重要：目前只完成測試設施，還沒有經獨立評審驗證的真實模型自然度成績。** R5 的離線詞彙模式不是全文翻譯模型；QA 通過也不代表譯文已忠實且自然。
 
+## PokéBonk 臺灣繁中示範（獨立可選用）
+
+我們新增了 **[PokéBonk 專用的臺灣中文試玩 Profile](examples/pokebonk-demo/README.md)**，目前有 136 筆自行整理的短詞與寶可夢／招式名稱示例。提供 [GitHub 獨立示範 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r7-pokebonk-demo-0.1.0) 內的 Chrome ZIP 與 Tampermonkey 單檔。
+
+**重要：** 這是僅限 pokebonk.com 的非官方、需手動啟用顯示層示範。它不修改戰鬥、登入、存檔或網路，不保證能翻譯 WebGL／Canvas，也沒有將其他遊戲的完整程式碼或素材放進 MIT。PokéBonk 自身使用條款可能限制頁面修改，啟用前請自行確認。**通用 TLS R5 擴充功能仍獨立，未因示範而強制加入遊戲特殊邏輯。**
+
 ## 你可以用它做什麼？
 
 | 使用方式 | 現況 | 適用情境 |

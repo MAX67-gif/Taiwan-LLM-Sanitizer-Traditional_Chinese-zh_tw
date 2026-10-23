@@ -89,3 +89,7 @@ benchmarks/r6/R6_STRUCTURAL_BASELINE.json
 
 # R6 reproducible study kit checksum
 dist/*.sha256
+
+# Generated optional display-only game demo release artifacts
+dist/pokebonk/*.zip
+dist/pokebonk/*SHA256SUMS*.txt
