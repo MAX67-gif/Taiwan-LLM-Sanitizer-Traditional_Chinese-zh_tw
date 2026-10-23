@@ -1,5 +1,16 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R5 · 2026-10-24 · Preview 0.4.0
+
+- 新增專案／品牌名稱保護，修正「Codex for Open Source → 開源法典」等不可接受的直譯，且不全域封鎖一般詞語。
+- Chrome 本機模型翻譯前保護完整名稱，還原後驗證；損壞名稱和技術占位符的結果不直接寫入 DOM。
+- 新增可供 Codex 與 Claude Code 載入的 Agent Skill、公開專名庫及完全本機的翻譯 QA 指令。
+- 新增瀏覽器內固定位置視覺進度環、可收合的 Tampermonkey 設定面板，Chrome Popup 固定底部操作列。
+- 安裝包 ZIP、獨立 .user.js、SHA256 校驗由 CI 產生並作為 Release／Actions Assets；安裝教學公開。
+- 既有 MIT/Open-Core、逐站授權、私隱不蒐集、R3 詞庫和 CLI 用語偏好保留。Skill 指令不可宣稱雲端 AI 也是純本地。
+- 仍未解決 Canvas/WebGL、OCR、完整 PDF、模型自然語意品質、真正可控制文風等問題。
+
+
 ## R3 · 2026-10-24 · Preview 0.3.0
 
 - 新增 883 筆跨 16 領域的編輯候選（`suggestion_only`，待人工審核），67 筆小型啟用種子；沒有任何地區用詞審查或「禁用詞」。
