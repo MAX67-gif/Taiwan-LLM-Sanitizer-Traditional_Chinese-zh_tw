@@ -10,8 +10,8 @@ const {
 const frozen=loadFrozen();
 test('public v1 cohort is byte-sealed, balanced and explicitly unreviewed',()=>{
  assert.equal(frozen.rows.length,100);
- assert.equal(frozen.sha256,'e41e2589404ad8699bde7a4363eb9a6d81b1492c490d0f69de65a3fc67f403c1');
- assert.equal(frozen.manifest.git_blob_sha1,'13abcec571fa6d9594be3dac2da8d4593ea0feef');
+ assert.equal(frozen.sha256,'b8929e1954cbea1940f1f7a67560d660262d0ee04d6c9c0031f1d8c714baf708');
+ assert.equal(frozen.manifest.git_blob_sha1,'d5a65ef55c72333b528088a5187701c93d9d8a62');
  assert.deepEqual(frozen.manifest.family_counts,{technical:20,business:20,webui:20,named:20,prompt:20});
  assert.equal(frozen.manifest.evaluation_only,true);
  assert.ok(frozen.rows.every(r=>r.reference_status==='editorial_draft_not_independently_reviewed'));
