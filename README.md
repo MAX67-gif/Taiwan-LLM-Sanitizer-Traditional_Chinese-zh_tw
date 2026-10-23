@@ -1,12 +1,23 @@
 # Taiwan-LLM-Sanitizer｜臺灣繁中網頁／AI 技術內容在地化
 
-> **Status: R2 preview 0.2.0 / 原型驗證中** · 2026-10-23 · MIT open core · zh-TW first
+> **Status: R3 preview 0.3.0 / 原型驗證中** · 2026-10-23 · MIT open core · zh-TW first
 
 Taiwan-LLM-Sanitizer is an independent open-source project for making browser interfaces, open-source technical documents and AI prompts easier to use in **Traditional Chinese as used in Taiwan (zh-TW)**. It prioritizes meaning preservation, syntax safety, privacy, and reversible changes.
 
 **This is an independent project; it is not affiliated with OpenAI, Google, Tampermonkey, any particular website, game or translation service. No funding or approval is claimed.**
 
 **正式定位：通用型臺灣繁體中文在地化平台。沒有任何指定網站、遊戲或產業是產品的必要條件；Tampermonkey 只是其中一個可選擇的轉接器，不是產品本身。**
+
+## R3 新功能：臺灣語境詞庫與非文字審查原則（2026-10-24）
+
+- **883 筆分類候選詞條**：保存在 [R3 多領域詞庫](lexicon/candidates_r3.json)，涵蓋 UI、工程、AI、金融、旅遊、醫療、教育、遊戲、媒體、日常等 16 類。這些是**編輯產生、待獨立審核的候選**，**不會自動替換**，不可宣稱官方認證。
+- **67 筆保守啟用種子詞**：[approved_r3.json](lexicon/approved_r3.json)，其中 35 筆預設適用，32 筆須明確領域。既有 R2 規則保留，不以地區用語進行懲罰或審查。
+- **Menu/菜单 多義處理**：UI 導覽「選單」、餐飲「菜單」，未確認語境即保留原文。個人與網站翻譯偏好未來可繼續擴充。
+- **本機 CLI 可指定領域**：加 `--domain ui`、`--domain food` 或其他已列出的領域；預設 general 以降低過度轉換。
+- **沒有文字獄**：使用者有權選擇原文、臺灣說法或其他慣用語。技術詞庫是可審查的語言資料，不是強制語言正確性清單。
+- **Privacy-first 架構**：不自行蒐集或外傳造訪內容，不安插背景追蹤；逐站模式設定僅本機保存。瀏覽器可能下載翻譯語言包，應與「偷偷上傳頁面文字」分開理解。
+
+說明： [詞庫治理](docs/LEXICON_GOVERNANCE_R3.md) · [市場差異化](docs/COMPETITIVE_RESEARCH_R3.md) · [網頁 Overlay 規格（尚未完成）](docs/WEBSITE_OVERLAY_ARCHITECTURE_R3.md) · [隱私技術契約](docs/PRIVACY_FIRST_TRANSLATION_R3.md)。
 
 ## R2 操作重點
 
