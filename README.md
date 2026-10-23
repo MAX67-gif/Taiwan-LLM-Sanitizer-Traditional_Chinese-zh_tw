@@ -2,16 +2,34 @@
 
 **把外文網頁、常見介面文字及部分技術內容，轉成自己看得順眼的臺灣繁體中文。** 可以保留原詞，也可以選輕度臺灣化、自然平衡或臺灣用語優先；不搞禁語、不強制改寫。
 
-**版本：R3 Preview 0.3.0｜開源 MIT 核心｜專案發起及維護治理：CA L.**
+**版本：R5 Preview 0.4.0｜開源 MIT 核心｜專案發起及維護治理：CA L.**
 
 > **隱私承諾：本專案不收集個資、瀏覽紀錄、網頁原文或翻譯結果，不建立接收內容的後端服務，也沒有追蹤或遙測功能。正在翻譯的文字由你的瀏覽器或自己的電腦在本機處理，工具不會自行把它上傳到任何翻譯伺服器。** Chrome 可能為本機翻譯下載語言模型；原網站和瀏覽器本身的網路行為不是本工具的傳輸。詳見 [隱私政策](PRIVACY.md)。
+
+## 直接下載安裝（無須寫程式）
+
+**[GitHub Releases：Chrome ZIP、Tampermonkey 單檔與 SHA256](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases)**
+
+如果目前尚未出現 R5 Release，也可用 [dist/chrome 已完成組裝的擴充功能目錄](dist/chrome) 或 [dist/userscript 單檔腳本](dist/userscript/TaiwanLLMSanitizer.user.js)。Chrome ZIP **要先解壓，再從 chrome://extensions 選「載入未封裝項目」**；它不是可以雙擊直接安裝的 Chrome 商店版。
+
+- **[Chrome 圖解式文字教學、更新與常見問題](docs/INSTALL_CHROME.md)**
+- **[Tampermonkey 完整安裝與啟用教學](docs/INSTALL_TAMPERMONKEY.md)**
+- **[Codex／Claude Agent Skill 使用說明](docs/AI_INTEGRATION.md)**
+
+> 不要從陌生網站下載重新封裝的擴充功能；確認 GitHub 官方 Release 的來源及檔案 checksum。
+
+## R5：不再把品牌直譯成普通詞
+
+例如 **Codex for Open Source** 是 OpenAI 計畫名稱，應保留官方英文，不可翻成「開源法典」。R5 增加 [受保護的專有名稱庫](lexicon/protected_names_r5.json) 及本機 [翻譯前後 QA 工具](tools/translation_qa.js)；模型若損壞專有名稱、URL 或重要占位符，會拒絕不安全的結果或提示人工檢查。
+
+**網站右下角的固定圓形狀態**：轉動代表正在處理；勾號代表目前可翻譯的區域已完成；橘色表示有部分區域未完成。它不會因出現長訊息而推擠站上其他按鈕。Chrome 設定視窗中的操作列也固定在底部，不會因狀態變動而位移。
 
 ## 你可以用它做什麼？
 
 | 使用方式 | 現況 | 適用情境 |
 | --- | --- | --- |
-| **Chrome／Chromium 擴充功能** | R3 原型 | 使用者自行允許的網站、SPA 上部分 DOM 文字 |
-| **Tampermonkey 單檔腳本** | R3 原型 | 不需額外驅動腳本的逐站翻譯與詞彙校正 |
+| **Chrome／Chromium 擴充功能** | R5 原型 | 使用者自行允許的網站、SPA 上部分 DOM 文字 |
+| **Tampermonkey 單檔腳本** | R5 原型 | 不需額外驅動腳本的逐站翻譯與詞彙校正 |
 | **Node.js CLI** | 保守離線原型 | Markdown、TXT、部分 JSON／JSONL 批次處理 |
 | **本機詞庫探索器** | 可直接使用 | 查詢臺灣／中國／英文技術詞、按領域比較 |
 
@@ -55,7 +73,13 @@ node tools/localize_cli.js --input ./data.json --output ./localized --json-strin
 
 ## 目前的限制
 
-R3 是原型，不保證任意語言的全文品質。圖片／OCR、Canvas／WebGL、跨來源 iframe、封閉 Shadow DOM、部分 PDF、特殊網站結構，以及真正可由模型控制的「自然、正式、口語」文風尚未完整支援。詳見 [功能與限制](docs/FEATURES.md)。
+R5 是原型，不保證任意語言的全文品質。圖片／OCR、Canvas／WebGL、跨來源 iframe、封閉 Shadow DOM、部分 PDF、特殊網站結構，以及真正可由模型控制的「自然、正式、口語」文風尚未完整支援。詳見 [功能與限制](docs/FEATURES.md)。
+
+## AI 平台的安全用語技能
+
+R5 新增可由 **Codex 與 Claude Code** 讀取的同一份 [taiwan-zh-tw-localization Skill](skills/taiwan-zh-tw-localization/SKILL.md)。把這份 Repository 交給有實際檔案權限的 AI，或按 [AI 整合教學](docs/AI_INTEGRATION.md) 放入自己的專案，即可讓 AI 用專有名稱及詞庫輔助翻譯、執行本機 QA。
+
+Skill 不等於 AI 翻譯模型，也不會自動接管任何雲端 AI 平台。**若你把私人文字直接貼到雲端 Codex／Claude，該平台另有自己的資料處理政策**，不能因我們的本機擴充功能沒有上傳文字，就把雲端對話說成完全離線。
 
 ## 了解與參與
 
@@ -66,3 +90,13 @@ R3 是原型，不保證任意語言的全文品質。圖片／OCR、Canvas／We
 核心原創程式以 **MIT** 提供，可依授權商用、修改與再散布。未來如有另外開發的進階服務／產品，可獨立授權，但**不追溯限制已公開的 MIT 版本**。第三方來源另依其有效授權處理。
 
 本專案為獨立開源作品，不代表 OpenAI、Google、Chrome 或 Tampermonkey 的官方產品或背書。
+
+---
+
+## 詳細安裝說明與下一步
+
+**Chrome 擴充功能：** [從 Releases 取得 ZIP](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases) → 解壓 → 在瀏覽器手動輸入 chrome://extensions → 開發人員模式 → 載入含 manifest.json 的資料夾 → 授權需要翻譯的網站。**[查看完整 Chrome 教學](docs/INSTALL_CHROME.md)**。
+
+**Tampermonkey 腳本：** [下載 .user.js](dist/userscript/TaiwanLLMSanitizer.user.js) → 透過 Tampermonkey 匯入 → 進入網站 → 選單手動啟用本站 → 右下角圓形點開設定。**[查看完整 Tampermonkey 教學](docs/INSTALL_TAMPERMONKEY.md)**。
+
+**Codex／Claude：** [AI 平台 Skill 安裝與驗證](docs/AI_INTEGRATION.md)。本地檢查工具只會輸出診斷碼，不印出整篇翻譯文字。

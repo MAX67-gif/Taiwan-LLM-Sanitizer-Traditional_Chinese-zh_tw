@@ -1,4 +1,4 @@
-name: R3 context lexicon, browser and privacy regressions
+name: R5 named entities, fixed translation progress and agent skills
 on:
   push:
   pull_request:
@@ -21,8 +21,12 @@ jobs:
         run: python -m py_compile tests/*.py tools/*.py
       - name: Check human-readable lexicon and compiled glossary match
         run: python tools/generate_lexicon_r3.py --check
+      - name: Validate protected named-entity registry and browser bundle
+        run: python tools/generate_names_r5.py --check
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
+      - name: Verify user install, ZIP identity and version strings
+        run: python tests/test_install_docs_r5.py
       - name: Verify offline public lexicon explorer corpus and privacy
         run: python tests/test_explorer_data_r3.py
       - name: Check local-only privacy and least-privilege contract
@@ -38,20 +42,20 @@ jobs:
           root=Path('src/core')
           chrome=Path('dist/chrome')
           us=Path('dist/userscript/TaiwanLLMSanitizer.user.js').read_text(encoding='utf-8')
-          for name in ('lexicon_pack.js','preferences.js','engine.js','provider.js','web_adapter.js'):
+          for name in ('lexicon_pack.js','preferences.js','entities.js','engine.js','provider.js','web_adapter.js','progress_ui.js'):
               a=(root/name).read_text(encoding='utf-8')
               assert (chrome/name).read_text(encoding='utf-8')==a, name
               assert a in us, name
           assert us.count('// ==UserScript==')==1
           assert '// @require' not in us and '// @connect' not in us
           meta=json.loads((chrome/'manifest.json').read_text(encoding='utf-8'))
-          assert meta['version']=='0.3.0'
+          assert meta['version']=='0.4.0'
           assert meta['manifest_version']==3
           assert 'storage' in meta['permissions']
-          with ZipFile('dist/TLS_Chrome_MV3_R3_20261024.zip') as z:
+          with ZipFile('dist/TLS_Chrome_MV3_R5_20261024.zip') as z:
               assert z.testzip() is None
               assert set(z.namelist())=={p.name for p in chrome.iterdir() if p.is_file()}
-          print('R3 BUILD/DELIVERY INTEGRITY PASS')
+          print('R5 BUILD/DELIVERY INTEGRITY PASS')
           PY
       - name: Verify committed install files are reproducible
         run: git diff --exit-code -- dist/chrome dist/userscript
@@ -61,11 +65,12 @@ jobs:
       - name: Upload Chrome and Userscript install bundles
         uses: actions/upload-artifact@v4
         with:
-          name: Taiwan-LLM-Sanitizer-R3-Install
+          name: Taiwan-LLM-Sanitizer-R5-Install
           path: |
-            dist/TLS_Chrome_MV3_R3_20261024.zip
+            dist/TLS_Chrome_MV3_R5_20261024.zip
             dist/userscript/TaiwanLLMSanitizer.user.js
-            dist/SHA256SUMS_R3_20261024.txt
+            dist/TLS_Tampermonkey_R5_20261024.user.js
+            dist/SHA256SUMS_R5_20261024.txt
           if-no-files-found: error
 
   browser-integration:
@@ -88,3 +93,27 @@ jobs:
       - run: python tests/test_popup_r2.py
       - run: python tests/test_browser_lexicon_r3.py
       - run: python tests/test_explorer_browser_r3.py
+      - run: python tests/test_visual_progress_browser_r5.py
+ 
+  release:
+    name: Publish one public installer release per version
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/build.py
+      - name: Publish ZIP and standalone userscript only after tests pass
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v0.4.0" >/dev/null 2>&1; then
+            echo "v0.4.0 already published; do not overwrite release files"
+          else
+            gh release create "v0.4.0"               dist/TLS_Chrome_MV3_R5_20261024.zip               dist/TLS_Tampermonkey_R5_20261024.user.js               dist/SHA256SUMS_R5_20261024.txt               --target "$GITHUB_SHA"               --title "Taiwan-LLM-Sanitizer v0.4.0 (R5 Preview)"               --notes "R5: keep Codex for Open Source and AI brand names intact; provide visual progress, portable Codex/Claude skills and fixed controls. Chrome ZIP: extract, then use chrome://extensions > Load unpacked. Tampermonkey: import the standalone .user.js. On-device model availability varies. Not Chrome Web Store reviewed. Source text is not sent by this extension to our servers."
+          fi

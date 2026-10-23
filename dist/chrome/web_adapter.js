@@ -1,4 +1,4 @@
-/* Taiwan-LLM-Sanitizer R2: DOM Adapter for asynchronous providers, MIT. */
+/* Taiwan-LLM-Sanitizer R5: DOM Adapter for asynchronous providers, MIT. */
 (function(global){
 'use strict';
 const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
@@ -175,17 +175,17 @@ function createWebLocalizer(doc,options={}){
     if(wasRunning)start();
   }
   function getStatus(){
-    return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
+    return Object.freeze({version:'0.4.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
       domain:opts.domain||'auto',
       regionalPreference:opts.regionalPreference||'balanced',tone:opts.tone||'faithful',
-      queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
+      queued:queue.length+attrQueue.length,busy:working,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
   }
   return Object.freeze({start,stop,pause:stop,resume:start,configure,getStatus,
     isRunning:()=>running,translateText:core.translateText});
 }
-const api=Object.freeze({VERSION:'0.3.0',createWebLocalizer});
+const api=Object.freeze({VERSION:'0.4.0',createWebLocalizer});
 global.TLSWeb=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

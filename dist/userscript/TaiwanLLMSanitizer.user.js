@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Taiwan-LLM-Sanitizer｜通用臺灣繁中化 R3
+// @name         Taiwan-LLM-Sanitizer｜通用臺灣繁中化 R5
 // @namespace    https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw
-// @version      0.3.0
+// @version      0.4.0
 // @description  通用離線字詞校正及使用者可選 Chrome 本機 AI 翻譯；逐站啟用，不傳送頁面文字到雲端。
 // @author       CA L. and Taiwan-LLM-Sanitizer contributors
 // @match        http://*/*
@@ -18,7 +18,7 @@
 
 (function(global){
 'use strict';
-const VERSION="0.3.0";
+const VERSION="0.4.0";
 const ITEMS=[{"id":"approved_001","from":"软件","to":"軟體","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_002","from":"软体","to":"軟體","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_003","from":"硬件","to":"硬體","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_004","from":"数据库","to":"資料庫","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_005","from":"数据集","to":"資料集","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_006","from":"服务器","to":"伺服器","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_007","from":"鼠标","to":"滑鼠","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_008","from":"鼠標","to":"滑鼠","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_009","from":"硬盘","to":"硬碟","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_010","from":"光盘","to":"光碟","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_011","from":"文件夹","to":"資料夾","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_012","from":"回收站","to":"資源回收筒","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_013","from":"配置文件","to":"設定檔","domain":"software","scope":"general","source_locale":"zh-CN"},{"id":"approved_014","from":"源代码","to":"原始碼","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_015","from":"代码仓库","to":"程式碼儲存庫","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_016","from":"字符串","to":"字串","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_017","from":"全局变量","to":"全域變數","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_018","from":"局部变量","to":"區域變數","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_019","from":"调试器","to":"除錯器","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_020","from":"正则表达式","to":"正規表示式","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_021","from":"二进制","to":"二進位","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_022","from":"数组","to":"陣列","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_023","from":"布尔值","to":"布林值","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_024","from":"异常处理","to":"例外處理","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_025","from":"死循环","to":"無限迴圈","domain":"engineering","scope":"general","source_locale":"zh-CN"},{"id":"approved_026","from":"人工智能","to":"人工智慧","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_027","from":"大语言模型","to":"大型語言模型","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_028","from":"神经网络","to":"神經網路","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_029","from":"训练数据","to":"訓練資料","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_030","from":"数据清洗","to":"資料清洗","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_031","from":"数据污染","to":"資料污染","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_032","from":"检索增强生成","to":"檢索增強生成","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_033","from":"向量数据库","to":"向量資料庫","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_034","from":"上下文窗口","to":"上下文視窗","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_035","from":"机器学习","to":"機器學習","domain":"ai","scope":"general","source_locale":"zh-CN"},{"id":"approved_036","from":"快捷键","to":"快速鍵","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_037","from":"下拉菜单","to":"下拉式選單","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_038","from":"菜单栏","to":"選單列","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_039","from":"主菜单","to":"主選單","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_040","from":"菜单","to":"選單","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_041","from":"menu","to":"選單","domain":"ui","scope":"ui","source_locale":"en"},{"id":"approved_042","from":"main menu","to":"主選單","domain":"ui","scope":"ui","source_locale":"en"},{"id":"approved_043","from":"菜单","to":"菜單","domain":"food","scope":"food","source_locale":"zh-CN"},{"id":"approved_044","from":"menu","to":"菜單","domain":"food","scope":"food","source_locale":"en"},{"id":"approved_045","from":"点餐","to":"點餐","domain":"food","scope":"food","source_locale":"zh-CN"},{"id":"approved_046","from":"内存","to":"記憶體","domain":"software","scope":"software","source_locale":"zh-CN"},{"id":"approved_047","from":"网络","to":"網路","domain":"software","scope":"software","source_locale":"zh-CN"},{"id":"approved_048","from":"信息","to":"資訊","domain":"software","scope":"software","source_locale":"zh-CN"},{"id":"approved_049","from":"视频","to":"影片","domain":"media","scope":"media","source_locale":"zh-CN"},{"id":"approved_050","from":"视频通话","to":"視訊通話","domain":"media","scope":"media","source_locale":"zh-CN"},{"id":"approved_051","from":"智能体","to":"AI 代理","domain":"ai","scope":"ai","source_locale":"zh-CN"},{"id":"approved_052","from":"提示工程","to":"提示詞工程","domain":"ai","scope":"ai","source_locale":"zh-CN"},{"id":"approved_053","from":"接口","to":"介面","domain":"engineering","scope":"engineering","source_locale":"zh-CN"},{"id":"approved_054","from":"收益率","to":"報酬率","domain":"finance","scope":"finance","source_locale":"zh-CN"},{"id":"approved_055","from":"止损","to":"停損","domain":"finance","scope":"finance","source_locale":"zh-CN"},{"id":"approved_056","from":"仓位","to":"部位","domain":"finance","scope":"finance","source_locale":"zh-CN"},{"id":"approved_057","from":"股票代码","to":"股票代號","domain":"finance","scope":"finance","source_locale":"zh-CN"},{"id":"approved_058","from":"外卖","to":"外送","domain":"food","scope":"food","source_locale":"zh-CN"},{"id":"approved_059","from":"公交车","to":"公車","domain":"travel","scope":"travel","source_locale":"zh-CN"},{"id":"approved_060","from":"地铁","to":"捷運","domain":"travel","scope":"travel","source_locale":"zh-CN"},{"id":"approved_061","from":"打印机","to":"印表機","domain":"software","scope":"software","source_locale":"zh-CN"},{"id":"approved_062","from":"登录","to":"登入","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_063","from":"退出登录","to":"登出","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_064","from":"滚动条","to":"捲軸","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_065","from":"选项卡","to":"分頁","domain":"ui","scope":"ui","source_locale":"zh-CN"},{"id":"approved_066","from":"购物车","to":"購物車","domain":"ecommerce","scope":"ecommerce","source_locale":"zh-CN"},{"id":"approved_067","from":"分红","to":"股利分配","domain":"finance","scope":"finance","source_locale":"zh-CN"}];
 const DOMAINS=new Set(["general","ui","software","engineering","ai","security","ecommerce","finance","food","travel","education","medicine","media","office","public","games","industry"]);
 const isAsciiWord=(s)=>/^[a-zA-Z][a-zA-Z ]*$/u.test(s);
@@ -66,11 +66,11 @@ global.TLSLexicon=api;
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 })(typeof globalThis!=="undefined"?globalThis:this);
 
-/* Taiwan-LLM-Sanitizer — original MIT open-core R3 preference contract.
+/* Taiwan-LLM-Sanitizer — original MIT open-core R5 preference contract.
  * Stewardship: CA L.  No censorship or hidden network calls. */
 (function(global) {
   'use strict';
-  const VERSION='0.3.0';
+  const VERSION='0.4.0';
   const LEVELS=Object.freeze(['original','light','balanced','taiwan']);
   const TONES=Object.freeze(['faithful','natural','formal','casual']);
   const DOMAINS=Object.freeze(['auto','general','ui','software','engineering','ai','security',
@@ -114,16 +114,96 @@ if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if(typeof module!=='undefined' && module.exports) module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 
-/* Taiwan-LLM-Sanitizer R3 shared browser core: offline rules, no network. MIT. */
+/* Taiwan-LLM-Sanitizer R5 - MIT. Protected-name router; no network calls.
+ * EDIT lexicon/protected_names_r5.json, then run tools/generate_names_r5.py. */
+(function(global){
+'use strict';
+const VERSION='0.4.0';
+const REGISTRY=/* TLS_NAMES_BEGIN */[{"id":"openai-codex-for-open-source","name":"Codex for Open Source","aliases":["OpenAI Codex for Open Source","Codex for Open Source","Codex for OSS"],"bad":["開源法典","开源法典"],"note_zh_tw":"OpenAI 的 Codex 開源專案支持計畫（說明性譯法，非官方正式譯名）"},{"id":"openai-codex","name":"OpenAI Codex","aliases":["OpenAI Codex","Codex"],"bad":["開放人工智慧法典"],"note_zh_tw":"OpenAI 的程式協作產品名稱"},{"id":"anthropic-claude-code","name":"Claude Code","aliases":["Anthropic Claude Code","Claude Code"],"bad":[],"note_zh_tw":"Anthropic 的程式協作產品名稱"},{"id":"anthropic-claude","name":"Claude","aliases":["Anthropic Claude","Claude"],"bad":[],"note_zh_tw":"AI 產品名稱或專有姓名，保持原文"},{"id":"openai-chatgpt","name":"ChatGPT","aliases":["ChatGPT"],"bad":[],"note_zh_tw":"產品品牌"},{"id":"openai-organization","name":"OpenAI","aliases":["OpenAI"],"bad":[],"note_zh_tw":"品牌"},{"id":"anthropic-organization","name":"Anthropic","aliases":["Anthropic"],"bad":[],"note_zh_tw":"品牌"},{"id":"github-brand","name":"GitHub","aliases":["GitHub"],"bad":[],"note_zh_tw":"軟體服務商標"},{"id":"tampermonkey-brand","name":"Tampermonkey","aliases":["Tampermonkey"],"bad":[],"note_zh_tw":"使用者腳本管理工具"},{"id":"read-frog-brand","name":"Read Frog","aliases":["Read Frog"],"bad":[],"note_zh_tw":"產品專有名稱"},{"id":"pytorch-brand","name":"PyTorch","aliases":["PyTorch"],"bad":[],"note_zh_tw":"開源框架名稱"},{"id":"huggingface-brand","name":"Hugging Face","aliases":["Hugging Face"],"bad":[],"note_zh_tw":"AI 開源平台名稱"},{"id":"model-context-protocol","name":"Model Context Protocol","aliases":["Model Context Protocol"],"bad":[],"note_zh_tw":"通訊協定正式名稱"},{"id":"agent-skill","name":"Agent Skills","aliases":["Agent Skills"],"bad":[],"note_zh_tw":"AI Agent 標準用語，先保留正式英文名稱"},{"id":"manifest-v3","name":"Manifest V3","aliases":["Manifest V3"],"bad":[],"note_zh_tw":"Chrome 擴充功能規範名稱"},{"id":"nodejs-name","name":"Node.js","aliases":["Node.js"],"bad":[],"note_zh_tw":"執行環境名稱"}]/* TLS_NAMES_END */;
+const SORTED=REGISTRY.flatMap(r=>r.aliases.map(alias=>({alias,id:r.id,note:r.note_zh_tw,bad:r.bad||[]})))
+ .sort((a,b)=>b.alias.length-a.alias.length||a.alias.localeCompare(b.alias,'en'));
+function boundary(before,after){
+  return !/[A-Za-z0-9_]/u.test(before||'')&&!/[A-Za-z0-9_]/u.test(after||'');
+}
+function find(text) {
+  if(typeof text!=='string'||text.length>20000)return [];
+  const found=[];
+  for(let i=0;i<text.length;){
+    let hit=null;
+    for(const entry of SORTED) {
+      if(!text.startsWith(entry.alias,i))continue;
+      if(!boundary(text[i-1],text[i+entry.alias.length]))continue;
+      hit=entry;break;
+    }
+    if(!hit){i++;continue;}
+    found.push(Object.freeze({start:i,end:i+hit.alias.length,literal:hit.alias,id:hit.id}));
+    i+=hit.alias.length;
+  }
+  return found;
+}
+function mask(text){
+  if(typeof text!=='string')return {ok:false,reason:'TYPE'};
+  const spans=find(text);
+  let output='',cursor=0;
+  const replacements=[];
+  for(const span of spans){
+    const token='⟪TLSNAME'+replacements.length+'⟫';
+    if(text.includes(token))return {ok:false,reason:'COLLISION'};
+    output+=text.slice(cursor,span.start)+token;
+    replacements.push({...span,token});
+    cursor=span.end;
+  }
+  output+=text.slice(cursor);
+  return {ok:true,text:output,spans:replacements,restore(translated){
+    if(typeof translated!=='string')return {ok:false,reason:'BAD_RESULT'};
+    let last=-1;
+    for(const r of replacements){
+      if(translated.split(r.token).length!==2)return {ok:false,reason:'NAME_LOST_OR_DUPLICATED',id:r.id};
+      const index=translated.indexOf(r.token);
+      if(index<=last)return {ok:false,reason:'NAME_REORDERED',id:r.id};
+      last=index;
+    }
+    let value=translated;
+    for(const r of replacements)value=value.replace(r.token,r.literal);
+    if(/⟪TLSNAME\d+⟫/u.test(value))return {ok:false,reason:'UNEXPECTED_NAME_TOKEN'};
+    return {ok:true,text:value};
+  }};
+}
+function audit(source,target) {
+  const warnings=[];
+  if(typeof source!=='string'||typeof target!=='string')
+    return {ok:false,issues:[{code:'NON_STRING'}],protectedCount:0};
+  const matches=find(source);
+  for(const span of matches){
+    const row=REGISTRY.find(r=>r.id===span.id);
+    if(!target.includes(span.literal)){
+      warnings.push({code:'PROTECTED_NAME_CHANGED',id:span.id,name:span.literal});
+    }
+    if(row)for(const mistranslation of (row.bad||[])){
+      if(target.includes(mistranslation))
+        warnings.push({code:'KNOWN_MISTRANSLATION',id:span.id,badForm:mistranslation});
+    }
+  }
+  return {ok:warnings.length===0,issues:warnings,protectedCount:matches.length};
+}
+const api=Object.freeze({VERSION,ENTRIES:Object.freeze(REGISTRY),find,mask,audit});
+global.TLSNames=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+/* Taiwan-LLM-Sanitizer R5 shared browser core: offline rules, no network. MIT. */
 (function (global) {
   'use strict';
-  const VERSION = '0.3.0';
+  const VERSION = '0.4.0';
   if (global.TLSCore && global.TLSCore.VERSION === VERSION) return;
   const LEXICON = global.TLSLexicon || (
     typeof module !== 'undefined' && module.exports ? require('./lexicon_pack.js') : null
   );
   const PREFS = global.TLSPreferences || (
     typeof module !== 'undefined' && module.exports ? require('./preferences.js') : null
+  );
+  const NAMES = global.TLSNames || (
+    typeof module !== 'undefined' && module.exports ? require('./entities.js') : null
   );
   const ENGLISH_LABELS = Object.freeze({
     'start':'開始','pause':'暫停','resume':'繼續','retry':'重試',
@@ -169,13 +249,20 @@ if(typeof module!=="undefined"&&module.exports)module.exports=api;
   }
   function translateText(text, options={}) {
     if (typeof text !== 'string' || !text || text.length > 20000) return text;
+    const original = text;
+    const guarded = NAMES ? NAMES.mask(text) : null;
+    if(guarded && !guarded.ok) return original;
+    if(guarded) text=guarded.text;
     let out = '', at = 0;
     PROTECT.lastIndex = 0;
     for (const match of text.matchAll(PROTECT)) {
       out += translateSegment(text.slice(at, match.index),options) + match[0];
       at = match.index + match[0].length;
     }
-    return out + translateSegment(text.slice(at),options);
+    out += translateSegment(text.slice(at),options);
+    if(!guarded) return out;
+    const restored=guarded.restore(out);
+    return restored.ok?restored.text:original;
   }
   function blocked(el) {
     if (!el || el.nodeType !== 1) return true;
@@ -297,12 +384,13 @@ if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
-/* Taiwan-LLM-Sanitizer R2 MIT: on-device Provider routing. Never calls cloud. */
+/* Taiwan-LLM-Sanitizer R5 MIT: on-device Provider routing. Never calls cloud. */
 (function(global) {
 'use strict';
 const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
+const names=global.TLSNames || (typeof require==='function'?require('./entities.js'):null);
 if(!core) throw new Error('TLSCore must load first');
-const VERSION='0.3.0', TARGET='zh-Hant', MAX=1800;
+const VERSION='0.4.0', TARGET='zh-Hant', MAX=1800;
 const VALID=new Set(['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','it','nl','ar','id','uk','tr']);
 const PROTECTED=/(\{\{[^{}]{1,250}\}\}|\$\{[^}]{1,250}\}|<%[\s\S]{0,250}?%>|<\/?[A-Za-z][^>]{0,250}>|https?:\/\/[^\s<>]+|\x60[^\x60\n]{1,250}\x60|%\d*\$?[sdif]|\{[A-Za-z_$][\w.$-]*\})/gu;
 const STATES=Object.freeze({TERMS:'LOCALIZED_TERMS',MODEL:'LOCALIZED_MODEL',UNCHANGED:'UNCHANGED',
@@ -321,13 +409,20 @@ function normalizeLanguage(value) {
 }
 function protect(text) {
   if(typeof text!=='string'||!text||text.length>MAX) return {ok:false,reason:'SIZE_OR_TYPE'};
+  const ranges=[];
+  for(const match of text.matchAll(PROTECTED))
+    ranges.push({start:match.index,end:match.index+match[0].length,literal:match[0]});
+  if(names)for(const hit of names.find(text))
+    ranges.push({start:hit.start,end:hit.end,literal:hit.literal,nameId:hit.id});
+  ranges.sort((a,b)=>a.start-b.start||(b.end-b.start)-(a.end-a.start));
   const spans=[];let tokenized='',cursor=0;
-  for(const match of text.matchAll(PROTECTED)) {
+  for(const part of ranges) {
+    if(part.start<cursor)continue;
     const token='⟪TLS'+spans.length+'LOCK⟫';
     if(text.includes(token))return {ok:false,reason:'TOKEN_COLLISION'};
-    tokenized+=text.slice(cursor,match.index)+token;
-    spans.push({token,literal:match[0]});
-    cursor=match.index+match[0].length;
+    tokenized+=text.slice(cursor,part.start)+token;
+    spans.push({token,literal:part.literal,nameId:part.nameId||null});
+    cursor=part.end;
   }
   tokenized+=text.slice(cursor);
   return {ok:true,text:tokenized,restore(result) {
@@ -419,7 +514,7 @@ class BrowserLocalProvider {
     const source=await this.detectSource(text);
     if(!source)return {...fallback(),reason:STATES.SOURCE_UNKNOWN};
     if(source==='zh-Hant')return fallback();
-    const key=source+'\0'+(context.domain||'general')+'\0'+text;
+    const key=source+'\0'+(context.domain||'general')+'\0'+(context.regionalPreference||'balanced')+'\0'+text;
     if(this.cache.has(key))return this.cache.get(key);
     const guard=protect(text);
     if(!guard.ok)return {...fallback(),reason:guard.reason};
@@ -429,6 +524,7 @@ class BrowserLocalProvider {
       if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
       const restored=guard.restore(translated);
       if(!restored.ok)return {...fallback(),reason:STATES.GUARD_REJECTED,guardReason:restored.reason};
+      if(names){const check=names.audit(text,restored.text);if(!check.ok)return {...fallback(),reason:'NAMED_ENTITY_QA_REJECTED',issues:check.issues};}
       const out=core.translateText(restored.text,context);
       const result={text:out,state:out===text?STATES.UNCHANGED:STATES.MODEL,provider:'chrome-built-in',sourceLanguage:source};
       this.cache.set(key,result);
@@ -461,7 +557,7 @@ global.TLSProviders=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 
-/* Taiwan-LLM-Sanitizer R2: DOM Adapter for asynchronous providers, MIT. */
+/* Taiwan-LLM-Sanitizer R5: DOM Adapter for asynchronous providers, MIT. */
 (function(global){
 'use strict';
 const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
@@ -638,137 +734,236 @@ function createWebLocalizer(doc,options={}){
     if(wasRunning)start();
   }
   function getStatus(){
-    return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
+    return Object.freeze({version:'0.4.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
       domain:opts.domain||'auto',
       regionalPreference:opts.regionalPreference||'balanced',tone:opts.tone||'faithful',
-      queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
+      queued:queue.length+attrQueue.length,busy:working,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
   }
   return Object.freeze({start,stop,pause:stop,resume:start,configure,getStatus,
     isRunning:()=>running,translateText:core.translateText});
 }
-const api=Object.freeze({VERSION:'0.3.0',createWebLocalizer});
+const api=Object.freeze({VERSION:'0.4.0',createWebLocalizer});
 global.TLSWeb=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 
-/* R3 standalone userscript adapter: no external dependencies, MIT. */
+/* Taiwan-LLM-Sanitizer R5 visual status: stable, local-only, responsive. MIT. */
+(function(global){
+'use strict';
+const VERSION='0.4.0';
+const CSS=":host{all:initial;display:block}\nbutton{box-sizing:border-box;width:52px;height:52px;display:grid;place-items:center;\nborder-radius:50%;border:2px solid #fff9;background:#f0f4f8;color:#253d50;\nbox-shadow:0 4px 17px #102a343b;cursor:pointer;position:relative;pointer-events:auto;\nfont:700 18px/1 system-ui,sans-serif}\nbutton:focus-visible{outline:3px solid #1a70cc;outline-offset:3px}\n.arc{box-sizing:border-box;position:absolute;inset:4px;border-radius:50%;\nborder:4px solid #b4c5cf;border-top-color:#227b94;transform:rotate(0deg)}\n.glyph{position:relative;z-index:1;font-size:19px;line-height:1}\nbutton[data-state=\"running\"] .arc{animation:tls-spin .86s linear infinite}\nbutton[data-state=\"download\"] .arc{background:conic-gradient(#1979a7 var(--percent,0%),#d6e5ee 0);\nborder:0;padding:4px;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));\nmask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px))}\nbutton[data-state=\"done\"]{background:#e1f6ec;color:#125d3c}\nbutton[data-state=\"done\"] .arc{border:4px solid #2a8d59}\nbutton[data-state=\"warning\"]{background:#fff3d7;color:#8e5a0b}\nbutton[data-state=\"warning\"] .arc{border:4px solid #c27d10}\nbutton[data-state=\"paused\"]{background:#e5e9f0;color:#536070}\nbutton[data-state=\"paused\"] .arc{border:4px solid #8994a5}\nbutton[data-state=\"idle\"] .arc{border-color:#cad6dc}\n@keyframes tls-spin{to{transform:rotate(360deg)}}\n@media(prefers-reduced-motion:reduce){button[data-state=\"running\"] .arc{animation:none;border-style:dashed}}";
+function stateOf(s){
+ if(!s||!s.running)return 'paused';
+ if(s.provider?.state==='MODEL_DOWNLOAD'||s.lastState==='MODEL_DOWNLOAD')return 'download';
+ if(s.busy||s.queued>0)return 'running';
+ if(s.provider?.state==='DEGRADED'||s.errors>0||s.overflow>0)return 'warning';
+ return s.scanned>0||s.converted>0?'done':'idle';
+}
+const LABELS=Object.freeze({
+ paused:'臺灣繁中化：已暫停，按一下可操作',
+ running:'臺灣繁中化：正在翻譯',
+ download:'臺灣繁中化：正在準備本機語言模型',
+ warning:'臺灣繁中化：部分內容未完成',
+ done:'臺灣繁中化：目前可處理的文字已完成',
+ idle:'臺灣繁中化：已啟用，等待文字'
+});
+const GLYPHS={paused:'Ⅱ',running:'↻',download:'↓',warning:'!',done:'✓',idle:'文'};
+function createIndicator(doc,options={}){
+ if(!doc?.documentElement)throw new TypeError('Document required');
+ const host=doc.createElement('div');
+ host.setAttribute('data-tls-ui','true');
+ host.setAttribute('data-tls-indicator','true');
+ for(const [name,value] of Object.entries({
+   position:'fixed',bottom:'max(12px, env(safe-area-inset-bottom))',
+   right:'max(12px, env(safe-area-inset-right))',
+   width:'52px',height:'52px',zIndex:'2147483646',
+   pointerEvents:'none',contain:'layout style'
+ })){host.style[name]=value;}
+ const shadow=host.attachShadow({mode:'closed'});
+ const style=doc.createElement('style');style.textContent=CSS;
+ const button=doc.createElement('button');button.type='button';
+ button.dataset.state='idle';button.setAttribute('aria-label',LABELS.idle);
+ button.title=LABELS.idle;
+ const arc=doc.createElement('span');arc.className='arc';arc.setAttribute('aria-hidden','true');
+ const glyph=doc.createElement('span');glyph.className='glyph';glyph.textContent=GLYPHS.idle;
+ glyph.setAttribute('aria-hidden','true');button.append(arc,glyph);shadow.append(style,button);
+ button.addEventListener('click',()=>options.onClick?.());
+ let alive=true,visible=false,current='idle';
+ function show(yes=true){
+   visible=Boolean(yes);
+   if(visible){if(!host.isConnected)doc.documentElement.appendChild(host);}
+   else if(host.isConnected)host.remove();
+ }
+ function update(status){
+   if(!alive)return;
+   const state=stateOf(status);
+   current=state;button.dataset.state=state;
+   button.setAttribute('aria-label',LABELS[state]);
+   button.title=LABELS[state];
+   glyph.textContent=GLYPHS[state];
+   if(state==='download'){
+     const p=Number(status?.modelProgress);
+     button.style.setProperty('--percent',Number.isFinite(p)?String(Math.round(Math.max(0,Math.min(1,p))*100))+'%':'0%');
+   }else button.style.removeProperty('--percent');
+ }
+ function destroy(){alive=false;show(false);}
+ if(options.visible!==false)show(true);
+ return Object.freeze({show,update,destroy,button,host,get state(){return current;},get visible(){return visible;}});
+}
+const api=Object.freeze({VERSION,stateOf,createIndicator});
+global.TLSProgress=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+/* Taiwan-LLM-Sanitizer R5 - one-file Tampermonkey adapter and stable visual dock. MIT. */
 (() => {
 'use strict';
-if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders || !globalThis.TLSPreferences)return;
+if(window.top!==window.self||!globalThis.TLSWeb||!globalThis.TLSProviders||
+   !globalThis.TLSPreferences||!globalThis.TLSProgress||!globalThis.TLSNames)return;
 const origin=location.origin;
-const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin,domainKey='tls-domain-r3:'+origin,preferenceKey='tls-regional-r3:'+origin,toneKey='tls-tone-r3:'+origin;
+const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,
+  sourceKey='tls-source-r2:'+origin,domainKey='tls-domain-r3:'+origin,
+  preferenceKey='tls-regional-r3:'+origin,toneKey='tls-tone-r3:'+origin;
+const prefs=globalThis.TLSPreferences;
 let enabled=Boolean(GM_getValue(activeKey,false)),paused=false;
 let mode=GM_getValue(modeKey,'terms')==='local-ai'?'local-ai':'terms';
-let sourceLanguage=GM_getValue(sourceKey,'auto');
 const sources=['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','id','ar'];
+let sourceLanguage=GM_getValue(sourceKey,'auto');
 if(!sources.includes(sourceLanguage))sourceLanguage='auto';
-const domains=['auto','general','ui','software','engineering','ai','security','ecommerce','finance','food','travel','education','medicine','media','office','public','games','industry'];
-const domainLabels={auto:'自動判斷',general:'一般',ui:'介面選單',software:'軟體',engineering:'程式開發',
- ai:'AI',security:'資安',ecommerce:'購物',finance:'金融',food:'餐飲',travel:'交通旅遊',
- education:'教育',medicine:'醫療',media:'社群影音',office:'辦公',public:'公共行政',games:'遊戲',industry:'工業'};
+const domains=prefs.DOMAINS.slice();
+const labels={auto:'自動判斷',general:'一般',ui:'介面選單',software:'軟體',
+ engineering:'程式開發',ai:'AI',security:'資安',ecommerce:'購物',
+ finance:'金融',food:'餐飲',travel:'交通旅遊',education:'教育',
+ medicine:'醫療',media:'社群影音',office:'辦公',public:'公共行政',
+ games:'遊戲',industry:'工業'};
 let domain=GM_getValue(domainKey,'auto');
 if(!domains.includes(domain))domain='auto';
-let regionalPreference=GM_getValue(preferenceKey,'balanced'),tone=GM_getValue(toneKey,'faithful');
-const initial=globalThis.TLSPreferences.normalize({regionalPreference,tone});
-regionalPreference=initial.regionalPreference;tone=initial.tone;
-const panel=document.createElement('div');
-panel.dataset.tlsUi='true';panel.style.cssText='position:fixed;right:10px;top:10px;z-index:2147483646;pointer-events:auto';
-const shadow=panel.attachShadow({mode:'closed'});
-const wrap=document.createElement('div');
-wrap.style.cssText='background:#fff;color:#183247;border:1px solid #94a3b8;box-shadow:0 4px 18px #0003;padding:8px;border-radius:12px;font:12px/1.5 system-ui,sans-serif;max-width:250px';
-const title=document.createElement('div');title.textContent='TLS 臺灣繁中化 R3';title.style.fontWeight='700';
-const status=document.createElement('div');status.setAttribute('aria-live','polite');status.style.cssText='margin:4px 0;max-width:230px;overflow-wrap:anywhere';
-const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select'),domainSelect=document.createElement('select'),preferenceSelect=document.createElement('select'),toneSelect=document.createElement('select');
-for(const btn of [pause,modeButton])btn.style.cssText='padding:5px 8px;border:0;border-radius:7px;color:#fff;background:#0f766e;cursor:pointer;margin:3px 3px 3px 0;font:12px system-ui';
-sourceSelect.style.cssText='margin:4px 0;width:100%;padding:5px;border-radius:7px;background:white;color:#111;border:1px solid #94a3b8';
-domainSelect.style.cssText=sourceSelect.style.cssText;
-preferenceSelect.style.cssText=sourceSelect.style.cssText;
-toneSelect.style.cssText=sourceSelect.style.cssText;
-preferenceSelect.setAttribute('aria-label','臺灣用語偏好');
-toneSelect.setAttribute('aria-label','譯文語氣偏好（尚未由 Chrome 模型控制）');
-for(const level of globalThis.TLSPreferences.LEVELS){
-  const opt=document.createElement('option');opt.value=level;
-  opt.textContent='用語：'+globalThis.TLSPreferences.DESCRIPTIONS[level];
-  preferenceSelect.appendChild(opt);
+let regionalPreference=GM_getValue(preferenceKey,'balanced');
+let tone=GM_getValue(toneKey,'faithful');
+const validated=prefs.normalize({regionalPreference,tone,domain});
+regionalPreference=validated.regionalPreference;
+tone=validated.tone;
+const pane=document.createElement('section');
+pane.setAttribute('data-tls-ui','true');
+pane.setAttribute('aria-label','臺灣繁體中文翻譯設定');
+pane.style.cssText='position:fixed;right:12px;bottom:76px;width:min(295px,calc(100vw - 24px));'+
+ 'max-height:min(66vh,570px);z-index:2147483646;overflow:hidden;box-sizing:border-box;';
+pane.hidden=true;
+const shadow=pane.attachShadow({mode:'closed'});
+const css=document.createElement('style');
+css.textContent=':host{all:initial}:host([hidden]){display:none!important} .box{background:#fff;color:#17354b;border:1px solid #99b6c3;'+
+ 'border-radius:13px;box-shadow:0 7px 30px #082a4238;padding:11px;box-sizing:border-box;'+
+ 'display:flex;flex-direction:column;max-height:min(66vh,570px);font:12px/1.55 system-ui,sans-serif}'+
+ '.header{font-weight:700;font-size:14px;flex:none} .scroll{overflow:auto;flex:1;min-height:0}'+
+ 'label{display:block;margin:8px 0 3px;font-weight:600} select{box-sizing:border-box;'+
+ 'width:100%;padding:7px;font:inherit;background:#fff;color:#18384b;border:1px solid #9bbaca;border-radius:7px}'+
+ '.footer{flex:none;border-top:1px solid #dbe6ec;margin-top:8px;padding-top:8px;display:flex;gap:7px}'+
+ 'button{cursor:pointer;flex:1;padding:8px;background:#0f766e;color:#fff;border:0;border-radius:8px;font-weight:700}'+
+ 'button:focus-visible,select:focus-visible{outline:3px solid #277dc8;outline-offset:2px}'+
+ '.status{min-height:28px;max-height:52px;overflow:auto;color:#344e5b;margin:6px 0}'+
+ '.note{font-size:11px;opacity:.8;line-height:1.35;margin:7px 0}';
+const box=document.createElement('div');box.className='box';
+const header=document.createElement('div');header.className='header';
+header.textContent='臺灣繁中化 R5 · CA L.';
+const status=document.createElement('div');status.className='status';
+status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+const scroll=document.createElement('div');scroll.className='scroll';
+const controls={};
+function selector(key,label,choices,current) {
+ const title=document.createElement('label');title.textContent=label;
+ const select=document.createElement('select');title.appendChild(select);
+ for(const [value,caption] of choices){
+   const opt=document.createElement('option');opt.value=value;opt.textContent=caption;select.appendChild(opt);
+ }
+ select.value=current;controls[key]=select;scroll.appendChild(title);
+ return select;
 }
-preferenceSelect.value=regionalPreference;
-for(const value of globalThis.TLSPreferences.TONES){
-  const opt=document.createElement('option');opt.value=value;
-  opt.textContent='語氣偏好：'+globalThis.TLSPreferences.TONE_LABELS[value];
-  toneSelect.appendChild(opt);
-}
-toneSelect.value=tone;
-for(const d of domains){
-  const option=document.createElement('option');option.value=d;option.textContent='領域：'+domainLabels[d];
-  domainSelect.appendChild(option);
-}
-domainSelect.value=domain;
-for(const lang of sources){
-  const option=document.createElement('option');option.value=lang;option.textContent='原文：'+lang;
-  sourceSelect.appendChild(option);
-}
-sourceSelect.value=sourceLanguage;
-const warning=document.createElement('small');
-warning.textContent='語氣偏好先保存在本機；目前 Chrome 本機模型無法保證依此改寫，請勿用於需要精確措辭的敏感文件。';
-warning.style.cssText='display:block;opacity:.72;margin-top:4px;line-height:1.35';
-wrap.append(title,status,pause,modeButton,sourceSelect,domainSelect,preferenceSelect,toneSelect,warning);shadow.appendChild(wrap);
+selector('source','原文語言',sources.map(x=>[x,x==='auto'?'自動判斷':x]),sourceLanguage);
+selector('domain','臺灣用語領域',domains.map(x=>[x,labels[x]||x]),domain);
+selector('regional','臺灣用語偏好',prefs.LEVELS.map(x=>[x,prefs.DESCRIPTIONS[x]]),regionalPreference);
+selector('tone','譯文語氣（偏好設定，模型尚未支援）',prefs.TONES.map(x=>[x,prefs.TONE_LABELS[x]]),tone);
+const note=document.createElement('p');note.className='note';
+note.textContent='本機模型翻譯能力依 Chrome 支援。文風設定不代表已可控制模型；內容不由本腳本上傳。';
+scroll.appendChild(note);
+const footer=document.createElement('div');footer.className='footer';
+const pause=document.createElement('button');pause.type='button';
+const switchMode=document.createElement('button');switchMode.type='button';
+const close=document.createElement('button');close.type='button';close.textContent='關閉面板';
+footer.append(pause,switchMode,close);
+box.append(header,status,scroll,footer);shadow.append(css,box);
+let indicator;
 const ctrl=globalThis.TLSWeb.createWebLocalizer(document,{
-  mode,sourceLanguage,domain,regionalPreference,tone,onStatus:(snapshot)=>renderStatus(snapshot)
+ mode,sourceLanguage,domain,regionalPreference,tone,
+ onStatus:statusInfo=>{
+   indicator?.update(statusInfo);
+   renderStatus(statusInfo);
+ }
 });
-function renderStatus(snapshot){
-  if(!snapshot)return;
-  const translated=snapshot.converted||0;
-  const progress=snapshot.lastState==='MODEL_DOWNLOAD'?'（下載本機語言模型中）':'';
-  status.textContent=(mode==='local-ai'?'本機 AI：':'離線詞彙：')+
-    (paused?'已暫停':'已處理 '+translated+' 處')+progress;
-  if(snapshot.provider?.state==='DEGRADED')status.textContent+='（模型不可用，僅保留安全轉換）';
+indicator=globalThis.TLSProgress.createIndicator(document,{
+ visible:false,
+ onClick:()=>{if(!enabled)return;pane.hidden=!pane.hidden;}
+});
+function renderStatus(info){
+ if(!info)return;
+ const state=globalThis.TLSProgress.stateOf(info);
+ const labels={running:'正在處理網頁文字',download:'正在下載或準備本機語言模型',
+  warning:'部分文字未處理，請查看設定',done:'目前可處理的文字已完成',
+  paused:'目前已暫停',idle:'等待可處理的文字'};
+ status.textContent=labels[state]||labels.idle;
 }
 function render(){
-  pause.textContent=paused?'恢復':'暫停／還原';
-  modeButton.textContent=mode==='local-ai'?'改用詞彙模式':'改用本機 AI';
-  if(enabled&&!panel.isConnected)(document.body||document.documentElement).appendChild(panel);
-  if(!enabled&&panel.isConnected)panel.remove();
-  renderStatus(ctrl.getStatus());
+ pause.textContent=paused?'繼續':'暫停／還原';
+ switchMode.textContent=mode==='local-ai'?'改用離線詞彙':'試用本機 AI';
+ indicator.show(enabled);
+ if(enabled&&!pane.isConnected)document.documentElement.appendChild(pane);
+ if(!enabled){pane.hidden=true;if(pane.isConnected)pane.remove();}
+ indicator.update(ctrl.getStatus());
+ renderStatus(ctrl.getStatus());
 }
 function apply(){
-  if(!enabled)return;
-  ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});if(!paused)ctrl.start();
-  render();
+ if(!enabled)return;
+ ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});
+ if(!paused&&!ctrl.isRunning())ctrl.start();
+ render();
 }
 function setEnabled(next){
-  enabled=Boolean(next);GM_setValue(activeKey,enabled);paused=false;
-  if(enabled){ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});ctrl.start();}
-  else ctrl.stop();
-  render();
+ enabled=Boolean(next);GM_setValue(activeKey,enabled);paused=false;
+ if(enabled){ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});ctrl.start();}
+ else ctrl.stop();
+ render();
 }
-pause.addEventListener('click',()=>{if(!enabled)return;paused=!paused;if(paused)ctrl.stop();else ctrl.start();render();});
-modeButton.addEventListener('click',()=>{
-  if(!enabled)return;
-  mode=mode==='terms'?'local-ai':'terms';GM_setValue(modeKey,mode);apply();
+pause.addEventListener('click',()=>{
+ if(!enabled)return;
+ paused=!paused;
+ if(paused)ctrl.stop();else ctrl.start();
+ render();
 });
-sourceSelect.addEventListener('change',()=>{
-  if(!enabled)return;
-  sourceLanguage=sources.includes(sourceSelect.value)?sourceSelect.value:'auto';
-  GM_setValue(sourceKey,sourceLanguage);apply();
+switchMode.addEventListener('click',()=>{
+ if(!enabled)return;
+ mode=mode==='local-ai'?'terms':'local-ai';GM_setValue(modeKey,mode);apply();
 });
-domainSelect.addEventListener('change',()=>{
-  if(!enabled)return;
-  domain=domains.includes(domainSelect.value)?domainSelect.value:'auto';
-  GM_setValue(domainKey,domain);apply();
+close.addEventListener('click',()=>{pane.hidden=true;});
+controls.source.addEventListener('change',()=>{
+ sourceLanguage=sources.includes(controls.source.value)?controls.source.value:'auto';
+ GM_setValue(sourceKey,sourceLanguage);apply();
 });
-preferenceSelect.addEventListener('change',()=>{
-  regionalPreference=globalThis.TLSPreferences.normalize({regionalPreference:preferenceSelect.value}).regionalPreference;
-  GM_setValue(preferenceKey,regionalPreference);apply();
+controls.domain.addEventListener('change',()=>{
+ domain=domains.includes(controls.domain.value)?controls.domain.value:'auto';
+ GM_setValue(domainKey,domain);apply();
 });
-toneSelect.addEventListener('change',()=>{
-  tone=globalThis.TLSPreferences.normalize({tone:toneSelect.value}).tone;
-  GM_setValue(toneKey,tone);apply();
+controls.regional.addEventListener('change',()=>{
+ regionalPreference=prefs.normalize({regionalPreference:controls.regional.value}).regionalPreference;
+ GM_setValue(preferenceKey,regionalPreference);apply();
+});
+controls.tone.addEventListener('change',()=>{
+ tone=prefs.normalize({tone:controls.tone.value}).tone;
+ GM_setValue(toneKey,tone);apply();
 });
 GM_registerMenuCommand('TLS：啟用／停用本站',()=>setEnabled(!enabled));
 GM_registerMenuCommand('TLS：暫停／恢復',()=>{if(enabled)pause.click();});
-GM_registerMenuCommand('TLS：離線詞彙／Chrome 本機 AI 模式',()=>{if(enabled)modeButton.click();});
+GM_registerMenuCommand('TLS：離線詞彙／Chrome 本機 AI 模式',()=>{if(enabled)switchMode.click();});
 if(enabled)ctrl.start();
 render();
 })();

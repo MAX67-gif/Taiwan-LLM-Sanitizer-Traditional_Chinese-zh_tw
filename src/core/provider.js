@@ -1,9 +1,10 @@
-/* Taiwan-LLM-Sanitizer R2 MIT: on-device Provider routing. Never calls cloud. */
+/* Taiwan-LLM-Sanitizer R5 MIT: on-device Provider routing. Never calls cloud. */
 (function(global) {
 'use strict';
 const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
+const names=global.TLSNames || (typeof require==='function'?require('./entities.js'):null);
 if(!core) throw new Error('TLSCore must load first');
-const VERSION='0.3.0', TARGET='zh-Hant', MAX=1800;
+const VERSION='0.4.0', TARGET='zh-Hant', MAX=1800;
 const VALID=new Set(['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','it','nl','ar','id','uk','tr']);
 const PROTECTED=/(\{\{[^{}]{1,250}\}\}|\$\{[^}]{1,250}\}|<%[\s\S]{0,250}?%>|<\/?[A-Za-z][^>]{0,250}>|https?:\/\/[^\s<>]+|\x60[^\x60\n]{1,250}\x60|%\d*\$?[sdif]|\{[A-Za-z_$][\w.$-]*\})/gu;
 const STATES=Object.freeze({TERMS:'LOCALIZED_TERMS',MODEL:'LOCALIZED_MODEL',UNCHANGED:'UNCHANGED',
@@ -22,13 +23,20 @@ function normalizeLanguage(value) {
 }
 function protect(text) {
   if(typeof text!=='string'||!text||text.length>MAX) return {ok:false,reason:'SIZE_OR_TYPE'};
+  const ranges=[];
+  for(const match of text.matchAll(PROTECTED))
+    ranges.push({start:match.index,end:match.index+match[0].length,literal:match[0]});
+  if(names)for(const hit of names.find(text))
+    ranges.push({start:hit.start,end:hit.end,literal:hit.literal,nameId:hit.id});
+  ranges.sort((a,b)=>a.start-b.start||(b.end-b.start)-(a.end-a.start));
   const spans=[];let tokenized='',cursor=0;
-  for(const match of text.matchAll(PROTECTED)) {
+  for(const part of ranges) {
+    if(part.start<cursor)continue;
     const token='⟪TLS'+spans.length+'LOCK⟫';
     if(text.includes(token))return {ok:false,reason:'TOKEN_COLLISION'};
-    tokenized+=text.slice(cursor,match.index)+token;
-    spans.push({token,literal:match[0]});
-    cursor=match.index+match[0].length;
+    tokenized+=text.slice(cursor,part.start)+token;
+    spans.push({token,literal:part.literal,nameId:part.nameId||null});
+    cursor=part.end;
   }
   tokenized+=text.slice(cursor);
   return {ok:true,text:tokenized,restore(result) {
@@ -120,7 +128,7 @@ class BrowserLocalProvider {
     const source=await this.detectSource(text);
     if(!source)return {...fallback(),reason:STATES.SOURCE_UNKNOWN};
     if(source==='zh-Hant')return fallback();
-    const key=source+'\0'+(context.domain||'general')+'\0'+text;
+    const key=source+'\0'+(context.domain||'general')+'\0'+(context.regionalPreference||'balanced')+'\0'+text;
     if(this.cache.has(key))return this.cache.get(key);
     const guard=protect(text);
     if(!guard.ok)return {...fallback(),reason:guard.reason};
@@ -130,6 +138,7 @@ class BrowserLocalProvider {
       if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
       const restored=guard.restore(translated);
       if(!restored.ok)return {...fallback(),reason:STATES.GUARD_REJECTED,guardReason:restored.reason};
+      if(names){const check=names.audit(text,restored.text);if(!check.ok)return {...fallback(),reason:'NAMED_ENTITY_QA_REJECTED',issues:check.issues};}
       const out=core.translateText(restored.text,context);
       const result={text:out,state:out===text?STATES.UNCHANGED:STATES.MODEL,provider:'chrome-built-in',sourceLanguage:source};
       this.cache.set(key,result);

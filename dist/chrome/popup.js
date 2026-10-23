@@ -1,9 +1,24 @@
-/* Taiwan-LLM-Sanitizer R3 Chrome MV3: user opt-in and persisted site mode. */
+/* Taiwan-LLM-Sanitizer R5 Chrome MV3: user opt-in and persisted site mode. */
 (() => {
 'use strict';
 const $=selector=>document.querySelector(selector);
 const mode=$('#mode'),source=$('#source'),domain=$('#domain'),tone=$('#tone'),state=$('#state'),host=$('#host'),toggle=$('#toggle'),apply=$('#apply');
-const files=['lexicon_pack.js','preferences.js','engine.js','provider.js','web_adapter.js','content.js'];
+const files=['lexicon_pack.js','preferences.js','entities.js','engine.js','provider.js','web_adapter.js','progress_ui.js','content.js'];
+const visual=$('#visual'),glyph=$('#glyph');
+const VISUALS={paused:['Ⅱ','已暫停'],running:['↻','正在處理'],download:['↓','正在準備模型'],
+ warning:['!','部分未完成'],done:['✓','目前頁面翻譯完成'],idle:['文','等待文字']};
+function setPhase(phase) {
+ const key=VISUALS[phase]?phase:'idle';
+ visual.dataset.phase=key;glyph.textContent=VISUALS[key][0];
+ visual.setAttribute('aria-label',VISUALS[key][1]);
+}
+function phaseOf(s){
+ if(!s||!s.running)return 'paused';
+ if(s.provider?.state==='MODEL_DOWNLOAD'||s.lastState==='MODEL_DOWNLOAD')return 'download';
+ if(s.busy||s.queued>0)return 'running';
+ if(s.errors>0||s.overflow>0||s.provider?.state==='DEGRADED')return 'warning';
+ return s.scanned>0||s.converted>0?'done':'idle';
+}
 let tab=null,pattern='',origin='',siteId='',enabled=false,busy=false;
 function siteHash(value){
   let hash=2166136261;
@@ -16,6 +31,8 @@ function siteConfig(){return {mode:mode.value==='local-ai'?'local-ai':'terms',so
   tone:tone.value};}
 function view(message){
   if(message)state.textContent=message;
+  if(busy)setPhase('running');
+  else if(!enabled)setPhase('paused');
   toggle.disabled=busy||!tab;
   apply.disabled=busy||!enabled||!tab;
   toggle.textContent=enabled?'停用本站並還原':'啟用本站繁中化';
@@ -38,7 +55,8 @@ async function status(){
   try{
     const response=await chrome.tabs.sendMessage(tab.id,{kind:'TLS_STATUS'});
     const s=response?.status;
-    if(!s)return '本站允許，但頁面控制器尚未載入；重新整理可啟用';
+    if(!s){setPhase('idle');return '本站允許，但頁面控制器尚未載入；重新整理可啟用';}
+    setPhase(phaseOf(s));
     if(!s.running)return '目前已停用；重新啟用可恢復';
     const name=s.mode==='local-ai'?'Chrome 本機 AI（可降級）':'離線詞彙';
     const part='｜已修改 '+s.converted+' 處';
@@ -70,9 +88,10 @@ async function initialize(){
     const scripts=await chrome.scripting.getRegisteredContentScripts({ids:[siteId]});
     enabled=scripts.some(x=>x.matches.includes(pattern));
     if(enabled){
+      setPhase('idle');
       try{await ensureRegistration();}catch(_){}
       state.textContent=await status();
-    }else state.textContent='尚未啟用本站。按「啟用本站」才請求網站權限。';
+    }else {state.textContent='尚未啟用本站。按「啟用本站」才請求網站權限。';setPhase('paused');}
     view();
   }catch(e){tab=null;host.textContent='此頁不可使用';view(e.message);toggle.disabled=true;apply.disabled=true;}
 }
@@ -109,5 +128,9 @@ apply.addEventListener('click',async()=>{
   }finally{busy=false;view();}
 });
 $('#refresh').addEventListener('click',()=>{if(tab&&enabled)status().then(view).catch(()=>{});});
+const poll=setInterval(()=>{
+ if(!busy&&tab&&enabled)status().then(message=>{if(!busy&&enabled)state.textContent=message;}).catch(()=>{});
+},500);
+addEventListener('unload',()=>clearInterval(poll));
 initialize();
 })();

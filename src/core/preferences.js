@@ -1,8 +1,8 @@
-/* Taiwan-LLM-Sanitizer — original MIT open-core R3 preference contract.
+/* Taiwan-LLM-Sanitizer — original MIT open-core R5 preference contract.
  * Stewardship: CA L.  No censorship or hidden network calls. */
 (function(global) {
   'use strict';
-  const VERSION='0.3.0';
+  const VERSION='0.4.0';
   const LEVELS=Object.freeze(['original','light','balanced','taiwan']);
   const TONES=Object.freeze(['faithful','natural','formal','casual']);
   const DOMAINS=Object.freeze(['auto','general','ui','software','engineering','ai','security',
