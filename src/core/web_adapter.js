@@ -12,6 +12,14 @@ function safeElement(el){
   try{return !el.closest(SKIP)&&!el.isContentEditable;}
   catch(_){return false;}
 }
+function domainOf(el) {
+  if(!safeElement(el))return 'general';
+  try {
+    if(el.closest('nav,menu,[role="navigation"],[role="menu"],[role="menubar"],[role="menuitem"]'))
+      return 'ui';
+    return 'general';
+  } catch(_) {return 'general';}
+}
 function createWebLocalizer(doc,options={}){
   if(!doc?.documentElement||typeof doc.createTreeWalker!=='function')
     throw new TypeError('Valid browser document required');
@@ -75,7 +83,7 @@ function createWebLocalizer(doc,options={}){
     if(old?.after===before)return;
     if(old)changedTexts.delete(node);
     if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-    const result=await router.translate(before);
+    const result=await router.translate(before,{domain:domainOf(node.parentElement)});
     if(!running||myEpoch!==epoch||skipText(node)||node.data!==before)return;
     stats.scanned++;stats.lastState=result.state||'UNKNOWN';stats.lastReason=result.reason||'';
     if(typeof result.text==='string'&&result.text!==before){
@@ -94,7 +102,7 @@ function createWebLocalizer(doc,options={}){
       if(existing?.[name]?.after===before)continue;
       if(existing?.[name]){delete existing[name];if(!Object.keys(existing).length)changedAttrs.delete(el);}
       if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-      const result=await router.translate(before);
+      const result=await router.translate(before,{domain:domainOf(el)});
       if(!running||myEpoch!==epoch||!el.isConnected||el.getAttribute(name)!==before)continue;
       if(typeof result.text==='string'&&result.text!==before){
         const group=changedAttrs.get(el)||{};
@@ -166,7 +174,7 @@ function createWebLocalizer(doc,options={}){
     if(wasRunning)start();
   }
   function getStatus(){
-    return Object.freeze({version:'0.2.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
+    return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
       queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
@@ -174,7 +182,7 @@ function createWebLocalizer(doc,options={}){
   return Object.freeze({start,stop,pause:stop,resume:start,configure,getStatus,
     isRunning:()=>running,translateText:core.translateText});
 }
-const api=Object.freeze({VERSION:'0.2.0',createWebLocalizer});
+const api=Object.freeze({VERSION:'0.3.0',createWebLocalizer});
 global.TLSWeb=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
