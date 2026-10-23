@@ -42,6 +42,10 @@
 
 **[R9 臺灣用語個人選擇工作台：單一 HTML](examples/TW_User_Context_Lab_R9_20261024.html)**。下載該 HTML 檔，在電腦上直接開啟即可。貼上文字、指定 UI／餐飲等語境、逐項選擇「臺灣說法／其他說法／保留原文」，並排預覽與逐項差異；可以建立自選詞條、手動匯出或匯入 JSON。完全在本機處理，不自動保存原文、不要求登入，不會自行修改網站。**這不是 R5 擴充功能更新，也不是完成真實模型翻譯品質認證。** [詳細操作、資料限制與驗收](docs/R9_USER_TERMS.md) · [競品比較與產品下一步](docs/R9_PRODUCT_STRATEGY.md)。
 
+## R10：臺灣用語來源追溯與人工審查（獨立離線工具）
+
+**[R10 離線來源與反例審查工作台](examples/TW_Context_Governance_Lab_R10_20261024.html)**：新增 40 筆原創語境案例（28 筆追溯 R9 原創例句，12 筆新編輯草稿）。每筆都有適用語境、反例、來源連結與審查提醒，可以人工決定「暫時認可建議／保留原詞／需更多語境／拒絕建議」，再手動匯出或匯入受 SHA256 版本綁定的 JSON。頁面無網路請求、不登入、不自動儲存、沒有禁詞。**所有 40 筆尚未經獨立雙人審稿；不會修改 R5 擴充功能、R6 凍結評測、R7.1 示範或 R8／R9 工作台。** [R10 資料契約與限制](docs/R10_PROVENANCE_REVIEW.md)。
+
 ## R8：離線語境審查工作台（建議模式）
 
 **[下載可直接開啟的 R8 單檔 HTML（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r8-context-review-preview-0.1.0)**，或[查看 GitHub 原始檔](examples/TW_Context_Review_Lab_R8_20261024.html)。直接下載 HTML，雙擊用瀏覽器開啟即可。貼上自己的文字，查看原有 883 筆候選與 67 筆編輯種子的建議、不同領域和歧義提示。**只有建議、不自動替換、不上傳資料，也沒有禁詞**。這是獨立 R8 Preview，不更動 R5 v0.4.0 通用擴充功能、R6 凍結品質題庫或 R7 特定網站示範。[功能邊界](docs/CONTEXT_REVIEW_R8.md) · [公開產品定位](docs/PRODUCT_POSITIONING_R8.md)。

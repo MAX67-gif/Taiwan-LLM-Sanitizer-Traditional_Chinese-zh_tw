@@ -28,6 +28,7 @@ DOCS_PUBLIC={
     "docs/AI_INTEGRATION.md","docs/NAME_PROTECTION.md",
     "docs/CONTEXT_REVIEW_R8.md","docs/PRODUCT_POSITIONING_R8.md",
     "docs/R9_USER_TERMS.md","docs/R9_PRODUCT_STRATEGY.md","docs/R9_STAGE_CHECK.md",
+    "docs/R10_PROVENANCE_REVIEW.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
 PUBLIC_BENCHMARK_FILES={
