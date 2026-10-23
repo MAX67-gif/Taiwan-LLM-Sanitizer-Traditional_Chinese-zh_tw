@@ -25,6 +25,8 @@ jobs:
         run: python tools/generate_names_r5.py --check
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
+      - name: Verify user install, ZIP identity and version strings
+        run: python tests/test_install_docs_r5.py
       - name: Verify offline public lexicon explorer corpus and privacy
         run: python tests/test_explorer_data_r3.py
       - name: Check local-only privacy and least-privilege contract
