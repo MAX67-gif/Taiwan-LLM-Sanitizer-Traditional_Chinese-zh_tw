@@ -1,10 +1,12 @@
-/* R2 Chrome content adapter: isolated world + site storage. */
+/* R3 Chrome content adapter: isolated world + site storage. */
 (() => {
   'use strict';
   if(!globalThis.TLSCore || !globalThis.TLSProviders || !globalThis.TLSWeb)return;
   const key='tls-site-config-v2:'+location.origin;
-  const defaults={mode:'terms',sourceLanguage:'auto'};
-  const valid=(v)=>globalThis.TLSProviders.selected(v?.mode,v?.sourceLanguage);
+  const defaults={mode:'terms',sourceLanguage:'auto',domain:'auto'};
+  const domains=new Set(['auto','general','ui','software','engineering','ai','security','ecommerce','finance','food','travel','education','medicine','media','office','public','games','industry']);
+  const valid=(v)=>({...globalThis.TLSProviders.selected(v?.mode,v?.sourceLanguage),
+    domain:domains.has(v?.domain)?v.domain:'auto'});
   async function configFromStorage(){
     try{
       const settings=await chrome.storage.local.get(key);
