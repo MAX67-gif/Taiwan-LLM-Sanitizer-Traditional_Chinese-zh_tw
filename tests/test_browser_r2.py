@@ -25,7 +25,10 @@ with sync_playwright() as pw:
       };
     }""")
     for rel in ["src/core/lexicon_pack.js","src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
-        page.add_script_tag(content=(ROOT/rel).read_text(encoding="utf-8"))
+        script=(ROOT/rel).read_text(encoding="utf-8")
+        if rel.endswith("web_adapter.js"):
+            script=script.replace("stats.lastReason=String(e);","stats.lastReason=String(e.stack||e);")
+        page.add_script_tag(content=script)
     page.evaluate("""() => {
       window.__r2=TLSWeb.createWebLocalizer(document,{mode:'local-ai',sourceLanguage:'en'});
       window.__r2.start();
