@@ -1,0 +1,163 @@
+{
+  "schema_version": "R5.0",
+  "updated_on": "2026-10-24",
+  "policy": "preserve_first_contextual_noun_check",
+  "license": "MIT",
+  "disclaimer": "Original editorial seed; explanations not necessarily official vendor translations. Names are not censored; user may choose display labels; lowercase codex as a common noun not always a product.",
+  "entries": [
+    {
+      "id": "openai-codex-for-open-source",
+      "name": "Codex for Open Source",
+      "aliases": [
+        "OpenAI Codex for Open Source",
+        "Codex for Open Source",
+        "Codex for OSS"
+      ],
+      "bad": [
+        "開源法典",
+        "开源法典"
+      ],
+      "note_zh_tw": "OpenAI 的 Codex 開源專案支持計畫（說明性譯法，非官方正式譯名）"
+    },
+    {
+      "id": "openai-codex",
+      "name": "OpenAI Codex",
+      "aliases": [
+        "OpenAI Codex",
+        "Codex"
+      ],
+      "bad": [
+        "開放人工智慧法典"
+      ],
+      "note_zh_tw": "OpenAI 的程式協作產品名稱"
+    },
+    {
+      "id": "anthropic-claude-code",
+      "name": "Claude Code",
+      "aliases": [
+        "Anthropic Claude Code",
+        "Claude Code"
+      ],
+      "bad": [],
+      "note_zh_tw": "Anthropic 的程式協作產品名稱"
+    },
+    {
+      "id": "anthropic-claude",
+      "name": "Claude",
+      "aliases": [
+        "Anthropic Claude",
+        "Claude"
+      ],
+      "bad": [],
+      "note_zh_tw": "AI 產品名稱或專有姓名，保持原文"
+    },
+    {
+      "id": "openai-chatgpt",
+      "name": "ChatGPT",
+      "aliases": [
+        "ChatGPT"
+      ],
+      "bad": [],
+      "note_zh_tw": "產品品牌"
+    },
+    {
+      "id": "openai-organization",
+      "name": "OpenAI",
+      "aliases": [
+        "OpenAI"
+      ],
+      "bad": [],
+      "note_zh_tw": "品牌"
+    },
+    {
+      "id": "anthropic-organization",
+      "name": "Anthropic",
+      "aliases": [
+        "Anthropic"
+      ],
+      "bad": [],
+      "note_zh_tw": "品牌"
+    },
+    {
+      "id": "github-brand",
+      "name": "GitHub",
+      "aliases": [
+        "GitHub"
+      ],
+      "bad": [],
+      "note_zh_tw": "軟體服務商標"
+    },
+    {
+      "id": "tampermonkey-brand",
+      "name": "Tampermonkey",
+      "aliases": [
+        "Tampermonkey"
+      ],
+      "bad": [],
+      "note_zh_tw": "使用者腳本管理工具"
+    },
+    {
+      "id": "read-frog-brand",
+      "name": "Read Frog",
+      "aliases": [
+        "Read Frog"
+      ],
+      "bad": [],
+      "note_zh_tw": "產品專有名稱"
+    },
+    {
+      "id": "pytorch-brand",
+      "name": "PyTorch",
+      "aliases": [
+        "PyTorch"
+      ],
+      "bad": [],
+      "note_zh_tw": "開源框架名稱"
+    },
+    {
+      "id": "huggingface-brand",
+      "name": "Hugging Face",
+      "aliases": [
+        "Hugging Face"
+      ],
+      "bad": [],
+      "note_zh_tw": "AI 開源平台名稱"
+    },
+    {
+      "id": "model-context-protocol",
+      "name": "Model Context Protocol",
+      "aliases": [
+        "Model Context Protocol"
+      ],
+      "bad": [],
+      "note_zh_tw": "通訊協定正式名稱"
+    },
+    {
+      "id": "agent-skill",
+      "name": "Agent Skills",
+      "aliases": [
+        "Agent Skills"
+      ],
+      "bad": [],
+      "note_zh_tw": "AI Agent 標準用語，先保留正式英文名稱"
+    },
+    {
+      "id": "manifest-v3",
+      "name": "Manifest V3",
+      "aliases": [
+        "Manifest V3"
+      ],
+      "bad": [],
+      "note_zh_tw": "Chrome 擴充功能規範名稱"
+    },
+    {
+      "id": "nodejs-name",
+      "name": "Node.js",
+      "aliases": [
+        "Node.js"
+      ],
+      "bad": [],
+      "note_zh_tw": "執行環境名稱"
+    }
+  ]
+}
