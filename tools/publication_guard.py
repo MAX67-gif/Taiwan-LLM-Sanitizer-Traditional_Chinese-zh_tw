@@ -15,15 +15,17 @@ ROOT_PUBLIC={
     ".gitignore", ".github/workflows/ci.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
     "AUTHORS.md","CHANGELOG.md","CONTRIBUTING.md","LICENSE",
-    "PRIVACY.md","README.md","SECURITY.md",
+    "PRIVACY.md","README.md","SECURITY.md","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
     "docs/FEATURES.md",
     "docs/GLOSSARY.md",
     "docs/ROADMAP.md",
     "docs/DEVELOPER_GUIDE.md",
+    "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
+    "docs/AI_INTEGRATION.md","docs/NAME_PROTECTION.md",
 }
-PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/")
+PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
 BAD_PATH=re.compile(
     r"(?i)(?:^|[/_.-])(?:private|internal|handoff|evidence|"
     r"grant|application|funding|codex_oss|competitive_research|"
@@ -96,9 +98,22 @@ def validate(paths:list[str])->list[str]:
         errors.extend(scan_secret(item,content))
         errors.extend(scan_runtime(item,content))
     required={"README.md","LICENSE","PRIVACY.md","SECURITY.md","AUTHORS.md",
-              "tools/publication_guard.py"}
+              "tools/publication_guard.py","AGENTS.md","CLAUDE.md",
+              "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
+              "docs/AI_INTEGRATION.md","skills/taiwan-zh-tw-localization/SKILL.md",
+              ".agents/skills/taiwan-zh-tw-localization/SKILL.md",
+              ".claude/skills/taiwan-zh-tw-localization/SKILL.md"}
     for name in sorted(required-present):
         errors.append(f"missing public file: {name}")
+    # All public Agent Skills must match the single canonical source exactly.
+    source=ROOT/"skills/taiwan-zh-tw-localization/SKILL.md"
+    if source.is_file():
+        canonical=source.read_bytes()
+        for destination in (".agents/skills/taiwan-zh-tw-localization/SKILL.md",
+                            ".claude/skills/taiwan-zh-tw-localization/SKILL.md"):
+            path=ROOT/destination
+            if not path.is_file() or path.read_bytes()!=canonical:
+                errors.append(f"{destination}: agent skill differs from canonical")
     # Prevent a README or public guide from linking a deleted/internal path.
     for name in ("README.md","CONTRIBUTING.md","SECURITY.md","docs/DEVELOPER_GUIDE.md"):
         if name not in present:continue
@@ -115,6 +130,10 @@ def self_test():
     assert allowed_path("README.md")
     assert allowed_path("docs/ROADMAP.md")
     assert allowed_path("src/core/preferences.js")
+    assert allowed_path("skills/taiwan-zh-tw-localization/SKILL.md")
+    assert allowed_path(".agents/skills/taiwan-zh-tw-localization/SKILL.md")
+    assert allowed_path(".claude/skills/taiwan-zh-tw-localization/SKILL.md")
+    assert allowed_path("docs/INSTALL_CHROME.md")
     assert not allowed_path("docs/CODEX_OSS_EVIDENCE_R1.md")
     assert not allowed_path("docs/PRIVATE_ROADMAP.md")
     assert not allowed_path("docs/NEW_INTERNAL.md")
