@@ -585,10 +585,10 @@ function createWebLocalizer(doc,options={}){
       while(running&&epoch===currentEpoch&&(queue.length||attrQueue.length)){
         if(queue.length){
           const node=queue.shift();queued.delete(node);
-          try{await updateText(node,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e); if(global.__TLS_DEBUG_TEST===true)console.error('TLS_DIAG',e?.stack||e);}
+          try{await updateText(node,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e);}
         }else{
           const el=attrQueue.shift();attrQueued.delete(el);
-          try{await updateAttrs(el,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e); if(global.__TLS_DEBUG_TEST===true)console.error('TLS_DIAG',e?.stack||e);}
+          try{await updateAttrs(el,currentEpoch);}catch(e){stats.errors++;stats.lastReason=String(e);}
         }
         if(++iterations%16===0){
           prune();publish();
