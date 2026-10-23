@@ -38,6 +38,8 @@ jobs:
             dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_Tampermonkey_20261024.user.js
             dist/pokebonk/TLS_Pokebonk_TW_Demo_R7_1_SHA256SUMS_20261024.txt
           if-no-files-found: error
+      - name: Check R8 contextual review standalone HTML reproducibility
+        run: node tools/build_context_review_r8.js --check
       - name: Run shared engine, CLI and local Provider unit tests
         run: node --test tests/*.js
       - name: Verify user install, ZIP identity and version strings
@@ -123,6 +125,7 @@ jobs:
       - run: python tests/test_popup_r2.py
       - run: python tests/test_browser_lexicon_r3.py
       - run: python tests/test_explorer_browser_r3.py
+      - run: python tests/test_context_review_r8.py
       - run: python tests/test_visual_progress_browser_r5.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
