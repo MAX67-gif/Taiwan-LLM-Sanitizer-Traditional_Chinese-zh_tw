@@ -13,3 +13,9 @@ R2 增加使用者**主動選擇**的 Chrome Built-in Translator API。在支援
 Chrome 版本存放每站的模式與來源語言於 `chrome.storage.local`；Tampermonkey 版本儲存於 GM_setValue。資料不會由本專案自行同步到外部伺服器。工具未上架商店，不宣稱 Chrome 自身或使用者網站沒有其他網路行為。
 
 頁面中的密碼、表單、程式碼與明確不翻譯區域將跳過；技術上不能保證偵測所有敏感文本，請避免在含個人機密的頁面啟用實驗性翻譯功能。
+
+## R3 資料與詞庫邊界
+
+新 883 筆術語候選及 67 筆保守種子皆為**公開的本機資料**，由公開程式處理，不需要把正在看的網站內容傳送到專案伺服器。候選詞不自動作用於使用者內容。透過 Chrome storage／Tampermonkey GM 保存的網站來源、啟用模式及語言偏好屬於**本機設定**，並非「連本地都完全不記錄」。專案目前不運行網站遙測、指紋、轉換事件上報或雲端翻譯入口。
+
+Chrome Translator API 可能先下載本機語言模型。網站自己的連線、Chrome 自身流量與使用者選用的外部工具不在本專案控制範圍內。詳見 [R3 Privacy-First 契約](docs/PRIVACY_FIRST_TRANSLATION_R3.md)。

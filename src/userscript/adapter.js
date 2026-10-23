@@ -1,32 +1,66 @@
-/* R2 standalone userscript adapter: no external dependencies, MIT. */
+/* R3 standalone userscript adapter: no external dependencies, MIT. */
 (() => {
 'use strict';
-if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders)return;
+if(window.top!==window.self || !globalThis.TLSWeb || !globalThis.TLSProviders || !globalThis.TLSPreferences)return;
 const origin=location.origin;
-const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin;
+const activeKey='tls-enabled:'+origin, modeKey='tls-mode-r2:'+origin,sourceKey='tls-source-r2:'+origin,domainKey='tls-domain-r3:'+origin,preferenceKey='tls-regional-r3:'+origin,toneKey='tls-tone-r3:'+origin;
 let enabled=Boolean(GM_getValue(activeKey,false)),paused=false;
 let mode=GM_getValue(modeKey,'terms')==='local-ai'?'local-ai':'terms';
 let sourceLanguage=GM_getValue(sourceKey,'auto');
 const sources=['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','id','ar'];
 if(!sources.includes(sourceLanguage))sourceLanguage='auto';
+const domains=['auto','general','ui','software','engineering','ai','security','ecommerce','finance','food','travel','education','medicine','media','office','public','games','industry'];
+const domainLabels={auto:'自動判斷',general:'一般',ui:'介面選單',software:'軟體',engineering:'程式開發',
+ ai:'AI',security:'資安',ecommerce:'購物',finance:'金融',food:'餐飲',travel:'交通旅遊',
+ education:'教育',medicine:'醫療',media:'社群影音',office:'辦公',public:'公共行政',games:'遊戲',industry:'工業'};
+let domain=GM_getValue(domainKey,'auto');
+if(!domains.includes(domain))domain='auto';
+let regionalPreference=GM_getValue(preferenceKey,'balanced'),tone=GM_getValue(toneKey,'faithful');
+const initial=globalThis.TLSPreferences.normalize({regionalPreference,tone});
+regionalPreference=initial.regionalPreference;tone=initial.tone;
 const panel=document.createElement('div');
 panel.dataset.tlsUi='true';panel.style.cssText='position:fixed;right:10px;top:10px;z-index:2147483646;pointer-events:auto';
 const shadow=panel.attachShadow({mode:'closed'});
 const wrap=document.createElement('div');
 wrap.style.cssText='background:#fff;color:#183247;border:1px solid #94a3b8;box-shadow:0 4px 18px #0003;padding:8px;border-radius:12px;font:12px/1.5 system-ui,sans-serif;max-width:250px';
-const title=document.createElement('div');title.textContent='TLS 臺灣繁中化';title.style.fontWeight='700';
+const title=document.createElement('div');title.textContent='TLS 臺灣繁中化 R3';title.style.fontWeight='700';
 const status=document.createElement('div');status.setAttribute('aria-live','polite');status.style.cssText='margin:4px 0;max-width:230px;overflow-wrap:anywhere';
-const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select');
+const pause=document.createElement('button'),modeButton=document.createElement('button'),sourceSelect=document.createElement('select'),domainSelect=document.createElement('select'),preferenceSelect=document.createElement('select'),toneSelect=document.createElement('select');
 for(const btn of [pause,modeButton])btn.style.cssText='padding:5px 8px;border:0;border-radius:7px;color:#fff;background:#0f766e;cursor:pointer;margin:3px 3px 3px 0;font:12px system-ui';
 sourceSelect.style.cssText='margin:4px 0;width:100%;padding:5px;border-radius:7px;background:white;color:#111;border:1px solid #94a3b8';
+domainSelect.style.cssText=sourceSelect.style.cssText;
+preferenceSelect.style.cssText=sourceSelect.style.cssText;
+toneSelect.style.cssText=sourceSelect.style.cssText;
+preferenceSelect.setAttribute('aria-label','臺灣用語偏好');
+toneSelect.setAttribute('aria-label','譯文語氣偏好（尚未由 Chrome 模型控制）');
+for(const level of globalThis.TLSPreferences.LEVELS){
+  const opt=document.createElement('option');opt.value=level;
+  opt.textContent='用語：'+globalThis.TLSPreferences.DESCRIPTIONS[level];
+  preferenceSelect.appendChild(opt);
+}
+preferenceSelect.value=regionalPreference;
+for(const value of globalThis.TLSPreferences.TONES){
+  const opt=document.createElement('option');opt.value=value;
+  opt.textContent='語氣偏好：'+globalThis.TLSPreferences.TONE_LABELS[value];
+  toneSelect.appendChild(opt);
+}
+toneSelect.value=tone;
+for(const d of domains){
+  const option=document.createElement('option');option.value=d;option.textContent='領域：'+domainLabels[d];
+  domainSelect.appendChild(option);
+}
+domainSelect.value=domain;
 for(const lang of sources){
   const option=document.createElement('option');option.value=lang;option.textContent='原文：'+lang;
   sourceSelect.appendChild(option);
 }
 sourceSelect.value=sourceLanguage;
-wrap.append(title,status,pause,modeButton,sourceSelect);shadow.appendChild(wrap);
+const warning=document.createElement('small');
+warning.textContent='語氣偏好先保存在本機；目前 Chrome 本機模型無法保證依此改寫，請勿用於需要精確措辭的敏感文件。';
+warning.style.cssText='display:block;opacity:.72;margin-top:4px;line-height:1.35';
+wrap.append(title,status,pause,modeButton,sourceSelect,domainSelect,preferenceSelect,toneSelect,warning);shadow.appendChild(wrap);
 const ctrl=globalThis.TLSWeb.createWebLocalizer(document,{
-  mode,sourceLanguage,onStatus:(snapshot)=>renderStatus(snapshot)
+  mode,sourceLanguage,domain,regionalPreference,tone,onStatus:(snapshot)=>renderStatus(snapshot)
 });
 function renderStatus(snapshot){
   if(!snapshot)return;
@@ -45,12 +79,12 @@ function render(){
 }
 function apply(){
   if(!enabled)return;
-  ctrl.configure({mode,sourceLanguage});if(!paused)ctrl.start();
+  ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});if(!paused)ctrl.start();
   render();
 }
 function setEnabled(next){
   enabled=Boolean(next);GM_setValue(activeKey,enabled);paused=false;
-  if(enabled){ctrl.configure({mode,sourceLanguage});ctrl.start();}
+  if(enabled){ctrl.configure({mode,sourceLanguage,domain,regionalPreference,tone});ctrl.start();}
   else ctrl.stop();
   render();
 }
@@ -63,6 +97,19 @@ sourceSelect.addEventListener('change',()=>{
   if(!enabled)return;
   sourceLanguage=sources.includes(sourceSelect.value)?sourceSelect.value:'auto';
   GM_setValue(sourceKey,sourceLanguage);apply();
+});
+domainSelect.addEventListener('change',()=>{
+  if(!enabled)return;
+  domain=domains.includes(domainSelect.value)?domainSelect.value:'auto';
+  GM_setValue(domainKey,domain);apply();
+});
+preferenceSelect.addEventListener('change',()=>{
+  regionalPreference=globalThis.TLSPreferences.normalize({regionalPreference:preferenceSelect.value}).regionalPreference;
+  GM_setValue(preferenceKey,regionalPreference);apply();
+});
+toneSelect.addEventListener('change',()=>{
+  tone=globalThis.TLSPreferences.normalize({tone:toneSelect.value}).tone;
+  GM_setValue(toneKey,tone);apply();
 });
 GM_registerMenuCommand('TLS：啟用／停用本站',()=>setEnabled(!enabled));
 GM_registerMenuCommand('TLS：暫停／恢復',()=>{if(enabled)pause.click();});

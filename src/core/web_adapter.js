@@ -12,11 +12,20 @@ function safeElement(el){
   try{return !el.closest(SKIP)&&!el.isContentEditable;}
   catch(_){return false;}
 }
+function domainOf(el) {
+  if(!safeElement(el))return 'general';
+  try {
+    if(el.closest('nav,menu,[role="navigation"],[role="menu"],[role="menubar"],[role="menuitem"]'))
+      return 'ui';
+    return 'general';
+  } catch(_) {return 'general';}
+}
 function createWebLocalizer(doc,options={}){
   if(!doc?.documentElement||typeof doc.createTreeWalker!=='function')
     throw new TypeError('Valid browser document required');
   let opts={...options},running=false,epoch=0,router=null,observer=null,timer=null,working=false;
   const changedTexts=new Map(),changedAttrs=new Map(),queue=[],queued=new Set();
+  const requestedDomain=(el)=>opts.domain&&opts.domain!=='auto'?opts.domain:domainOf(el);
   let stats={scanned:0,converted:0,unchanged:0,errors:0,skipped:0,overflow:0,lastState:'IDLE',lastReason:'',modelProgress:0};
   function publish(){
     try{opts.onStatus?.(getStatus());}catch(_){}
@@ -75,7 +84,7 @@ function createWebLocalizer(doc,options={}){
     if(old?.after===before)return;
     if(old)changedTexts.delete(node);
     if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-    const result=await router.translate(before);
+    const result=await router.translate(before,{domain:requestedDomain(node.parentElement),regionalPreference:opts.regionalPreference,tone:opts.tone});
     if(!running||myEpoch!==epoch||skipText(node)||node.data!==before)return;
     stats.scanned++;stats.lastState=result.state||'UNKNOWN';stats.lastReason=result.reason||'';
     if(typeof result.text==='string'&&result.text!==before){
@@ -94,7 +103,7 @@ function createWebLocalizer(doc,options={}){
       if(existing?.[name]?.after===before)continue;
       if(existing?.[name]){delete existing[name];if(!Object.keys(existing).length)changedAttrs.delete(el);}
       if(changedTexts.size+changedAttrs.size>=MAX_RECORDS){stats.overflow++;return;}
-      const result=await router.translate(before);
+      const result=await router.translate(before,{domain:requestedDomain(el),regionalPreference:opts.regionalPreference,tone:opts.tone});
       if(!running||myEpoch!==epoch||!el.isConnected||el.getAttribute(name)!==before)continue;
       if(typeof result.text==='string'&&result.text!==before){
         const group=changedAttrs.get(el)||{};
@@ -166,15 +175,17 @@ function createWebLocalizer(doc,options={}){
     if(wasRunning)start();
   }
   function getStatus(){
-    return Object.freeze({version:'0.2.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
+    return Object.freeze({version:'0.3.0',running,mode:providers.selected(opts.mode,opts.sourceLanguage).mode,
       sourceLanguage:providers.selected(opts.mode,opts.sourceLanguage).sourceLanguage,
+      domain:opts.domain||'auto',
+      regionalPreference:opts.regionalPreference||'balanced',tone:opts.tone||'faithful',
       queued:queue.length+attrQueue.length,tracked:changedTexts.size+changedAttrs.size,
       ...stats,provider:router?.status()||{state:'INACTIVE'}});
   }
   return Object.freeze({start,stop,pause:stop,resume:start,configure,getStatus,
     isRunning:()=>running,translateText:core.translateText});
 }
-const api=Object.freeze({VERSION:'0.2.0',createWebLocalizer});
+const api=Object.freeze({VERSION:'0.3.0',createWebLocalizer});
 global.TLSWeb=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

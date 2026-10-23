@@ -3,7 +3,7 @@
 'use strict';
 const core=global.TLSCore || (typeof require==='function'?require('./engine.js'):null);
 if(!core) throw new Error('TLSCore must load first');
-const VERSION='0.2.0', TARGET='zh-Hant', MAX=1800;
+const VERSION='0.3.0', TARGET='zh-Hant', MAX=1800;
 const VALID=new Set(['auto','en','ja','ko','zh','fr','de','es','ru','vi','th','pt','it','nl','ar','id','uk','tr']);
 const PROTECTED=/(\{\{[^{}]{1,250}\}\}|\$\{[^}]{1,250}\}|<%[\s\S]{0,250}?%>|<\/?[A-Za-z][^>]{0,250}>|https?:\/\/[^\s<>]+|\x60[^\x60\n]{1,250}\x60|%\d*\$?[sdif]|\{[A-Za-z_$][\w.$-]*\})/gu;
 const STATES=Object.freeze({TERMS:'LOCALIZED_TERMS',MODEL:'LOCALIZED_MODEL',UNCHANGED:'UNCHANGED',
@@ -46,8 +46,8 @@ function protect(text) {
     return {ok:true,text:restored};
   }};
 }
-function termResult(text,fallbackState) {
-  const out=core.translateText(text);
+function termResult(text,fallbackState,context={}) {
+  const out=core.translateText(text,context);
   return {text:out,state:out===text?(fallbackState||STATES.UNCHANGED):STATES.TERMS,provider:'offline-terms'};
 }
 class BrowserLocalProvider {
@@ -112,15 +112,15 @@ class BrowserLocalProvider {
     this.pending.set(sourceLanguage,job);
     try{return await job;}finally{this.pending.delete(sourceLanguage);this.downloading=false;}
   }
-  async translate(text) {
-    const fallback=()=>termResult(text);
+  async translate(text,context={}) {
+    const fallback=()=>termResult(text,undefined,context);
     if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
     if(typeof text!=='string'||text.length>MAX)return {...fallback(),reason:'TEXT_TOO_LONG'};
     if(this.failures>=3)return {...fallback(),reason:'CIRCUIT_OPEN'};
     const source=await this.detectSource(text);
     if(!source)return {...fallback(),reason:STATES.SOURCE_UNKNOWN};
     if(source==='zh-Hant')return fallback();
-    const key=source+'\0'+text;
+    const key=source+'\0'+(context.domain||'general')+'\0'+text;
     if(this.cache.has(key))return this.cache.get(key);
     const guard=protect(text);
     if(!guard.ok)return {...fallback(),reason:guard.reason};
@@ -130,7 +130,7 @@ class BrowserLocalProvider {
       if(this.closed)return {...fallback(),reason:'PROVIDER_CLOSED'};
       const restored=guard.restore(translated);
       if(!restored.ok)return {...fallback(),reason:STATES.GUARD_REJECTED,guardReason:restored.reason};
-      const out=core.translateText(restored.text);
+      const out=core.translateText(restored.text,context);
       const result={text:out,state:out===text?STATES.UNCHANGED:STATES.MODEL,provider:'chrome-built-in',sourceLanguage:source};
       this.cache.set(key,result);
       if(this.cache.size>512)this.cache.delete(this.cache.keys().next().value);
@@ -152,7 +152,7 @@ class BrowserLocalProvider {
 function createRouter(opts={}) {
   const cfg=selected(opts.mode,opts.sourceLanguage);
   const browser=cfg.mode==='local-ai'?new BrowserLocalProvider(opts):null;
-  return {translate:text=>browser?browser.translate(text):Promise.resolve(termResult(text)),
+  return {translate:(text,context={})=>browser?browser.translate(text,context):Promise.resolve(termResult(text,undefined,context)),
     status:()=>browser?browser.status():{state:'TERMS_ONLY',cacheEntries:0},
     destroy:()=>browser?.destroy(),mode:cfg.mode,sourceLanguage:cfg.sourceLanguage};
 }

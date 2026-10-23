@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TLS R2｜通用繁中化</title>
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TLS R3｜通用繁中化</title>
 <style>
 :root{font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;color-scheme:light}
 body{margin:0;padding:16px;width:330px;background:#f8fafc;color:#17243c;font-size:13px;line-height:1.6}
@@ -14,8 +14,20 @@ button{padding:9px 10px;cursor:pointer;border:0;border-radius:8px;font-weight:70
 .actions{display:flex;gap:7px;margin-top:7px}button:disabled{opacity:.5;cursor:default}
 .hint{border-top:1px solid #cbd5e1;margin-top:10px;padding-top:8px;font-size:12px}
 #host{word-break:break-all}
+.preference{border:1px solid #cbd5e1;border-radius:12px;padding:9px;margin:12px 0 4px}
+.preference legend{font-weight:700;color:#25495b}
+.bubble-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.bubble{display:block;margin:0;min-width:0;font-weight:500;position:relative}
+.bubble input{position:absolute;opacity:0;width:1px;height:1px}
+.bubble span{display:block;text-align:center;padding:9px 5px;border:1px solid #bdd2db;background:#f7fcff;color:#1b4356;border-radius:999px;font-size:12px;transition:transform .12s ease,background .12s ease}
+.bubble input:checked+span{background:#0f766e;color:white;border-color:#0f766e}
+.bubble input:focus-visible+span{outline:3px solid #3984bf;outline-offset:2px}
+.bubble:hover span{background:#d8eff2}
+.bubble input:checked:hover+span{background:#0f766e}
+@media(prefers-reduced-motion:reduce){.bubble span{transition:none}}
+@media(max-width:360px){body{width:min(330px,calc(100vw - 32px));padding:12px}}
 </style></head><body>
-<h1>Taiwan-LLM-Sanitizer <span class="muted">R2</span></h1>
+<h1>Taiwan-LLM-Sanitizer <span class="muted">R3</span></h1>
 <p id="host" class="muted">確認網站中…</p>
 <label for="mode">處理模式</label>
 <select id="mode"><option value="terms">離線臺灣用語／介面詞彙</option><option value="local-ai">Chrome 本機 AI 全句翻譯（實驗性）</option></select>
@@ -27,8 +39,27 @@ button{padding:9px 10px;cursor:pointer;border:0;border-radius:8px;font-weight:70
 <option value="vi">越南文</option><option value="th">泰文</option><option value="pt">葡萄牙文</option>
 <option value="id">印尼文</option><option value="it">義大利文</option><option value="ar">阿拉伯文</option>
 </select>
+<label for="domain">臺灣用語領域（不強制、可自由選擇）</label>
+<select id="domain"><option value="auto">自動判斷（最保守）</option><option value="general">一般／不限定</option><option value="ui">介面與選單</option><option value="software">軟體</option><option value="engineering">程式開發</option><option value="ai">AI 與資料</option><option value="security">資安</option><option value="ecommerce">購物</option><option value="finance">金融</option><option value="food">餐飲</option><option value="travel">交通旅遊</option><option value="education">教育</option><option value="medicine">醫療</option><option value="media">社群影音</option><option value="office">辦公文件</option><option value="public">公共行政</option><option value="games">遊戲</option><option value="industry">工業</option></select>
+<fieldset class="preference" aria-describedby="preferenceHint">
+<legend>臺灣用語偏好</legend>
+<div class="bubble-options" role="radiogroup" aria-label="臺灣用語偏好">
+<label class="bubble"><input type="radio" name="regionalPreference" value="original"><span>保留原用語</span></label>
+<label class="bubble"><input type="radio" name="regionalPreference" value="light"><span>輕度臺灣化</span></label>
+<label class="bubble"><input type="radio" name="regionalPreference" value="balanced" checked><span>自然平衡</span></label>
+<label class="bubble"><input type="radio" name="regionalPreference" value="taiwan"><span>臺灣用語優先</span></label>
+</div>
+<small id="preferenceHint" class="muted">這是用語選擇，不是禁語或語言正確性評分；同一段文字在不同強度下也可能相同。</small>
+</fieldset>
+<label for="tone">譯文語氣（偏好已可保存，模型語氣控制尚待支援）</label>
+<select id="tone">
+<option value="faithful">忠於原文（預設）</option>
+<option value="natural">自然順口</option>
+<option value="formal">正式專業</option>
+<option value="casual">輕鬆口語</option>
+</select>
 <p id="state" role="status" aria-live="polite">檢查中…</p>
 <button type="button" id="toggle" disabled>啟用本站</button>
 <div class="actions"><button type="button" id="apply" disabled>套用設定</button><button type="button" id="refresh">重新確認狀態</button></div>
-<div class="hint">預設只做少量離線用語校正。選擇 Chrome 本機 AI 模式後，瀏覽器可能下載語言模型；網頁文字不會被本擴充功能送到雲端。沒有可用模型時將自動保留原文或只做離線詞彙校正。可隨時停用還原。</div>
-<script src="popup.js"></script></body></html>
+<div class="hint">預設僅執行保守的臺灣詞彙校正；大量候選詞庫不會自動套用。選擇 Chrome 本機 AI 模式後，瀏覽器可能下載語言模型；網頁文字不會被本擴充功能送到雲端。沒有可用模型時將自動保留原文或只做離線詞彙校正。可隨時停用還原。</div>
+<script src="popup.js"></script><p class="muted" style="font-size:11px;margin-top:10px">Taiwan-LLM-Sanitizer · CA L. · R3</p></body></html>

@@ -1,0 +1,128 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';img-src 'none';connect-src 'none';font-src 'none';object-src 'none';base-uri 'none'">
+<title>你的中文，由你決定｜Taiwan-LLM-Sanitizer 風格實驗室 R3</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif;
+--ink:#143340;--muted:#556b76;--aqua:#2f8d83;--line:#dbe9ed;--surface:#fff;--soft:#f2faf8}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(165deg,#f6fcfa,#e8f3f8);color:var(--ink);min-height:100vh;line-height:1.65}
+main{width:min(100%,1040px);margin:auto;padding:clamp(14px,4vw,42px)}
+h1{font-size:clamp(1.65rem,4.3vw,2.9rem);line-height:1.25;margin:0 0 10px;letter-spacing:-.025em}
+h2{font-size:1.08rem;margin:0 0 12px}
+p{margin:6px 0 14px}
+.muted{color:var(--muted)}.eyebrow{font-size:.85rem;color:#176b64;font-weight:700;letter-spacing:.06em}
+.heading{max-width:720px;padding:10px 0 20px}.lead{font-size:1.08rem}
+.shell{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(16px,3vw,25px);box-shadow:0 12px 38px #295f6612}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.controls{display:grid;gap:24px}
+.controls fieldset{border:0;margin:0;padding:0;min-width:0}
+.controls legend{font-size:1rem;font-weight:700;padding-bottom:9px}
+.bubbles{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bubble{position:relative;display:inline-flex;margin:0;font-size:.92rem;cursor:pointer}
+.bubble input{position:absolute;opacity:0;inline-size:1px;block-size:1px}
+.bubble span{display:inline-flex;padding:9px 14px;align-items:center;min-height:42px;
+border-radius:999px;background:var(--soft);border:1px solid #add7d1;
+transition:transform .16s ease,background-color .16s ease,border-color .16s ease}
+.bubble input:checked+span{background:#176e69;color:white;border-color:#176e69;font-weight:700}
+.bubble input:focus-visible+span{outline:3px solid #274bca;outline-offset:3px}
+.bubble:hover span{transform:translateY(-2px)}
+.explain{font-size:.88rem;color:var(--muted);margin:9px 0 0}
+.preview{background:#f7fbfd;border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px;align-content:start}
+.preview-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.pill{font-size:.76rem;background:#e3f3e8;color:#176648;padding:4px 9px;border-radius:999px;font-weight:700}
+label[for=scene]{font-weight:600}
+select{width:100%;padding:10px;border-radius:9px;background:white;color:#143340;border:1px solid #bdd2d6;font:inherit}
+.verse{background:white;border:1px solid #d7e6eb;padding:14px;border-radius:12px;min-height:88px}
+.verse small{color:var(--muted);display:block;margin:0 0 8px;font-size:.77rem}
+.result{border-color:#95c8bf}.result p{font-size:1.06rem;margin:0}
+.footer{font-size:.84rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:22px}
+a{color:#075e60}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.shell{border-radius:18px}.bubbles{gap:6px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style></head><body>
+<main>
+<header class="heading"><div class="eyebrow">Taiwan-LLM-Sanitizer · R3 設計實驗室</div>
+<h1>你的中文，由你決定。</h1>
+<p class="lead">看外文網站也好、讀技術文件也好，你可以選擇自己讀起來舒服的中文。沒有哪種用語必須被禁止，也不需要為了翻譯交出閱讀紀錄。</p>
+</header>
+<div class="shell layout">
+<section class="controls" aria-label="翻譯偏好">
+<fieldset><legend>臺灣用語偏好</legend>
+<div class="bubbles" id="regional">
+<label class="bubble"><input type="radio" name="regional" value="original"><span>保留原用語</span></label>
+<label class="bubble"><input type="radio" name="regional" value="light"><span>輕度臺灣化</span></label>
+<label class="bubble"><input type="radio" name="regional" value="balanced" checked><span>自然平衡</span></label>
+<label class="bubble"><input type="radio" name="regional" value="taiwan"><span>臺灣用語優先</span></label>
+</div>
+<p class="explain">這不是「中國用語容忍度」或對語言的評分，而是你希望系統介入多少。任何程度都可以保留原詞。</p></fieldset>
+<fieldset><legend>譯文語氣</legend>
+<div class="bubbles" id="tones">
+<label class="bubble"><input type="radio" name="tone" value="faithful" checked><span>忠於原文</span></label>
+<label class="bubble"><input type="radio" name="tone" value="natural"><span>自然順口</span></label>
+<label class="bubble"><input type="radio" name="tone" value="formal"><span>正式專業</span></label>
+<label class="bubble"><input type="radio" name="tone" value="casual"><span>輕鬆口語</span></label>
+</div>
+<p class="explain">真正的語氣控制需要支援相應能力的模型。Chrome 本機 Translator API 並沒有提供這四種語氣的直接參數；此處是人類撰寫的預期成果示意。</p></fieldset>
+</section>
+<section class="preview" aria-label="語氣預覽">
+<div class="preview-head"><h2>閱讀感受，即時預覽</h2><span class="pill">離線示範</span></div>
+<label for="scene">想看哪一種文章？</label>
+<select id="scene"><option value="web">網站操作說明</option><option value="business">商務信件</option><option value="technical">技術教學</option></select>
+<div class="verse"><small>原始文字</small><p id="source" aria-live="polite"></p></div>
+<div class="verse result"><small>希望讀到的中文（人工示例，非 AI 即時結果）</small><p id="translation" aria-live="polite"></p></div>
+<p class="explain" id="policy"></p>
+</section>
+</div>
+<div class="footer">這個頁面沒有 Cookie、追蹤程式、遠端字型、外部 JavaScript 或 API 請求。互動只在目前頁面記憶體執行，不會上傳你的選擇。<br>
+本頁展示的是產品設計，不代表 R3 模型已能在任意頁面達到相同翻譯風格。© 2026 CA L. 與專案貢獻者 · MIT 核心。</div>
+</div>
+</main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const SCENES={
+web:{source:'Click the menu to open your account settings.',
+ faithful:'點擊選單以開啟你的帳戶設定。',
+ natural:'到選單裡就能找到帳戶設定。',
+ formal:'請從選單開啟帳戶設定頁面。',
+ casual:'想改帳戶設定？打開選單就找得到。'},
+business:{source:'Please review the attached proposal before Friday and let us know your feedback.',
+ faithful:'請在星期五之前審閱附件中的提案，並告知我們您的意見。',
+ natural:'麻煩你在星期五前看一下附件提案，再跟我們說說想法。',
+ formal:'敬請於本週五前審閱附件提案，並回覆您的評估意見。',
+ casual:'有空幫忙在星期五前看一下提案，再跟我們分享想法，謝謝！'},
+technical:{source:'Save the configuration file before restarting the server.',
+ faithful:'重新啟動伺服器前，請先儲存設定檔。',
+ natural:'要重開伺服器之前，記得先把設定檔存好。',
+ formal:'執行伺服器重新啟動作業前，請先確認設定檔已儲存。',
+ casual:'重開伺服器前先存設定檔，才不會白忙一場。'}
+};
+const desc={
+ original:'盡量保留原有用語；跨語翻譯仍需模型判斷，並非停止所有翻譯。',
+ light:'只調整較明確、較不容易出錯的在地化詞彙。',
+ balanced:'以自然閱讀為主，有明確語境才優先使用臺灣慣用詞。',
+ taiwan:'盡可能採用有依據的臺灣慣用詞，但不強行更動專名。'
+};
+function selected(name){return document.querySelector('input[name="'+name+'"]:checked')?.value||''}
+function update(){
+ const scene=SCENES[$('scene').value],regional=selected('regional'),tone=selected('tone');
+ $('source').textContent=scene.source;
+ let text=scene[tone]||scene.faithful;
+ if(regional==='original'){
+   if($('scene').value==='web')text=text.replaceAll('選單','menu');
+   if($('scene').value==='technical')text=text.replaceAll('伺服器','server').replaceAll('設定檔','configuration file');
+ }
+ if(regional==='light'&&$('scene').value==='web')text=text.replaceAll('選單','menu');
+ if(regional==='taiwan'&&$('scene').value==='web'&&tone==='faithful')
+    text='從主選單開啟你的帳戶設定。';
+ $('translation').textContent=text;
+ $('policy').textContent=desc[regional]+' 此處僅展示不同偏好可能造成的閱讀差異，不能當作既有翻譯模型的品質證據。';
+}
+for(const node of document.querySelectorAll('input[type=radio],#scene'))
+  node.addEventListener('change',update);
+update();
+})();
+</script>
+</body></html>

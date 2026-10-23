@@ -9,6 +9,7 @@ with sync_playwright() as pw:
         args["executable_path"]="/usr/bin/chromium"
     browser=pw.chromium.launch(**args)
     page=browser.new_page()
+    page.on("pageerror",lambda exc:print("PAGE_ERROR",str(exc)))
     page.set_content((ROOT/"tests/fixtures/demo.html").read_text(encoding="utf-8"))
     page.evaluate("""() => {
       window.Translator={
@@ -23,7 +24,7 @@ with sync_playwright() as pw:
         }})
       };
     }""")
-    for rel in ["src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
+    for rel in ["src/core/lexicon_pack.js","src/core/preferences.js","src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
         page.add_script_tag(content=(ROOT/rel).read_text(encoding="utf-8"))
     page.evaluate("""() => {
       window.__r2=TLSWeb.createWebLocalizer(document,{mode:'local-ai',sourceLanguage:'en'});
