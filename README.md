@@ -6,7 +6,7 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 
 **This is an independent project; it is not affiliated with OpenAI, Google, Tampermonkey, any particular website, game or translation service. No funding or approval is claimed.**
 
-**正式定位：通用型臺灣繁體中文在地化平台。PokeBonk 只曾是發想案例，沒有任何網站或遊戲被寫成必備支援範圍；Tampermonkey 只是其中一個可選擇的轉接器，不是產品本身。**
+**正式定位：通用型臺灣繁體中文在地化平台。沒有任何指定網站、遊戲或產業是產品的必要條件；Tampermonkey 只是其中一個可選擇的轉接器，不是產品本身。**
 
 ## 第一個交付介面：網頁文字在地化（非產品範圍上限）
 
@@ -20,22 +20,34 @@ Taiwan-LLM-Sanitizer is an independent open-source project for making browser in
 
 **Chrome 擴充功能（尚未上架 Chrome Web Store）**
 
-1. 在 [Repository](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw) 下載 ZIP 並解壓縮。
+1. 在 [Repository](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw) 下載原始碼 ZIP 並解壓縮，執行 `python tools/build.py` 產生 `dist/` 安裝檔案。
 2. 開啟 Chrome `chrome://extensions` → 開發人員模式 →「載入未封裝項目」→ 指定 **`dist/chrome/`** 目錄。
 3. 開啟一般 HTTP(S) 網站後點擴充功能圖示 → **啟用本站繁中化**，授權此網站。
 4. 可隨時按 **停用本站並還原**；其他已開啟分頁可能需重新整理。
 
 **Tampermonkey（可獨立安裝）**
 
-1. 安裝 Tampermonkey，直接匯入 [單檔 Userscript](dist/userscript/TaiwanLLMSanitizer.user.js)。
+1. 安裝 Tampermonkey，執行 `python tools/build.py`，再匯入產生的 `dist/userscript/TaiwanLLMSanitizer.user.js` 單檔。
 2. 到任意一般 HTTP(S) 網站，從 Tampermonkey 腳本選單按 **切換本站啟用／停用**；預設所有網站都不會主動改寫。
 3. 浮動按鈕可暫停／恢復，停用時還原目前仍由工具修改的文字。
 
-**注意**：目前是開發版本。對於 Canvas／WebGL 繪製的遊戲內文字、跨來源 iframe、封閉 Shadow DOM、瀏覽器保護頁或圖片內文字，沒有保證可翻譯。跨語言全文翻譯依賴 Chrome 本機 Translator API 的實際可用性。尚未完成真實 PokéBonk 互動測試。
+**注意**：目前是開發版本。對於 Canvas／WebGL 繪製的遊戲內文字、跨來源 iframe、封閉 Shadow DOM、瀏覽器保護頁或圖片內文字，沒有保證可翻譯。跨語言全文翻譯依賴 Chrome 本機 Translator API 的實際可用性。尚未完成跨網站的大規模相容性實測。
 
 ### 通用、自由且可擴充的使用原則
 
 本工具不把任何特定網站、遊戲、產業或框架做成必須匹配的條件。使用者自行選擇合法且技術上能處理的頁面、文件與應用流程；Chrome 的逐網站權限與 Userscript 的逐站啟用，是保護使用者的安全同意機制，不是對用途的限制。對畫布、圖片、跨來源 iframe、封閉 Shadow DOM、PDF、程式語意等未支援介面，後續以獨立轉接器與可選翻譯供應者擴充，**不是宣稱現階段百分之百完整適配**。
+
+## 本機批次轉換（R1 已有基本功能）
+
+除了網頁介面，目前也提供共用核心的 **Node.js CLI**。它並不依賴瀏覽器或 Tampermonkey，也不會將文件送上雲端。先安裝 Node.js 20+，即可在專案資料夾執行：
+
+```bash
+node tools/localize_cli.js --input ./documents --output ./localized
+node tools/localize_cli.js --input ./data.json --output ./localized --json-strings
+node tools/localize_cli.js --input ./documents --output ./localized --dry-run
+```
+
+支援部分 `.md/.txt/.json/.jsonl`。Markdown 程式碼區塊與程式用特殊字串會保留；JSON 預設不做內容變動，只有使用 `--json-strings` 才轉換部分人類可讀的值；欄位鍵名和機器識別欄位不修改。輸出必須是不同資料夾。R1 仍只支援少量離線常見字詞，不是任意英文全文翻譯。
 
 ## 開發規格及路線
 
@@ -61,4 +73,4 @@ Source and license references: [MIT](https://opensource.org/license/mit) · [Chr
 
 ## 使用者真正需要的完整平台願景
 
-長期採「一個可重用本地化核心＋多種獨立轉接器」架構：Chrome／Edge／Firefox、Tampermonkey、Markdown／HTML／PDF 文件、CLI／批次工具、Python API／SDK、AI Prompt、JSON／JSONL 與具隱私選項的翻譯 Provider／OCR。R1 已完成的只有部分 DOM 字詞轉換與 Chrome／Userscript 原型，其他為 roadmap。詳見 [通用適配契約](docs/UNIVERSAL_ADAPTERS_R1.md)。
+長期採「一個可重用本地化核心＋多種獨立轉接器」架構：Chrome／Edge／Firefox、Tampermonkey、Markdown／HTML／PDF 文件、CLI／批次工具、Python API／SDK、AI Prompt、JSON／JSONL 與具隱私選項的翻譯 Provider／OCR。R1 已完成部分 DOM 字詞轉換、Chrome／Userscript 原型及保守 CLI；其餘大型功能仍是 roadmap。詳見 [通用適配契約](docs/UNIVERSAL_ADAPTERS_R1.md)。
