@@ -7,7 +7,7 @@
 
 ## 0. 決策來源與優先序
 
-原始 Google AI 匯出對話有九輪：第六輪明確選 **B＝Open-Core（公開 MIT 核心＋獨立商用擴充）**；第九輪將目標擴充為外語／非臺灣用語的開源技術文件、程式註解、Prompt 翻譯與在地化。2026-10-23 最新使用者指令新增第一條實戰產品主線：Chrome 插件／可獨立運作的 Tampermonkey 腳本，以 PokeBonk 這類動態網頁作為示範，但遵守網站規範。前期對話同名「方案 B＝AI Benchmark」**不是**此商業方案 B。若有衝突，以使用者後來的明確要求及合法合規限制為準。
+原始 Google AI 匯出對話有九輪：第六輪明確選 **B＝Open-Core（公開 MIT 核心＋獨立商用擴充）**；第九輪將目標擴充為外語／非臺灣用語的開源技術文件、程式註解、Prompt 翻譯與在地化。2026-10-23 最新使用者指令新增第一條實戰產品主線：Chrome 插件／可獨立運作的 Tampermonkey 腳本，以任意一般網站作為可選測試，不限定任何個別網站或遊戲；Tampermonkey 僅為一種交付轉接器。前期對話同名「方案 B＝AI Benchmark」**不是**此商業方案 B。若有衝突，以使用者後來的明確要求及合法合規限制為準。
 
 ## 1. 使命、定位與成功定義
 
@@ -46,14 +46,16 @@ R1 策略：Chrome 擴充功能按頁面點擊後啟用；Tampermonkey 單檔腳
 
 此五態用於程式內部決策；R1 的 UI 狀態輸出可簡化，但不能以「翻譯成功」誤包裝 DEFERRED 或 UNSUPPORTED。
 
-## 4. PokéBonk 試點界線
+## 4. 通用性與使用自由（2026-10-23 最新決策）
 
-官方網站 https://pokebonk.com/ 已有 ZHT 語言連結；應先使用 **原生 ZHT**。本專案不讀寫／攔截遊戲內部物件、網路封包、存檔、戰鬥數值、反作弊、輸入操作，也不提供自動遊玩；只是一般網站可見文字翻譯的可選用工具。Canvas/WebGL 遊戲中的大多數畫面內容不能承諾由 DOM 翻譯涵蓋。網站政策可能另有限制，使用者須遵循。不要引用或打包寶可夢商標、遊戲圖片／音訊／未經授權詞庫。
+使用者可以自行選擇任何合法且可存取的網站、文件或應用程式。**不得針對 PokeBonk、任一遊戲或網站硬編碼支援限制、商標或站點特有行為**。Chrome／Tampermonkey 是不同介面，專案真正核心是通用在地化引擎與其可插拔 Provider。安全授權控制屬瀏覽器要求，不構成產品用途限制。
+
+Canvas／WebGL、OCR、跨來源 iframe、文件及桌面等屬未來需獨立適配的 Render/Input Surface；不得虛稱已能通用翻譯所有介面。產品需要 `SUPPORTED_LOCAL`、`PARTIAL_SAFE`、`PROTECTED`、`DEFERRED`、`UNSUPPORTED_SURFACE`、`BLOCKED_BY_PERMISSION` 等非二元路由，優先保留不能安全處理的原文。
 
 ## 5. 跨平台契約
 
-- **唯一核心**：`extension/shared/core.js`（文字規則）及 `extension/shared/dom.js`（監控與回復），用 `tools/build-userscript.mjs` 把核心打包成單一 userscript。
-- **擴充權限**：Chrome 採 MV3 + `activeTab` + `scripting`，無長期所有網站 host permission；禁止遠端執行碼、CDN、未經同意雲端翻譯。
+- **唯一核心**：`src/core/engine.js`（通用規則與 DOM 原型），由 `tools/build.py` 產生 Chrome 交付檔與單檔 userscript；後續對多平台抽取 core API。
+- **擴充權限**：Chrome 採 MV3 + `activeTab` + `scripting` + 使用者逐站選用的 optional host permission，不在安裝時取得所有網站讀取權；禁止遠端執行碼、CDN、未經同意雲端翻譯。
 - **TM 獨立**：腳本發布後可單檔運作，逐網域預設關閉；不能依賴第二支初始化碼、額外線上資源或私有伺服器。
 - **UI**：啟動、停止、還原、能力／翻譯狀態提示；絕不可攔截網頁按鍵及站方按鈕。
 - **可逆性**：只回復由本工具更改且沒有被網站再度改動的內容，避免覆蓋頁面本身的新狀態。
@@ -65,7 +67,7 @@ R1 策略：Chrome 擴充功能按頁面點擊後啟用；Tampermonkey 單檔腳
 
 ## 7. 版次與交付
 
-- R1：GitHub 產品基準、MIT、Chrome／TM 可操作原型、隱私、測試、來源標示。
+- R1：GitHub 產品基準、MIT、Chrome／TM 離線 DOM 原型、隱私、測試、來源標示；多語整頁翻譯、文件/SDK/OCR 等不在已實作能力清單。
 - R2（需驗證再升級）：翻譯品質研究、語言偵測穩健性、差異預覽、Chrome 翻譯可用性矩陣、對 Shadow DOM／受限網頁的支援研究。
 - R3（長期）：多檔技術文檔與 Prompt 管道、JSONL、插件 API、獨立詞庫品質評測與社群詞彙貢獻流程。
 
@@ -73,7 +75,7 @@ R1 策略：Chrome 擴充功能按頁面點擊後啟用；Tampermonkey 單檔腳
 
 ## 8. 完成與未完成
 
-目前完成：規格基準及概念定義，並規劃實作可下載原型。未完成：跨語言全部語料翻譯的全面驗證、Chrome Web Store 發布、實際 PokéBonk 互動測試、真實開源採用率與 OpenAI 申請通過證據。應逐步以可重現結果更新，不可提前宣稱成功。
+目前完成：規格基準及概念定義，並規劃實作可下載原型。未完成：跨語言全部語料翻譯的全面驗證、Chrome Web Store 發布、任意目標網站逐一完整驗證、真實開源採用率與 OpenAI 申請通過證據。應逐步以可重現結果更新，不可提前宣稱成功。
 
 ## 9. 參考來源
 
@@ -84,4 +86,7 @@ R1 策略：Chrome 擴充功能按頁面點擊後啟用；Tampermonkey 單檔腳
 - https://developer.chrome.com/docs/extensions/reference/api/scripting
 - https://www.tampermonkey.net/documentation.php
 - https://openai.com/form/codex-for-oss/
-- https://pokebonk.com/ 與 https://pokebonk.com/legal
+
+## 10. 全域產品願景、能力分層與正式路由
+
+從「可在 Chrome 翻譯文字」升級為「一個核心／多個使用介面」，必須逐階段涵蓋：標準網頁及 SPA、跨瀏覽器、獨立 Userscript、技術文檔（Markdown／HTML／PDF／Office）、CLI／API／SDK、AI Prompt 保真處理、JSON／JSONL、模型 Provider、可選 OCR 與非 DOM 畫面。任何一個轉接器都不得主導整個專案；每種能力應公開標記 `IMPLEMENTED`、`PROTOTYPE`、`PLANNED` 或 `UNSUPPORTED`。詳細契約見 `UNIVERSAL_ADAPTERS_R1.md`。
