@@ -9,6 +9,7 @@ with sync_playwright() as pw:
         args["executable_path"]="/usr/bin/chromium"
     browser=pw.chromium.launch(**args)
     page=browser.new_page()
+    page.on("pageerror",lambda exc:print("PAGE_ERROR",str(exc)))
     page.set_content((ROOT/"tests/fixtures/demo.html").read_text(encoding="utf-8"))
     page.evaluate("""() => {
       window.Translator={
@@ -23,12 +24,20 @@ with sync_playwright() as pw:
         }})
       };
     }""")
-    for rel in ["src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
+    for rel in ["src/core/lexicon_pack.js","src/core/engine.js","src/core/provider.js","src/core/web_adapter.js"]:
         page.add_script_tag(content=(ROOT/rel).read_text(encoding="utf-8"))
     page.evaluate("""() => {
       window.__r2=TLSWeb.createWebLocalizer(document,{mode:'local-ai',sourceLanguage:'en'});
       window.__r2.start();
     }""")
+    page.wait_for_timeout(900)
+    print("R3 PROBE",page.evaluate("""() => ({
+       title:document.querySelector('#title').textContent,
+       test:TLSCore.translateText('Search'),
+       domain:TLSLexicon.lookup('menu',{domain:'ui'}),
+       status:window.__r2.getStatus(),
+       translator:typeof window.Translator
+    })"""))
     page.wait_for_function("document.querySelector('#title').textContent==='搜尋'",timeout=12000)
     assert page.locator("#save").inner_text()=="儲存"
     assert page.locator("#zh").inner_text()=="軟體 伺服器 資料庫"
