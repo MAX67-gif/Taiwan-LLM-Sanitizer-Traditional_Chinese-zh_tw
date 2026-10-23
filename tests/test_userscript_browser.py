@@ -15,7 +15,7 @@ with sync_playwright() as pw:
     }""")
     page.add_script_tag(content=(ROOT/"dist/userscript/TaiwanLLMSanitizer.user.js").read_text(encoding="utf-8"))
     assert page.locator("#title").inner_text()=="Search"
-    assert page.evaluate("window.__menus.length")==2
+    assert page.evaluate("window.__menus.length")==3
     page.evaluate("window.__menus[0].fn()")
     page.wait_for_function("document.querySelector('#title').textContent==='搜尋'")
     page.evaluate("window.__menus[1].fn()")
