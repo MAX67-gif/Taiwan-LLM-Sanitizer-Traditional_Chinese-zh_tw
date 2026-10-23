@@ -1,0 +1,28 @@
+name: R1 build and tests
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: node --test tests/test_engine.js
+      - run: python tools/build.py
+      - name: Verify both delivery adapters originate from the same core
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          a=Path('src/core/engine.js').read_text(encoding='utf-8')
+          c=Path('dist/chrome/engine.js').read_text(encoding='utf-8')
+          u=Path('dist/userscript/TaiwanLLMSanitizer.user.js').read_text(encoding='utf-8')
+          assert a == c and a in u and u.count('// ==UserScript==') == 1
+          assert '// @require' not in u and '// @connect' not in u
+          print('R1 SHARED CORE BUILD PASS')
+          PY
