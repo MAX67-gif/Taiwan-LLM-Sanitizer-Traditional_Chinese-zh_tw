@@ -2,7 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {translateText,VERSION}=require('../src/core/engine.js');
-test('version of shared offline engine',()=>assert.equal(VERSION,'0.3.0'));
+test('version of shared offline engine',()=>assert.equal(VERSION,'0.4.0'));
 test('Taiwan terminology translation',()=>{
   assert.equal(translateText('安装软件到服务器和数据库'),'安装軟體到伺服器和資料庫');
   assert.equal(translateText('網絡與內存緩存'),'網路與記憶體快取');
