@@ -39,7 +39,7 @@ def build():
     output.mkdir(parents=True,exist_ok=True)
     adapter=(ROOT/"src"/"userscript"/"adapter.js").read_text(encoding="utf-8")
     script=output/"TaiwanLLMSanitizer.user.js"
-    script.write_text(HEADER+"\n".join([pieces["engine.js"],pieces["provider.js"],
+    script.write_text(HEADER+"\n".join([pieces["lexicon_pack.js"],pieces["engine.js"],pieces["provider.js"],
                                            pieces["web_adapter.js"],adapter]),encoding="utf-8")
     archive=DIST/"TLS_Chrome_MV3_R3_20261024.zip"
     with zipfile.ZipFile(archive,"w",compression=zipfile.ZIP_DEFLATED) as z:
