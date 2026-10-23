@@ -1,0 +1,46 @@
+name: 用語建議
+description: 提交有領域與反例的用語建議，不強制改寫
+body:
+  - type: markdown
+    attributes:
+      value: 本詞庫不設禁語。請不要貼私人訊息、帳號資料或未授權的第三方完整詞庫。
+  - type: input
+    id: source
+    attributes:
+      label: 原文用語
+      placeholder: 例如 menu
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: 建議的臺灣用語
+      placeholder: 例如 選單
+    validations:
+      required: true
+  - type: dropdown
+    id: domain
+    attributes:
+      label: 適用情境
+      options: [軟體介面, 工程開發, AI, 餐飲, 日常生活, 醫療, 金融, 教育, 交通, 遊戲, 其他]
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: 正例與反例（自行撰寫）
+    validations:
+      required: true
+  - type: textarea
+    id: source_rights
+    attributes:
+      label: 資料來源與授權說明
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 公開資料確認
+      options:
+        - label: 沒有私人資料、金鑰或受限制第三方原文
+          required: true

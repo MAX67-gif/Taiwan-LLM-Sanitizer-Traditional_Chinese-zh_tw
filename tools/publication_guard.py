@@ -15,7 +15,8 @@ ROOT_PUBLIC={
     ".gitignore", ".github/workflows/ci.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
     "AUTHORS.md","CHANGELOG.md","CONTRIBUTING.md","LICENSE",
-    "PRIVACY.md","README.md","SECURITY.md","AGENTS.md","CLAUDE.md",
+    "PRIVACY.md","README.md","SECURITY.md",
+    ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
     "docs/FEATURES.md",
@@ -25,6 +26,7 @@ DOCS_PUBLIC={
     "docs/QUALITY_EVALUATION.md",
     "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
     "docs/AI_INTEGRATION.md","docs/NAME_PROTECTION.md",
+    "docs/CONTEXT_REVIEW_R8.md","docs/PRODUCT_POSITIONING_R8.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
 PUBLIC_BENCHMARK_FILES={

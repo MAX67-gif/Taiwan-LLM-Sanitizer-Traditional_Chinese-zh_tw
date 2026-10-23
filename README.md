@@ -38,6 +38,10 @@
 
 **重要：目前只完成測試設施，還沒有經獨立評審驗證的真實模型自然度成績。** R5 的離線詞彙模式不是全文翻譯模型；QA 通過也不代表譯文已忠實且自然。
 
+## R8：離線語境審查工作台（建議模式）
+
+**[開啟臺灣用語語境審查工作台](examples/TW_Context_Review_Lab_R8_20261024.html)**：貼上自己的文字，查看原有 883 筆候選與 67 筆編輯種子的建議、不同領域和歧義提示。**只有建議、不自動替換、不上傳資料，也沒有禁詞**。這是獨立 R8 Preview，不更動 R5 v0.4.0 通用擴充功能、R6 凍結品質題庫或 R7 特定網站示範。[功能邊界](docs/CONTEXT_REVIEW_R8.md) · [公開產品定位](docs/PRODUCT_POSITIONING_R8.md)。
+
 ## PokéBonk 臺灣繁中示範（獨立可選用）
 
 我們新增了 **[PokéBonk 專用的臺灣中文試玩 Profile](examples/pokebonk-demo/README.md)**，目前有 136 筆自行整理的短詞與寶可夢／招式名稱示例。提供 [GitHub 獨立示範 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r7-pokebonk-demo-0.1.1) 內的 Chrome ZIP 與 Tampermonkey 單檔。

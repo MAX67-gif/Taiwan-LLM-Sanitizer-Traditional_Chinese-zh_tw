@@ -1,5 +1,12 @@
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
+## R8 · 2026-10-24 · 離線臺灣語境審查工作台（獨立 Preview）
+
+- 重用 883 筆候選詞、67 筆編輯種子；一詞多義採語境提示、不把候選直接升級為 runtime 自動替換。
+- 新增 100% 本機的單檔 HTML 審查工具、語法保護、Node/Chromium 測試及 deterministic build。
+- 新增詞彙投稿 Issue form、公開產品定位與第三方詞庫授權注意事項。
+- R5 引擎、R6 凍結 100 題及 R7.1 網站特定示範均未修改。
+
 ## R7.1 · 2026-10-24 · 顯示範圍安全修補（獨立選用示範）
 
 - 修正玩家／聊天欄位的 title、aria-label 與可見文字適用範圍不一致問題。

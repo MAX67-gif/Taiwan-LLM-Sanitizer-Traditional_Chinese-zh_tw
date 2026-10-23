@@ -1,0 +1,60 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; font-src 'none'; form-action 'none'; base-uri 'none'">
+<title>臺灣用語語境審查工作台｜R8</title>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,"Microsoft JhengHei",sans-serif;line-height:1.55}
+body{max-width:1140px;margin:auto;padding:24px;background:Canvas;color:CanvasText}
+h1{font-size:clamp(24px,3vw,35px);margin-bottom:6px}p{max-width:900px}
+.muted{color:GrayText}.notice{border:1px solid #8887;border-radius:10px;padding:14px;margin:16px 0}
+.controls{display:flex;flex-wrap:wrap;gap:14px;margin:18px 0}label{display:grid;gap:5px;flex:1;min-width:180px}
+select,textarea,button{font:inherit;border:1px solid #888;border-radius:9px;padding:12px;background:Canvas;color:CanvasText}
+textarea{display:block;width:100%;box-sizing:border-box;min-height:160px;resize:vertical}
+button{cursor:pointer;font-weight:600;background:ButtonFace}.actions{display:flex;gap:10px;flex-wrap:wrap}
+button:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid Highlight;outline-offset:2px}
+table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #8887;text-align:left;vertical-align:top}
+.scroller{overflow-x:auto}@media(max-width:700px){body{padding:12px}td,th{padding:7px}th:nth-child(4),td:nth-child(4){display:none}}
+</style></head><body>
+<h1>臺灣用語語境審查工作台</h1>
+<p>貼上一段文字，查看不同地區或專業情境下可能有差異的用語。<strong>只有建議，不自動改寫，沒有禁詞。</strong></p>
+<div class="notice"><strong>完全在本機執行。</strong>不使用第三方伺服器、不儲存你貼上的文字、不需 API Key。資料只存在目前頁面，離開後不保留。R8 是實驗性詞彙提示，不代表自然語言翻譯模型或官方用語認證。</div>
+<label for="source">待檢視文字（最多 12,000 字元）</label>
+<textarea id="source" maxlength="12000" placeholder="例如：從主菜单進入設定；餐廳的 menu 是菜單。"></textarea>
+<div class="controls"><label>使用情境<select id="domain"><option value="auto">未指定／混合</option></select></label>
+<label>詞庫階段<select id="stage"><option value="all">全部候選＋編輯種子</option><option value="editorial_seed">僅編輯種子</option><option value="candidate">僅待審核候選</option></select></label></div>
+<div class="actions"><button id="analyze" type="button">檢視可能的用語差異</button><button id="clear" type="button">清除文字</button></div>
+<p id="status" class="muted" role="status" aria-live="polite">尚未分析；按下按鈕後才在本機處理。</p>
+<h2>建議檢視</h2>
+<div class="scroller"><table><thead><tr><th>偵測詞</th><th>可選擇的表達</th><th>判讀狀態</th><th>領域</th></tr></thead><tbody id="results"></tbody></table></div>
+<p class="muted">程式碼、網址、部分 JSON 鍵與佔位符會保守排除。此工具不是完整 HTML／Markdown 解析器，也不保證所有專有名詞都能正確辨識；建議由使用者自己判斷。</p>
+<script id="catalog" type="application/json">__TLS_R8_CATALOG__</script>
+<script>__TLS_R8_ENGINE__</script>
+<script>
+(function(){
+'use strict';
+const words=JSON.parse(document.getElementById('catalog').textContent);
+const el=id=>document.getElementById(id);
+for(const d of [...new Set(words.map(x=>x.domain))].sort()){
+ const o=document.createElement('option');o.value=d;o.textContent=d;el('domain').append(o);
+}
+function show(){
+ const out=el('results');out.replaceChildren();
+ try{
+  const r=TLSContextReview.review(el('source').value,words,{domain:el('domain').value,stage:el('stage').value});
+  el('status').textContent='本機找到 '+r.stats.found+' 個待確認位置，其中 '+r.stats.ambiguous+' 個可能有多種意思；原文沒有修改。'+(r.stats.truncated?'顯示已達 100 筆上限。':'');
+  if(!r.suggestions.length){
+   const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=4;td.textContent='尚未命中詞條，不代表保證原文正確。';tr.append(td);out.append(tr);
+  }
+  for(const item of r.suggestions){
+   const tr=document.createElement('tr');
+   const states={CONTEXT_REQUIRED:'需要確認語境',DOMAIN_UNCERTAIN:'目前領域無確切譯法',EDITORIAL_SEED:'編輯種子，仍須覆核',UNREVIEWED_CANDIDATE:'待審核候選'};
+   const values=[item.found,item.alternatives.map(x=>x.to+'（'+x.domain+'／'+(x.stage==='candidate'?'待審核':'編輯種子')+'）').join('；'),states[item.decision]||item.decision,item.alternatives.map(x=>x.domain).filter((x,i,a)=>a.indexOf(x)===i).join('、')];
+   for(const v of values){const td=document.createElement('td');td.textContent=v;tr.append(td);}
+   out.append(tr);
+  }
+ }catch(e){el('status').textContent='無法分析：'+(e&&e.message||'輸入不符合限制');}
+}
+el('analyze').addEventListener('click',show);
+el('clear').addEventListener('click',()=>{el('source').value='';el('results').replaceChildren();el('status').textContent='已清空，未儲存。'});
+})();
+</script></body></html>
