@@ -4,17 +4,24 @@
 
 > **產品定位：跨模型的臺灣繁中在地化控制與品質驗證層。** 我們不是另一個大型語言模型，也不是 TAIDE／Taiwan-LLM 的官方產品。公開核心依 [MIT 授權](LICENSE)；專案發起及治理：**CA L.**。
 
+## R13：安全雙語閱讀側車（獨立 v0.6.0 Preview）
+
+可在已手動授權的網站**反白文字、原文／譯文對照、試用 Chrome 本機 Translator API 或自行貼譯文**。只讀選取、原網頁文字不改寫，不傳至本專案伺服器；模型不可用就明確告知，不假裝翻譯成功。新 R13 Chrome／Tampermonkey 版本與 R11 v0.5.0 獨立，詳見 [R13 操作與安全規格](docs/R13_BILINGUAL_READER.md)。
+
+**UI 用語偏好：**滑鼠 `click／点击` 操作優先用「點選」；聲響或點閱統計不可一律套用。見 [R13 臺灣介面用語](docs/TAIWAN_UI_TERMS_R13.md)。
+
 ## 現在能使用什麼？
 
 | 入口 | 最新可用版本 | 主要用途／限制 |
 | --- | --- | --- |
-| **Chrome／Tampermonkey** | **R11 v0.5.0 Preview** | 逐站授權、匯入自己的 R9 詞庫、預覽、明確勾選套用、還原；不是自動翻譯全網 |
+| **Chrome／Tampermonkey（選取閱讀）** | **R13 v0.6.0 Preview** | 反白文字的原文／譯文側車，模型可用才試用 Chrome 本機翻譯；不修改網頁原文 |
+| **Chrome／Tampermonkey（詞庫操作）** | **R11 v0.5.0 Preview** | 逐站授權、匯入自己的 R9 詞庫、預覽、明確勾選套用、還原；不是自動翻譯全網 |
 | Chrome／Tampermonkey 舊版 | R5 v0.4.0 Preview | 離線用語校正及實驗性 Chrome 本機翻譯；保留作為舊版回退 |
 | **品質稽核工作台** | **R12 獨立離線 HTML** | 匯入 R6 同題 A/B 譯文，檢查覆蓋與已知結構警示；**不代表模型品質已獲認證** |
 | 研究／選詞工作台 | R8／R9／R10 獨立 HTML | 查詢語境、人工選詞、來源與反例；尚未驗證的詞不會自動變成翻譯規則 |
 | 本地 CLI／AI Skill | 原型 | Markdown／TXT／部分 JSON/JSONL 安全詞彙處理、Codex／Claude 輔助規則 |
 
-**下載入口：** [R11 Chrome ZIP＋Tampermonkey 單檔（v0.5.0）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r11-manual-site-glossary-0.5.0) · [R12 離線品質工作台](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r12-quality-evidence-preview-v1) · [所有歷史 Releases](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases)
+**下載入口：** [R13 安全雙語閱讀 v0.6.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r13-bilingual-reader-preview-0.6.0) · [R11 Chrome ZIP＋Tampermonkey 單檔（v0.5.0）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r11-manual-site-glossary-0.5.0) · [R12 離線品質工作台](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r12-quality-evidence-preview-v1) · [所有歷史 Releases](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases)
 
 Chrome ZIP 必須先解壓縮，再到 `chrome://extensions` 開啟開發人員模式並載入含 `manifest.json` 的資料夾；**尚未上架 Chrome Web Store**。Tampermonkey 使用 `.user.js` 單一檔案。**請勿同時在同一網站啟用 R5 與 R11。**
 
@@ -40,7 +47,7 @@ Chrome ZIP 必須先解壓縮，再到 `chrome://extensions` 開啟開發人員�
 
 ## 接下來的重點
 
-**R13：** 小範圍、保留原文、可還原的雙語閱讀／選取翻譯原型；不直接升級 R11 正式網站替換行為。
+**R13 已提供：** 小範圍、保留原文的雙語閱讀／選取翻譯獨立預覽，沒有修改 R11 的網站詞彙替換行為；真實桌面 Chrome 語言模型品質仍待使用者端驗證。
 
 **後續：** 可插拔且明確授權的 Provider、技術文件／Prompt 保真、可重現翻譯品質驗證與開源社群回饋。詳見 [簡明開發路線](docs/ROADMAP.md)、[功能狀態](docs/FEATURES.md)。
 
@@ -48,6 +55,6 @@ Chrome ZIP 必須先解壓縮，再到 `chrome://extensions` 開啟開發人員�
 
 [GitHub Issue](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/issues) 歡迎提供**可公開、合法的**錯譯反例與使用問題；[貢獻說明](CONTRIBUTING.md) · [開發者指南](docs/DEVELOPER_GUIDE.md) · [Codex／Claude Skill](docs/AI_INTEGRATION.md) · [重點更新紀錄](CHANGELOG.md)。
 
-開發者建置採 `tools/build.py`（R5）與 `tools/build_r11.py`（R11），CI 需通過 Node、Chromium、公開資料守門、原始碼與安裝產物一致性驗證。**任何未經授權的私人歷史、商業詞庫或機密都不會放入公開 GitHub。**
+開發者建置採 `tools/build.py`（R5）、`tools/build_r11.py`（R11）及 `tools/build_r13.py`（R13），CI 需通過 Node、Chromium、公開資料守門、原始碼與安裝產物一致性驗證。**任何未經授權的私人歷史、商業詞庫或機密都不會放入公開 GitHub。**
 
 本專案獨立維護，不代表 OpenAI、Google、TAIDE 或其他第三方認可或背書；未來商業擴充獨立授權，不追溯限制已公開的 MIT 核心。

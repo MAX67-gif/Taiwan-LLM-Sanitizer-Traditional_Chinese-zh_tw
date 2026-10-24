@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Taiwan-LLM-Sanitizer R13 雙語閱讀（獨立預覽）",
+  "version": "0.6.0",
+  "description": "使用者逐站啟用、反白選取及原文／譯文對照；不改寫網站原文。",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "action": {"default_popup": "popup.html"}
+}

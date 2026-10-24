@@ -1,0 +1,9 @@
+{
+  "schema": "tls.personal-glossary.v1",
+  "locale": "zh-TW",
+  "entries": [
+    {"source":"click","replacement":"點選","domain":"ui","action":"replace","note":"僅滑鼠或一般介面操作；其他領域不自動生效"},
+    {"source":"点击","replacement":"點選","domain":"ui","action":"replace","note":"僅主選單與介面操作"},
+    {"source":"點擊","replacement":"點選","domain":"ui","action":"replace","note":"僅使用者手動審核的 UI 控制項"}
+  ]
+}

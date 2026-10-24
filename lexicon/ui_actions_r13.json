@@ -1,0 +1,13 @@
+{
+  "schema": "tls.ui-action-preferences.v1",
+  "locale": "zh-TW",
+  "scope": "explicit_ui_context_only",
+  "policy": "editorial_preference_not_a_general_dictionary_or_autonomous_translation_permission",
+  "examples": [
+    {"source":"click", "recommended":"點選", "domain":"ui", "context":"Click the Settings button with the mouse.", "taiwan":"使用滑鼠點選『設定』按鈕。", "counter_example":"The mouse made a click sound.", "counter_rule":"聲響不得譯成點選", "status":"user_confirmed_preference"},
+    {"source":"点击", "recommended":"點選", "domain":"ui", "context":"点击主选单中的设置。", "taiwan":"點選主選單中的設定。", "counter_example":"广告点击量增加。", "counter_rule":"點閱／點擊次數是統計指標，不應強制改成點選數", "status":"user_confirmed_preference"},
+    {"source":"點擊", "recommended":"點選", "domain":"ui", "context":"點擊這個按鈕開啟功能。", "taiwan":"點選這個按鈕開啟功能。", "counter_example":"滑鼠的點擊聲很明顯。", "counter_rule":"聲音語境不應轉成點選聲", "status":"user_confirmed_preference"}
+  ],
+  "auto_apply": false,
+  "note": "R13 對於滑鼠與 UI 操作的用語偏好為點選；R3 及 R9/R10 的歷史原始內容保留追溯，不變動舊凍結來源。"
+}
