@@ -1,3 +1,12 @@
+## R11 · 2026-10-25 · 個人詞庫逐站人工預覽與套用（獨立 v0.5.0 Preview）
+
+- 完整保留 R5 v0.4.0 正式舊版安裝包與 R6～R10 各研究/展示版本；另行提供 v0.5.0 Chrome/Tampermonkey 新安裝包。
+- 新增共用 `src/core/site_glossary_r11.js`，嚴格接收 R9 `tls.personal-glossary.v1`；只有使用者明確批准的位置可修改，沒有詞庫全域自動套用。
+- Chrome 本機 per-origin 詞庫與 Popup 流程、Tampermonkey 單檔同等控制、逐項預覽/勾選/還原及 R5 互斥暫停。
+- 文本防護：輸入及可編輯節點、程式碼、網址、隱藏及玩家聊天資料、專名和變數模板均採 fail-closed；頁面自行變更時防舊資料覆寫。
+- 追加可重現 R11 ZIP/SHA、Node/Chromium/Popup/GM 測試、R11 安裝與風險文件；GitHub 必須待 Verify/Browser CI PASS 才能獨立 Release。
+- R3 候選與 R10 人工例證依然非自動規則；尚未有經獨立真人審查的自然度或跨網站相容性報告。
+
 # CHANGELOG — Taiwan-LLM-Sanitizer
 
 ## R10 · 2026-10-24 · 來源可追溯的臺灣語境人工審查（獨立 Preview）

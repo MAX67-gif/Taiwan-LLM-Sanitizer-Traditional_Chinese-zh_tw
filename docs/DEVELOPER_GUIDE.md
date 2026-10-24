@@ -49,3 +49,16 @@ node --test tests/test_r6_benchmark.js
 R6 的 frozen_manifest SHA256 與 100 題原文在發布後不可原地修改；如發現需修正的題目，建立新版公開 cohort 並保留舊 hash。自動 QA 只涵蓋有限的結構／專有名稱檢查，不等於模型品質分數；人工自然度須獨立審閱。使用者的模型輸出與評論資料不應提交公開儲存庫。
 
 [評分說明](QUALITY_EVALUATION.md)
+
+## R11 獨立 Preview（共享 R5 源碼，保留既有 v0.4.0）
+
+```bash
+python tools/build_r11.py
+python tools/build_r11.py --check
+node --test tests/*.js
+python tests/test_site_glossary_browser_r11.py
+python tests/test_popup_browser_r11.py
+python tests/test_userscript_browser_r11.py
+```
+
+R11 不改 `src/chrome/`、`src/userscript/` 與舊 R5 `dist`，新入口分別在 `src/r11/chrome/`、`src/r11/userscript/`，原 R5 核心由 `src/core/` 同源組裝到 `dist/r11/`。嚴禁在 `dist/r11/` 手工修改生成品。CI 審查 `dist/r11/chrome`、`dist/r11/userscript` 是否與來源一致；ZIP、SHA 和獨立 Release 在 CI 後生成。另見 [R11 規格](R11_SITE_GLOSSARY.md)。

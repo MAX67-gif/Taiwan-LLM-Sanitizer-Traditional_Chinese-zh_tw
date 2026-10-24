@@ -11,3 +11,5 @@
 - Build distribution using tools/build.py; public README and docs must stay clear and accurate.
 
 Full instructions load only when the Skill is invoked; avoid copying its entire body into every agent prompt.
+
+R11 v0.5.0 optional browser build is in `src/r11/` and `tools/build_r11.py`; do not modify R5 v0.4.0 source or existing Release as a shortcut. R11 must be explicitly opt-in, import R9 schema, preview and select site text positions, and restore by compare-and-swap. Never make R3 candidates or R10 review ledger auto-apply; run R11 Chromium/Popup/GM regressions and maintain both public and separately archived private full ZIPs.

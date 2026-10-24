@@ -1,4 +1,4 @@
-name: TLS R5 core + R6/R7 + R8/R9 + R10 provenance review
+name: TLS R5 frozen + R11 site glossary preview + R6-R10 studies
 on:
   push:
   pull_request:
@@ -123,6 +123,25 @@ jobs:
             dist/SHA256SUMS_R5_20261024.txt
           if-no-files-found: error
 
+      - name: Build optional R11 Chrome and standalone Tampermonkey from R5 shared source
+        run: |
+          python tools/build_r11.py
+          python tools/build_r11.py --check
+      - name: Check R11 tracked install files reproducible and public runtime privacy
+        run: |
+          git diff --exit-code -- dist/r11/chrome dist/r11/userscript
+          python tests/test_install_r11.py
+          for f in src/r11/chrome/*.js src/r11/userscript/*.js dist/r11/chrome/*.js dist/r11/userscript/*.js; do node --check "$f"; done
+      - name: Upload separate R11 optional preview installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R11_Optional_Manual_Site_Glossary_Installers
+          path: |
+            dist/r11/TLS_Chrome_MV3_R11_20261025.zip
+            dist/r11/TLS_Tampermonkey_R11_20261025.user.js
+            dist/r11/SHA256SUMS_R11_20261025.txt
+          if-no-files-found: error
+
       - name: Bundle public tracked source for reproducible private handoff
         run: |
           mkdir -p "$RUNNER_TEMP/tls-public-snapshot"
@@ -160,6 +179,10 @@ jobs:
       - run: python tests/test_context_review_r8.py
       - run: python tests/test_user_terms_browser_r9.py
       - run: python tests/test_context_governance_browser_r10.py
+      - run: python tools/build_r11.py
+      - run: python tests/test_site_glossary_browser_r11.py
+      - run: python tests/test_popup_browser_r11.py
+      - run: python tests/test_userscript_browser_r11.py
       - run: python tests/test_visual_progress_browser_r5.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
@@ -338,3 +361,35 @@ jobs:
               --title "R10 臺灣語境來源追溯與反例人工審查（離線獨立預覽）" \
               --notes "40 project-original editorial context cases (28 exact R9 references + 12 new), 0 independently verified. Offline SHA-bound voluntary manual decisions and JSON export/import, no external content transfer, no auto-apply, no website modification. R5/R6/R7.1/R8/R9 unchanged."
           fi
+
+  r11-personal-glossary-release:
+    name: Publish R11 manual site glossary only after complete regression pass
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild, check exact version and SHA
+        run: |
+          python tools/build_r11.py
+          python tools/build_r11.py --check
+          python tests/test_install_r11.py
+      - name: Publish immutable optional R11 v0.5.0 installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "r11-manual-site-glossary-0.5.0" >/dev/null 2>&1; then
+            echo "R11 preview already published. Never overwrite signed/versioned files."
+          else
+            gh release create "r11-manual-site-glossary-0.5.0" \
+              dist/r11/TLS_Chrome_MV3_R11_20261025.zip \
+              dist/r11/TLS_Tampermonkey_R11_20261025.user.js \
+              dist/r11/SHA256SUMS_R11_20261025.txt \
+              --target "$GITHUB_SHA" \
+              --title "R11 個人詞庫逐站人工預覽與安全還原 (v0.5.0 Preview)" \
+              --notes "R11 optional preview. Imports only user-authored R9 tls.personal-glossary.v1 per-origin local profile; user must opt into site, preview positions and explicitly tick matches to apply. Protected fields/identifiers/code are skipped; stale pages are rejected, only unchanged tool-owned text can be restored. R5 v0.4.0 frozen release and R6-R10 independent studies remain untouched. No automatic R3 candidate or R10 editorial promotion, no cloud transport, not Chrome Web Store certified. Verify SHA256 and do not run R5 and R11 on the same site simultaneously."

@@ -93,3 +93,8 @@ dist/*.sha256
 # Generated optional display-only game demo release artifacts
 dist/pokebonk/*.zip
 dist/pokebonk/*SHA256SUMS*.txt
+
+# R11 release bundles are built by CI, while source and unpacked artifacts are tracked.
+dist/r11/*.zip
+dist/r11/*SUMS*.txt
+dist/r11/TLS_Tampermonkey_R11_*.user.js

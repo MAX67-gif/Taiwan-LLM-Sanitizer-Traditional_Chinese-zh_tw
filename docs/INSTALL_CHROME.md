@@ -37,3 +37,7 @@ Taiwan-LLM-Sanitizer 目前使用 **Manifest V3**，不是 Chrome Web Store 官�
 
 [回首頁](../README.md) · [Tampermonkey 詳細安裝](INSTALL_TAMPERMONKEY.md) · [功能與限制](FEATURES.md)
 
+
+## R11 v0.5.0 另外提供的個人詞庫模式
+
+R5 v0.4.0 安裝包不會被覆寫；R11 是另一份獨立的可下載 Preview。請使用 R11 Release 的 Chrome ZIP（解壓載入）或 Tampermonkey 單檔 .user.js，**不要在同一個網站並用 R5 與 R11**。具體的 R9 JSON 匯入、逐站權限、人工預覽、勾選、還原與個人資料限制請見 [R11 使用說明](R11_SITE_GLOSSARY.md)。

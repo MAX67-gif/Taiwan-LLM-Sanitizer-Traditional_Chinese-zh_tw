@@ -9,6 +9,14 @@
 
 > **隱私承諾：本專案不收集個資、瀏覽紀錄、網頁原文或翻譯結果，不建立接收內容的後端服務，也沒有追蹤或遙測功能。正在翻譯的文字由你的瀏覽器或自己的電腦在本機處理，工具不會自行把它上傳到任何翻譯伺服器。** Chrome 可能為本機翻譯下載語言模型；原網站和瀏覽器本身的網路行為不是本工具的傳輸。詳見 [隱私政策](PRIVACY.md)。
 
+## R11 新功能｜逐站個人詞庫安全預覽（獨立 v0.5.0 Preview）
+
+已新增可選擇的 [R11 Chrome／Tampermonkey 個人詞庫版本](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases)。延續既有 R5 共用本機翻譯核心，**沒有覆寫 R5 v0.4.0 原本的 Release**。
+
+使用者能匯入 R9 自行建立的 `tls.personal-glossary.v1` JSON，在**授權的單一網站**選定領域、先看逐個文字位置建議，再勾選需要的項目手動套用；按還原或退出可回復 R11 改寫，並返回原本的 R5 本機翻譯模式。從未同意改寫的位置、不同網站或原本需保留的詞都不會自動套用。匯入的個人詞庫會保存在使用者的 Chrome 或 Tampermonkey 本機、依網站 origin 分離，不會傳送到專案伺服器。
+
+**R11 仍是預覽版本：** 不直接啟用 R3 883 個待審候選或 R10 40 個編輯例句，不宣稱 Chrome 真實模型自然度已提升、所有網站相容或已通過 Chrome Web Store。請避免與 R5 舊版同時在同一網站啟用。 [查看完整 R11 安裝、規格與安全還原操作](docs/R11_SITE_GLOSSARY.md)。
+
 ## 直接下載安裝（無須寫程式）
 
 **[GitHub Releases：Chrome ZIP、Tampermonkey 單檔與 SHA256](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases)**
