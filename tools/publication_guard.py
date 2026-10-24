@@ -32,6 +32,7 @@ DOCS_PUBLIC={
     "docs/R11_SITE_GLOSSARY.md",
     "docs/R11_STAGE_CHECK.md",
     "docs/R12_QUALITY_AUDIT_LAB.md",
+    "docs/R13_BILINGUAL_READER.md","docs/TAIWAN_UI_TERMS_R13.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
 PUBLIC_BENCHMARK_FILES={
@@ -57,7 +58,7 @@ EXFIL_APIS=(
     "chrome.history.", "chrome.cookies.", "document.cookie",
 )
 # Only production JS, not test examples that intentionally name forbidden APIs.
-RUNTIME_PREFIXES=("src/core/","src/chrome/","src/userscript/","dist/chrome/","dist/userscript/")
+RUNTIME_PREFIXES=("src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
 RUNTIME_SUFFIXES=(".js",".user.js")
 
 def allowed_path(name:str)->bool:
@@ -148,6 +149,8 @@ def self_test():
     assert allowed_path(".claude/skills/taiwan-zh-tw-localization/SKILL.md")
     assert allowed_path("docs/INSTALL_CHROME.md")
     assert allowed_path("docs/QUALITY_EVALUATION.md")
+    assert allowed_path("docs/R13_BILINGUAL_READER.md")
+    assert scan_runtime("src/r13/chrome/content.js","fetch('https://example.com')")
     assert allowed_path("benchmarks/r6/public_frozen_v1.jsonl")
     assert not allowed_path("benchmarks/r6/private_model_results.jsonl")
     assert not allowed_path("docs/CODEX_OSS_EVIDENCE_R1.md")

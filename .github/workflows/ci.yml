@@ -1,4 +1,4 @@
-name: TLS R5/R11 frozen + R12 offline quality evidence and R6-R10 studies
+name: TLS R5/R11 frozen + R13 opt-in bilingual + R6-R12 studies
 on:
   push:
   pull_request:
@@ -23,6 +23,22 @@ jobs:
         run: python tools/check_release_workflow_r11.py
       - name: Fail fast on R12 Release Bash syntax and dual-job gating
         run: python tools/check_r12_release_workflow.py
+      - name: Validate R13 Release Bash and official CI gates before expensive tests
+        run: python tools/check_release_workflow_r13.py
+      - name: Build/check R13 separate Chrome and Tampermonkey installers
+        run: |
+          python tools/build_r13.py
+          python tools/build_r13.py --check
+          python tests/test_install_r13.py
+      - name: Upload optional R13 read-only bilingual preview installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R13_Read_Only_Bilingual_Installers
+          path: |
+            dist/r13/TLS_Chrome_MV3_R13_20261025.zip
+            dist/r13/TLS_Tampermonkey_R13_20261025.user.js
+            dist/r13/SHA256SUMS_R13_20261025.txt
+          if-no-files-found: error
       - name: Check human-readable lexicon and compiled glossary match
         run: python tools/generate_lexicon_r3.py --check
       - name: Validate protected named-entity registry and browser bundle
@@ -123,7 +139,7 @@ jobs:
         run: git diff --exit-code -- dist/chrome dist/userscript
       - name: JavaScript syntax checks
         run: |
-          for f in src/core/*.js src/chrome/*.js src/userscript/*.js dist/chrome/*.js dist/userscript/*.js tools/*.js; do node --check "$f"; done
+          for f in src/core/*.js src/chrome/*.js src/userscript/*.js src/r13/chrome/*.js src/r13/userscript/*.js src/r13/*.js dist/chrome/*.js dist/userscript/*.js dist/r13/chrome/*.js dist/r13/userscript/*.js tools/*.js; do node --check "$f"; done
       - name: Upload Chrome and Userscript install bundles
         uses: actions/upload-artifact@v4
         with:
@@ -211,6 +227,8 @@ jobs:
       - run: python tests/test_userscript_browser_r11.py
       - run: python tests/test_quality_audit_browser_r12.py
       - run: python tests/test_visual_progress_browser_r5.py
+      - name: Test R13 closed-shadow selection, code protection and no network in Chromium
+        run: python tests/test_bilingual_reader_browser_r13.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
       - run: python tests/test_pokebonk_demo_r7.py
@@ -452,4 +470,38 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R12 臺灣中文翻譯品質證據工作台（離線研究預覽）" \
               --notes "Evaluation-only, no real model success or human accuracy claims. Upload own R6-matched candidate JSONL and optional ratings; view coverage and structural warnings; download aggregate-only report. No network, no browser runtime changes, no R6 frozen edits. Previous R5/R11 releases remain immutable."
+          fi
+
+  r13-bilingual-release:
+    name: Publish independent optional R13 opt-in bilingual reader
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild and check R13 immutable output
+        run: |
+          python tools/build_r13.py
+          python tools/build_r13.py --check
+          python tests/test_install_r13.py
+          python tools/check_release_workflow_r13.py
+      - name: Publish optional immutable R13 read-only installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "r13-bilingual-reader-preview-0.6.0" >/dev/null 2>&1; then
+            echo "R13 preview already exists; never overwrite previous signed assets"
+          else
+            gh release create "r13-bilingual-reader-preview-0.6.0" \
+              dist/r13/TLS_Chrome_MV3_R13_20261025.zip \
+              dist/r13/TLS_Tampermonkey_R13_20261025.user.js \
+              dist/r13/SHA256SUMS_R13_20261025.txt \
+              --target "$GITHUB_SHA" \
+              --title "R13 安全雙語閱讀（逐站選取、原文不改寫）v0.6.0 Preview" \
+              --notes "Optional independent Chrome+Tampermonkey read-only selected-text bilingual preview. Explicit site opt-in and user-selected content only. Chrome built-in Translator API is optional and browser dependent; no cloud translation calls, webpage content mutation, telemetry or general AI accuracy claims. Mouse/UI click preferred Taiwanese usage is 點選, with no automatic blanket replacements. Previous R5 0.4.0, R11 0.5.0 and frozen R6 study assets remain untouched."
           fi

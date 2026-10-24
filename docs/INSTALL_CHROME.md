@@ -12,7 +12,7 @@ Taiwan-LLM-Sanitizer 目前使用 **Manifest V3**，不是 Chrome Web Store 官�
 
 1. 開啟桌面版 Chrome。於網址列**手動輸入** `chrome://extensions`，按 Enter。Chrome 內部頁面網址設計上無法由一般網頁超連結直接開啟。
 2. 開啟右上角的 **開發人員模式（Developer mode）**。
-3. 點擊 **載入未封裝項目（Load unpacked）**。
+3. 點選 **載入未封裝項目（Load unpacked）**。
 4. 選擇剛解壓後含 `manifest.json` 的資料夾，不是 ZIP 檔本身。
 5. 成功後，點瀏覽器工具列的拼圖圖示，**將 Taiwan-LLM-Sanitizer 釘選**，方便日後操作。
 
@@ -41,3 +41,8 @@ Taiwan-LLM-Sanitizer 目前使用 **Manifest V3**，不是 Chrome Web Store 官�
 ## R11 v0.5.0 另外提供的個人詞庫模式
 
 R5 v0.4.0 安裝包不會被覆寫；R11 是另一份獨立的可下載 Preview。請使用 R11 Release 的 Chrome ZIP（解壓載入）或 Tampermonkey 單檔 .user.js，**不要在同一個網站並用 R5 與 R11**。具體的 R9 JSON 匯入、逐站權限、人工預覽、勾選、還原與個人資料限制請見 [R11 使用說明](R11_SITE_GLOSSARY.md)。
+
+
+### R13 獨立雙語閱讀版本
+
+R13 是另行發行的 `TLS_Chrome_MV3_R13_20261025.zip`（非 R5/R11 升級覆寫）。解壓後於 `chrome://extensions` 載入其中包含 `manifest.json` 的資料夾，點選擴充功能並逐站授權；頁面右下角出現 R13 面板，反白文字後**點選「讀取反白原文」**。可自行貼入譯文核對，或在真正支援本機 Translator API 的桌面 Chrome 試用本機翻譯。未支援時保留原文，不呼叫雲端 API。詳細限制見 [R13 規格](R13_BILINGUAL_READER.md)。
