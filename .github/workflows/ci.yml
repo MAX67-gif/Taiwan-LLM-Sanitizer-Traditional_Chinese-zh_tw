@@ -19,6 +19,8 @@ jobs:
           python tools/publication_guard.py
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
+      - name: Fail fast on R11 release shell syntax (before expensive browser checks)
+        run: python tools/check_release_workflow_r11.py
       - name: Check human-readable lexicon and compiled glossary match
         run: python tools/generate_lexicon_r3.py --check
       - name: Validate protected named-entity registry and browser bundle
@@ -393,3 +395,4 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R11 個人詞庫逐站人工預覽與安全還原 (v0.5.0 Preview)" \
               --notes "R11 optional preview. Imports only user-authored R9 tls.personal-glossary.v1 per-origin local profile; user must opt into site, preview positions and explicitly tick matches to apply. Protected fields/identifiers/code are skipped; stale pages are rejected, only unchanged tool-owned text can be restored. R5 v0.4.0 frozen release and R6-R10 independent studies remain untouched. No automatic R3 candidate or R10 editorial promotion, no cloud transport, not Chrome Web Store certified. Verify SHA256 and do not run R5 and R11 on the same site simultaneously."
+          fi
