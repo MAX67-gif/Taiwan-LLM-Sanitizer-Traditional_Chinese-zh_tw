@@ -26,6 +26,18 @@ def run():
         page.mouse.click(rect['x'],rect['y'])
         assert page.evaluate('window.__r13.getState().hasOriginal')
         assert page.locator('#read').text_content()==start
+        # Mock the on-device API for UI testing; never claim real model quality.
+        page.evaluate('''() => {window.Translator={availability:async()=>"available",create:async()=>({translate:async text=>"請點選設定。保留 Codex for Open Source 與 {{name}}。",destroy:()=>{}})}}''')
+        page.evaluate('window.__r13.testControls.translate.click()')
+        page.wait_for_function('window.__r13.getState().hasCandidate')
+        assert '有限的結構檢查' in page.evaluate('window.__r13.testControls.status.textContent')
+        # Late responses after clear must not overwrite the new empty state.
+        page.evaluate('''() => {window.__late=null;window.Translator={availability:async()=>"available",create:async()=>({translate:()=>new Promise(resolve=>window.__late=resolve),destroy:()=>{}})}}''')
+        page.evaluate('window.__r13.testControls.translate.click()')
+        page.wait_for_function('typeof window.__late === "function"')
+        page.evaluate('window.__r13.clear();window.__late("延遲後的壞譯文")')
+        page.wait_for_timeout(80)
+        assert not page.evaluate('window.__r13.getState().hasCandidate')
         # Guard refuses selection of code content; does not change the DOM.
         page.evaluate('''() => {let r=document.createRange();r.selectNodeContents(document.querySelector('#code'));let s=getSelection();s.removeAllRanges();s.addRange(r);}''')
         assert page.evaluate('''() => {try{TLSBilingualR13.safeSelection(window);return "INVALID"}catch(e){return e.message}}''')=='R13_EXCLUDED_SELECTION'
