@@ -1,4 +1,4 @@
-name: TLS R5 frozen + R11 site glossary preview + R6-R10 studies
+name: TLS R5/R11 frozen + R12 offline quality evidence and R6-R10 studies
 on:
   push:
   pull_request:
@@ -21,6 +21,8 @@ jobs:
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
         run: python tools/check_release_workflow_r11.py
+      - name: Fail fast on R12 Release Bash syntax and dual-job gating
+        run: python tools/check_r12_release_workflow.py
       - name: Check human-readable lexicon and compiled glossary match
         run: python tools/generate_lexicon_r3.py --check
       - name: Validate protected named-entity registry and browser bundle
@@ -46,6 +48,14 @@ jobs:
         run: node tools/build_user_terms_r9.js --check
       - name: Verify R10 original-context provenance, strict schema and reproducible offline page
         run: node tools/build_context_governance_r10.js --check
+      - name: Verify R12 offline quality evidence HTML against frozen R6 source
+        run: node tools/build_quality_audit_r12.js --check
+      - name: Upload R12 research-only HTML for reviewer convenience
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R12_Offline_Quality_Evidence_Lab
+          path: examples/TW_Quality_Audit_Lab_R12_20261025.html
+          if-no-files-found: error
       - name: Upload R10 safe offline provenance review page
         uses: actions/upload-artifact@v4
         with:
@@ -158,6 +168,20 @@ jobs:
             ${{ runner.temp }}/tls-public-snapshot/SHA256SUMS.txt
           if-no-files-found: error
 
+      - name: Preserve exact public-only R12 source snapshot
+        run: |
+          mkdir -p "$RUNNER_TEMP/tls-r12-source"
+          git archive --format=zip --output="$RUNNER_TEMP/tls-r12-source/TLS_R12_PUBLIC_SOURCE_20261025.zip" HEAD
+          (cd "$RUNNER_TEMP/tls-r12-source" && sha256sum TLS_R12_PUBLIC_SOURCE_20261025.zip > SHA256SUMS.txt)
+      - name: Upload source archive and digest for complete source handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R12_Public_Source_Full_Snapshot
+          path: |
+            ${{ runner.temp }}/tls-r12-source/TLS_R12_PUBLIC_SOURCE_20261025.zip
+            ${{ runner.temp }}/tls-r12-source/SHA256SUMS.txt
+          if-no-files-found: error
+
   browser-integration:
     runs-on: ubuntu-latest
     needs: verify
@@ -185,6 +209,7 @@ jobs:
       - run: python tests/test_site_glossary_browser_r11.py
       - run: python tests/test_popup_browser_r11.py
       - run: python tests/test_userscript_browser_r11.py
+      - run: python tests/test_quality_audit_browser_r12.py
       - run: python tests/test_visual_progress_browser_r5.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
@@ -395,4 +420,36 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R11 個人詞庫逐站人工預覽與安全還原 (v0.5.0 Preview)" \
               --notes "R11 optional preview. Imports only user-authored R9 tls.personal-glossary.v1 per-origin local profile; user must opt into site, preview positions and explicitly tick matches to apply. Protected fields/identifiers/code are skipped; stale pages are rejected, only unchanged tool-owned text can be restored. R5 v0.4.0 frozen release and R6-R10 independent studies remain untouched. No automatic R3 candidate or R10 editorial promotion, no cloud transport, not Chrome Web Store certified. Verify SHA256 and do not run R5 and R11 on the same site simultaneously."
+          fi
+
+  r12-quality-evidence-release:
+    name: Publish separate R12 offline translation quality evidence HTML
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Revalidate the frozen cohort and reproducible R12 page
+        run: |
+          node tools/r6_benchmark.js validate
+          node tools/build_quality_audit_r12.js --check
+      - name: Publish immutable R12 evaluation-only HTML and SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha256sum examples/TW_Quality_Audit_Lab_R12_20261025.html > examples/TW_Quality_Audit_Lab_R12_20261025.html.sha256
+          if gh release view "r12-quality-evidence-preview-v1" >/dev/null 2>&1; then
+            echo "R12 evaluation-only release already exists. Never overwrite prior assets."
+          else
+            gh release create "r12-quality-evidence-preview-v1" \
+              examples/TW_Quality_Audit_Lab_R12_20261025.html \
+              examples/TW_Quality_Audit_Lab_R12_20261025.html.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "R12 臺灣中文翻譯品質證據工作台（離線研究預覽）" \
+              --notes "Evaluation-only, no real model success or human accuracy claims. Upload own R6-matched candidate JSONL and optional ratings; view coverage and structural warnings; download aggregate-only report. No network, no browser runtime changes, no R6 frozen edits. Previous R5/R11 releases remain immutable."
           fi
