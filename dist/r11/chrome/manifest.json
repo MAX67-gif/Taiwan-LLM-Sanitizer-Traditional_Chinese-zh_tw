@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Taiwan-LLM-Sanitizer｜臺灣繁中化與個人詞庫 R11",
+  "short_name": "TLS 繁中化",
+  "version": "0.5.0",
+  "description": "保留 R5 本機翻譯與逐站授權；新增 R11 人工預覽與明確批准的個人詞庫，安全還原，不傳送頁面文字。",
+  "minimum_chrome_version": "102",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "TLS R11｜臺灣個人用語審查"
+  }
+}
