@@ -209,7 +209,7 @@ jobs:
       - run: python tests/test_site_glossary_browser_r11.py
       - run: python tests/test_popup_browser_r11.py
       - run: python tests/test_userscript_browser_r11.py
-      - run: python tests/test_quality_evidence_browser_r12.py
+      - run: python tests/test_quality_audit_browser_r12.py
       - run: python tests/test_visual_progress_browser_r5.py
       - run: python tests/test_r6_browser.py
       - run: python tools/build_pokebonk_demo_r7.py
