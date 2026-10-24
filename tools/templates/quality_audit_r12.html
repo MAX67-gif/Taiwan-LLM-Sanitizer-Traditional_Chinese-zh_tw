@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<title>R12｜臺灣中文翻譯品質證據工作台（離線、待驗證）</title>
+<style>
+:root{color-scheme:light;--text:#172b41;--muted:#526579;--bg:#f2f5f8;--line:#ccd6e0;--accent:#176c80;--white:#fff;--head:#dfeff3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{background:linear-gradient(130deg,#0d3f54,#176f7e);color:#fff;padding:30px max(16px,calc((100vw - 1100px)/2));}
+header h1{font-size:clamp(25px,4vw,38px);line-height:1.22;margin:8px 0}header p{max-width:940px;margin:8px 0;color:#e1f3f8} .tag{display:inline-block;border:1px solid #b2d7df;padding:3px 10px;border-radius:99px;font-size:12px}
+main{max-width:1100px;margin:0 auto;padding:19px 14px 35px;display:grid;gap:15px}section{background:#fff;border:1px solid var(--line);border-radius:13px;padding:19px;min-width:0;box-shadow:0 3px 13px #153b4c0c}h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:5px 0 8px}p{margin:6px 0 12px}.muted{color:var(--muted)}.note{background:#edf4f7;border-left:4px solid var(--accent);padding:9px 12px;border-radius:5px}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:block;min-width:0}.field strong{display:block;margin-bottom:5px}.field small{display:block;color:var(--muted)}input[type=file],input[type=text]{display:block;width:100%;border:1px solid var(--line);padding:9px;border-radius:7px;background:#fff;font:inherit;color:var(--text)}button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:650;cursor:pointer}button.secondary{background:#e5edf2;color:var(--text)}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:3px solid #f8bb6f;outline-offset:2px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.status{font-weight:650;margin:12px 0 0;min-height:2em}.error{color:#a0242e}.success{color:#13604a}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.metric{background:#edf4f7;border:1px solid #d4e4ea;padding:12px;border-radius:9px}.metric b{font-size:25px;display:block;line-height:1.25}.metric span{font-size:12px;color:#435b6c}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px;border-bottom:1px solid #dbe2e9}th{background:var(--head)}.right{text-align:right;white-space:nowrap}.hidden{display:none!important}details{margin-top:8px}summary{cursor:pointer;font-weight:650}footer{text-align:center;color:var(--muted);padding:10px;font-size:13px}@media(max-width:680px){.formgrid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}section{padding:14px}header{padding:24px 15px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><span class="tag">Taiwan-LLM-Sanitizer · R12 · Evidence Only</span>
+<h1>翻譯品質證據工作台</h1><p>將實際取得的候選譯文與人工評閱資料載入本機，計算固定 100 題的涵蓋率、保護文字缺失與自填評閱覆蓋率。沒有上傳、沒有登入、不會更動任何網頁或模型。</p></header>
+<main>
+<section><h2>1. 資料契約與安全界線</h2>
+<p class="note"><strong>重要：</strong>這份工具只能檢查部分明確結構，不能證明意思正確、自然流暢或符合臺灣語境。匯入的模型名稱與評審代號皆由使用者自行填寫，並未驗證實際模型或真人身分。已公開的 R6 題庫不能稱為全新未知資料。</p>
+<p class="muted">固定題庫：R6_PUBLIC_FROZEN_V1 · 100 題（技術、商務、網站、專名、Prompt 各 20 題） · SHA256：<code id="cohort-hash"></code></p>
+<p class="muted">支援從 R6 本機 Chrome 模型測試頁或 CLI 匯出的 <code>{"id":"…","translation":"…"}</code> JSONL。人工評閱支援 R6 雙語審閱室匯出格式。每個匯入檔限制 5 MB；模型輸出與評語只留在目前頁面記憶體，下載報告不包含原文或譯文全文。</p></section>
+<section><h2>2. 手動選擇本機檔案</h2>
+<div class="formgrid">
+<label class="field"><strong>候選 A（必填）</strong><input id="file-a" type="file" accept=".jsonl,.txt,application/x-ndjson"><small>來自真實模型或人工候選皆可，但來源要誠實標示</small></label>
+<label class="field"><strong>候選 B（可選）</strong><input id="file-b" type="file" accept=".jsonl,.txt,application/x-ndjson"><small>只比較相同題號的覆蓋與結構警示，不自動認定優劣</small></label>
+<label class="field"><strong>A 候選的人工評閱（可選）</strong><input id="file-reviews" type="file" accept=".jsonl,.txt,application/x-ndjson"><small>評分 1～5；不同代號不等於獨立真人身分已驗證</small></label>
+<label class="field"><strong>候選名稱（僅本頁顯示）</strong><input id="label-a" type="text" value="本機候選 A" maxlength="80"><small>不會因為填了模型名稱就認證該模型版本</small></label>
+</div><div class="actions"><button id="analyze">開始本機檢查</button><button id="export" disabled>下載不含原文的證據摘要 JSON</button><button id="clear" class="secondary">清除本頁資料</button></div>
+<p class="status" role="status" aria-live="polite" id="status">尚未載入資料，等待使用者選檔。</p></section>
+<section id="results" class="hidden"><h2>3. 實際覆蓋與結構警示</h2>
+<div class="grid"><div class="metric"><b id="count-submitted">—</b><span>A 已提供譯文筆數／100</span></div><div class="metric"><b id="count-missing">—</b><span>A 缺少筆數</span></div><div class="metric"><b id="count-flags">—</b><span>A 含靜態警示筆數</span></div><div class="metric"><b id="count-two">—</b><span>至少兩個評審代號的題數</span></div></div>
+<h3>按題型分布</h3><div class="scroll"><table><thead><tr><th>題型</th><th class="right">A 覆蓋</th><th class="right">A 警示</th><th class="right">B 覆蓋</th><th class="right">B 警示</th></tr></thead><tbody id="family-rows"></tbody></table></div>
+<details><summary>查看明確警示的題號與類型（不含譯文）</summary><div class="scroll"><table><thead><tr><th>題號</th><th>警示類型</th></tr></thead><tbody id="issue-rows"></tbody></table></div></details>
+<p id="compare-note" class="note"></p><p id="human-note" class="muted"></p>
+<p><strong>裁決：</strong><span id="verdict">NO_PROMOTION_NO_CLAIM</span>。這是研究證據，沒有對 Chrome/Tampermonkey 或任何 AI 模型授予品質升級權限。</p></section>
+<section><h2>4. 如何取得真正可信的品質證據？</h2><p>先用 R6 真實桌面 Chrome 測試頁或合法授權的模型取得實際譯文；按相同題目與來源語言逐項記錄缺漏。對重要翻譯再由至少兩位真正獨立評閱者核對原意、自然度、臺灣語境與語氣，人工確認彼此身分及審閱程序；評分分歧要記錄。最後建立與已公開 R6 不同、測試前凍結的未曝光驗證集。任何無法由現有證據支持的項目都應記為「未知」，不能靠詞庫數量或靜態通過率冒充正確率。</p></section>
+</main><footer>本工具完全本機執行 · 無遠端服務、遙測、CDN 或雲端同步 · MIT 公開核心 · CA L. Project Steward</footer>
+<script id="frozen" type="application/json">__TLS_R12_FROZEN__</script>
+<script>__TLS_R12_CORE__</script>
+<script>
+(() => {'use strict';
+ const frozen=JSON.parse(document.getElementById('frozen').textContent),engine=globalThis.TLSQualityR12;
+ const $=id=>document.getElementById(id);const hash='__TLS_R12_HASH__';
+ $('cohort-hash').textContent=hash;
+ let report=null;const status=(s,ok)=>{$('status').textContent=s;$('status').className='status'+(ok===false?' error':ok===true?' success':'');};
+ const addCell=(row,t,cls)=>{const c=document.createElement('td');if(cls)c.className=cls;c.textContent=String(t);row.appendChild(c);};
+ async function fileText(id,optional){const file=$(id).files[0];if(!file){if(optional)return null;throw new Error('請先選擇候選 A 的 JSONL');}
+  if(file.size>engine.MAX_FILE_BYTES)throw new Error('匯入檔案超過 5 MB');return file.text();}
+ $('analyze').addEventListener('click',async()=>{report=null;$('export').disabled=true;$('results').classList.add('hidden');
+  try{
+   const a=engine.parseTranslations(await fileText('file-a',false),frozen);
+   const bRaw=await fileText('file-b',true),revRaw=await fileText('file-reviews',true);
+   const b=bRaw===null?null:engine.parseTranslations(bRaw,frozen);
+   const reviews=revRaw===null?null:engine.parseReviews(revRaw,frozen);
+   report=engine.compare(a,b,frozen,{labelA:$('label-a').value||'candidate A',reviews,frozenSHA:hash});
+   const x=report.candidateA,y=report.candidateB;
+   $('count-submitted').textContent=x.submitted+'/100';$('count-missing').textContent=x.missing;
+   $('count-flags').textContent=x.withStructuralFlags;$('count-two').textContent=report.human?report.human.atLeastTwoSelfReportedReviewers:'未匯入';
+   $('family-rows').replaceChildren();for(const family of engine.FAMILIES){const tr=document.createElement('tr');
+    addCell(tr,family);addCell(tr,x.perFamily[family].submitted+'/20','right');addCell(tr,x.perFamily[family].withStructuralFlags,'right');
+    addCell(tr,y?y.perFamily[family].submitted+'/20':'未提供','right');addCell(tr,y?y.perFamily[family].withStructuralFlags:'—','right');
+    $('family-rows').appendChild(tr);}
+   $('issue-rows').replaceChildren();for(const issue of x.flags){const tr=document.createElement('tr');addCell(tr,issue.id);addCell(tr,issue.codes.join('、'));$('issue-rows').appendChild(tr);}
+   $('compare-note').textContent=y?'候選 B 提交 '+y.submitted+' 題；A/B 共同提交 '+report.comparison.both+' 題。靜態警示數不能代表誰的翻譯品質較好。':'未匯入候選 B；目前只檢查候選 A。';
+   $('human-note').textContent=report.human?'使用者提供 '+report.human.reviewRecords+' 筆評分；至少兩個自填評審代號的題目 '+report.human.atLeastTwoSelfReportedReviewers+' 題。沒有獨立真人身分認證，不能聲稱完成獨立雙審。':'未提供人工評分，不產生自然度／原意忠實分數。';
+   $('verdict').textContent=report.approval;$('results').classList.remove('hidden');$('export').disabled=false;
+   status('本機分析完成。已提供 '+x.submitted+'/100 題；本工具沒有證明翻譯自然度或正確率。',true);
+  }catch(e){status('讀取或驗證失敗：'+(e.message||'資料格式錯誤'),false);}
+ });
+ $('export').addEventListener('click',()=>{if(!report)return;
+  const raw=JSON.stringify(report,null,2)+'\n';const link=document.createElement('a');
+  const url=URL.createObjectURL(new Blob([raw],{type:'application/json;charset=utf-8'}));
+  link.href=url;link.download='TLS_R12_QUALITY_EVIDENCE_AGGREGATE.json';document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+ });
+ $('clear').addEventListener('click',()=>{for(const id of ['file-a','file-b','file-reviews'])$(id).value='';
+  $('label-a').value='本機候選 A';report=null;$('export').disabled=true;$('results').classList.add('hidden');status('本頁檔案、候選與評分已清除。',true);});
+})();
+</script>
+</body></html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<title>R12｜臺灣中文翻譯品質證據工作台（離線、待驗證）</title>
+<style>
+:root{color-scheme:light;--text:#172b41;--muted:#526579;--bg:#f2f5f8;--line:#ccd6e0;--accent:#176c80;--white:#fff;--head:#dfeff3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 system-ui,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{background:linear-gradient(130deg,#0d3f54,#176f7e);color:#fff;padding:30px max(16px,calc((100vw - 1100px)/2));}
+header h1{font-size:clamp(25px,4vw,38px);line-height:1.22;margin:8px 0}header p{max-width:940px;margin:8px 0;color:#e1f3f8} .tag{display:inline-block;border:1px solid #b2d7df;padding:3px 10px;border-radius:99px;font-size:12px}
+main{max-width:1100px;margin:0 auto;padding:19px 14px 35px;display:grid;gap:15px}section{background:#fff;border:1px solid var(--line);border-radius:13px;padding:19px;min-width:0;box-shadow:0 3px 13px #153b4c0c}h2{font-size:19px;margin:0 0 10px}h3{font-size:16px;margin:5px 0 8px}p{margin:6px 0 12px}.muted{color:var(--muted)}.note{background:#edf4f7;border-left:4px solid var(--accent);padding:9px 12px;border-radius:5px}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:block;min-width:0}.field strong{display:block;margin-bottom:5px}.field small{display:block;color:var(--muted)}input[type=file],input[type=text]{display:block;width:100%;border:1px solid var(--line);padding:9px;border-radius:7px;background:#fff;font:inherit;color:var(--text)}button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:650;cursor:pointer}button.secondary{background:#e5edf2;color:var(--text)}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:3px solid #f8bb6f;outline-offset:2px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.status{font-weight:650;margin:12px 0 0;min-height:2em}.error{color:#a0242e}.success{color:#13604a}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.metric{background:#edf4f7;border:1px solid #d4e4ea;padding:12px;border-radius:9px}.metric b{font-size:25px;display:block;line-height:1.25}.metric span{font-size:12px;color:#435b6c}.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px;border-bottom:1px solid #dbe2e9}th{background:var(--head)}.right{text-align:right;white-space:nowrap}.hidden{display:none!important}details{margin-top:8px}summary{cursor:pointer;font-weight:650}footer{text-align:center;color:var(--muted);padding:10px;font-size:13px}@media(max-width:680px){.formgrid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}section{padding:14px}header{padding:24px 15px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><span class="tag">Taiwan-LLM-Sanitizer · R12 · Evidence Only</span>
+<h1>翻譯品質證據工作台</h1><p>將實際取得的候選譯文與人工評閱資料載入本機，計算固定 100 題的涵蓋率、保護文字缺失與自填評閱覆蓋率。沒有上傳、沒有登入、不會更動任何網頁或模型。</p></header>
+<main>
+<section><h2>1. 資料契約與安全界線</h2>
+<p class="note"><strong>重要：</strong>這份工具只能檢查部分明確結構，不能證明意思正確、自然流暢或符合臺灣語境。匯入的模型名稱與評審代號皆由使用者自行填寫，並未驗證實際模型或真人身分。已公開的 R6 題庫不能稱為全新未知資料。</p>
+<p class="muted">固定題庫：R6_PUBLIC_FROZEN_V1 · 100 題（技術、商務、網站、專名、Prompt 各 20 題） · SHA256：<code id="cohort-hash"></code></p>
+<p class="muted">支援從 R6 本機 Chrome 模型測試頁或 CLI 匯出的 <code>{"id":"…","translation":"…"}</code> JSONL。人工評閱支援 R6 雙語審閱室匯出格式。每個匯入檔限制 5 MB；模型輸出與評語只留在目前頁面記憶體，下載報告不包含原文或譯文全文。</p></section>
+<section><h2>2. 手動選擇本機檔案</h2>
+<div class="formgrid">
+<label class="field"><strong>候選 A（必填）</strong><input id="file-a" type="file" accept=".jsonl,.txt,application/x-ndjson"><small>來自真實模型或人工候選皆可，但來源要誠實標示</small></label>
+<label class="field"><strong>候選 B（可選）</strong><input id="file-b" type="file" accept=".jsonl,.txt,application/x-ndjson"><small>只比較相同題號的覆蓋與結構警示，不自動認定優劣</small></label>
+<label class="field"><strong>A 候選的人工評閱（可選）</strong><input id="file-reviews" type="file" accept=".jsonl,.txt,application/x-ndjson"><small>評分 1～5；不同代號不等於獨立真人身分已驗證</small></label>
+<label class="field"><strong>候選名稱（僅本頁顯示）</strong><input id="label-a" type="text" value="本機候選 A" maxlength="80"><small>不會因為填了模型名稱就認證該模型版本</small></label>
+</div><div class="actions"><button id="analyze">開始本機檢查</button><button id="export" disabled>下載不含原文的證據摘要 JSON</button><button id="clear" class="secondary">清除本頁資料</button></div>
+<p class="status" role="status" aria-live="polite" id="status">尚未載入資料，等待使用者選檔。</p></section>
+<section id="results" class="hidden"><h2>3. 實際覆蓋與結構警示</h2>
+<div class="grid"><div class="metric"><b id="count-submitted">—</b><span>A 已提供譯文筆數／100</span></div><div class="metric"><b id="count-missing">—</b><span>A 缺少筆數</span></div><div class="metric"><b id="count-flags">—</b><span>A 含靜態警示筆數</span></div><div class="metric"><b id="count-two">—</b><span>至少兩個評審代號的題數</span></div></div>
+<h3>按題型分布</h3><div class="scroll"><table><thead><tr><th>題型</th><th class="right">A 覆蓋</th><th class="right">A 警示</th><th class="right">B 覆蓋</th><th class="right">B 警示</th></tr></thead><tbody id="family-rows"></tbody></table></div>
+<details><summary>查看明確警示的題號與類型（不含譯文）</summary><div class="scroll"><table><thead><tr><th>題號</th><th>警示類型</th></tr></thead><tbody id="issue-rows"></tbody></table></div></details>
+<p id="compare-note" class="note"></p><p id="human-note" class="muted"></p>
+<p><strong>裁決：</strong><span id="verdict">NO_PROMOTION_NO_CLAIM</span>。這是研究證據，沒有對 Chrome/Tampermonkey 或任何 AI 模型授予品質升級權限。</p></section>
+<section><h2>4. 如何取得真正可信的品質證據？</h2><p>先用 R6 真實桌面 Chrome 測試頁或合法授權的模型取得實際譯文；按相同題目與來源語言逐項記錄缺漏。對重要翻譯再由至少兩位真正獨立評閱者核對原意、自然度、臺灣語境與語氣，人工確認彼此身分及審閱程序；評分分歧要記錄。最後建立與已公開 R6 不同、測試前凍結的未曝光驗證集。任何無法由現有證據支持的項目都應記為「未知」，不能靠詞庫數量或靜態通過率冒充正確率。</p></section>
+</main><footer>本工具完全本機執行 · 無遠端服務、遙測、CDN 或雲端同步 · MIT 公開核心 · CA L. Project Steward</footer>
+<script id="frozen" type="application/json">[{"id":"R6-TECHNICAL-001","family":"technical","source_locale":"en","source_text":"Restart the server only after saving the configuration file.","preserve_exact":[]},{"id":"R6-TECHNICAL-002","family":"technical","source_locale":"en","source_text":"The new API endpoint returns a 403 response when the token is missing.","preserve_exact":["API","403"]},{"id":"R6-TECHNICAL-003","family":"technical","source_locale":"en","source_text":"Run `node tools/build.py` only in a test environment.","preserve_exact":["`node tools/build.py`"]},{"id":"R6-TECHNICAL-004","family":"technical","source_locale":"en","source_text":"Database backups are stored locally; they are not synchronized to the cloud.","preserve_exact":[]},{"id":"R6-TECHNICAL-005","family":"technical","source_locale":"en","source_text":"If the checksum differs, reject the package and show the expected hash.","preserve_exact":[]},{"id":"R6-TECHNICAL-006","family":"technical","source_locale":"en","source_text":"The application should preserve backward compatibility with version 2.1.","preserve_exact":["2.1"]},{"id":"R6-TECHNICAL-007","family":"technical","source_locale":"en","source_text":"Read the README before opening a pull request.","preserve_exact":["README"]},{"id":"R6-TECHNICAL-008","family":"technical","source_locale":"en","source_text":"Memory usage must remain below 512 MiB on the target device.","preserve_exact":["512 MiB"]},{"id":"R6-TECHNICAL-009","family":"technical","source_locale":"en","source_text":"A timeout does not prove that the request was never processed.","preserve_exact":[]},{"id":"R6-TECHNICAL-010","family":"technical","source_locale":"en","source_text":"Do not assume the JSON keys can be translated.","preserve_exact":["JSON"]},{"id":"R6-TECHNICAL-011","family":"technical","source_locale":"en","source_text":"Cache invalidation happens after the transaction commits.","preserve_exact":[]},{"id":"R6-TECHNICAL-012","family":"technical","source_locale":"en","source_text":"The build passed, but the integration test has not started.","preserve_exact":[]},{"id":"R6-TECHNICAL-013","family":"technical","source_locale":"en","source_text":"Use UTF-8 with BOM only when the receiving tool requires it.","preserve_exact":["UTF-8","BOM"]},{"id":"R6-TECHNICAL-014","family":"technical","source_locale":"en","source_text":"The CLI must not overwrite its source directory.","preserve_exact":[]},{"id":"R6-TECHNICAL-015","family":"technical","source_locale":"en","source_text":"Retry up to three times, unless the server returns 401.","preserve_exact":["401"]},{"id":"R6-TECHNICAL-016","family":"technical","source_locale":"en","source_text":"Set the environment variable `TLS_MODE=offline` before startup.","preserve_exact":["`TLS_MODE=offline`"]},{"id":"R6-TECHNICAL-017","family":"technical","source_locale":"zh-CN","source_text":"数据集中的代码字段不能翻译，否则测试会失败。","preserve_exact":[]},{"id":"R6-TECHNICAL-018","family":"technical","source_locale":"zh-CN","source_text":"程序崩溃以后，请检查日志而不是盲目重试。","preserve_exact":[]},{"id":"R6-TECHNICAL-019","family":"technical","source_locale":"zh-CN","source_text":"请将文件保存在本地目录，不要上传用户数据。","preserve_exact":[]},{"id":"R6-TECHNICAL-020","family":"technical","source_locale":"zh-CN","source_text":"关闭自动更新不会删除以前下载的软件包。","preserve_exact":[]},{"id":"R6-BUSINESS-001","family":"business","source_locale":"en","source_text":"Could you share the revised proposal by Thursday?","preserve_exact":[]},{"id":"R6-BUSINESS-002","family":"business","source_locale":"en","source_text":"Please confirm whether the quoted price includes tax.","preserve_exact":[]},{"id":"R6-BUSINESS-003","family":"business","source_locale":"en","source_text":"We cannot approve the purchase order until legal reviews the terms.","preserve_exact":[]},{"id":"R6-BUSINESS-004","family":"business","source_locale":"en","source_text":"The meeting is scheduled for October 28 at 10:00 a.m. Taipei time.","preserve_exact":["28"]},{"id":"R6-BUSINESS-005","family":"business","source_locale":"en","source_text":"Thank you for your patience while we investigate this issue.","preserve_exact":[]},{"id":"R6-BUSINESS-006","family":"business","source_locale":"en","source_text":"Please do not distribute the attached contract outside your team.","preserve_exact":[]},{"id":"R6-BUSINESS-007","family":"business","source_locale":"en","source_text":"The free trial ends after seven days; the subscription will not renew automatically.","preserve_exact":[]},{"id":"R6-BUSINESS-008","family":"business","source_locale":"en","source_text":"We can offer a refund if the product arrives damaged.","preserve_exact":[]},{"id":"R6-BUSINESS-009","family":"business","source_locale":"en","source_text":"This estimate is not a binding quotation.","preserve_exact":[]},{"id":"R6-BUSINESS-010","family":"business","source_locale":"en","source_text":"Please send your feedback, even if no changes are required.","preserve_exact":[]},{"id":"R6-BUSINESS-011","family":"business","source_locale":"en","source_text":"The customer has not consented to data sharing.","preserve_exact":[]},{"id":"R6-BUSINESS-012","family":"business","source_locale":"en","source_text":"We expect shipment next week, but the delivery date is not guaranteed.","preserve_exact":[]},{"id":"R6-BUSINESS-013","family":"business","source_locale":"en","source_text":"Please address the invoice to the legal entity listed below.","preserve_exact":[]},{"id":"R6-BUSINESS-014","family":"business","source_locale":"en","source_text":"Do not promise a delivery date before inventory is confirmed.","preserve_exact":[]},{"id":"R6-BUSINESS-015","family":"business","source_locale":"en","source_text":"The revised offer remains valid until 5:00 p.m. on Friday.","preserve_exact":[]},{"id":"R6-BUSINESS-016","family":"business","source_locale":"en","source_text":"We have received your application but have not completed the review.","preserve_exact":[]},{"id":"R6-BUSINESS-017","family":"business","source_locale":"zh-CN","source_text":"请在下周二之前回复邮件，并确认是否需要修改合同。","preserve_exact":[]},{"id":"R6-BUSINESS-018","family":"business","source_locale":"zh-CN","source_text":"我们的报价不包含运费，具体金额需要另行确认。","preserve_exact":[]},{"id":"R6-BUSINESS-019","family":"business","source_locale":"zh-CN","source_text":"如需开具发票，请提供公司抬头和税号。","preserve_exact":[]},{"id":"R6-BUSINESS-020","family":"business","source_locale":"zh-CN","source_text":"此次会议仅供讨论，并不构成最终合作承诺。","preserve_exact":[]},{"id":"R6-WEBUI-001","family":"webui","source_locale":"en","source_text":"Open the menu to change your language settings.","preserve_exact":[]},{"id":"R6-WEBUI-002","family":"webui","source_locale":"en","source_text":"Browse the menu before ordering your meal.","preserve_exact":[]},{"id":"R6-WEBUI-003","family":"webui","source_locale":"en","source_text":"Your cart is empty. Continue shopping?","preserve_exact":[]},{"id":"R6-WEBUI-004","family":"webui","source_locale":"en","source_text":"Click Save to keep your changes.","preserve_exact":[]},{"id":"R6-WEBUI-005","family":"webui","source_locale":"en","source_text":"Loading results. You can keep browsing.","preserve_exact":[]},{"id":"R6-WEBUI-006","family":"webui","source_locale":"en","source_text":"You are signed out, but your account has not been deleted.","preserve_exact":[]},{"id":"R6-WEBUI-007","family":"webui","source_locale":"en","source_text":"Delete your account permanently? This action cannot be undone.","preserve_exact":[]},{"id":"R6-WEBUI-008","family":"webui","source_locale":"en","source_text":"Only show results from the past 30 days.","preserve_exact":["30"]},{"id":"R6-WEBUI-009","family":"webui","source_locale":"en","source_text":"The download will start after your browser verifies the file.","preserve_exact":[]},{"id":"R6-WEBUI-010","family":"webui","source_locale":"en","source_text":"Use the arrow keys to navigate between tabs.","preserve_exact":[]},{"id":"R6-WEBUI-011","family":"webui","source_locale":"en","source_text":"We use essential cookies to keep the website working.","preserve_exact":[]},{"id":"R6-WEBUI-012","family":"webui","source_locale":"en","source_text":"Your request is pending. Please do not submit it twice.","preserve_exact":[]},{"id":"R6-WEBUI-013","family":"webui","source_locale":"en","source_text":"The selected language will apply only to this website.","preserve_exact":[]},{"id":"R6-WEBUI-014","family":"webui","source_locale":"en","source_text":"Enable dark mode to reduce screen brightness.","preserve_exact":[]},{"id":"R6-WEBUI-015","family":"webui","source_locale":"en","source_text":"The trial is free for 3 days. A paid plan begins afterward.","preserve_exact":[]},{"id":"R6-WEBUI-016","family":"webui","source_locale":"en","source_text":"If the page does not respond, try refreshing it once.","preserve_exact":[]},{"id":"R6-WEBUI-017","family":"webui","source_locale":"zh-CN","source_text":"在主菜单中打开设置，找到语言选项。","preserve_exact":[]},{"id":"R6-WEBUI-018","family":"webui","source_locale":"zh-CN","source_text":"请在餐厅菜单中选择想要的菜品。","preserve_exact":[]},{"id":"R6-WEBUI-019","family":"webui","source_locale":"zh-CN","source_text":"验证码错误，请重新输入。","preserve_exact":[]},{"id":"R6-WEBUI-020","family":"webui","source_locale":"zh-CN","source_text":"使用鼠标右键打开上下文菜单。","preserve_exact":[]},{"id":"R6-NAMED-001","family":"named","source_locale":"en","source_text":"Codex for Open Source supports eligible open-source maintainers.","preserve_exact":["Codex for Open Source"]},{"id":"R6-NAMED-002","family":"named","source_locale":"en","source_text":"OpenAI Codex helps developers work with code.","preserve_exact":["OpenAI Codex"]},{"id":"R6-NAMED-003","family":"named","source_locale":"en","source_text":"Use Claude Code to inspect the project before editing.","preserve_exact":["Claude Code"]},{"id":"R6-NAMED-004","family":"named","source_locale":"en","source_text":"The GitHub repository contains a README and release notes.","preserve_exact":["GitHub","README"]},{"id":"R6-NAMED-005","family":"named","source_locale":"en","source_text":"ChatGPT and Claude are separate products.","preserve_exact":["ChatGPT","Claude"]},{"id":"R6-NAMED-006","family":"named","source_locale":"en","source_text":"PyTorch is not a replacement for a translation glossary.","preserve_exact":["PyTorch"]},{"id":"R6-NAMED-007","family":"named","source_locale":"en","source_text":"Hugging Face hosts many public model repositories.","preserve_exact":["Hugging Face"]},{"id":"R6-NAMED-008","family":"named","source_locale":"en","source_text":"The Read Frog interface has a bilingual reading feature.","preserve_exact":["Read Frog"]},{"id":"R6-NAMED-009","family":"named","source_locale":"en","source_text":"Install Tampermonkey before importing the userscript.","preserve_exact":["Tampermonkey"]},{"id":"R6-NAMED-010","family":"named","source_locale":"en","source_text":"Model Context Protocol defines a standard integration protocol.","preserve_exact":["Model Context Protocol"]},{"id":"R6-NAMED-011","family":"named","source_locale":"en","source_text":"Codex is the product name, not an instruction to translate a book.","preserve_exact":["Codex"]},{"id":"R6-NAMED-012","family":"named","source_locale":"en","source_text":"A medieval codex is a bound handwritten book.","preserve_exact":[]},{"id":"R6-NAMED-013","family":"named","source_locale":"en","source_text":"OpenAI announced a Codex for Open Source program.","preserve_exact":["OpenAI","Codex for Open Source"]},{"id":"R6-NAMED-014","family":"named","source_locale":"en","source_text":"This workflow runs on Node.js and outputs a JSONL file.","preserve_exact":["Node.js","JSONL"]},{"id":"R6-NAMED-015","family":"named","source_locale":"en","source_text":"Keep the GitHub Actions job name unchanged.","preserve_exact":["GitHub Actions"]},{"id":"R6-NAMED-016","family":"named","source_locale":"en","source_text":"Manifest V3 requires extension-specific metadata.","preserve_exact":["Manifest V3"]},{"id":"R6-NAMED-017","family":"named","source_locale":"en","source_text":"The phrase OpenAI Codex should stay in English in this document.","preserve_exact":["OpenAI Codex"]},{"id":"R6-NAMED-018","family":"named","source_locale":"en","source_text":"Use the Agent Skills specification without copying third-party content.","preserve_exact":["Agent Skills"]},{"id":"R6-NAMED-019","family":"named","source_locale":"en","source_text":"Codex for OSS is an alias in a specific program context.","preserve_exact":["Codex for OSS"]},{"id":"R6-NAMED-020","family":"named","source_locale":"en","source_text":"The word codex in a history textbook should not be treated as OpenAI branding.","preserve_exact":[]},{"id":"R6-PROMPT-001","family":"prompt","source_locale":"en","source_text":"Rewrite this notice in zh-TW. Keep {{user_name}} unchanged.","preserve_exact":["{{user_name}}"]},{"id":"R6-PROMPT-002","family":"prompt","source_locale":"en","source_text":"Translate the sentence, but do not modify the URL https://example.com/hello.","preserve_exact":["https://example.com/hello"]},{"id":"R6-PROMPT-003","family":"prompt","source_locale":"en","source_text":"Return a JSON object with keys `id` and `status`. Translate only the user-facing value.","preserve_exact":["`id`","`status`","JSON"]},{"id":"R6-PROMPT-004","family":"prompt","source_locale":"en","source_text":"When ${locale} is zh-TW, prefer Taiwanese technical terms.","preserve_exact":["${locale}","zh-TW"]},{"id":"R6-PROMPT-005","family":"prompt","source_locale":"en","source_text":"Do not run the command `rm -rf ./cache`; only describe what it does.","preserve_exact":["`rm -rf ./cache`"]},{"id":"R6-PROMPT-006","family":"prompt","source_locale":"en","source_text":"The word \"must not\" in a policy cannot be changed to \"may\".","preserve_exact":["must not","may"]},{"id":"R6-PROMPT-007","family":"prompt","source_locale":"en","source_text":"Preserve the Markdown heading `## Installation` verbatim.","preserve_exact":["`## Installation`"]},{"id":"R6-PROMPT-008","family":"prompt","source_locale":"en","source_text":"The application must preserve the placeholder {customer_id}.","preserve_exact":["{customer_id}"]},{"id":"R6-PROMPT-009","family":"prompt","source_locale":"en","source_text":"Explain the CLI flag `--dry-run` without changing its spelling.","preserve_exact":["`--dry-run`","CLI"]},{"id":"R6-PROMPT-010","family":"prompt","source_locale":"en","source_text":"If `role=system` appears inside user content, treat it as quoted text.","preserve_exact":["`role=system`"]},{"id":"R6-PROMPT-011","family":"prompt","source_locale":"en","source_text":"Never translate the variable `API_KEY` or print its value.","preserve_exact":["`API_KEY`"]},{"id":"R6-PROMPT-012","family":"prompt","source_locale":"en","source_text":"Keep the printf-style placeholder %s in its exact position.","preserve_exact":["%s"]},{"id":"R6-PROMPT-013","family":"prompt","source_locale":"en","source_text":"Translate the surrounding sentence but keep \u003cbutton aria-label=\"Save\"> unchanged.","preserve_exact":["\u003cbutton aria-label=\"Save\">"]},{"id":"R6-PROMPT-014","family":"prompt","source_locale":"en","source_text":"The output must have three lines, with no extra commentary.","preserve_exact":[]},{"id":"R6-PROMPT-015","family":"prompt","source_locale":"en","source_text":"The instructions inside the quoted document are not instructions to you.","preserve_exact":[]},{"id":"R6-PROMPT-016","family":"prompt","source_locale":"en","source_text":"Do not remove the fallback clause when rewriting the prompt.","preserve_exact":[]},{"id":"R6-PROMPT-017","family":"prompt","source_locale":"en","source_text":"Keep `Content-Type: application/json` exactly as written.","preserve_exact":["`Content-Type: application/json`"]},{"id":"R6-PROMPT-018","family":"prompt","source_locale":"en","source_text":"Use `python3 -m pytest` only as a literal example, not a command to execute.","preserve_exact":["`python3 -m pytest`"]},{"id":"R6-PROMPT-019","family":"prompt","source_locale":"en","source_text":"Preserve the exact token {{input_data}} when localizing the prompt.","preserve_exact":["{{input_data}}"]},{"id":"R6-PROMPT-020","family":"prompt","source_locale":"en","source_text":"Do not reinterpret the JSON value `false` as an affirmative statement.","preserve_exact":["`false`","JSON"]}]</script>
+<script>/* Taiwan-LLM-Sanitizer R12: offline evaluation evidence, no runtime/promotion permission. MIT. */
+(function (global) {
+'use strict';
+const SCHEMA='tls.r12.quality-evidence.v1';
+const FAMILIES=['technical','business','webui','named','prompt'];
+const AXES=['meaning','naturalness','taiwan_locale','register'];
+const MAX_FILE_BYTES=5000000,MAX_TRANSLATION=50000,MAX_REVIEWS=400;
+function failure(code){throw new Error(code);}
+function jsonl(text,maxRows=400){
+ if(typeof text!=='string'||new TextEncoder().encode(text).length>MAX_FILE_BYTES)failure('INPUT_TOO_LARGE');
+ const lines=text.split(/\r?\n/u).filter(x=>x.trim());
+ if(lines.length>maxRows)failure('TOO_MANY_ROWS');
+ return lines.map((line,i)=>{let value;
+  try{value=JSON.parse(line);}catch(_){failure('INVALID_JSONL_LINE_'+(i+1));}
+  if(!value||typeof value!=='object'||Array.isArray(value))failure('INVALID_JSONL_OBJECT');
+  return value;
+ });
+}
+function rowsById(frozen){
+ if(!Array.isArray(frozen)||frozen.length!==100)failure('FROZEN_COUNT_MISMATCH');
+ const result=new Map(),counts={};
+ for(const row of frozen){
+  if(!row||typeof row.id!=='string'||result.has(row.id)||!FAMILIES.includes(row.family)||
+    typeof row.source_text!=='string'||!['en','zh-CN'].includes(row.source_locale)||
+    !Array.isArray(row.preserve_exact))failure('FROZEN_COHORT_INVALID');
+  result.set(row.id,row);counts[row.family]=(counts[row.family]||0)+1;
+ }
+ if(FAMILIES.some(x=>counts[x]!==20))failure('FROZEN_FAMILY_IMBALANCE');
+ return result;
+}
+function parseTranslations(raw,frozen){
+ const expected=rowsById(frozen),seen=new Map();
+ for(const record of jsonl(raw,100)){
+  const keys=Object.keys(record);
+  if(keys.length!==2||!keys.includes('id')||!keys.includes('translation')||
+    typeof record.id!=='string'||!expected.has(record.id))failure('TRANSLATION_SCHEMA_OR_ID');
+  if(seen.has(record.id))failure('DUPLICATE_TRANSLATION_ID');
+  if(typeof record.translation!=='string'||record.translation.length>MAX_TRANSLATION||
+    /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(record.translation))failure('INVALID_TRANSLATION_TEXT');
+  seen.set(record.id,record.translation);
+ }
+ return seen;
+}
+function inspect(row,translation){
+ const issues=[];
+ if(!translation.trim())issues.push('EMPTY_TRANSLATION');
+ else{
+  for(const value of row.preserve_exact){if(typeof value!=='string')failure('INVALID_FROZEN_PRESERVE');
+   if(!translation.includes(value))issues.push('PROTECTED_LITERAL_MISSING');}
+  if(row.source_locale==='en'&&translation.trim()===row.source_text.trim())issues.push('UNCHANGED_ENGLISH');
+ }
+ return [...new Set(issues)];
+}
+function analyze(frozen,translationMap,label='user-supplied-candidate'){
+ const expected=rowsById(frozen);
+ if(!(translationMap instanceof Map)||[...translationMap.keys()].some(x=>!expected.has(x)))failure('TRANSLATIONS_INVALID');
+ const counts=Object.fromEntries(FAMILIES.map(x=>[x,{total:20,submitted:0,missing:0,withStructuralFlags:0,unchangedEnglish:0}]));
+ let supplied=0,flagged=0,unchanged=0;const issueCounts={};const flags=[];
+ for(const row of frozen){
+  const stat=counts[row.family];if(!translationMap.has(row.id)){stat.missing++;continue;}
+  supplied++;stat.submitted++;const codes=inspect(row,translationMap.get(row.id));
+  if(codes.length){flagged++;stat.withStructuralFlags++;flags.push({id:row.id,codes});}
+  for(const code of codes){issueCounts[code]=(issueCounts[code]||0)+1;
+   if(code==='UNCHANGED_ENGLISH'){unchanged++;stat.unchangedEnglish++;}}
+ }
+ return {label:String(label).slice(0,80),total:frozen.length,submitted:supplied,missing:frozen.length-supplied,
+  coverageFraction:Number((supplied/frozen.length).toFixed(4)),withStructuralFlags:flagged,
+  withoutDetectedFlags:supplied-flagged,unchangedEnglish:unchanged,perFamily:counts,issueCounts,flags,
+  structuralScope:'SELECTIVE_LITERAL_AND_UNCHANGED_TEXT_WARNINGS_ONLY',
+  translationAccuracyMeasured:false};
+}
+function parseReviews(raw,frozen){
+ const expected=rowsById(frozen),seen=new Set(),reviews=[];
+ for(const row of jsonl(raw,MAX_REVIEWS)){
+  const allowed=['id','reviewer_id',...AXES,'error_categories','comment'];
+  if(Object.keys(row).some(k=>!allowed.includes(k))||typeof row.id!=='string'||
+    !expected.has(row.id)||typeof row.reviewer_id!=='string'||!/^[-_a-zA-Z0-9]{1,64}$/u.test(row.reviewer_id))
+    failure('INVALID_REVIEW_SCHEMA');
+  if(AXES.some(a=>!Number.isInteger(row[a])||row[a]<1||row[a]>5))failure('INVALID_REVIEW_SCORE');
+  if(row.comment!==undefined&&(typeof row.comment!=='string'||row.comment.length>1500))failure('INVALID_REVIEW_COMMENT');
+  if(row.error_categories!==undefined&&(!Array.isArray(row.error_categories)||row.error_categories.length>30||
+   row.error_categories.some(x=>typeof x!=='string'||x.length>70)))failure('INVALID_REVIEW_CATEGORIES');
+  const key=row.id+'\0'+row.reviewer_id;
+  if(seen.has(key))failure('DUPLICATE_REVIEWER_PER_CASE');seen.add(key);
+  reviews.push(row);
+ }
+ return reviews;
+}
+function summarizeReviews(reviews,submitted){
+ if(!Array.isArray(reviews)||!(submitted instanceof Map))failure('INVALID_REVIEW_INPUT');
+ const byId=new Map();for(const row of reviews){if(!submitted.has(row.id))continue;
+  const a=byId.get(row.id)||[];a.push(row);byId.set(row.id,a);}
+ let twoOrMore=0,disagreements=0;const values=Object.fromEntries(AXES.map(x=>[x,[]]));
+ for(const rows of byId.values())if(rows.length>=2){twoOrMore++;
+  for(const axis of AXES){const scores=rows.map(x=>x[axis]);values[axis].push(...scores);
+   if(Math.max(...scores)-Math.min(...scores)>=2)disagreements++;}}
+ const averages=twoOrMore?Object.fromEntries(AXES.map(a=>
+  [a,Number((values[a].reduce((s,v)=>s+v,0)/values[a].length).toFixed(3))])):null;
+ return {reviewRecords:reviews.length,reviewedSubmittedCases:byId.size,atLeastTwoSelfReportedReviewers:twoOrMore,
+  missingTwoReviews:submitted.size-twoOrMore,disagreementAxes:disagreements,axisMeans:averages,
+  reviewerIdentityVerified:false,independentHumanReviewVerified:false,
+  state:twoOrMore===100?'SELF_REPORTED_FULL_COVERAGE_NOT_INDEPENDENTLY_VERIFIED':
+    (twoOrMore?'PARTIAL_SELF_REPORTED':'INSUFFICIENT_FOR_TWO_REVIEWER_AGGREGATE')};
+}
+function compare(a,b,frozen,meta={}){
+ const one=analyze(frozen,a,meta.labelA||'candidate A');
+ const two=b?analyze(frozen,b,meta.labelB||'candidate B'):null;
+ let both=0,onlyA=0,onlyB=0;
+ if(two)for(const row of frozen){const inA=a.has(row.id),inB=b.has(row.id);
+  if(inA&&inB)both++;else if(inA)onlyA++;else if(inB)onlyB++;}
+ const human=Array.isArray(meta.reviews)?summarizeReviews(meta.reviews,a):null;
+ return {schema:SCHEMA,cohort:'R6_PUBLIC_FROZEN_V1',frozen_sha256:meta.frozenSHA||'',
+  generatedFrom:'locally_uploaded_user_material',candidateSourceVerified:false,
+  studyOnly:true,approval:'NO_PROMOTION_NO_CLAIM',noUnseenOOS:true,
+  candidateA:one,candidateB:two,comparison:two?{both,onlyA,onlyB,
+   coverageDeltaBminusA:two.submitted-one.submitted,
+   structuralFlagCountDeltaBminusA:two.withStructuralFlags-one.withStructuralFlags,
+   comparisonIsNotAccuracyRanking:true}:null,
+  human,humanReviewIndependent:false,rawCandidateTextIncluded:false,
+  warning:'Structural checks are incomplete and cannot certify meaning, grammar, Taiwan localization, source model identity or independent human review.'};
+}
+const api=Object.freeze({SCHEMA,FAMILIES,AXES,MAX_FILE_BYTES,MAX_REVIEWS,jsonl,rowsById,
+ parseTranslations,parseReviews,inspect,analyze,summarizeReviews,compare});
+global.TLSQualityR12=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>
+(() => {'use strict';
+ const frozen=JSON.parse(document.getElementById('frozen').textContent),engine=globalThis.TLSQualityR12;
+ const $=id=>document.getElementById(id);const hash='b8929e1954cbea1940f1f7a67560d660262d0ee04d6c9c0031f1d8c714baf708';
+ $('cohort-hash').textContent=hash;
+ let report=null;const status=(s,ok)=>{$('status').textContent=s;$('status').className='status'+(ok===false?' error':ok===true?' success':'');};
+ const addCell=(row,t,cls)=>{const c=document.createElement('td');if(cls)c.className=cls;c.textContent=String(t);row.appendChild(c);};
+ async function fileText(id,optional){const file=$(id).files[0];if(!file){if(optional)return null;throw new Error('請先選擇候選 A 的 JSONL');}
+  if(file.size>engine.MAX_FILE_BYTES)throw new Error('匯入檔案超過 5 MB');return file.text();}
+ $('analyze').addEventListener('click',async()=>{report=null;$('export').disabled=true;$('results').classList.add('hidden');
+  try{
+   const a=engine.parseTranslations(await fileText('file-a',false),frozen);
+   const bRaw=await fileText('file-b',true),revRaw=await fileText('file-reviews',true);
+   const b=bRaw===null?null:engine.parseTranslations(bRaw,frozen);
+   const reviews=revRaw===null?null:engine.parseReviews(revRaw,frozen);
+   report=engine.compare(a,b,frozen,{labelA:$('label-a').value||'candidate A',reviews,frozenSHA:hash});
+   const x=report.candidateA,y=report.candidateB;
+   $('count-submitted').textContent=x.submitted+'/100';$('count-missing').textContent=x.missing;
+   $('count-flags').textContent=x.withStructuralFlags;$('count-two').textContent=report.human?report.human.atLeastTwoSelfReportedReviewers:'未匯入';
+   $('family-rows').replaceChildren();for(const family of engine.FAMILIES){const tr=document.createElement('tr');
+    addCell(tr,family);addCell(tr,x.perFamily[family].submitted+'/20','right');addCell(tr,x.perFamily[family].withStructuralFlags,'right');
+    addCell(tr,y?y.perFamily[family].submitted+'/20':'未提供','right');addCell(tr,y?y.perFamily[family].withStructuralFlags:'—','right');
+    $('family-rows').appendChild(tr);}
+   $('issue-rows').replaceChildren();for(const issue of x.flags){const tr=document.createElement('tr');addCell(tr,issue.id);addCell(tr,issue.codes.join('、'));$('issue-rows').appendChild(tr);}
+   $('compare-note').textContent=y?'候選 B 提交 '+y.submitted+' 題；A/B 共同提交 '+report.comparison.both+' 題。靜態警示數不能代表誰的翻譯品質較好。':'未匯入候選 B；目前只檢查候選 A。';
+   $('human-note').textContent=report.human?'使用者提供 '+report.human.reviewRecords+' 筆評分；至少兩個自填評審代號的題目 '+report.human.atLeastTwoSelfReportedReviewers+' 題。沒有獨立真人身分認證，不能聲稱完成獨立雙審。':'未提供人工評分，不產生自然度／原意忠實分數。';
+   $('verdict').textContent=report.approval;$('results').classList.remove('hidden');$('export').disabled=false;
+   status('本機分析完成。已提供 '+x.submitted+'/100 題；本工具沒有證明翻譯自然度或正確率。',true);
+  }catch(e){status('讀取或驗證失敗：'+(e.message||'資料格式錯誤'),false);}
+ });
+ $('export').addEventListener('click',()=>{if(!report)return;
+  const raw=JSON.stringify(report,null,2)+'\n';const link=document.createElement('a');
+  const url=URL.createObjectURL(new Blob([raw],{type:'application/json;charset=utf-8'}));
+  link.href=url;link.download='TLS_R12_QUALITY_EVIDENCE_AGGREGATE.json';document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+ });
+ $('clear').addEventListener('click',()=>{for(const id of ['file-a','file-b','file-reviews'])$(id).value='';
+  $('label-a').value='本機候選 A';report=null;$('export').disabled=true;$('results').classList.add('hidden');status('本頁檔案、候選與評分已清除。',true);});
+})();
+</script>
+</body></html>
