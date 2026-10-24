@@ -31,15 +31,11 @@ def main():
     scoped=raw.split(start,1)[1].split('\n  ',1)[0]
     if '    needs: [verify, browser-integration]' not in raw.split(start,1)[1][:520]:
         raise ValueError('R12_RELEASE_MUST_REQUIRE_BOTH_GATES')
-    # Fail before expensive browsers if CI refers to renamed or missing test files.
-    for rel in re.findall(r'^\\s*- run: python (tests/[\\w.-]+\\.py)\\s*'bash','-n','-c',extract(raw)],capture_output=True,text=True,check=False)
-    if result.returncode:raise ValueError('R12_BASH_SYNTAX_ERROR '+result.stderr.strip())
-    print('R12_RELEASE_SCRIPT_BASH_N_PASS')
-
-if __name__=='__main__':main()
-, raw, re.MULTILINE):
-        if not (ROOT/rel).is_file():
-            raise ValueError('CI_TEST_FILE_MISSING: ' + rel)
+    # CI workflows can reference deleted/renamed tests; catch this in verify,
+    # before the expensive Chromium job is started.
+    for ref in re.findall(r'^\s*- run: python (tests/[\w.-]+\.py)\s*$',raw,re.MULTILINE):
+        if not (ROOT/ref).is_file():
+            raise ValueError('CI_TEST_FILE_MISSING: '+ref)
     result=subprocess.run(['bash','-n','-c',extract(raw)],capture_output=True,text=True,check=False)
     if result.returncode:raise ValueError('R12_BASH_SYNTAX_ERROR '+result.stderr.strip())
     print('R12_RELEASE_SCRIPT_BASH_N_PASS')
