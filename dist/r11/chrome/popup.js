@@ -94,6 +94,7 @@ async function initialize(){
       state.textContent=await status();
     }else {state.textContent='尚未啟用本站。按「啟用本站」才請求網站權限。';setPhase('paused');}
     view();
+    if(enabled)await revive11();
   }catch(e){tab=null;host.textContent='此頁不可使用';view(e.message);toggle.disabled=true;apply.disabled=true;}
 }
 toggle.addEventListener('click',()=>{
@@ -153,6 +154,18 @@ async function r11Send(kind,extra={}){
  const response=await chrome.tabs.sendMessage(tab.id,{kind,origin,...extra});
  if(!response?.ok)throw new Error(response?.reason||'頁面尚未載入，請重新整理');
  return response;
+}
+async function revive11(){
+ try{
+  if(!enabled||!tab)return;
+  const result=await r11Send('TLS_R11_STATUS');
+  if(!result.r11Active)return;
+  ui11.restore.disabled=false;ui11.exit.disabled=false;
+  ui11.apply.disabled=true;
+  state11(result.status?.phase==='APPLIED'?
+   '此分頁已有 R11 改寫內容。可按還原或退出並恢復原翻譯。':
+   '此分頁已有未完成的 R11 預覽。可還原或退出；若需重新選擇請重新掃描。');
+ }catch(_){/* a background tab can disconnect; no forced injection or permission */}
 }
 ui11.file.addEventListener('change',async()=>{
  const file=ui11.file.files?.[0];if(!file)return;

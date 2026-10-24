@@ -59,6 +59,29 @@ with sync_playwright() as pw:
     page.locator('#r11-apply').click()
     page.wait_for_function("document.querySelector('#r11-state').textContent.includes('已明確套用 1 處')")
     assert page.evaluate("window.__r11mock.sent.find(x=>x.kind==='TLS_R11_APPLY').selectedIds.length")==1
+    # Reopening the popup must retain access to restore/exit, even when prior checkbox UI is gone.
+    reopen=browser.new_page()
+    reopen.set_content(source)
+    reopen.evaluate('''() => {
+      const entries=['lexicon_pack.js','preferences.js','entities.js','engine.js','provider.js',
+      'web_adapter.js','progress_ui.js','user_terms_r9.js','site_glossary_r11.js','content.js'];
+      const site='https://doc.example.org',pattern='https://doc.example.org/*';
+      window.chrome={tabs:{query:async()=>[{id:3,url:site+'/guide'}],
+        sendMessage:async(id,msg)=>msg.kind==='TLS_R11_STATUS'?
+          {ok:true,r11Active:true,status:{phase:'APPLIED',applied:1}}:
+          {ok:true,status:{running:false,mode:'terms',converted:0,provider:{state:'READY'}}}},
+        scripting:{getRegisteredContentScripts:async()=>[{id:'fake',js:entries,matches:[pattern]}],
+          registerContentScripts:async()=>{},unregisterContentScripts:async()=>{},executeScript:async()=>{}},
+        storage:{local:{get:async key=>({[key]:null}),set:async()=>{}}},
+        permissions:{request:async()=>true,remove:async()=>true}}
+    }''')
+    for name in ('user_terms_r9.js','site_glossary_r11.js'):
+        reopen.add_script_tag(content=(ROOT/'src/core'/name).read_text(encoding='utf8'))
+    reopen.add_script_tag(content=(ROOT/'src/r11/chrome/popup.js').read_text(encoding='utf8'))
+    reopen.wait_for_function("document.querySelector('#r11-state').textContent.includes('已有 R11 改寫')",timeout=12000)
+    assert reopen.locator('#r11-restore').is_enabled()
+    assert reopen.locator('#r11-exit').is_enabled()
+    reopen.close()
     page.locator('#r11-restore').click()
     page.wait_for_function("document.querySelector('#r11-state').textContent.includes('已還原 1 處')")
     page.locator('#r11-exit').click()
