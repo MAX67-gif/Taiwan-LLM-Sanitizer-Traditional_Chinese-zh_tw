@@ -7,7 +7,10 @@ UI=(ROOT/'src/r13/reader_ui_r13.js').read_text('utf8')
 
 def run():
     with sync_playwright() as p:
-        browser=p.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox'])
+        # GitHub CI installs Playwright Chromium; the sandbox may use system Chromium.
+        chromium=Path(p.chromium.executable_path)
+        executable=str(chromium) if chromium.is_file() else '/usr/bin/chromium'
+        browser=p.chromium.launch(headless=True,executable_path=executable,args=['--no-sandbox'])
         page=browser.new_page(viewport={'width':1000,'height':900})
         requests=[]
         page.on('request',lambda r:requests.append(r.url))
