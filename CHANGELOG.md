@@ -1,5 +1,7 @@
 ## R11 · 2026-10-25 · 個人詞庫逐站人工預覽與套用（獨立 v0.5.0 Preview）
 
+- **發布流程修復**：主線第一次 R11 Release Job 因漏寫 bash `fi` 報 `unexpected end of file`；功能 verify 與 browser-integration 均 PASS。修補 workflow 結尾並在 verify 加入 `bash -n` 靜態自檢，避免正式合併後才發現發布指令語法錯。保留失敗 Run 做稽核，不竄改歷史。
+
 - 完整保留 R5 v0.4.0 正式舊版安裝包與 R6～R10 各研究/展示版本；另行提供 v0.5.0 Chrome/Tampermonkey 新安裝包。
 - 新增共用 `src/core/site_glossary_r11.js`，嚴格接收 R9 `tls.personal-glossary.v1`；只有使用者明確批准的位置可修改，沒有詞庫全域自動套用。
 - Chrome 本機 per-origin 詞庫與 Popup 流程、Tampermonkey 單檔同等控制、逐項預覽/勾選/還原及 R5 互斥暫停。
