@@ -17,7 +17,7 @@
 3. Chrome MV3 不含背景伺服器、`fetch`、XMLHttpRequest、WebSocket；只依站點權限注入。Tampermonkey 不用 `@connect`、`@require` 或遠端腳本。Chrome 瀏覽器自己的語言包下載不代表本擴充功能會向專案伺服器傳送文字。
 4. 翻譯為非同步：使用者清除或關閉後，晚到的翻譯結果必須作廢；僅在使用者再次主動執行才生成新候選。
 5. R13 面板只是**讀取原本頁面選取的文字**。若使用者同時啟動其他改寫工具（包括 R11），讀到的可能已非網站最初原文；因此建議需要原始對照時先暫停其他改寫工具。
-6. 沒有 TAIDE、其他雲端 Provider、語意等價證明、OCR、PDF、Canvas／WebGL、Chrome 商店審查或手機版完整支持；不可聲稱它們已經完成。
+6. 沒有外部雲端 Provider、語意等價證明、OCR、PDF、Canvas／WebGL、Chrome 商店審查或手機版完整支持；不可聲稱它們已經完成。
 
 ## `click` →「點選」的 R13 使用者明確決定
 

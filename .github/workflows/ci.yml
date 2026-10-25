@@ -17,6 +17,10 @@ jobs:
         run: |
           python tools/publication_guard.py --self-test
           python tools/publication_guard.py
+      - name: Verify multilingual README source sync, neutral positioning and PokéBonk canonical link
+        run: |
+          python tools/check_readme_i18n.py --self-test
+          python tools/check_readme_i18n.py
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
