@@ -19,5 +19,6 @@ def main():
   assert 'r7-poke'+'bonk-demo-release' not in ci
   assert (ROOT/'docs/WEBSITE_LOCALIZATION_GUIDE.md').is_file()
   assert (ROOT/'docs/THIRD_PARTY_RIGHTS_POLICY.md').is_file()
+  assert not (ROOT/'.github/workflows/retire-third-party-demo.yml').exists(), 'One-time deletion workflow must not remain installed'
   print('PUBLIC_THIRD_PARTY_DISTRIBUTION_GUARD_PASS',len(files),'files')
 if __name__=='__main__':main()
