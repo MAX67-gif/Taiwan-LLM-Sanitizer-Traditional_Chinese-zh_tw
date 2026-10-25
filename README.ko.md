@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
+<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -47,3 +47,8 @@
 [원본 권리를 침해하지 않는 9가지 예제](docs/USAGE_EXAMPLES.ko.md) (EX01–EX09): 대만 표현 선택, R13 수동 선택형 읽기, R11 사용자 용어집, R14 모델 능력 표시, R15 Markdown／JSON／Prompt 보호.
 
 **가상의 웹 게임 형태 페이지**에서 `Open settings`가 선택 가능한 일반 HTML 글자라면 사이트 이용 약관이 허용할 때 R13 또는 R11로 보조할 가능성이 있습니다. Canvas／WebGL에 직접 그려진 글자는 지원하지 않습니다. 실제 게임 호환성을 확인했다고 주장하지 않으며 특정 게임용 스크립트나 사전도 배포하지 않습니다. [일반 웹사이트 안내](docs/WEBSITE_LOCALIZATION_GUIDE.md).
+
+## R16｜오프라인 현지화 안전 워크벤치(독립 Shadow Preview)
+
+[R16 오프라인 도구](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [사용법 및 안전 제한](docs/R16_LOCALIZATION_STUDIO.md) · [직접 작성한 Markdown 예제](examples/r16/sample_readme.md). Markdown／JSON／Prompt의 보호 구간을 검사하고 후보 문구를 직접 입력한 뒤 차이를 검토하여 **새** 미리보기 파일로 저장합니다. 메타데이터 보고서는 원문을 포함하지 않지만 사용자가 내려받는 미리보기에는 직접 입력한 문구가 포함될 수 있습니다. **자동 번역, 클라우드 전송, 원본 덮어쓰기는 없습니다**. 모든 문법이나 번역 품질을 보증하지 않습니다.
+

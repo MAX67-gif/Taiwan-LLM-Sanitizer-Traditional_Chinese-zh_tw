@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
+<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -47,3 +47,8 @@
 [第三方版权、商标和隐私规范（繁体）](docs/THIRD_PARTY_RIGHTS_POLICY.md) · [安全政策](SECURITY.md) · [隐私政策](PRIVACY.md) · [贡献指南](CONTRIBUTING.md) · [功能清单](docs/FEATURES.md) · [路线图](docs/ROADMAP.md)。反馈请使用自己拥有合法分享权的原创测试样本，不要上传他人的聊天、凭证、游戏素材或商业文件。
 
 **翻译支持范围、第三方网站许可和法律责任取决于具体环境；此文不等于相关权利人的批准。**
+
+## R16｜离线本地化安全工作台（独立 Shadow Preview）
+
+[打开 R16 离线工具](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [功能与安全限制](docs/R16_LOCALIZATION_STUDIO.md) · [原创 Markdown 示例](examples/r16/sample_readme.md)。在本机检查 Markdown／JSON／Prompt 中受保护的代码、链接和变量，手动填写候选文字、查看差异后另存新文件。元数据报告不包含原文，但用户主动下载的预览文件会包含输入文本。**不自动翻译、不上传、不覆盖原文件**；不保证所有语法与翻译语义都正确。
+

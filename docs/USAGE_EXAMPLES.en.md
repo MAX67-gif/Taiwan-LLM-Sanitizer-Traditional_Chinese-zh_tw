@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:4cd4e8b0b12baf475441a86805317e163cf5de76fb8eeccf5c65d7dd3d036392 -->
+<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
 
 # Nine original examples of Taiwanese Chinese localization (offline concepts)
 
@@ -55,3 +55,7 @@ Keep the original if text is inside a picture, Canvas, unauthorized game dialogu
 ## Further reading
 
 [General website guide](WEBSITE_LOCALIZATION_GUIDE.md) · [Third-party rights and privacy](THIRD_PARTY_RIGHTS_POLICY.md) · [R15 limitations](R15_STRUCTURED_INTEGRITY.md). Product usefulness must be demonstrated with permissioned user tasks, not invented accuracy percentages.
+
+## R16 hands-on workflow with original examples
+
+Open the [R16 offline studio](../examples/TW_Localization_Safety_Studio_R16_20261026.html) and paste the [original Markdown sample](../examples/r16/sample_readme.md). Inspect protected spans, manually type a suggestion, and download a **new** preview. Code, placeholders, HTML comments and URLs remain protected. **No automatic translation or network upload.**

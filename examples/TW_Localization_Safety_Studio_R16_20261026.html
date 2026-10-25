@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Taiwan-LLM-Sanitizer R16｜離線在地化安全工作台</title>
+<style>
+:root{color-scheme:light;--bg:#f4f7fb;--paper:#fff;--ink:#1d2c42;--muted:#56687d;--line:#d6e0e9;--primary:#176c75;--primary-dark:#145961;--shade:#e8f5f4;--amber:#885619}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,'Microsoft JhengHei',sans-serif}
+header{background:linear-gradient(105deg,#12304a,#176c75);color:#fff;padding:28px 20px}header>div{max-width:1200px;margin:auto}
+.kicker{font-weight:800;font-size:.76rem;letter-spacing:.14em;color:#b7e5dd}h1{font-size:clamp(1.6rem,3.8vw,2.55rem);margin:5px 0 8px}header p{color:#dbeded;margin:0;max-width:860px}
+main{max-width:1200px;margin:22px auto 60px;padding:0 16px}section{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-bottom:16px;box-shadow:0 3px 12px #23374b08}
+h2{font-size:1.14rem;margin:0 0 13px}.sub{color:var(--muted);font-size:.91rem;margin:0 0 14px}
+.steps{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 15px}.steps span{display:block;border:1px solid var(--line);background:#fff;border-radius:40px;padding:5px 11px;color:#3a5868;font-size:.81rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid > *{min-width:0}
+label{display:block;font-size:.93rem;font-weight:700;margin-bottom:6px}select,textarea,input[type=text],input[type=file]{font:inherit;border:1px solid #a7bdc9;border-radius:10px;color:var(--ink);background:#fff;padding:11px;width:100%}select{max-width:280px}textarea{font:14px/1.6 ui-monospace,Consolas,monospace;min-height:220px;resize:vertical;white-space:pre;tab-size:2}
+button{cursor:pointer;padding:10px 16px;border-radius:9px;border:1px solid var(--primary);background:var(--primary);color:#fff;font:inherit;font-weight:700}button:hover{background:var(--primary-dark)}button.secondary{background:#fff;color:var(--primary)}button.secondary:hover{background:#edf8f7}button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #efa843;outline-offset:2}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.actions button{flex:0 0 auto}
+.info{background:var(--shade);padding:12px 14px;border-left:4px solid var(--primary);border-radius:8px;font-size:.9rem}.warning{background:#fff4e3;border-left:4px solid #bf7a27}
+.stats{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.stat{background:#f2f6fb;border-radius:9px;padding:9px 12px;font-size:.89rem}.stat b{font-variant-numeric:tabular-nums}
+#edit-list{display:grid;gap:10px;max-height:530px;overflow:auto}.edit-item{border:1px solid var(--line);padding:13px;border-radius:10px;background:#fcfdfe}
+.edit-item h3{font-size:.92rem;margin:0 0 7px}.edit-item .sample{display:block;white-space:pre-wrap;overflow-wrap:anywhere;color:#345166;max-height:80px;overflow:auto;margin-bottom:8px;font:13px/1.45 ui-monospace,Consolas,monospace}
+.edit-item input[type=checkbox]{width:auto;margin-right:6px}.edit-item input[type=text]{margin-top:8px}
+output{display:block;white-space:pre-wrap;overflow-wrap:anywhere}.error{color:#ab1c35;font-weight:700}.success{color:#106454;font-weight:700}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 ui-monospace,Consolas,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:9px;padding:15px;min-height:140px;max-height:360px;overflow:auto;margin:0}
+.meta{font-size:.82rem;color:var(--muted)}[hidden]{display:none!important}
+footer{max-width:1200px;margin:12px auto 50px;padding:0 18px;color:var(--muted);font-size:.85rem}
+@media(max-width:730px){.grid{grid-template-columns:1fr}main{margin-top:12px}section{padding:15px}.actions button{flex:1}}
+@media print{body{background:#fff}button,.actions,input[type=file]{display:none}section{box-shadow:none;break-inside:avoid}header{background:#fff;color:#000}header p,.kicker{color:#333}}
+</style>
+</head>
+<body>
+<header><div><div class="kicker">TAIWAN-LLM-SANITIZER · R16 / OFFLINE SHADOW</div>
+<h1>離線在地化安全工作台</h1><p>讀取自己有權使用的技術文字，檢查程式碼、JSON Key、網址與 Prompt 角色。只在你明確勾選後產生差異預覽；不呼叫雲端翻譯、不傳輸文件、不改寫原始檔案。</p></div></header>
+<main>
+<div class="steps" aria-label="操作流程"><span>01 讀取本機內容</span><span>02 掃描受保護片段</span><span>03 逐段人工填寫</span><span>04 預覽與另存新檔</span></div>
+<section id="load"><h2>01｜來源與格式</h2><p class="sub">貼上原文，或自行選取裝置上的文字檔案。檔案在瀏覽器本機讀取，不會上傳；來源不會被自動儲存到任何伺服器。</p>
+<div class="grid"><div><label for="format">來源格式（需明確選擇）</label><select id="format"><option value="markdown">Markdown</option><option value="json">JSON</option><option value="prompt">AI Prompt</option></select></div>
+<div><label for="file">選擇本機檔（選用，最大 1 MiB）</label><input id="file" type="file" accept=".md,.json,.txt,.prompt,text/plain,application/json"></div></div>
+<label for="source" style="margin-top:12px">原始內容</label><textarea id="source" spellcheck="false"># 操作指引
+請 click 選單並檢查選項。
+
+<!--
+下面保留原文
+-->
+請保留 `--output`、{{USERNAME}} 和 [文件](https://example.org/item_(v2)/intro)。</textarea>
+<div class="actions"><button id="inspect">掃描保護範圍</button><button id="sample" type="button" class="secondary">載入原創示例</button><button id="clear" type="button" class="secondary">清除全部內容</button></div>
+<div class="info warning">僅允許自己有權使用的文件。不要放入密碼、Token、私人聊天、受限第三方語料或其他人的個人資料。現階段無自動翻譯模型，AI 候選必須由使用者自行審查。</div></section>
+<section id="report" hidden><h2>02｜分析結果與受保護範圍</h2><output id="state" role="status"></output><output class="error" id="errors" role="alert"></output>
+<div class="stats"><div class="stat">保護段：<b id="protected-count">0</b></div><div class="stat">可人工審查段：<b id="editable-count">0</b></div><div class="stat">來源 SHA：<b id="source-hash">—</b></div></div>
+<p class="sub">掃描器採保守詞法規則，不是完整 CommonMark/HTML AST。未知或不平衡語法可以拒絕；所有分析段落的位置採 UTF-16 offset。此頁沒有品質或翻譯正確率認證。</p>
+<div class="actions"><button id="export-report" class="secondary">下載不含原文的安全檢查報告</button></div></section>
+<section id="manual" hidden><h2>03｜逐段人工審閱與候選文字</h2><p class="sub">只會顯示前 80 個可修改片段。未勾選一律保持原文，保護片段一律不得修改。超過顯示範圍的段落會維持不變。</p><div id="edit-list"></div>
+<div class="actions"><button id="make-preview">產生安全預覽</button><button id="discard-preview" type="button" class="secondary">撤銷預覽</button></div></section>
+<section id="preview-panel" hidden><h2>04｜原文與預覽對照</h2><output id="preview-state" role="status" class="success"></output><div class="grid"><div><h3>原始內容（不修改）</h3><pre id="original"></pre></div><div><h3>人工預覽結果（尚未套用）</h3><pre id="result"></pre></div></div>
+<div class="actions"><button id="download-preview">另存新的預覽檔</button><button id="close-preview" class="secondary">關閉對照</button></div>
+<div class="info">預覽只會下載到瀏覽器由使用者指定的下載位置；**不會開啟或覆寫任何原始檔案**。下載檔仍可能包含你自己輸入的敏感文字，請自行妥善保管。</div></section>
+</main><footer>R16 Preview · MIT original code · 僅限離線本機人工檢查 · 無網路傳輸／遠端模型／遙測 · 不保證語義正確或所有格式支援 · 文件及原始碼見 GitHub 正式專案。</footer>
+<script>/* Taiwan-LLM-Sanitizer R5 - MIT. Protected-name router; no network calls.
+ * EDIT lexicon/protected_names_r5.json, then run tools/generate_names_r5.py. */
+(function(global){
+'use strict';
+const VERSION='0.4.0';
+const REGISTRY=/* TLS_NAMES_BEGIN */[{"id":"openai-codex-for-open-source","name":"Codex for Open Source","aliases":["OpenAI Codex for Open Source","Codex for Open Source","Codex for OSS"],"bad":["開源法典","开源法典"],"note_zh_tw":"OpenAI 的 Codex 開源專案支持計畫（說明性譯法，非官方正式譯名）"},{"id":"openai-codex","name":"OpenAI Codex","aliases":["OpenAI Codex","Codex"],"bad":["開放人工智慧法典"],"note_zh_tw":"OpenAI 的程式協作產品名稱"},{"id":"anthropic-claude-code","name":"Claude Code","aliases":["Anthropic Claude Code","Claude Code"],"bad":[],"note_zh_tw":"Anthropic 的程式協作產品名稱"},{"id":"anthropic-claude","name":"Claude","aliases":["Anthropic Claude","Claude"],"bad":[],"note_zh_tw":"AI 產品名稱或專有姓名，保持原文"},{"id":"openai-chatgpt","name":"ChatGPT","aliases":["ChatGPT"],"bad":[],"note_zh_tw":"產品品牌"},{"id":"openai-organization","name":"OpenAI","aliases":["OpenAI"],"bad":[],"note_zh_tw":"品牌"},{"id":"anthropic-organization","name":"Anthropic","aliases":["Anthropic"],"bad":[],"note_zh_tw":"品牌"},{"id":"github-brand","name":"GitHub","aliases":["GitHub"],"bad":[],"note_zh_tw":"軟體服務商標"},{"id":"tampermonkey-brand","name":"Tampermonkey","aliases":["Tampermonkey"],"bad":[],"note_zh_tw":"使用者腳本管理工具"},{"id":"read-frog-brand","name":"Read Frog","aliases":["Read Frog"],"bad":[],"note_zh_tw":"產品專有名稱"},{"id":"pytorch-brand","name":"PyTorch","aliases":["PyTorch"],"bad":[],"note_zh_tw":"開源框架名稱"},{"id":"huggingface-brand","name":"Hugging Face","aliases":["Hugging Face"],"bad":[],"note_zh_tw":"AI 開源平台名稱"},{"id":"model-context-protocol","name":"Model Context Protocol","aliases":["Model Context Protocol"],"bad":[],"note_zh_tw":"通訊協定正式名稱"},{"id":"agent-skill","name":"Agent Skills","aliases":["Agent Skills"],"bad":[],"note_zh_tw":"AI Agent 標準用語，先保留正式英文名稱"},{"id":"manifest-v3","name":"Manifest V3","aliases":["Manifest V3"],"bad":[],"note_zh_tw":"Chrome 擴充功能規範名稱"},{"id":"nodejs-name","name":"Node.js","aliases":["Node.js"],"bad":[],"note_zh_tw":"執行環境名稱"}]/* TLS_NAMES_END */;
+const SORTED=REGISTRY.flatMap(r=>r.aliases.map(alias=>({alias,id:r.id,note:r.note_zh_tw,bad:r.bad||[]})))
+ .sort((a,b)=>b.alias.length-a.alias.length||a.alias.localeCompare(b.alias,'en'));
+function boundary(before,after){
+  return !/[A-Za-z0-9_]/u.test(before||'')&&!/[A-Za-z0-9_]/u.test(after||'');
+}
+function find(text) {
+  if(typeof text!=='string'||text.length>20000)return [];
+  const found=[];
+  for(let i=0;i<text.length;){
+    let hit=null;
+    for(const entry of SORTED) {
+      if(!text.startsWith(entry.alias,i))continue;
+      if(!boundary(text[i-1],text[i+entry.alias.length]))continue;
+      hit=entry;break;
+    }
+    if(!hit){i++;continue;}
+    found.push(Object.freeze({start:i,end:i+hit.alias.length,literal:hit.alias,id:hit.id}));
+    i+=hit.alias.length;
+  }
+  return found;
+}
+function mask(text){
+  if(typeof text!=='string')return {ok:false,reason:'TYPE'};
+  const spans=find(text);
+  let output='',cursor=0;
+  const replacements=[];
+  for(const span of spans){
+    const token='⟪TLSNAME'+replacements.length+'⟫';
+    if(text.includes(token))return {ok:false,reason:'COLLISION'};
+    output+=text.slice(cursor,span.start)+token;
+    replacements.push({...span,token});
+    cursor=span.end;
+  }
+  output+=text.slice(cursor);
+  return {ok:true,text:output,spans:replacements,restore(translated){
+    if(typeof translated!=='string')return {ok:false,reason:'BAD_RESULT'};
+    let last=-1;
+    for(const r of replacements){
+      if(translated.split(r.token).length!==2)return {ok:false,reason:'NAME_LOST_OR_DUPLICATED',id:r.id};
+      const index=translated.indexOf(r.token);
+      if(index<=last)return {ok:false,reason:'NAME_REORDERED',id:r.id};
+      last=index;
+    }
+    let value=translated;
+    for(const r of replacements)value=value.replace(r.token,r.literal);
+    if(/⟪TLSNAME\d+⟫/u.test(value))return {ok:false,reason:'UNEXPECTED_NAME_TOKEN'};
+    return {ok:true,text:value};
+  }};
+}
+function audit(source,target) {
+  const warnings=[];
+  if(typeof source!=='string'||typeof target!=='string')
+    return {ok:false,issues:[{code:'NON_STRING'}],protectedCount:0};
+  const matches=find(source);
+  for(const span of matches){
+    const row=REGISTRY.find(r=>r.id===span.id);
+    if(!target.includes(span.literal)){
+      warnings.push({code:'PROTECTED_NAME_CHANGED',id:span.id,name:span.literal});
+    }
+    if(row)for(const mistranslation of (row.bad||[])){
+      if(target.includes(mistranslation))
+        warnings.push({code:'KNOWN_MISTRANSLATION',id:span.id,badForm:mistranslation});
+    }
+  }
+  return {ok:warnings.length===0,issues:warnings,protectedCount:matches.length};
+}
+const api=Object.freeze({VERSION,ENTRIES:Object.freeze(REGISTRY),find,mask,audit});
+global.TLSNames=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>/* Taiwan-LLM-Sanitizer R15: offline, immutable typed protected segments (MIT).
+ * Preview only: no transport, no model, no filesystem changes, no approval.
+ * Positions are UTF-16 code-unit offsets, [start,end), not bytes or code points.
+ */
+(function(global){
+'use strict';
+const SCHEMA='tls.structured-segments.v1';
+const MAX_BYTES=1048576, MAX_SEGMENTS=20000,MAX_EDITS=120,MAX_REPLACEMENT=1000;
+const FIELDS=new Set(['text','description','summary','message','label','title','caption','help','tooltip','body','instructions','hint','placeholder_text']);
+const BLOCKED=new Set(['code','script','source_code','html','css','json','key','id','type','role','path','url','uri','href','src','schema','$schema','pattern','regex','model','locale','language','checksum','signature','token','api_key','password','secret','command','function','function_name','example_code']);
+const ROLE_RE=/^\s*(?:system|developer|assistant|user|tool|function|instruction|context)\s*[:：]/iu;
+const DANGEROUS=/(?:\{\{[^}\r\n]*\}\}|\$\{[^}\r\n]*\}|\$[A-Z][A-Z\d_]*|https?:\/\/|www\.|--[A-Za-z][\w-]*)/u;
+const NEWLINES=/\r\n|\r|\n/gu;
+function plainObject(x){return x!==null&&typeof x==='object'&&!Array.isArray(x)&&Object.getPrototypeOf(x)===Object.prototype;}
+function fail(code){throw new Error('TLS_R15_'+code);}
+function byteLength(text){return new TextEncoder().encode(text).length;}
+function pureSHA256(bytes){
+ // Offline SHA-256 for browser contexts where SubtleCrypto is absent (for example about:blank test fixtures).
+ const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+ 0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+ 0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+ 0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+ 0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+ 0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+ 0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+ 0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ const H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,
+                          0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+ const n=bytes.length,padLen=Math.ceil((n+9)/64)*64,b=new Uint8Array(padLen);
+ b.set(bytes);b[n]=0x80;
+ const view=new DataView(b.buffer);
+ view.setUint32(padLen-8,0,false);view.setUint32(padLen-4,(n*8)>>>0,false);
+ const r=(x,k)=>(x>>>k)|(x<<(32-k));
+ for(let block=0;block<padLen;block+=64){
+  const w=new Uint32Array(64);
+  for(let i=0;i<16;i++)w[i]=view.getUint32(block+i*4,false);
+  for(let i=16;i<64;i++){
+   const a=w[i-15],c=w[i-2];
+   const s0=r(a,7)^r(a,18)^(a>>>3),s1=r(c,17)^r(c,19)^(c>>>10);
+   w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+  }
+  let [a,c,d,e,f,g,h,j]=H;
+  for(let i=0;i<64;i++){
+   const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h);
+   const t1=(j+S1+ch+K[i]+w[i])>>>0;
+   const S0=r(a,2)^r(a,13)^r(a,22),maj=(a&c)^(a&d)^(c&d);
+   const t2=(S0+maj)>>>0;
+   j=h;h=g;g=f;f=(e+t1)>>>0;e=d;d=c;c=a;a=(t1+t2)>>>0;
+  }
+  const t=[a,c,d,e,f,g,h,j];for(let i=0;i<8;i++)H[i]=(H[i]+t[i])>>>0;
+ }
+ return Array.from(H,x=>x.toString(16).padStart(8,'0')).join('');
+}
+async function hash(text){
+ const data=new TextEncoder().encode(text);
+ if(global.crypto&&global.crypto.subtle){const result=new Uint8Array(await global.crypto.subtle.digest('SHA-256',data));return Array.from(result,x=>x.toString(16).padStart(2,'0')).join('');}
+ if(typeof require==='function')return require('node:crypto').createHash('sha256').update(data).digest('hex');
+ return pureSHA256(data);
+}
+function checkInput(source,format){
+ if(typeof source!=='string'||!['markdown','json','prompt'].includes(format))fail('INVALID_FORMAT_OR_TEXT');
+ // TextEncoder normalizes unpaired UTF-16 surrogates to the replacement character.
+ // Reject those inputs to prevent non-identical sources sharing the same SHA256.
+ for(let i=0;i<source.length;i++){
+  const n=source.charCodeAt(i);
+  if(n>=0xD800&&n<=0xDBFF){const next=source.charCodeAt(++i);if(!(next>=0xDC00&&next<=0xDFFF))fail('UNPAIRED_SURROGATE');}
+  else if(n>=0xDC00&&n<=0xDFFF)fail('UNPAIRED_SURROGATE');
+ }
+ const length=byteLength(source);if(length>MAX_BYTES)fail('INPUT_TOO_LARGE');
+ if(source.includes('\0'))fail('INPUT_BINARY_REJECTED');
+ return length;
+}
+function buildCollector(source){
+ const rows=[];let cursor=0;
+ function add(start,end,type,policy,reason){
+  if(!Number.isInteger(start)||!Number.isInteger(end)||start<cursor||end>source.length||start>end)fail('INVALID_SEGMENT_RANGE');
+  if(start>cursor)push(cursor,start,'structural','PROTECT','SYNTAX_OR_WHITESPACE');
+  if(end>start)push(start,end,type,policy,reason);
+  cursor=end;
+ }
+ function push(start,end,type,policy,reason){
+  const prev=rows[rows.length-1];
+  if(prev&&prev.end===start&&prev.type===type&&prev.policy===policy&&prev.reason===reason)prev.end=end;
+  else rows.push({start,end,type,policy,reason});
+  if(rows.length>MAX_SEGMENTS)fail('TOO_MANY_SEGMENTS');
+ }
+ function finish(){
+  if(cursor<source.length)push(cursor,source.length,'structural','PROTECT','SYNTAX_OR_WHITESPACE');
+  return rows.map((r,i)=>({...r,id:'s'+String(i).padStart(5,'0')}));
+ }
+ return {add,finish};
+}
+function names(){
+ let api=global.TLSNames;
+ if(!api&&typeof require==='function'){try{api=require('./entities.js');}catch(_){} }
+ return api&&typeof api.find==='function'?api:null;
+}
+// R15.1 conservative token scanner.  This is NOT a complete CommonMark parser.
+// Balanced link syntax is treated as one protected atom: unmatched/multiline links
+// are rejected instead of exposing the tail of a destination as editable prose.
+function markdownLinkSpan(source,start,end){
+ let i=start,depth=0;
+ if(source[i]==='!')i++;
+ if(source[i]!=='[')return null;
+ for(;i<end;i++){
+  const c=source[i];
+  if(c==='\\'){if(i+1>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i++;continue;}
+  if(c==='['){if(++depth>64)fail('LINK_BRACKET_DEPTH');}
+  else if(c===']'){
+   if(--depth===0){i++;break;}
+   if(depth<0)fail('UNBALANCED_MARKDOWN_LINK');
+  }
+ }
+ if(depth!==0)fail('UNBALANCED_MARKDOWN_LINK');
+ // Protect shortcut references as one conservative atom.  A GFM checkbox is
+ // handled as a separate list marker before entering this tokenizer.
+ if(source[i]==='['){
+  let level=1;i++;
+  while(i<end&&level){
+   const c=source[i++];
+   if(c==='\\'){if(i>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i++;continue;}
+   if(c==='['){if(++level>64)fail('LINK_REFERENCE_DEPTH');}
+   else if(c===']')level--;
+  }
+  if(level)fail('UNBALANCED_MARKDOWN_REFERENCE');
+ }
+ if(source[i]!=='(')return {length:i-start,type:'reference_candidate'};
+ i++;let parens=1,angle=false,quote=null;
+ while(i<end){
+  const c=source[i];
+  if(c==='\\'){if(i+1>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i+=2;continue;}
+  if(angle){if(c==='>')angle=false;i++;continue;}
+  if(quote){if(c===quote)quote=null;i++;continue;}
+  // Angle form is allowed to contain otherwise unbalanced parentheses.
+  if(c==='<'){angle=true;i++;continue;}
+  // Titles only begin following a whitespace separator, never inside URLs.
+  if((c==='"'||c==="'")&&/\s/u.test(source[i-1]||'')){quote=c;i++;continue;}
+  if(c==='('){if(++parens>64)fail('LINK_DESTINATION_DEPTH');}
+  else if(c===')'){
+   if(--parens===0){i++;return {length:i-start,type:'link'};}
+  }
+  i++;
+ }
+ fail('UNCLOSED_LINK_DESTINATION');
+}
+function scanPlain(source,start,end,c,kind){
+ if(end<=start)return;
+ const list=names()?.find(source.slice(start,end))||[];
+ const named=new Map(list.map(x=>[start+x.start,start+x.end]));
+ let i=start;
+ while(i<end){
+  if(named.has(i)){const bound=named.get(i);if(bound<=end){c.add(i,bound,'named_entity','PROTECT','PROTECTED_PRODUCT_NAME');i=bound;continue;}}
+  const tail=source.slice(i,end);let match=null,typ='literal',why='PROTECTED_MARKER';
+  if(tail.startsWith('{{'))match=tail.match(/^\{\{[^}\r\n]{0,160}\}\}/u);
+  if(!match&&tail.startsWith('${'))match=tail.match(/^\$\{[^}\r\n]{0,160}\}/u);
+  if(!match&&tail.startsWith('$'))match=tail.match(/^\$[A-Z][A-Z\d_]*/u);
+  if(match){typ='placeholder';why='TEMPLATE_VARIABLE';}
+  if(!match&&tail.startsWith('--')){match=tail.match(/^--[A-Za-z][\w-]*/u);typ='cli_flag';why='COMMAND_OPTION';}
+  if(!match&&(tail.startsWith('https://')||tail.startsWith('http://')||tail.startsWith('www.'))){match=tail.match(/^(?:https?:\/\/|www\.)[^\s\[\]<>"'`|]+/u);typ='url';why='URL_PRESERVED';}
+  if(!match&&(tail.startsWith('{{')||tail.startsWith('${')))fail('UNCLOSED_TEMPLATE');
+  if(!match&&(kind==='markdown'||kind==='prompt')&&tail[0]==='`'){
+   const run=tail.match(/^`+/u)[0],from=i+run.length;
+   const close=source.indexOf(run,from);
+   if(close<0||close+run.length>end)fail('UNCLOSED_INLINE_CODE');
+   match=[source.slice(i,close+run.length)];typ='inline_code';why='INLINE_CODE';
+  }
+  if(!match&&kind==='markdown'&&(tail.startsWith('![')||tail[0]==='[')){
+   const atom=markdownLinkSpan(source,i,end);
+   if(atom){match=[source.slice(i,i+atom.length)];typ=atom.type;why='LINK_OR_REFERENCE_IMMUTABLE';}
+  }
+  if(!match&&kind==='markdown'&&tail[0]==='<'){
+   match=tail.match(/^<[^>\r\n]*>/u);
+   if(!match)fail('UNCLOSED_HTML_OR_AUTOLINK');typ='html';why='HTML_OR_AUTOLINK';
+  }
+  if(!match&&kind==='markdown'&&tail[0]==='\\'){
+   match=tail.slice(0,2)?[tail.slice(0,2)]:null;typ='escape';why='MARKDOWN_ESCAPE';
+  }
+  if(!match&&(tail[0]==='|'&&kind==='markdown')){match=['|'];typ='table_pipe';why='TABLE_STRUCTURE';}
+  if(!match&&kind==='markdown'&&/^[*_~#\[\]>]/u.test(tail)){match=[tail[0]];typ='markdown_token';why='MARKDOWN_MARKER';}
+  if(match){c.add(i,i+match[0].length,typ,'PROTECT',why);i+=match[0].length;continue;}
+  const nextSpecial=(pos)=>{const s=source[pos];return s==='`'||s==='{'||s==='$'||s==='-'||s==='h'||s==='w'||(kind==='markdown'&&'![<\\|*_~#]>'.includes(s))||named.has(pos);};
+  let j=i+1;
+  while(j<end&&!nextSpecial(j))j++;
+  const chunk=source.slice(i,j);
+  if(!chunk.trim())c.add(i,j,'whitespace','PROTECT','WHITESPACE');
+  else{
+   const first=chunk.search(/\S/u),last=chunk.search(/\s*$/u);
+   if(first>0)c.add(i,i+first,'whitespace','PROTECT','WHITESPACE');
+   const actualStart=i+Math.max(0,first),actualEnd=i+last;
+   if(actualEnd>actualStart)c.add(actualStart,actualEnd,'prose','EDITABLE','LOCAL_TEXT_PREVIEW_ONLY');
+   if(actualEnd<j)c.add(actualEnd,j,'whitespace','PROTECT','WHITESPACE');
+  }
+  i=j;
+ }
+}
+function linesOf(source){
+ const lines=[],re=/(?:[^\r\n]*)(?:\r\n|\r|\n|$)/gu;let m;
+ while((m=re.exec(source))!==null){if(m[0]==='')break;lines.push({start:m.index,text:m[0],end:m.index+m[0].length});}
+ return lines;
+}
+// Markdown blockquote/list markers are only syntactic containers.  Consume them
+// for state detection without changing UTF-16 offsets or rebuilding the source.
+function markdownContainerPrefix(text){
+ let pos=0,steps=0,m;
+ while(steps++<32&&(m=text.slice(pos).match(/^ {0,3}(?:>[ \t]?|[-+*][ \t]+|\d{1,9}[.)][ \t]+)/u))){pos+=m[0].length;}
+ return pos;
+}
+const RAW_HTML_TAGS=/^(?:address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|nav|noframes|ol|optgroup|option|output|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul)$/iu;
+function htmlBlockStart(text){
+ const t=text.trimStart();
+ if(t.startsWith('<!--'))return {ending:'-->',kind:'HTML_COMMENT'};
+ if(t.startsWith('<![CDATA['))return {ending:']]>',kind:'HTML_CDATA'};
+ if(t.startsWith('<?'))return {ending:'?>',kind:'HTML_PROCESSING_INSTRUCTION'};
+ if(/^<![A-Z]/u.test(t))return {ending:'>',kind:'HTML_DECLARATION'};
+ const raw=t.match(/^<(script|pre|style|textarea)(?=[\s>/])/iu);
+ if(raw){if(!t.includes('>'))fail('AMBIGUOUS_HTML_OPEN_TAG');return {closingTag:raw[1],kind:'RAW_HTML_ELEMENT'};}
+ const block=t.match(/^<\/?([A-Za-z][\w-]*)(?=[\s>/])/u);
+ if(block){
+  // Unsupported or incomplete HTML stays protected, never inferred editable.
+  if(!t.includes('>'))fail('AMBIGUOUS_HTML_OPEN_TAG');
+  const name=block[1];
+  if(RAW_HTML_TAGS.test(name)||/^<\/?[A-Za-z][^>]*>\s*$/u.test(t)){
+   const closing=/^<\//u.test(t);
+   const selfClosing=/\/\s*>\s*$/u.test(t)||/^(?:hr|link|meta|input|br|img)$/iu.test(name);
+   return {closingTag:closing||selfClosing?null:name,untilBlank:closing||selfClosing,kind:'RAW_HTML_BLOCK'};
+  }
+ }
+ return null;
+}
+function htmlBlockComplete(html,text){
+ if(html.ending)return text.includes(html.ending);
+ if(html.closingTag){
+  const re=new RegExp('</'+html.closingTag+'\\s*>','iu');
+  return re.test(text);
+ }
+ return html.untilBlank&&text.trim()==='';
+}
+function scanDocument(source,format,c){
+ const lines=linesOf(source);let fence=null,front=false,first=true,html=null;
+ for(const row of lines){
+  const {start,end}=row,line=row.text;
+  const raw=line.replace(/(?:\r\n|\r|\n)$/u,''),contentEnd=start+raw.length;
+  if(first){first=false;if(raw.startsWith('\ufeff'))c.add(start,start+1,'bom','PROTECT','BYTE_ORDER_MARK');}
+  const s=start+(start===0&&raw.startsWith('\ufeff')?1:0);
+  const text=source.slice(s,contentEnd);
+  const container=format==='markdown'?markdownContainerPrefix(text):0;
+  const content=text.slice(container),t=s+container;
+  let reason=null,match;
+  if(html){reason=html.kind;if(htmlBlockComplete(html,content))html=null;}
+  else if(front){reason='FRONTMATTER';if(/^(?:---|\.\.\.)\s*$/u.test(content))front=false;}
+  else if(fence){reason='CODE_FENCE_BODY';match=content.match(/^ {0,3}(`{3,}|~{3,})(?:\s*)$/u);if(match&&match[1][0]===fence.char&&match[1].length>=fence.size)fence=null;}
+  else if((format==='markdown'||format==='prompt')&&(match=content.match(/^ {0,3}(`{3,}|~{3,})/u))){fence={char:match[1][0],size:match[1].length};reason='CODE_FENCE';}
+  else if(format==='markdown'&&start===0&&/^(?:---|\+\+\+)\s*$/u.test(content)){front=true;reason='FRONTMATTER';}
+  else if(format==='markdown'&&(html=htmlBlockStart(content))){reason=html.kind;if(htmlBlockComplete(html,content))html=null;}
+  else if(format==='markdown'&&(/^\s{4,}\S/u.test(content)||/^\t/u.test(content)))reason='INDENTED_CODE';
+  else if(format==='markdown'&&(/^\s{0,3}#{1,6}\s/u.test(content)||/^\s{0,3}\[[^\]]+\]:/u.test(content)))reason='HEADING_OR_REFERENCE';
+  else if(format==='markdown'&&(/^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$/u.test(content)||/^\s*\|?\s*:?-{3,}/u.test(content)))reason='THEMATIC_OR_TABLE_RULE';
+  else if(format==='prompt'&&(ROLE_RE.test(content)||/^\s*<\/?(?:system|developer|assistant|user|tool|function)\b/iu.test(content)))reason='PROMPT_ROLE_BOUNDARY';
+  if(reason)c.add(s,contentEnd,'block','PROTECT',reason);
+  else{
+   if(container)c.add(s,t,'markdown_token','PROTECT','BLOCK_PREFIX');
+   let local=content,localStart=t;
+   if(format==='markdown'){
+    const task=local.match(/^\[(?: |x|X)\](?=[ \t]|$)/u);
+    if(task){c.add(localStart,localStart+task[0].length,'gfm_task_marker','PROTECT','GFM_CHECKBOX');localStart+=task[0].length;local=content.slice(task[0].length);}
+   }
+   scanPlain(source,localStart,contentEnd,c,format);
+  }
+  if(contentEnd<end)c.add(contentEnd,end,'newline','PROTECT','LINE_ENDING');
+ }
+ if(fence)fail('UNCLOSED_CODE_FENCE');
+ if(front)fail('UNCLOSED_FRONTMATTER');
+ // Unclosed HTML remains entirely protected until EOF (conservative by design).
+}
+function scanJSON(source,c){
+ try{JSON.parse(source.replace(/^\ufeff/u,''));}catch(_){fail('INVALID_JSON');}
+ const stack=[];let i=0;
+ while(i<source.length){
+  const ch=source[i],top=stack[stack.length-1];
+  if(ch==='"'){
+   const start=i++;let escaped=false;
+   while(i<source.length){const v=source[i++];if(escaped){escaped=false;continue}if(v==='\\'){escaped=true;continue}if(v==='"')break;}
+   if(source[i-1]!=='"')fail('INVALID_JSON_STRING');
+   const end=i,inner=source.slice(start+1,end-1),decoded=JSON.parse(source.slice(start,end));
+   let k=i;while(/\s/u.test(source[k]||'')&&k<source.length)k++;
+   const isKey=source[k]===':';
+   if(isKey){
+    if(!top||top.type!=='object')fail('INVALID_JSON_KEY_SCOPE');
+    if(['__proto__','prototype','constructor'].includes(decoded))fail('DANGEROUS_JSON_KEY');
+    if(top.keys.has(decoded))fail('DUPLICATE_JSON_KEY');
+    top.keys.add(decoded);top.key=decoded;
+   }
+   const safe=!isKey&&top?.type==='object'&&!top.unsafe&&FIELDS.has(top.key)&&!BLOCKED.has(top.key)
+    &&!inner.includes('\\')&&!DANGEROUS.test(decoded)&&!/[<>`\[\]{}]/u.test(decoded)&&decoded.trim().length>0;
+   c.add(start,start+1,'json_quote','PROTECT','JSON_SYNTAX');
+   c.add(start+1,end-1,isKey?'json_key':safe?'json_string_value':'json_value',safe?'EDITABLE':'PROTECT',isKey?'JSON_KEY_IMMUTABLE':safe?'JSON_VALUE_PREVIEW_ONLY':'UNKNOWN_OR_ESCAPED_VALUE');
+   c.add(end-1,end,'json_quote','PROTECT','JSON_SYNTAX');
+   continue;
+  }
+  if(ch==='{'||ch==='['){
+   const parent=top;const unsafe=Boolean(parent?.unsafe||parent?.type==='object'&&BLOCKED.has(parent.key));
+   stack.push({type:ch==='{'?'object':'array',key:null,unsafe,keys:new Set()});
+  }else if(ch==='}'||ch===']')stack.pop();
+  else if(ch===','&&top?.type==='object')top.key=null;
+  i++;
+ }
+}
+function rejected(source,format,bytes,sha,err){
+ return {schema:SCHEMA,format,input_sha256:sha,offset_unit:'utf16',input_bytes:bytes,
+  segments:source.length?[{id:'s00000',start:0,end:source.length,type:'unsafe_document',policy:'PROTECT',reason:err}]:[],
+  protected_count:source.length?1:0,mutable_count:0,validation:{status:'REJECTED',errors:[err]},approval:'NONE'};
+}
+async function analyze(source,format){
+ const bytes=checkInput(source,format),sha=await hash(source),c=buildCollector(source);
+ try{
+  if(format==='json')scanJSON(source,c);else scanDocument(source,format,c);
+  const segments=c.finish();const count=segments.filter(s=>s.policy==='EDITABLE').length;
+  return {schema:SCHEMA,format,input_sha256:sha,offset_unit:'utf16',input_bytes:bytes,
+   segments,protected_count:segments.length-count,mutable_count:count,validation:{status:'OK',errors:[]},approval:'NONE'};
+ }catch(error){const code=String(error?.message||'').startsWith('TLS_R15_')?error.message:'TLS_R15_INVALID_DOCUMENT';return rejected(source,format,bytes,sha,code);}
+}
+function safeReplacement(s,format){return typeof s==='string'&&s.length<=MAX_REPLACEMENT&&s.trim().length>0
+ &&!/[\x00-\x1f\x7f<>`\[\]{}]/u.test(s)&&!DANGEROUS.test(s)
+ &&!/[\u202a-\u202e\u2066-\u2069\u200e\u200f]/u.test(s)
+ &&!(format==='markdown'&&/[\*_~|\\]/u.test(s))
+ &&!/^\s*(?:#{1,6}\s|[-*_]{3,}\s*$|>\s|(?:[-+*]|\d+[.)])\s)/u.test(s);
+}
+function structuralMatch(a,b){
+ if(Array.isArray(a)||Array.isArray(b))return Array.isArray(a)&&Array.isArray(b)&&a.length===b.length&&a.every((x,i)=>structuralMatch(x,b[i]));
+ if(a&&b&&typeof a==='object'&&typeof b==='object'){
+  const x=Object.keys(a),y=Object.keys(b);
+  return x.length===y.length&&x.every((k,i)=>k===y[i]&&structuralMatch(a[k],b[k]));
+ }
+ return typeof a===typeof b;
+}
+async function preview(source,analysis,edits){
+ if(typeof source!=='string'||!plainObject(analysis)||analysis.schema!==SCHEMA||analysis.approval!=='NONE'
+   ||analysis.validation?.status!=='OK'||analysis.offset_unit!=='utf16')fail('PREVIEW_INVALID_ANALYSIS');
+ if(await hash(source)!==analysis.input_sha256)fail('PREVIEW_SOURCE_HASH_MISMATCH');
+ const check=await analyze(source,analysis.format);
+ if(check.validation.status!=='OK'||JSON.stringify(check.segments)!==JSON.stringify(analysis.segments))fail('PREVIEW_ANALYSIS_TAMPERED');
+ if(!Array.isArray(edits)||edits.length>MAX_EDITS)fail('TOO_MANY_EDITS');
+ const mutable=new Map(analysis.segments.filter(x=>x.policy==='EDITABLE').map(x=>[x.id,x]));
+ const seen=new Set();let result='',pos=0,diff=[];
+ for(const edit of [...edits].sort((x,y)=>(mutable.get(x.id)?.start??Infinity)-(mutable.get(y.id)?.start??Infinity))){
+  if(!plainObject(edit)||Object.keys(edit).some(k=>!['id','replacement'].includes(k))||!mutable.has(edit.id)||seen.has(edit.id))fail('PREVIEW_INVALID_TARGET');
+  seen.add(edit.id);const segment=mutable.get(edit.id);
+  if(!safeReplacement(edit.replacement,analysis.format))fail('PREVIEW_UNSAFE_REPLACEMENT');
+  const old=source.slice(segment.start,segment.end);
+  let replacement=edit.replacement;
+  if(analysis.format==='json')replacement=JSON.stringify(replacement).slice(1,-1);
+  if(replacement===old)continue;
+  result+=source.slice(pos,segment.start)+replacement;pos=segment.end;
+  diff.push({id:edit.id,start:segment.start,end:segment.end,type:segment.type,originalLength:old.length,newLength:replacement.length});
+ }
+ result+=source.slice(pos);
+ if(analysis.format==='json'){
+  let before,after;try{before=JSON.parse(source.replace(/^\ufeff/u,''));after=JSON.parse(result.replace(/^\ufeff/u,''));}catch(_){fail('PREVIEW_JSON_INVALID');}
+  if(!structuralMatch(before,after))fail('PREVIEW_JSON_STRUCTURE_CHANGED');
+ }
+ if(byteLength(result)>MAX_BYTES)fail('PREVIEW_SIZE_LIMIT');
+ return {schema:'tls.structured-preview.v1',status:'SAFE_PREVIEW_NOT_APPLIED',input_sha256:analysis.input_sha256,
+  preview_sha256:await hash(result),approval:'NONE',change_count:diff.length,changes:diff,preview_text:result};
+}
+function publicReport(analysis){
+ if(!plainObject(analysis)||analysis.schema!==SCHEMA)fail('INVALID_REPORT');
+ const {schema,format,input_sha256,offset_unit,input_bytes,protected_count,mutable_count,segments,validation,approval}=analysis;
+ return {schema,format,input_sha256,offset_unit,input_bytes,protected_count,mutable_count,segments,validation,approval,
+  contains_original_text:false,contains_replacement_text:false,transport:'NONE'};
+}
+const API=Object.freeze({SCHEMA,MAX_BYTES,MAX_EDITS,analyze,preview,publicReport});
+global.TLSProtectedR15=API;
+if(typeof module!=='undefined'&&module.exports)module.exports=API;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>/* TLS R16 Offline Localization Safety Studio — original MIT shadow wrapper.
+ * User-supplied data never leaves in-memory session; no provider or transport.
+ * All preview edits re-enter the locked R15.1 validation contract.
+ */
+(function(global){'use strict';
+const SCHEMA='tls.local-workbench.v1';
+const CORE=global.TLSProtectedR15||(typeof require==='function'?require('./protected_segments_r15.js'):null);
+if(!CORE||typeof CORE.analyze!=='function'||typeof CORE.preview!=='function')throw Error('TLS_R16_MISSING_R151_CORE');
+const formats=new Set(['markdown','json','prompt']);
+const isObject=x=>x!==null&&typeof x==='object'&&!Array.isArray(x)&&Object.getPrototypeOf(x)===Object.prototype;
+const cleanReason=x=>String(x||'INVALID').replace(/[^A-Z0-9_]/g,'').slice(0,88)||'INVALID';
+const fail=code=>{throw Error('TLS_R16_'+code);};
+let currentIndex=0;
+function openSession({source,format}={}){
+ let original=typeof source==='string'?source:null;
+ const kind=formats.has(format)?format:'UNSUPPORTED';
+ let generation=0,closed=false,analysis=null,rejected=[];
+ const id=++currentIndex;
+ const alive=epoch=>{if(closed||epoch!==generation)fail('SESSION_CANCELLED');};
+ const freshReport=(a,issues,previewSha=null,changes=0)=>({
+   schema:SCHEMA,format:kind,source_sha256:a?.input_sha256||null,
+   source_bytes:a?.input_bytes??null,offset_unit:'utf16',
+   protected_spans:(a?.segments||[]).filter(s=>s.policy==='PROTECT').map(s=>({id:s.id,start:s.start,end:s.end,type:s.type,reason:s.reason})),
+   safe_edit_ids:(a?.segments||[]).filter(s=>s.policy==='EDITABLE').map(s=>s.id),
+   validation_status:issues.length?'REJECTED':'OK',reject_reasons:issues.slice(),
+   preview_output_sha256:previewSha,preview_change_count:changes,network_requested:false,
+   approval:'NONE',contains_original_text:false,contains_replacement_text:false,
+   session_id:`local-${id}`,transport:'NONE'
+ });
+ async function inspect(){
+   const rev=generation;alive(rev);
+   if(kind==='UNSUPPORTED'||original===null||!original.trim()){
+     rejected=[kind==='UNSUPPORTED'?'INVALID_FORMAT':!original?'EMPTY_SOURCE':'EMPTY_SOURCE'];
+     analysis=null;return freshReport(null,rejected);
+   }
+   try{
+     const a=await CORE.analyze(original,kind);alive(rev);
+     analysis=a;
+     rejected=a.validation.status==='OK'?[]:a.validation.errors.map(cleanReason);
+     return freshReport(analysis,rejected);
+   }catch(e){alive(rev);analysis=null;rejected=[cleanReason(e.message)];return freshReport(null,rejected);}
+ }
+ async function prepare(plan){
+   const rev=generation;alive(rev);
+   if(!analysis||rejected.length||analysis.validation.status!=='OK')fail('INSPECTION_REQUIRED');
+   if(!isObject(plan)||Object.keys(plan).some(k=>!['schema','input_sha256','edits'].includes(k))||
+      plan.schema!=='tls.structured-edits.v1'||plan.input_sha256!==analysis.input_sha256||!Array.isArray(plan.edits))fail('INVALID_EDIT_PLAN');
+   // CORE.preview rechecks SHA, editable ranges and structural consistency, and returns only a preview.
+   const result=await CORE.preview(original,analysis,plan.edits);alive(rev);
+   if(result.approval!=='NONE'||result.status!=='SAFE_PREVIEW_NOT_APPLIED')fail('UNSAFE_CORE_RESULT');
+   return {schema:'tls.local-workbench-preview.v1',status:'SAFE_PREVIEW_NOT_APPLIED',
+     preview_text:result.preview_text,report:freshReport(analysis,[],result.preview_sha256,result.change_count),
+     changes:result.changes.map(c=>({id:c.id,start:c.start,end:c.end,type:c.type,originalLength:c.originalLength,newLength:c.newLength}))};
+ }
+ function revoke(){++generation;closed=true;analysis=null;original=null;rejected=['SESSION_REVOKED'];return Object.freeze({status:'REVOKED',session_id:`local-${id}`,approval:'NONE'});}
+ function changesAllowed(){return !closed&&analysis?.validation.status==='OK'?analysis.segments.filter(s=>s.policy==='EDITABLE').map(s=>({id:s.id,start:s.start,end:s.end,type:s.type})):[];}
+ function excerpt(id){if(closed||!analysis)return null;const s=analysis.segments.find(t=>t.policy==='EDITABLE'&&t.id===id);return s?original.slice(s.start,s.end):null;}
+ return Object.freeze({inspect,prepare,revoke,changesAllowed,excerpt});
+}
+const API=Object.freeze({SCHEMA,openSession});
+global.TLSLocalWorkbenchR16=API;
+if(typeof module!=='undefined'&&module.exports)module.exports=API;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>
+(()=>{'use strict';
+const $=x=>document.querySelector(x);let session=null,lastReport=null,lastPreview=null,original='',epoch=0;
+const samples={markdown:'# 使用示例\n請 click 主選單。\n<!--\n這是受保護註解\n-->\n詳見 [文件](https://example.test/file_(v1)/help)。\n',json:'{"id":"menu","text":"Please click the menu","url":"https://example.test/docs","description":"Open the menu"}',prompt:'system: Preserve all roles and placeholders.\nuser: Review the text below.\nClick the menu, but do not change {{USERNAME}} or --output.\n'};
+function clearState(){++epoch;if(session){session.revoke();session=null;}lastReport=null;lastPreview=null;original='';$('#report').hidden=true;$('#manual').hidden=true;$('#preview-panel').hidden=true;$('#errors').textContent='';$('#edit-list').replaceChildren();}
+function failure(message){$('#errors').textContent=message;$('#state').textContent='REJECTED';$('#manual').hidden=true;$('#preview-panel').hidden=true;}
+const ext=()=>$('#format').value==='json'?'.json':$('#format').value==='markdown'?'.md':'.txt';
+function saveBlob(name,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
+$('#source').addEventListener('input',clearState);$('#format').addEventListener('change',clearState);
+$('#clear').addEventListener('click',()=>{$('#source').value='';$('#file').value='';clearState();});
+$('#sample').addEventListener('click',()=>{$('#source').value=samples[$('#format').value];clearState();});
+$('#file').addEventListener('change',async()=>{clearState();const token=epoch,f=$('#file').files[0];if(!f)return;
+ if(f.size>1048576){$('#report').hidden=false;failure('超過 1 MiB，不讀取此檔。');return;}
+ try{const bytes=await f.arrayBuffer();if(token!==epoch)return;const value=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);if(value.includes('\0'))throw Error('BINARY_INPUT');$('#source').value=value;$('#report').hidden=true;}catch(_){if(token!==epoch)return;$('#report').hidden=false;failure('檔案不是合法 UTF-8 文字，或讀取失敗。');}});
+$('#inspect').addEventListener('click',async()=>{
+ clearState();const token=epoch;original=$('#source').value;session=TLSLocalWorkbenchR16.openSession({source:original,format:$('#format').value});
+ try{const r=await session.inspect();if(token!==epoch)return;lastReport=r;$('#report').hidden=false;$('#state').textContent=r.validation_status;
+ $('#protected-count').textContent=String(r.protected_spans.length);$('#editable-count').textContent=String(r.safe_edit_ids.length);$('#source-hash').textContent=r.source_sha256?r.source_sha256.slice(0,16)+'…':'—';$('#errors').textContent=r.reject_reasons.join(', ');
+ $('#manual').hidden=r.validation_status!=='OK';if(r.validation_status!=='OK')return;
+ const box=$('#edit-list');box.replaceChildren();const ids=r.safe_edit_ids.slice(0,80);
+ for(const id of ids){const el=document.createElement('div');el.className='edit-item';const h=document.createElement('h3');h.textContent='可修改文字 '+id;const before=document.createElement('span');before.className='sample';before.textContent=session.excerpt(id);
+ const label=document.createElement('label'),checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.className='choice';checkbox.dataset.id=id;label.append(checkbox,document.createTextNode(' 勾選後人工撰寫候選'));
+ const field=document.createElement('input');field.type='text';field.className='candidate';field.dataset.id=id;field.maxLength=1000;field.placeholder='輸入已經自己確認的臺灣繁體中文候選文字';el.append(h,before,label,field);box.append(el);}
+ }catch(_){if(token!==epoch)return;$('#report').hidden=false;failure('保護範圍掃描遭拒絕，請檢查檔案格式或內容限制。');}
+});
+$('#make-preview').addEventListener('click',async()=>{if(!session||!lastReport||lastReport.validation_status!=='OK')return;const token=epoch;
+ const edits=[];for(const check of document.querySelectorAll('input.choice:checked')){const input=[...document.querySelectorAll('input.candidate')].find(x=>x.dataset.id===check.dataset.id);edits.push({id:check.dataset.id,replacement:input.value});}
+ try{const result=await session.prepare({schema:'tls.structured-edits.v1',input_sha256:lastReport.source_sha256,edits});if(token!==epoch)return;
+ lastPreview=result;$('#preview-panel').hidden=false;$('#original').textContent=original;$('#result').textContent=result.preview_text;$('#preview-state').textContent=result.status+' | '+result.report.preview_change_count+' 處人工變更 | 原始內容未改動';$('#errors').textContent='';
+ }catch(e){if(token!==epoch)return;lastPreview=null;$('#preview-panel').hidden=true;$('#errors').textContent='預覽遭拒絕：'+String(e.message).slice(0,120);}
+});
+$('#discard-preview').addEventListener('click',()=>{lastPreview=null;$('#preview-panel').hidden=true;});
+$('#close-preview').addEventListener('click',()=>{$('#preview-panel').hidden=true;});
+$('#export-report').addEventListener('click',()=>{if(!lastReport)return;saveBlob('TLS_R16_Integrity_Metadata.json',JSON.stringify(lastReport,null,2)+'\n','application/json');});
+$('#download-preview').addEventListener('click',()=>{if(!lastPreview)return;saveBlob('TLS_R16_Reviewed_Preview'+ext(),lastPreview.preview_text,'text/plain;charset=utf-8');});
+})();
+</script>
+</body></html>

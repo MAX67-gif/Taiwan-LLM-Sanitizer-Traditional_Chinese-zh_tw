@@ -90,7 +90,6 @@ benchmarks/r6/R6_STRUCTURAL_BASELINE.json
 # R6 reproducible study kit checksum
 dist/*.sha256
 
-# Generated optional display-only game demo release artifacts
 
 # R11 release bundles are built by CI, while source and unpacked artifacts are tracked.
 dist/r11/*.zip
@@ -102,4 +101,3 @@ dist/r13/*.zip
 dist/r13/*SUMS*.txt
 dist/r13/TLS_Tampermonkey_R13_*.user.js
 
-# R7.2 PokéBonk separate release binaries (keep tracked source and standalone .user.js)

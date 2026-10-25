@@ -85,3 +85,7 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 - [通用網站說明](WEBSITE_LOCALIZATION_GUIDE.md) · [權利／隱私政策](THIRD_PARTY_RIGHTS_POLICY.md) · [R15 限制](R15_STRUCTURED_INTEGRITY.md)
 - 沒有來源授權，不將第三方網站的原始文字、字典、程式或圖片放到開源包；案例數量不代表翻譯準確率。
 - **有用與否要測量**：同一份原創範例在「手動傳統方式」與「使用 TLS」下比較成功完成任務、格式錯誤、錯改保護片段、撤銷成功與花費時間，未測試前不得虛構改善百分比。
+
+## R16 補充實作｜同一份原創範例的人工安全預覽
+
+使用 [R16 工作台](../examples/TW_Localization_Safety_Studio_R16_20261026.html) 開啟 [原創 Markdown 範例](../examples/r16/sample_readme.md)，先看保護範圍，再親手將一般 UI 文句修改為自己確認的臺灣用語。程式區塊、模板變數、HTML 註解與 URL 不可編輯；新預覽需要額外下載，報告不含原文。**沒有自動翻譯或網路傳輸**。

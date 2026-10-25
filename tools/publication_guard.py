@@ -44,6 +44,7 @@ DOCS_PUBLIC={
     "docs/R12_QUALITY_AUDIT_LAB.md",
     "docs/R14_PROVIDER_CAPABILITY.md",
     "docs/R15_STRUCTURED_INTEGRITY.md",
+    "docs/R16_LOCALIZATION_STUDIO.md",
     "docs/R13_BILINGUAL_READER.md","docs/TAIWAN_UI_TERMS_R13.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")

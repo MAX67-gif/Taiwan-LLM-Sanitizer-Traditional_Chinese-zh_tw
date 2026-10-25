@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:4cd4e8b0b12baf475441a86805317e163cf5de76fb8eeccf5c65d7dd3d036392 -->
+<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
 
 # 대만 번체 중국어 현지화: 독창적인 사용 사례 9가지
 
@@ -55,3 +55,7 @@ DOM에 표시된 `Open settings`나 `Start` 같은 단순 문구는 사이트 �
 ## 관련 자료
 
 [일반 웹사이트 안내](WEBSITE_LOCALIZATION_GUIDE.md) · [저작권 및 개인정보](THIRD_PARTY_RIGHTS_POLICY.md) · [R15 제한사항](R15_STRUCTURED_INTEGRITY.md). 사용자 검증 없는 성능·정확도 수치는 제시하지 않습니다.
+
+## R16 실습（직접 작성한 예제）
+
+[R16 오프라인 도구](../examples/TW_Localization_Safety_Studio_R16_20261026.html)에서 [Markdown 예제](../examples/r16/sample_readme.md)를 열고 보호 구간을 확인한 다음 후보 문구를 직접 입력합니다. 코드, 변수, HTML 주석 및 URL은 변경할 수 없습니다. 원본을 덮어쓰지 않고 새 미리보기를 다운로드합니다. **자동 번역이나 업로드는 없습니다**.

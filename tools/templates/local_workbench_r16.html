@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Taiwan-LLM-Sanitizer R16｜離線在地化安全工作台</title>
+<style>
+:root{color-scheme:light;--bg:#f4f7fb;--paper:#fff;--ink:#1d2c42;--muted:#56687d;--line:#d6e0e9;--primary:#176c75;--primary-dark:#145961;--shade:#e8f5f4;--amber:#885619}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,'Microsoft JhengHei',sans-serif}
+header{background:linear-gradient(105deg,#12304a,#176c75);color:#fff;padding:28px 20px}header>div{max-width:1200px;margin:auto}
+.kicker{font-weight:800;font-size:.76rem;letter-spacing:.14em;color:#b7e5dd}h1{font-size:clamp(1.6rem,3.8vw,2.55rem);margin:5px 0 8px}header p{color:#dbeded;margin:0;max-width:860px}
+main{max-width:1200px;margin:22px auto 60px;padding:0 16px}section{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px;margin-bottom:16px;box-shadow:0 3px 12px #23374b08}
+h2{font-size:1.14rem;margin:0 0 13px}.sub{color:var(--muted);font-size:.91rem;margin:0 0 14px}
+.steps{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 15px}.steps span{display:block;border:1px solid var(--line);background:#fff;border-radius:40px;padding:5px 11px;color:#3a5868;font-size:.81rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid > *{min-width:0}
+label{display:block;font-size:.93rem;font-weight:700;margin-bottom:6px}select,textarea,input[type=text],input[type=file]{font:inherit;border:1px solid #a7bdc9;border-radius:10px;color:var(--ink);background:#fff;padding:11px;width:100%}select{max-width:280px}textarea{font:14px/1.6 ui-monospace,Consolas,monospace;min-height:220px;resize:vertical;white-space:pre;tab-size:2}
+button{cursor:pointer;padding:10px 16px;border-radius:9px;border:1px solid var(--primary);background:var(--primary);color:#fff;font:inherit;font-weight:700}button:hover{background:var(--primary-dark)}button.secondary{background:#fff;color:var(--primary)}button.secondary:hover{background:#edf8f7}button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #efa843;outline-offset:2}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.actions button{flex:0 0 auto}
+.info{background:var(--shade);padding:12px 14px;border-left:4px solid var(--primary);border-radius:8px;font-size:.9rem}.warning{background:#fff4e3;border-left:4px solid #bf7a27}
+.stats{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.stat{background:#f2f6fb;border-radius:9px;padding:9px 12px;font-size:.89rem}.stat b{font-variant-numeric:tabular-nums}
+#edit-list{display:grid;gap:10px;max-height:530px;overflow:auto}.edit-item{border:1px solid var(--line);padding:13px;border-radius:10px;background:#fcfdfe}
+.edit-item h3{font-size:.92rem;margin:0 0 7px}.edit-item .sample{display:block;white-space:pre-wrap;overflow-wrap:anywhere;color:#345166;max-height:80px;overflow:auto;margin-bottom:8px;font:13px/1.45 ui-monospace,Consolas,monospace}
+.edit-item input[type=checkbox]{width:auto;margin-right:6px}.edit-item input[type=text]{margin-top:8px}
+output{display:block;white-space:pre-wrap;overflow-wrap:anywhere}.error{color:#ab1c35;font-weight:700}.success{color:#106454;font-weight:700}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 ui-monospace,Consolas,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:9px;padding:15px;min-height:140px;max-height:360px;overflow:auto;margin:0}
+.meta{font-size:.82rem;color:var(--muted)}[hidden]{display:none!important}
+footer{max-width:1200px;margin:12px auto 50px;padding:0 18px;color:var(--muted);font-size:.85rem}
+@media(max-width:730px){.grid{grid-template-columns:1fr}main{margin-top:12px}section{padding:15px}.actions button{flex:1}}
+@media print{body{background:#fff}button,.actions,input[type=file]{display:none}section{box-shadow:none;break-inside:avoid}header{background:#fff;color:#000}header p,.kicker{color:#333}}
+</style>
+</head>
+<body>
+<header><div><div class="kicker">TAIWAN-LLM-SANITIZER · R16 / OFFLINE SHADOW</div>
+<h1>離線在地化安全工作台</h1><p>讀取自己有權使用的技術文字，檢查程式碼、JSON Key、網址與 Prompt 角色。只在你明確勾選後產生差異預覽；不呼叫雲端翻譯、不傳輸文件、不改寫原始檔案。</p></div></header>
+<main>
+<div class="steps" aria-label="操作流程"><span>01 讀取本機內容</span><span>02 掃描受保護片段</span><span>03 逐段人工填寫</span><span>04 預覽與另存新檔</span></div>
+<section id="load"><h2>01｜來源與格式</h2><p class="sub">貼上原文，或自行選取裝置上的文字檔案。檔案在瀏覽器本機讀取，不會上傳；來源不會被自動儲存到任何伺服器。</p>
+<div class="grid"><div><label for="format">來源格式（需明確選擇）</label><select id="format"><option value="markdown">Markdown</option><option value="json">JSON</option><option value="prompt">AI Prompt</option></select></div>
+<div><label for="file">選擇本機檔（選用，最大 1 MiB）</label><input id="file" type="file" accept=".md,.json,.txt,.prompt,text/plain,application/json"></div></div>
+<label for="source" style="margin-top:12px">原始內容</label><textarea id="source" spellcheck="false"># 操作指引
+請 click 選單並檢查選項。
+
+<!--
+下面保留原文
+-->
+請保留 `--output`、{{USERNAME}} 和 [文件](https://example.org/item_(v2)/intro)。</textarea>
+<div class="actions"><button id="inspect">掃描保護範圍</button><button id="sample" type="button" class="secondary">載入原創示例</button><button id="clear" type="button" class="secondary">清除全部內容</button></div>
+<div class="info warning">僅允許自己有權使用的文件。不要放入密碼、Token、私人聊天、受限第三方語料或其他人的個人資料。現階段無自動翻譯模型，AI 候選必須由使用者自行審查。</div></section>
+<section id="report" hidden><h2>02｜分析結果與受保護範圍</h2><output id="state" role="status"></output><output class="error" id="errors" role="alert"></output>
+<div class="stats"><div class="stat">保護段：<b id="protected-count">0</b></div><div class="stat">可人工審查段：<b id="editable-count">0</b></div><div class="stat">來源 SHA：<b id="source-hash">—</b></div></div>
+<p class="sub">掃描器採保守詞法規則，不是完整 CommonMark/HTML AST。未知或不平衡語法可以拒絕；所有分析段落的位置採 UTF-16 offset。此頁沒有品質或翻譯正確率認證。</p>
+<div class="actions"><button id="export-report" class="secondary">下載不含原文的安全檢查報告</button></div></section>
+<section id="manual" hidden><h2>03｜逐段人工審閱與候選文字</h2><p class="sub">只會顯示前 80 個可修改片段。未勾選一律保持原文，保護片段一律不得修改。超過顯示範圍的段落會維持不變。</p><div id="edit-list"></div>
+<div class="actions"><button id="make-preview">產生安全預覽</button><button id="discard-preview" type="button" class="secondary">撤銷預覽</button></div></section>
+<section id="preview-panel" hidden><h2>04｜原文與預覽對照</h2><output id="preview-state" role="status" class="success"></output><div class="grid"><div><h3>原始內容（不修改）</h3><pre id="original"></pre></div><div><h3>人工預覽結果（尚未套用）</h3><pre id="result"></pre></div></div>
+<div class="actions"><button id="download-preview">另存新的預覽檔</button><button id="close-preview" class="secondary">關閉對照</button></div>
+<div class="info">預覽只會下載到瀏覽器由使用者指定的下載位置；**不會開啟或覆寫任何原始檔案**。下載檔仍可能包含你自己輸入的敏感文字，請自行妥善保管。</div></section>
+</main><footer>R16 Preview · MIT original code · 僅限離線本機人工檢查 · 無網路傳輸／遠端模型／遙測 · 不保證語義正確或所有格式支援 · 文件及原始碼見 GitHub 正式專案。</footer>
+<script>__TLS_R16_ENTITIES__</script>
+<script>__TLS_R16_CORE__</script>
+<script>__TLS_R16_WORKBENCH__</script>
+<script>
+(()=>{'use strict';
+const $=x=>document.querySelector(x);let session=null,lastReport=null,lastPreview=null,original='',epoch=0;
+const samples={markdown:'# 使用示例\n請 click 主選單。\n<!--\n這是受保護註解\n-->\n詳見 [文件](https://example.test/file_(v1)/help)。\n',json:'{"id":"menu","text":"Please click the menu","url":"https://example.test/docs","description":"Open the menu"}',prompt:'system: Preserve all roles and placeholders.\nuser: Review the text below.\nClick the menu, but do not change {{USERNAME}} or --output.\n'};
+function clearState(){++epoch;if(session){session.revoke();session=null;}lastReport=null;lastPreview=null;original='';$('#report').hidden=true;$('#manual').hidden=true;$('#preview-panel').hidden=true;$('#errors').textContent='';$('#edit-list').replaceChildren();}
+function failure(message){$('#errors').textContent=message;$('#state').textContent='REJECTED';$('#manual').hidden=true;$('#preview-panel').hidden=true;}
+const ext=()=>$('#format').value==='json'?'.json':$('#format').value==='markdown'?'.md':'.txt';
+function saveBlob(name,text,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
+$('#source').addEventListener('input',clearState);$('#format').addEventListener('change',clearState);
+$('#clear').addEventListener('click',()=>{$('#source').value='';$('#file').value='';clearState();});
+$('#sample').addEventListener('click',()=>{$('#source').value=samples[$('#format').value];clearState();});
+$('#file').addEventListener('change',async()=>{clearState();const token=epoch,f=$('#file').files[0];if(!f)return;
+ if(f.size>1048576){$('#report').hidden=false;failure('超過 1 MiB，不讀取此檔。');return;}
+ try{const bytes=await f.arrayBuffer();if(token!==epoch)return;const value=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);if(value.includes('\0'))throw Error('BINARY_INPUT');$('#source').value=value;$('#report').hidden=true;}catch(_){if(token!==epoch)return;$('#report').hidden=false;failure('檔案不是合法 UTF-8 文字，或讀取失敗。');}});
+$('#inspect').addEventListener('click',async()=>{
+ clearState();const token=epoch;original=$('#source').value;session=TLSLocalWorkbenchR16.openSession({source:original,format:$('#format').value});
+ try{const r=await session.inspect();if(token!==epoch)return;lastReport=r;$('#report').hidden=false;$('#state').textContent=r.validation_status;
+ $('#protected-count').textContent=String(r.protected_spans.length);$('#editable-count').textContent=String(r.safe_edit_ids.length);$('#source-hash').textContent=r.source_sha256?r.source_sha256.slice(0,16)+'…':'—';$('#errors').textContent=r.reject_reasons.join(', ');
+ $('#manual').hidden=r.validation_status!=='OK';if(r.validation_status!=='OK')return;
+ const box=$('#edit-list');box.replaceChildren();const ids=r.safe_edit_ids.slice(0,80);
+ for(const id of ids){const el=document.createElement('div');el.className='edit-item';const h=document.createElement('h3');h.textContent='可修改文字 '+id;const before=document.createElement('span');before.className='sample';before.textContent=session.excerpt(id);
+ const label=document.createElement('label'),checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.className='choice';checkbox.dataset.id=id;label.append(checkbox,document.createTextNode(' 勾選後人工撰寫候選'));
+ const field=document.createElement('input');field.type='text';field.className='candidate';field.dataset.id=id;field.maxLength=1000;field.placeholder='輸入已經自己確認的臺灣繁體中文候選文字';el.append(h,before,label,field);box.append(el);}
+ }catch(_){if(token!==epoch)return;$('#report').hidden=false;failure('保護範圍掃描遭拒絕，請檢查檔案格式或內容限制。');}
+});
+$('#make-preview').addEventListener('click',async()=>{if(!session||!lastReport||lastReport.validation_status!=='OK')return;const token=epoch;
+ const edits=[];for(const check of document.querySelectorAll('input.choice:checked')){const input=[...document.querySelectorAll('input.candidate')].find(x=>x.dataset.id===check.dataset.id);edits.push({id:check.dataset.id,replacement:input.value});}
+ try{const result=await session.prepare({schema:'tls.structured-edits.v1',input_sha256:lastReport.source_sha256,edits});if(token!==epoch)return;
+ lastPreview=result;$('#preview-panel').hidden=false;$('#original').textContent=original;$('#result').textContent=result.preview_text;$('#preview-state').textContent=result.status+' | '+result.report.preview_change_count+' 處人工變更 | 原始內容未改動';$('#errors').textContent='';
+ }catch(e){if(token!==epoch)return;lastPreview=null;$('#preview-panel').hidden=true;$('#errors').textContent='預覽遭拒絕：'+String(e.message).slice(0,120);}
+});
+$('#discard-preview').addEventListener('click',()=>{lastPreview=null;$('#preview-panel').hidden=true;});
+$('#close-preview').addEventListener('click',()=>{$('#preview-panel').hidden=true;});
+$('#export-report').addEventListener('click',()=>{if(!lastReport)return;saveBlob('TLS_R16_Integrity_Metadata.json',JSON.stringify(lastReport,null,2)+'\n','application/json');});
+$('#download-preview').addEventListener('click',()=>{if(!lastPreview)return;saveBlob('TLS_R16_Reviewed_Preview'+ext(),lastPreview.preview_text,'text/plain;charset=utf-8');});
+})();
+</script>
+</body></html>

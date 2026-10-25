@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
+<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -47,3 +47,8 @@ These are previews, not independent certification of translation accuracy, broad
 [Read the nine original examples](docs/USAGE_EXAMPLES.en.md) (EX01–EX09), covering context-sensitive Taiwan terminology, R13 read-only selection, R11 manual per-site glossary, R14 capability declarations, and R15 Markdown/JSON/Prompt protection.
 
 A **fictional browser-game-like page** with a normal, selectable HTML label such as `Open settings` may allow R13 selection or user-controlled R11 glossary behavior **only where site rules permit**. Text drawn in Canvas/WebGL is not supported. This is not evidence of real-game compatibility and no branded game script or dictionary is distributed. See the [general guide](docs/WEBSITE_LOCALIZATION_GUIDE.md).
+
+## R16 — Offline Localization Safety Studio (standalone Shadow Preview)
+
+[Open the R16 offline studio](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [Usage and safety contract](docs/R16_LOCALIZATION_STUDIO.md) · [Original Markdown example](examples/r16/sample_readme.md). Scan protected Markdown/JSON/Prompt spans, enter candidate wording manually, review differences, and download a **new** preview. Metadata exports contain no source text, although an explicitly downloaded preview includes what you entered. **No automatic translation, cloud upload, or source-file overwrite.** This remains a conservative scanner, not a full grammar or translation-quality certification.
+

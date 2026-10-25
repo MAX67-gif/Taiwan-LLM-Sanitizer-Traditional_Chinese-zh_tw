@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:4cd4e8b0b12baf475441a86805317e163cf5de76fb8eeccf5c65d7dd3d036392 -->
+<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
 
 # 台湾繁体字中国語ローカライズ：9 つのオリジナル利用例
 
@@ -55,3 +55,7 @@ HTML／DOM の通常テキスト `Open settings` や `Start` は、規約に適�
 ## ガイド
 
 [一般サイト向け説明](WEBSITE_LOCALIZATION_GUIDE.md) · [権利とプライバシー](THIRD_PARTY_RIGHTS_POLICY.md) · [R15 の限界](R15_STRUCTURED_INTEGRITY.md)。利用者による実証がない改善率や認証成績は示しません。
+
+## R16 ハンズオン（独自作成の例）
+
+[R16 オフラインツール](../examples/TW_Localization_Safety_Studio_R16_20261026.html) で [Markdown のオリジナル例](../examples/r16/sample_readme.md) を開き、保護領域を確認してから候補文を手動入力します。コード、変数、HTML コメント、URL は変更できません。元ファイルを上書きせず、新しいプレビューを保存します。**自動翻訳・送信なし**。

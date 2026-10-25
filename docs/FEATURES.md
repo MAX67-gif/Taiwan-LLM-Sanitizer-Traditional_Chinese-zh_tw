@@ -36,3 +36,7 @@ Taiwan-LLM-Sanitizer **R5 0.4.0 為實驗性預覽版本**。我們會分清楚�
 **我們不審查或禁止任何地區的中文用語。** 「臺灣繁體中文」指目標閱讀偏好，不是對語言的正確性評分。
 
 完整使用方法見 [首頁 README](../README.md)。若想提出建議，請透過 GitHub Issue/PR；請不要貼出私人文件或敏感頁面文字。
+
+## R16 Offline Localization Safety Studio（獨立 Shadow Preview）
+
+本機單檔 HTML、Node 安全 API 與可選 CLI，提供格式明確選擇、SHA 綁定的受保護段落檢查、人工候選預覽、只輸出 metadata 的報告、僅另存新檔的差異結果、取消清除與惡意輸入拒絕。Markdown／JSON／Prompt 以 R15.1 相同來源驗證規則處理；沒有雲端翻譯、網站寫入、隱藏遙測或真人語言品質認證，仍非完整 AST。詳見 [R16 使用契約](R16_LOCALIZATION_STUDIO.md)。

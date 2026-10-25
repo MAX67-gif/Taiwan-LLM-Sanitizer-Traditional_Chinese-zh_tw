@@ -30,3 +30,10 @@
 - `CONDITIONAL`：需網站條款、裝置／模型能力與實際 DOM 支援；尤其任何網頁遊戲式網站只能稱條件性可能。
 - `NOT_SUPPORTED`：目前的 Canvas/WebGL 文字、未經許可的專用遊戲中文化、私人聊天處理、無授權遠端資料傳輸。
 - `RESEARCH_OR_PENDING`：私人已規劃或本機驗證但尚未公開 CI/Release 的功能。
+
+## R16 延續規格（2026-10-26）
+
+- 現有六語 `README` 與 `docs/USAGE_EXAMPLES` 同步補充 R16 離線工具入口及合法原創樣本，原本 EX01～EX09 的 ID 不刪、不改。
+- R16 新增的操作說明以 [R16 工作台正式使用契約](R16_LOCALIZATION_STUDIO.md) 作為唯一技術規格；六語翻譯描述的權利、資料流、**無自動翻譯／無覆寫**及能力限制必須一致。
+- 更新繁中母版後重新計算所有翻譯文件檔首 SHA256；CI 通過僅為結構一致性，不是母語人工校對認證。
+- 若未取得 GitHub `main` CI、Release 及資產 SHA 之真實證據，各語介紹只能稱 Shadow Preview／可用的原始碼功能，不能擅自寫為正式 Release 已發布。

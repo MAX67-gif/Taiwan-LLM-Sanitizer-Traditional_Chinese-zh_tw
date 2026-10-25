@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
+<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -47,3 +47,8 @@ Son versiones preliminares: no garantizan exactitud de la traducción, compatibi
 [Consultar los nueve ejemplos](docs/USAGE_EXAMPLES.es.md) (EX01–EX09): vocabulario contextual de Taiwán, lectura por selección R13, glosario manual R11, capacidad R14 y protección Markdown/JSON/Prompt de R15.
 
 En una **página ficticia parecida a un juego web**, el texto HTML seleccionable `Open settings` podría verse mediante R13 o revisarse con el glosario R11, **solo cuando los términos del sitio lo permitan**. El texto dibujado con Canvas/WebGL no es compatible. No se afirma haber probado ningún juego real ni se distribuyen scripts o diccionarios específicos. [Guía general](docs/WEBSITE_LOCALIZATION_GUIDE.md).
+
+## R16 — Estudio de seguridad para localización sin conexión (Shadow Preview independiente)
+
+[Abrir R16 sin conexión](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [Uso y límites de seguridad](docs/R16_LOCALIZATION_STUDIO.md) · [Ejemplo original de Markdown](examples/r16/sample_readme.md). Permite inspeccionar segmentos protegidos de Markdown／JSON／Prompt, introducir sugerencias manualmente, revisar las diferencias y descargar una vista previa como **archivo nuevo**. El informe de metadatos no contiene el texto original; la vista previa descargada voluntariamente sí puede contener el texto introducido. **No traduce automáticamente, no envía datos a la nube y no sobrescribe el original**. No se garantiza compatibilidad con toda la sintaxis ni calidad semántica.
+
