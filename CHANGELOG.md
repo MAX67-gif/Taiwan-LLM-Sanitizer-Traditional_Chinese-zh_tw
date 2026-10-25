@@ -1,3 +1,7 @@
+## R7.2（2026-10-25）｜PokéBonk 新版顯示層示範 0.1.2
+- 獨立新增 35 筆多人／介面示範候選，完整繼承舊 136 筆，追加聊天室、玩家／帳號與表單隔離及動態顯示還原測試；**未經真站驗證**。
+- 單獨 Chrome/Tampermonkey 安裝包、CRC/SHA、Node/Chromium 與 PR/CI 檢查，不覆寫 R7.1 舊資產或通用翻譯執行期。
+
 ## R14 · 2026-10-25 · Provider 能力與同意安全決策（獨立離線 Preview）
 - 加入模型能力／語言組／下載及 per-origin consent 保守判定，未知、跨站、撤銷、逾期、取消 fail-closed；本版所有遠端 Provider 仍禁止傳輸。
 - 提供可直接開啟的單檔離線 HTML、CLI、嚴格 Schema、Node／Chromium 回歸及可重現建置；不修改 R5／R11／R13 安裝版本或 R6 Frozen。

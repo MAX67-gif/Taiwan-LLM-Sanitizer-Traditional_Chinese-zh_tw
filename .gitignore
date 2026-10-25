@@ -103,3 +103,7 @@ dist/r11/TLS_Tampermonkey_R11_*.user.js
 dist/r13/*.zip
 dist/r13/*SUMS*.txt
 dist/r13/TLS_Tampermonkey_R13_*.user.js
+
+# R7.2 PokéBonk separate release binaries (keep tracked source and standalone .user.js)
+dist/pokebonk/r72/*.zip
+dist/pokebonk/r72/*SHA256SUMS*.txt
