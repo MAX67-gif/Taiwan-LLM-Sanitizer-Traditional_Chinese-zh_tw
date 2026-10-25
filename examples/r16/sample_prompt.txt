@@ -1,0 +1,5 @@
+system: Keep the roles and developer instructions unchanged.
+user: Review this original example sentence for local Taiwanese UI usage.
+Please click the settings menu.
+Keep {{CLIENT_NAME}} and --output unchanged.
+assistant: Provide a draft for human review, not an automatic edit.

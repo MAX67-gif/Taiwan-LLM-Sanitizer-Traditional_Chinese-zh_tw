@@ -1,0 +1,8 @@
+{
+  "id": "sample-001",
+  "text": "Please click the settings menu",
+  "description": "Open the preferences panel",
+  "url": "https://example.test/help_(v2)",
+  "maxItems": 10,
+  "settings": {"label": "Display name", "locale": "zh-TW"}
+}

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:4cd4e8b0b12baf475441a86805317e163cf5de76fb8eeccf5c65d7dd3d036392 -->
+<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
 
 # 台湾繁体中文工具的九个使用示例（原创／概念示范）
 
@@ -77,3 +77,7 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 ## 使用入口
 
 [通用网页阅读说明](WEBSITE_LOCALIZATION_GUIDE.zh-CN.md) · [版权与隐私政策（繁体）](THIRD_PARTY_RIGHTS_POLICY.md) · [R15 技术限制](R15_STRUCTURED_INTEGRITY.md)。如需验证真正的使用效果，应先使用授权的原创测试文档，而不是公开的游戏素材。
+
+## R16 补充实践｜原创示例的人工安全预览
+
+打开 [R16 工作台](../examples/TW_Localization_Safety_Studio_R16_20261026.html) 并使用 [原创 Markdown 示例](../examples/r16/sample_readme.md)，先查看受保护的内容，再自行填写候选。代码、模板变量、HTML 注释与网址不可编辑；只能下载新的预览文件。**不自动翻译或上传**。

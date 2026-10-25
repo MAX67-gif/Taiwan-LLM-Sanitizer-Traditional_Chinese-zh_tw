@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
+<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -47,3 +47,8 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 [具体的な 9 つの例](docs/USAGE_EXAMPLES.ja.md)（EX01–EX09）：台湾の文脈に合わせた語彙、R13 の選択型対訳、R11 の手動用語集、R14 の能力表示、R15 の Markdown／JSON／Prompt 構造保護。
 
 **架空のブラウザーゲーム風サイト**で `Open settings` が通常の選択可能な HTML 文字なら、サイト規約に適合するときに限り R13 または R11 による補助の可能性があります。Canvas／WebGL に描画された文字は対象外です。実ゲームで動作検証したという意味ではなく、特定ゲーム向けのファイルも配布しません。[一般利用ガイド](docs/WEBSITE_LOCALIZATION_GUIDE.md)。
+
+## R16｜オフラインのローカライズ安全ワークベンチ（独立 Shadow Preview）
+
+[R16 オフラインツール](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [利用方法・安全上の制限](docs/R16_LOCALIZATION_STUDIO.md) · [独自作成の Markdown 例](examples/r16/sample_readme.md)。Markdown／JSON／Prompt の保護領域を調べ、候補文を自分で入力して差分を確認し、新しいプレビューとして保存できます。メタデータ報告書には原文を含みませんが、ユーザーが明示的にダウンロードするプレビューには入力文が含まれます。**自動翻訳・クラウド送信・元ファイルの上書きは行いません**。すべての構文や翻訳品質を保証するものではありません。
+

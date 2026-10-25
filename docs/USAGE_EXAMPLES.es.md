@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:4cd4e8b0b12baf475441a86805317e163cf5de76fb8eeccf5c65d7dd3d036392 -->
+<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
 
 # Nueve ejemplos originales de localización al chino tradicional de Taiwán
 
@@ -55,3 +55,7 @@ No extraer textos de imágenes, diálogos protegidos de terceros ni mensajes pri
 ## Enlaces útiles
 
 [Guía general de sitios web](WEBSITE_LOCALIZATION_GUIDE.md) · [Derechos y privacidad](THIRD_PARTY_RIGHTS_POLICY.md) · [Límites de R15](R15_STRUCTURED_INTEGRITY.md). No se inventan cifras de precisión o adopción.
+
+## Práctica R16 con ejemplos originales
+
+Abra el [estudio R16 sin conexión](../examples/TW_Localization_Safety_Studio_R16_20261026.html) y el [ejemplo de Markdown original](../examples/r16/sample_readme.md). Revise los segmentos protegidos antes de escribir propuestas manuales; código, variables, comentarios HTML y URL no se alteran. Se descarga una vista previa nueva sin sobrescribir el original. **Sin traducción automática ni subida de datos**.
