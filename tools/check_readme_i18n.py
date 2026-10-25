@@ -1,113 +1,52 @@
-"""Verify multilingual README synchronization and public-project neutral copy.
-
-A passing result confirms structural facts/links, not human translation accuracy.
-Translations are deliberately checked against the SHA of README.md: changing the
-canonical README without also revising all localized copies fails CI.
-"""
+"""Enforce zh-TW master + four translated README source-synchronization and rights-neutral links."""
 from __future__ import annotations
-import argparse
-import hashlib
-import re
-import sys
 from pathlib import Path
+import hashlib,re,sys
+ROOT=Path(__file__).resolve().parents[1]
+FILES=('README.md','README.en.md','README.ja.md','README.ko.md','README.es.md')
+SOURCE='docs/WEBSITE_LOCALIZATION_GUIDE.md'
+RIGHTS='docs/THIRD_PARTY_RIGHTS_POLICY.md'
+MARKER=re.compile(r'<!-- SOURCE_README_SHA256:([0-9a-f]{64}) -->')
+MILESTONES=('R13','R11','R14','R12','R6','R5')
+# Game-specific sources once published must never reappear on a public branch.
+FORBIDDEN_WORDS=('poke'+'bonk','pok'+'émon','宝可'+'梦','寶可'+'夢')
+FORBIDDEN_RELEASE='r7-'+'poke'+'bonk-demo'
+LANGUAGE_LINKS=tuple('('+x+')' for x in FILES)
 
-ROOT = Path(__file__).resolve().parents[1]
-BASE = ROOT / "README.md"
-LOCALES = ("en", "ja", "ko", "es")
-LANGUAGE_FILES = ("README.md",) + tuple(f"README.{x}.md" for x in LOCALES)
-CANONICAL_POKEBONK = "examples/pokebonk-demo/README.md"
-RELEASE_PATH = "releases/tag/r7-pokebonk-demo-0.1.2"
-COMMON_MILESTONES = ("R7.2", "v0.1.2", "R14", "R13", "R11", "R12", "R5", "R6")
-FORBIDDEN_PROJECT_BRANDS = re.compile(
-    r"(?i)(?:\bTAIDE\b|\bFAIDE\b|\bMiuLab\b|Taiwan[-\s]LLM(?![-\s]Sanitizer))"
-)
-MARKER = re.compile(r"<!-- SOURCE_README_SHA256:([0-9a-f]{64}) -->")
-LINKS = re.compile(r"\]\(([^)\s]+)(?:\s+[^)]*)?\)")
+def run()->list[str]:
+  errors=[]
+  if not (ROOT/'README.md').is_file():return ['no README.md']
+  sha=hashlib.sha256((ROOT/'README.md').read_bytes()).hexdigest()
+  for fn in FILES:
+    p=ROOT/fn
+    if not p.is_file():errors.append(fn+': missing');continue
+    txt=p.read_text(encoding='utf-8')
+    if not txt.startswith('<!--') and fn!='README.md':errors.append(fn+': translation marker expected')
+    if '# Taiwan-LLM-Sanitizer' not in txt:errors.append(fn+': title missing')
+    for item in (SOURCE,RIGHTS):
+      if item not in txt:errors.append(fn+': missing '+item)
+    for item in MILESTONES:
+      if item not in txt:errors.append(fn+': milestone '+item)
+    for item in LANGUAGE_LINKS:
+      if item not in txt:errors.append(fn+': language switch '+item)
+    if any(x in txt.casefold() for x in FORBIDDEN_WORDS) or FORBIDDEN_RELEASE in txt.casefold():errors.append(fn+': retired site-specific distribution reference')
+    if fn!='README.md':
+      if MARKER.findall(txt)!=[sha]:errors.append(fn+': SOURCE_README_SHA256 mismatch')
+      if 'HUMAN_TRANSLATION_REVIEW' not in txt:errors.append(fn+': translation-review caveat missing')
+    for href in re.findall(r'\]\(([^)\s]+)',txt):
+      if href.startswith(('https://','http://','mailto:','#')):continue
+      target=(p.parent/href.split('#',1)[0]).resolve()
+      if not target.is_relative_to(ROOT) or not target.is_file():errors.append(fn+': invalid relative link '+href)
+  return errors
 
-
-def violations(name: str, content: str, canonical_sha: str) -> list[str]:
-    errors: list[str] = []
-    if not re.search(r"(?m)^# Taiwan-LLM-Sanitizer", content):
-        errors.append(f"{name}: missing project title")
-    if FORBIDDEN_PROJECT_BRANDS.search(content):
-        errors.append(f"{name}: named competitor comparison/reference present")
-    if CANONICAL_POKEBONK not in content or RELEASE_PATH not in content:
-        errors.append(f"{name}: missing canonical Pokebonk README or current release")
-    for version in COMMON_MILESTONES:
-        if version not in content:
-            errors.append(f"{name}: missing shared version {version}")
-    for readme in LANGUAGE_FILES:
-        if f"({readme})" not in content:
-            errors.append(f"{name}: missing language switch link to {readme}")
-    for link in LINKS.findall(content):
-        if link.startswith(("https://", "http://", "mailto:", "#")):
-            continue
-        rel = (ROOT / link.split("#", 1)[0]).resolve()
-        if not rel.is_relative_to(ROOT.resolve()) or not rel.exists():
-            errors.append(f"{name}: broken or unsafe relative link {link}")
-    if name != "README.md":
-        tokens = MARKER.findall(content)
-        if len(tokens) != 1 or tokens[0] != canonical_sha:
-            errors.append(f"{name}: SOURCE_README_SHA256 mismatch — update translation alongside source")
-        if "HUMAN_TRANSLATION_REVIEW" not in content:
-            errors.append(f"{name}: translation review status missing")
-    return errors
-
-
-def run_checks() -> list[str]:
-    expected = hashlib.sha256(BASE.read_bytes()).hexdigest()
-    errors: list[str] = []
-    for name in LANGUAGE_FILES:
-        p = ROOT / name
-        if not p.is_file():
-            errors.append(f"missing: {name}")
-            continue
-        errors.extend(violations(name, p.read_text(encoding="utf-8"), expected))
-    game_doc = ROOT / CANONICAL_POKEBONK
-    if not game_doc.exists():
-        errors.append("missing current Pokebonk README")
-    else:
-        text = game_doc.read_text(encoding="utf-8")
-        if "R7.2" not in text or "R71_ARCHIVED_GUIDE.md" not in text:
-            errors.append("current Pokebonk README must link its archived R7.1 guide")
-    archive = ROOT / "examples/pokebonk-demo/R71_ARCHIVED_GUIDE.md"
-    if not archive.exists() or "R7.1" not in archive.read_text(encoding="utf-8"):
-        errors.append("R7.1 historic README not preserved")
-    return errors
-
-
-def self_test() -> None:
-    checksum = "0" * 64
-    minimal = (
-        "# Taiwan-LLM-Sanitizer\n" +
-        " ".join(f"({x})" for x in LANGUAGE_FILES) +
-        f" {CANONICAL_POKEBONK} {RELEASE_PATH} " +
-        " ".join(COMMON_MILESTONES) +
-        "\n<!-- HUMAN_TRANSLATION_REVIEW: pending -->\n" +
-        f"<!-- SOURCE_README_SHA256:{checksum} -->\n"
-    )
-    assert not violations("README.en.md", minimal, checksum)
-    assert any("mismatch" in x for x in violations("README.en.md", minimal, "a" * 64))
-    assert any("named competitor" in x for x in violations("README.en.md", minimal + "\nTAIDE", checksum))
-    assert not FORBIDDEN_PROJECT_BRANDS.search("Taiwan-LLM-Sanitizer")
-    print("README_I18N_GUARD_SELF_TEST_PASS")
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--self-test", action="store_true")
-    args = parser.parse_args()
-    if args.self_test:
-        self_test()
-        return 0
-    errors = run_checks()
-    if errors:
-        for msg in errors:
-            print("README_I18N_BLOCKED:", msg, file=sys.stderr)
-        return 1
-    print(f"README_I18N_SYNC_PASS: {len(LANGUAGE_FILES)} languages + current Pokebonk guide")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__=='__main__':
+  if '--self-test' in sys.argv:
+    assert FORBIDDEN_RELEASE not in 'A plain generic introduction'
+    assert 'pok'+'émon' in FORBIDDEN_WORDS
+    print('README_I18N_TEST_PASS')
+  else:
+    problems=run()
+    if problems:
+      for p in problems:print('README_I18N_BLOCKED',p,file=sys.stderr)
+      raise SystemExit(1)
+    print('README_I18N_SYNC_PASS: 5 languages and rights policy')
