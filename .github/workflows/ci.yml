@@ -25,6 +25,17 @@ jobs:
         run: python tools/check_r12_release_workflow.py
       - name: Validate R13 Release Bash and official CI gates before expensive tests
         run: python tools/check_release_workflow_r13.py
+      - name: Verify R14 independent no-transport Provider decision preview
+        run: |
+          node tools/build_provider_capability_r14.js --check
+          node tools/r14_capability_cli.js --input examples/TLS_R14_Provider_Capability_Demo_20261025.json > "$RUNNER_TEMP/tls-r14-capability.json"
+          python tools/check_release_workflow_r14.py
+      - name: Upload R14 offline capability report preview (no user text)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R14_Offline_Provider_Capability_Lab
+          path: examples/TW_Provider_Capability_Lab_R14_20261025.html
+          if-no-files-found: error
       - name: Build/check R13 separate Chrome and Tampermonkey installers
         run: |
           python tools/build_r13.py
@@ -227,6 +238,8 @@ jobs:
       - run: python tests/test_userscript_browser_r11.py
       - run: python tests/test_quality_audit_browser_r12.py
       - run: python tests/test_visual_progress_browser_r5.py
+      - name: Verify R14 offline Provider capability UI, consent and no egress in Chromium
+        run: python tests/test_provider_capability_browser_r14.py
       - name: Test R13 closed-shadow selection, code protection and no network in Chromium
         run: python tests/test_bilingual_reader_browser_r13.py
       - run: python tests/test_r6_browser.py
@@ -504,4 +517,34 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R13 安全雙語閱讀（逐站選取、原文不改寫）v0.6.0 Preview" \
               --notes "Optional independent Chrome+Tampermonkey read-only selected-text bilingual preview. Explicit site opt-in and user-selected content only. Chrome built-in Translator API is optional and browser dependent; no cloud translation calls, webpage content mutation, telemetry or general AI accuracy claims. Mouse/UI click preferred Taiwanese usage is 點選, with no automatic blanket replacements. Previous R5 0.4.0, R11 0.5.0 and frozen R6 study assets remain untouched."
+          fi
+
+  r14-capability-release:
+    name: Publish R14 offline capability lab (not model/provider integration)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify published HTML exactly matches original source
+        run: node tools/build_provider_capability_r14.js --check
+      - name: Publish immutable R14 offline capability preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha256sum examples/TW_Provider_Capability_Lab_R14_20261025.html > examples/TW_Provider_Capability_Lab_R14_20261025.html.sha256
+          if gh release view "r14-provider-capability-preview-0.1.0" >/dev/null 2>&1; then
+            echo "R14 release already exists: do not replace previously published assets."
+          else
+            gh release create "r14-provider-capability-preview-0.1.0" \
+              examples/TW_Provider_Capability_Lab_R14_20261025.html \
+              examples/TW_Provider_Capability_Lab_R14_20261025.html.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "R14 本機 Provider 能力與授權判定（獨立離線研究工具）" \
+              --notes "Standalone offline capability/consent explanation, not a translation engine. All remote providers remain disabled; no text egress or telemetry. Provider availability is a simulated declaration and not actual device-model verification. R5/R11/R13 installers and R6 frozen dataset are unchanged. Download the HTML locally and verify SHA256."
           fi

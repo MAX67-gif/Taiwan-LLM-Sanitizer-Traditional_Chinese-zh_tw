@@ -4,6 +4,10 @@
 
 > **產品定位：跨模型的臺灣繁中在地化控制與品質驗證層。** 我們不是另一個大型語言模型，也不是 TAIDE／Taiwan-LLM 的官方產品。公開核心依 [MIT 授權](LICENSE)；專案發起及治理：**CA L.**。
 
+## R14：翻譯前能力與授權檢查（純離線 Shadow Preview）
+
+新增 [R14 離線能力與授權檢查示範](examples/TW_Provider_Capability_Lab_R14_20261025.html) 與 [CLI／API 契約](docs/R14_PROVIDER_CAPABILITY.md)。可核對語言組、模型宣告可用性、下載需求與當次網站同意；**不連接遠端模型、不讀取網頁原文、不傳資料，也不取代 R13 v0.6.0 正式閱讀工具。** 示範資料不是裝置實機模型檢測。
+
 ## R13：安全雙語閱讀側車（獨立 v0.6.0 Preview）
 
 可在已手動授權的網站**反白文字、原文／譯文對照、試用 Chrome 本機 Translator API 或自行貼譯文**。只讀選取、原網頁文字不改寫，不傳至本專案伺服器；模型不可用就明確告知，不假裝翻譯成功。新 R13 Chrome／Tampermonkey 版本與 R11 v0.5.0 獨立，詳見 [R13 操作與安全規格](docs/R13_BILINGUAL_READER.md)。

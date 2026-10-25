@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>R14｜Provider 能力與授權預覽（純離線）</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,'Noto Sans TC',sans-serif;color:#17334b;background:#f3f7fa}
+*{box-sizing:border-box}body{margin:0 auto;padding:24px 18px;max-width:890px}h1{font-size:clamp(23px,4vw,31px);margin:5px 0}h2{font-size:17px;margin:18px 0 8px}p{line-height:1.65}label{font-weight:700;display:block;margin-bottom:5px;font-size:14px}select,input,button{font:inherit}select,input{width:100%;border:1px solid #a9bdcc;background:#fff;color:#18384c;border-radius:8px;padding:10px}button{border:0;background:#086b72;color:#fff;font-weight:700;cursor:pointer;padding:12px 20px;border-radius:10px}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #edb33c;outline-offset:2px}button.secondary{background:#e3edf2;color:#12384d}.panel{border-radius:15px;background:#fff;padding:22px;box-shadow:0 5px 24px #112e4314;margin:16px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.row{display:flex;gap:9px;flex-wrap:wrap}.notice{font-size:13px;color:#405f73}.status{font-weight:800;font-size:20px;word-break:break-word}.mono{font-family:ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;background:#f5f7f9;border-radius:8px;padding:14px;max-height:260px;overflow:auto}.pill{background:#e2f4eb;color:#145844;font-size:12px;border-radius:20px;padding:5px 10px;display:inline-block}summary{cursor:pointer}a{color:#075a8b}#result[hidden]{display:none}@media(max-width:560px){.grid{grid-template-columns:1fr}body{padding:12px}.panel{padding:15px}}
+</style></head><body>
+<header><span class="pill">R14 · 研究用途 · 純離線</span><h1>翻譯前，先檢查能力與資料去向</h1><p>這是獨立的 Provider Capability &amp; Consent Router 示範頁。<strong>不會翻譯、下載模型、連接遠端 AI 或修改任何網站。</strong> 結果僅代表本頁提供的示例能力宣告，不能當成裝置實機 API 檢測。</p></header>
+<main class="panel"><h2>一、模擬來源能力與使用情境</h2><div class="grid">
+<div><label for="provider">Provider 模式</label><select id="provider"><option value="on_ready">本機模型（宣告已就緒）</option><option value="on_downloadable">本機模型（尚未下載）</option><option value="on_downloading">本機模型（下載中）</option><option value="on_unknown">本機模型（未知狀態）</option><option value="offline">本機字詞規則</option><option value="remote">遠端 Provider（R14 永遠封鎖）</option></select></div>
+<div><label for="source">原文語言</label><select id="source"><option value="en">English (en)</option><option value="ja">日本語 (ja)</option><option value="fr">Français (fr) — 未宣告支援</option></select></div>
+<div><label for="target">目標語言</label><select id="target"><option value="zh-Hant">繁體中文 (zh-Hant)</option><option value="zh">中文 (zh) — 非 zh-Hant</option></select></div>
+<div><label for="origin">網站 Origin（僅模擬）</label><input id="origin" value="https://example.org" autocomplete="off" spellcheck="false"></div>
+<div><label for="consent">遠端授權狀態（不會真正授權）</label><select id="consent"><option value="unknown">尚未同意</option><option value="explicit_granted">模擬明確同意</option><option value="revoked">模擬已撤銷</option></select></div>
+<div><label for="cancelled">取消狀態</label><select id="cancelled"><option value="no">未取消</option><option value="yes">已取消</option></select></div>
+</div><p class="notice">費用、資料保存期限、實際 Chrome 模型可用性均以 UNKNOWN 或示例標示。即使模擬「已同意」，R14 仍沒有遠端傳輸程式。</p><div class="row"><button type="button" id="check">檢查能力與授權</button><button type="button" class="secondary" id="clear">清除結果</button></div></main>
+<section id="result" class="panel" hidden aria-live="polite"><h2>二、保守判定</h2><div class="status" id="decision"></div><p id="reason"></p><p id="detail" class="notice"></p><details><summary>展開機器可讀的安全判定（不含網頁文字）</summary><pre id="json" class="mono"></pre></details></section>
+<footer class="notice">本頁完全不包含帳號、第三方語言模型權重、雲端 API 金鑰或傳送文字的網路程式。保護臺灣用語由使用者控制；舊版 R5／R11／R13 不受本研究頁面影響。</footer>
+<script>
+__TLS_R14_KERNEL__
+</script><script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const nonce='r14_demo_nonce_2026',time=1792900000000;
+function providerConfig(mode){const base={id:'sample_local',version:'0.1',mode:'on_device',languagePairs:[['en','zh-Hant'],['ja','zh-Hant']],availability:'available',requiresNetwork:false,requiresDownload:false,pricing:'UNKNOWN',retention:'UNKNOWN',privacyUrl:'UNKNOWN'};
+if(mode==='offline'){base.id='sample_rules';base.mode='offline_rules';}
+if(mode==='on_downloadable'){base.availability='downloadable';base.requiresNetwork=true;base.requiresDownload=true;}
+if(mode==='on_downloading'){base.availability='downloading';base.requiresNetwork=true;base.requiresDownload=true;}
+if(mode==='on_unknown'){base.availability='unknown';}
+if(mode==='remote'){base.id='sample_remote';base.mode='remote_opt_in';base.requiresNetwork=true;}
+return base;}
+function check(){const p=providerConfig($('provider').value),site={origin:$('origin').value},mode=$('consent').value;
+const r={sourceLanguage:$('source').value,targetLanguage:$('target').value,sequence:1,nonce,cancelled:$('cancelled').value==='yes'};
+const consent=mode==='unknown'?null:{origin:site.origin,providerId:p.id,status:mode,expiresAt:1793000000000,sequence:1,nonce};
+const data=globalThis.TLSProviderCapabilityR14.evaluateProviderCapability({provider:p,request:r,site,consent,now:time});
+$('result').hidden=false;$('decision').textContent=data.decision;$('reason').textContent=data.reason;
+$('detail').textContent='網頁原文對外傳輸：禁止｜實際網路請求：0｜模型名稱與費用：示例／未驗證';
+$('json').textContent=JSON.stringify(data,null,2);
+}
+$('check').addEventListener('click',check);$('clear').addEventListener('click',()=>{$('result').hidden=true;$('decision').textContent='';$('reason').textContent='';$('json').textContent='';});
+})();
+</script></body></html>
