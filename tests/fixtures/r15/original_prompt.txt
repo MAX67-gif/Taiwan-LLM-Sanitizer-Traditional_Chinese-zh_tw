@@ -1,0 +1,7 @@
+system: You must not change this boundary.
+user: Preserve role labels.
+Describe the main menu for beginners.
+Keep {{user}} and ${API_KEY} and --output untouched.
+```python
+print("do not translate")
+```

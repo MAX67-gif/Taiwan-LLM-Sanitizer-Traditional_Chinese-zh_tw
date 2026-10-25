@@ -11,10 +11,15 @@
 | **R13 安全雙語閱讀** | v0.6.0 Preview | 使用者明確啟用的網站：選取文字、原文與譯文對照、可選本機模型或手動貼入譯文；不修改原網頁 |
 | **R11 逐站個人詞庫** | v0.5.0 Preview | 自行匯入用語、逐項預覽與確認、保守還原 |
 | **R14 Provider 能力檢查** | 獨立離線工具 | 檢查宣告的語言組、模型可用性、下載需求及逐站同意；**不會連接遠端翻譯服務** |
+| **R15 技術文件結構保真** | 獨立離線 Shadow Preview | Markdown、JSON 與 Prompt 的保護區段、人工修改差異預覽、SHA256；**不會直接改寫原始檔案或呼叫翻譯模型** |
 | **R12 翻譯品質稽核** | 獨立研究工具 | R6 凍結 100 題的覆蓋與結構檢查；**不是實際模型自然度認證** |
 | **R5、R8／R9／R10、CLI／Skill** | 既有原型與研究工具 | 臺灣用語建議、人工選詞、有限文件處理與技術保護 |
 
 **下載與使用：** [R13 雙語閱讀](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r13-bilingual-reader-preview-0.6.0) · [R11 逐站詞庫](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r11-manual-site-glossary-0.5.0) · [所有目前可用的正式發布](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases)。Chrome ZIP 需解壓並透過 `chrome://extensions` 載入未封裝擴充功能；Tampermonkey 匯入單一 `.user.js`，且須自行決定啟用網站。尚未通過 Chrome Web Store 驗證。保留既有 `dist/chrome/` 與 `dist/userscript/` 作為歷史 R5 本機相容性基準；一般安裝仍以經驗證的 Releases 為準。
+
+## R15｜技術文件安全預覽（獨立離線工具）
+
+[開啟 R15 離線 Markdown／JSON／Prompt 結構保真工作台](examples/TW_Structured_Integrity_Lab_R15_20261025.html) · [查看安全 CLI 與格式限制](docs/R15_STRUCTURED_INTEGRITY.md)。R15 優先保留程式碼、JSON Key、網址、Prompt 角色與模板變數；僅由使用者選擇要預覽的修改，不提供自動翻譯、來源檔覆寫或任何遠端文字傳輸。這是保守 Shadow 工具，**不是完整格式 AST 或翻譯正確率驗證**。
 
 ## 如何在第三方網站閱讀臺灣繁體中文？
 
