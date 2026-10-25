@@ -1,7 +1,7 @@
 """Real Chromium R16 offline privacy and preview regression, synthetic fixtures only."""
 from pathlib import Path
-import shutil,json
-from playwright.sync_api import sync_playwright
+import shutil,json,re
+from playwright.sync_api import sync_playwright, expect
 ROOT=Path(__file__).resolve().parents[1]
 HTML=ROOT/'examples/TW_Localization_Safety_Studio_R16_20261026.html'
 
@@ -48,10 +48,10 @@ def main():
         assert page.locator('#preview-panel').is_hidden()
         # Explicit file selection reads only locally and rejects undecodable UTF-8.
         page.locator('#file').set_input_files({'name':'unsafe.txt','mimeType':'text/plain','buffer':bytes([0xff,0xfe,0xfa])})
-        assert 'UTF-8' in page.locator('#errors').inner_text()
+        expect(page.locator('#errors')).to_contain_text('UTF-8')
         assert page.locator('#manual').is_hidden()
         page.locator('#file').set_input_files({'name':'safe.md','mimeType':'text/plain','buffer':b'# Original\nValid text for manual review.\n'})
-        assert page.locator('#source').input_value().startswith('# Original')
+        expect(page.locator('#source')).to_have_value(re.compile(r'^# Original'))
         page.locator('#inspect').click()
         assert page.locator('#state').inner_text()=='OK'
         page.locator('#format').select_option('json')
