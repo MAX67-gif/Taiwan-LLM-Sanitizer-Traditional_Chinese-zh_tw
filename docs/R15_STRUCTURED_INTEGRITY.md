@@ -65,3 +65,10 @@ CI 主線要再驗證 R5/R11/R13 舊安裝包 parity、R6 frozen manifest、既�
 - 對 Markdown 候選修改採取更保守的結構符號與雙向文字控制碼拒絕，避免修改段落時產生非預期的語法或造成視覺混淆；這是限制，不是完整 CommonMark 相容性保證。
 - 輸入包含無法正確編成 UTF-8 的不成對 UTF-16 代理字元時，拒絕分析，避免不同來源文字被相同雜湊誤判為一致。
 - 公開五語 README 必須按繁體中文母版的 SHA256 同步，且維持第三方權利安全規格；本 R15 僅新增 Shadow 原型，尚未驗證任何真實 AI 翻譯自然度。
+
+
+## R15.1 安全修正（v0.1.1 · 新版獨立預覽）
+
+R15.1 使用與 R15.0 分離的[離線安全預覽](../examples/TW_Structured_Integrity_Lab_R151_20261026.html)。針對已重現的跨行 HTML 區塊／註解、Markdown 平衡括號連結目的地與 GFM 核取方塊標記，補上拒絕或保護邏輯；另新增 180 筆固定原創反例及瀏覽器回歸。**歷史 R15.0 HTML 與既有 Release 原樣保留；新程式不是完整 CommonMark AST，無法保證所有 HTML／Markdown 格式。**
+
+測試：`node --test tests/test_protected_segments_r151.js`、`node tools/build_structured_integrity_r151.js --check`、`python tests/test_structured_integrity_browser_r151.py` 與 `python tools/check_release_workflow_r151.py`。仍採 `approval=NONE`、來源 SHA256、UTF-16 offset、差異預覽、無外連及原文件不得覆寫。尚未正式驗收發布前，不能宣稱已上線。

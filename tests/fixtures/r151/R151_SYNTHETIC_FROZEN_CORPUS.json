@@ -1,0 +1,1447 @@
+{
+  "authorship": "original_synthetic_no_third_party_assets",
+  "cases": [
+    {
+      "case_id": "R151-C000",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_000\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C001",
+      "kind": "link",
+      "protected_end": 49,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p1_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C002",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 2 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C003",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_003\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C004",
+      "kind": "link",
+      "protected_end": 52,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p4_(0(1))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C005",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 5 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C006",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_006\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C007",
+      "kind": "link",
+      "protected_end": 55,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p7_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C008",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 8 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C009",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_009\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C010",
+      "kind": "link",
+      "protected_end": 61,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p10_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C011",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 11 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C012",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_012\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C013",
+      "kind": "link",
+      "protected_end": 52,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p13_\\(0\\)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C014",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 14 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C015",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_015\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C016",
+      "kind": "link",
+      "protected_end": 55,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p16_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C017",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 17 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C018",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_018\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C019",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p19_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C020",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 20 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C021",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_021\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C022",
+      "kind": "link",
+      "protected_end": 59,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p22_(0(1(2(3))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C023",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 23 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C024",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_024\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C025",
+      "kind": "link",
+      "protected_end": 50,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p25_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C026",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 26 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C027",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_027\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C028",
+      "kind": "link",
+      "protected_end": 55,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p28_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C029",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 29 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C030",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_030\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C031",
+      "kind": "link",
+      "protected_end": 58,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p31_\\(0(1(2\\)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C032",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 32 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C033",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_033\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C034",
+      "kind": "link",
+      "protected_end": 61,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p34_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C035",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 35 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C036",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_036\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C037",
+      "kind": "link",
+      "protected_end": 50,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p37_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C038",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 38 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C039",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_039\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C040",
+      "kind": "link",
+      "protected_end": 53,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p40_(0(1))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C041",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 41 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C042",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_042\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C043",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p43_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C044",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 44 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C045",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_045\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C046",
+      "kind": "link",
+      "protected_end": 61,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p46_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C047",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 47 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C048",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_048\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C049",
+      "kind": "link",
+      "protected_end": 52,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p49_\\(0\\)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C050",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 50 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C051",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_051\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C052",
+      "kind": "link",
+      "protected_end": 55,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p52_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C053",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 53 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C054",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_054\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C055",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p55_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C056",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 56 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C057",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_057\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C058",
+      "kind": "link",
+      "protected_end": 59,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p58_(0(1(2(3))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C059",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 59 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C060",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_060\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C061",
+      "kind": "link",
+      "protected_end": 50,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p61_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C062",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 62 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C063",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_063\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C064",
+      "kind": "link",
+      "protected_end": 55,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p64_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C065",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 65 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C066",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_066\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C067",
+      "kind": "link",
+      "protected_end": 58,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p67_\\(0(1(2\\)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C068",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 68 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C069",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_069\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C070",
+      "kind": "link",
+      "protected_end": 61,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p70_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C071",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 71 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C072",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_072\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C073",
+      "kind": "link",
+      "protected_end": 50,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p73_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C074",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 74 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C075",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_075\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C076",
+      "kind": "link",
+      "protected_end": 53,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p76_(0(1))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C077",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 77 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C078",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_078\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C079",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p79_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C080",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 80 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C081",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_081\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C082",
+      "kind": "link",
+      "protected_end": 61,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p82_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C083",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 83 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C084",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_084\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C085",
+      "kind": "link",
+      "protected_end": 52,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p85_\\(0\\)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C086",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 86 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C087",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_087\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C088",
+      "kind": "link",
+      "protected_end": 55,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p88_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C089",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 89 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C090",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_090\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C091",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p91_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C092",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 92 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C093",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_093\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C094",
+      "kind": "link",
+      "protected_end": 59,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p94_(0(1(2(3))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C095",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 95 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C096",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_096\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C097",
+      "kind": "link",
+      "protected_end": 50,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p97_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C098",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 98 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C099",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_099\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C100",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p100_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C101",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 101 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C102",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_102\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C103",
+      "kind": "link",
+      "protected_end": 59,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p103_\\(0(1(2\\)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C104",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 104 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C105",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_105\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C106",
+      "kind": "link",
+      "protected_end": 62,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p106_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C107",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 107 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C108",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_108\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C109",
+      "kind": "link",
+      "protected_end": 51,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p109_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C110",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 110 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C111",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_111\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C112",
+      "kind": "link",
+      "protected_end": 54,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p112_(0(1))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C113",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 113 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C114",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_114\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C115",
+      "kind": "link",
+      "protected_end": 57,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p115_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C116",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 116 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C117",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_117\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C118",
+      "kind": "link",
+      "protected_end": 62,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p118_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C119",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 119 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C120",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_120\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C121",
+      "kind": "link",
+      "protected_end": 53,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p121_\\(0\\)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C122",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 122 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C123",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_123\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C124",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p124_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C125",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 125 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C126",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_126\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C127",
+      "kind": "link",
+      "protected_end": 57,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p127_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C128",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 128 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C129",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_129\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C130",
+      "kind": "link",
+      "protected_end": 60,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p130_(0(1(2(3))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C131",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 131 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C132",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_132\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C133",
+      "kind": "link",
+      "protected_end": 51,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p133_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C134",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 134 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C135",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_135\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C136",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p136_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C137",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 137 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C138",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_138\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C139",
+      "kind": "link",
+      "protected_end": 59,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p139_\\(0(1(2\\)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C140",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 140 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C141",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_141\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C142",
+      "kind": "link",
+      "protected_end": 62,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p142_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C143",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 143 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C144",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_144\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C145",
+      "kind": "link",
+      "protected_end": 51,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p145_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C146",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 146 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C147",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_147\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C148",
+      "kind": "link",
+      "protected_end": 54,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p148_(0(1))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C149",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 149 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C150",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_150\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C151",
+      "kind": "link",
+      "protected_end": 57,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p151_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C152",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 152 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C153",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_153\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C154",
+      "kind": "link",
+      "protected_end": 62,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p154_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C155",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 155 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C156",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_156\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C157",
+      "kind": "link",
+      "protected_end": 53,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p157_\\(0\\)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C158",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 158 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C159",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_159\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C160",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p160_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C161",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 161 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C162",
+      "kind": "html",
+      "protected_end": 21,
+      "protected_start": 6,
+      "require_accepted": true,
+      "source": "<div>\nSECRET_MARK_162\n</div>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C163",
+      "kind": "link",
+      "protected_end": 57,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p163_(0(1(2)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C164",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 164 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C165",
+      "kind": "html",
+      "protected_end": 22,
+      "protected_start": 7,
+      "require_accepted": true,
+      "source": "<pre>\r\nSECRET_MARK_165\r\n</pre>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C166",
+      "kind": "link",
+      "protected_end": 60,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p166_(0(1(2(3))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C167",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 167 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C168",
+      "kind": "html",
+      "protected_end": 24,
+      "protected_start": 9,
+      "require_accepted": true,
+      "source": "<script>\nSECRET_MARK_168\n</script>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C169",
+      "kind": "link",
+      "protected_end": 51,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p169_(0)/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C170",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 170 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C171",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<style>\r\n\r\nSECRET_MARK_171\r\n</style>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C172",
+      "kind": "link",
+      "protected_end": 56,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p172_\\(0(1\\))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C173",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 173 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C174",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<section>\n\nSECRET_MARK_174\n</section>\nOutside prose.\n"
+    },
+    {
+      "case_id": "R151-C175",
+      "kind": "link",
+      "protected_end": 59,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p175_\\(0(1(2\\)))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C176",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [ ] Task 176 remains editable.\n"
+    },
+    {
+      "case_id": "R151-C177",
+      "kind": "html",
+      "protected_end": 26,
+      "protected_start": 11,
+      "require_accepted": true,
+      "source": "<table>\r\n\r\nSECRET_MARK_177\r\n</table>\r\nOutside prose.\r\n"
+    },
+    {
+      "case_id": "R151-C178",
+      "kind": "link",
+      "protected_end": 62,
+      "protected_start": 4,
+      "require_accepted": true,
+      "source": "See [docs](https://docs.example.test/p178_\\(0(1(2(3\\))))/dest) now.\n"
+    },
+    {
+      "case_id": "R151-C179",
+      "kind": "gfm",
+      "protected_end": 5,
+      "protected_start": 2,
+      "require_accepted": true,
+      "source": "- [x] Task 179 remains editable.\n"
+    }
+  ],
+  "schema": "tls.r151.counterexample-corpus.v1",
+  "seed": 15120261026
+}
