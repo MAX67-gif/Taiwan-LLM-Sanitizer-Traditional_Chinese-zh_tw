@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<title>R15 臺灣繁中結構保真實驗室｜離線安全預覽</title>
+<style>
+:root{color-scheme:light;--ink:#203048;--muted:#52657b;--stroke:#cbd5e1;--green:#036b58;--bg:#f2f5f9;--surface:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Microsoft JhengHei",sans-serif;line-height:1.65}
+main{max-width:1140px;margin:0 auto;padding:24px 18px 56px}header{margin-bottom:20px}
+.kicker{font-size:.78rem;letter-spacing:.12em;color:var(--green);font-weight:800}h1{font-size:clamp(1.6rem,4vw,2.7rem);line-height:1.2;margin:.32em 0 .46em}h2{font-size:1.15rem;margin:0 0 12px}
+p{margin:.4em 0 1em;color:var(--muted)}.card{background:var(--surface);border:1px solid var(--stroke);border-radius:15px;padding:18px;margin-bottom:16px;box-shadow:0 3px 13px #1a37540b}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.controls>*{min-width:0}
+label{font-weight:700}select,textarea,input[type=text]{border:1px solid #aabccc;border-radius:9px;background:white;color:var(--ink);font:inherit;padding:10px;width:100%}
+textarea{min-height:176px;resize:vertical;tab-size:2;font-family:ui-monospace,Consolas,monospace;font-size:.92rem}select{width:auto;min-width:145px}
+button{border:1px solid #08796a;background:#08796a;color:#fff;border-radius:9px;font:inherit;font-weight:700;padding:10px 15px;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.5}button.subtle{background:#fff;color:#234258;border-color:#afbdc9}
+button:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #dfb14b;outline-offset:2px}
+small,.muted{color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0}.chip{background:#e8f5f0;color:#124f43;border-radius:8px;padding:5px 10px;font-size:.85rem;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.preview{border:1px solid #d5dfe9;background:#f9fbfd;border-radius:9px;padding:12px;margin:0;min-height:130px;max-height:360px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:.89rem/1.55 ui-monospace,Consolas,monospace}
+#segment-list{display:grid;gap:11px}.segment{border:1px solid #d4dee8;border-radius:10px;padding:11px;background:#fbfcfd}
+.segment h3{margin:0 0 4px;font-size:.94rem}.segment label{display:block;font-size:.85rem}.segment .before{display:block;color:#42596d;overflow-wrap:anywhere;white-space:pre-wrap;max-height:80px;overflow:auto}
+.status{font-weight:700;color:#135c51}#errors{color:#ad2131;font-weight:700;white-space:pre-wrap}footer{color:var(--muted);font-size:.86rem}
+@media(max-width:720px){main{padding:14px 10px}.grid{grid-template-columns:1fr}.card{padding:14px}.controls{align-items:stretch}.controls button{flex:1}}
+@media print{body{background:white}.card{box-shadow:none}button,textarea,select{display:none!important}.preview{max-height:none}}
+</style>
+</head>
+<body><main>
+<header><div class="kicker">TAIWAN LLM SANITIZER · R15 · OFFLINE SHADOW</div><h1>先保護結構，再談在地化。</h1><p>程式碼、網址、JSON Key、Prompt 角色與技術專名先受保護；只有使用者明確選擇的文字才能製作<strong>安全預覽</strong>。本頁不呼叫雲端模型，不修改任何原始檔案或網站，不代表翻譯品質獲驗證。</p></header>
+<section class="card"><h2>1｜選擇格式並貼入資料</h2><div class="controls"><label for="format">格式</label><select id="format"><option value="markdown">Markdown</option><option value="json">JSON</option><option value="prompt">AI Prompt</option></select><button id="sample" class="subtle" type="button">載入原創範例</button><button id="analyze" type="button">掃描保護範圍</button><button id="clear" class="subtle" type="button">清除全部</button></div><label for="source">僅留在本頁記憶體的原文</label><textarea id="source" spellcheck="false" aria-describedby="privacy-note"># 操作說明
+請 click 主選單，先確認選項。
+
+~~~js
+const endpoint = "https://example.org/api";
+~~~
+請保留 GitHub、{{USER}} 和 `--output`。</textarea><small id="privacy-note">不使用 localStorage、Cookie、CDN 或遠端翻譯。不要在任何網站貼入機密文字；若你主動匯出結果，請自行管理產生的檔案。</small></section>
+<section class="card" id="report" hidden aria-live="polite"><h2>2｜檢查報告</h2><div class="chips"><span class="chip" id="state">未分析</span><span class="chip" id="counts"></span><span class="chip" id="hash"></span></div><p id="errors" role="alert"></p><p id="why"></p><button id="save" class="subtle" type="button">下載無原文的 JSON 檢查報告</button></section>
+<section class="card" id="edit" hidden><h2>3｜人工選擇是否要預覽</h2><p>僅顯示可編輯的文字段落（最多前 40 筆）；空白修改欄不會套用。勾選只是產生預覽，不會寫回來源檔案。若要維持原文，可以什麼都不勾選。</p><div id="segment-list"></div><div class="controls" style="margin-top:15px"><button id="preview" type="button">製作人工確認的安全預覽</button><button id="reset-preview" type="button" class="subtle">撤銷預覽</button></div></section>
+<section class="card" id="compare" hidden><h2>4｜原文與預覽的差異</h2><p class="status" id="preview-state" role="status">尚未預覽</p><div class="grid"><div><h3>原文（未修改）</h3><pre class="preview" id="original"></pre></div><div><h3>安全預覽（不會自動套用）</h3><pre class="preview" id="result"></pre></div></div></section>
+<footer>臺灣用語是使用者選擇，不是禁詞政策。R15 屬獨立本機研究原型，不連接第三方模型、遠端服務或正式 R5／R11／R13 執行路由。授權與原始碼：MIT；此頁示例為本專案原創。</footer>
+</main>
+<script>__TLS_R15_NAMES__</script>
+<script>__TLS_R15_CORE__</script>
+<script>
+(()=>{'use strict';
+const $=x=>document.querySelector(x);let current=null,original='';let seq=0;
+const examples={markdown:'# 操作說明\n請 click 主選單，先確認選項。\n\n~~~js\nconst endpoint = "https://example.org/api";\n~~~\n請保留 GitHub、{{USER}} 和 `--output`。\n',json:'{"id":"menu","text":"click the menu","url":"https://example.org","detail":{"label":"Open the menu"}}',prompt:'system: Keep the instructions unchanged.\nRead GitHub docs.\nDo not change {{USER}} or --output.\n'};
+function reset(){current=null;original='';++seq;$('#report').hidden=true;$('#edit').hidden=true;$('#compare').hidden=true;$('#segment-list').replaceChildren();$('#errors').textContent='';}
+$('#clear').addEventListener('click',()=>{$('#source').value='';reset();});
+$('#sample').addEventListener('click',()=>{$('#source').value=examples[$('#format').value];reset();});
+$('#format').addEventListener('change',reset);
+$('#source').addEventListener('input',reset);
+$('#analyze').addEventListener('click',async()=>{
+ const token=++seq;current=null;original=$('#source').value;
+ try{
+  const info=await TLSProtectedR15.analyze(original,$('#format').value);if(token!==seq)return;
+  current=info;$('#report').hidden=false;$('#edit').hidden=info.validation.status!=='OK';$('#compare').hidden=true;
+  $('#state').textContent=info.validation.status;$('#counts').textContent=`可預覽 ${info.mutable_count} 段｜保護 ${info.protected_count} 段`;
+  $('#hash').textContent='SHA256 '+info.input_sha256.slice(0,12)+'…';$('#errors').textContent=info.validation.errors.join(', ');
+  $('#why').textContent='範圍位置採 UTF-16 [start,end)，報告不包含你輸入的全文；只有人工選擇的片段可以進入安全預覽。';
+  const box=$('#segment-list');box.replaceChildren();let count=0;
+  for(const item of info.segments){if(item.policy!=='EDITABLE'||count++>=40)continue;
+   const div=document.createElement('div');div.className='segment';
+   const heading=document.createElement('h3');heading.textContent=`段落 ${item.id} · ${item.type} · ${item.start}–${item.end}`;
+   const before=document.createElement('span');before.className='before';before.textContent=original.slice(item.start,item.end);
+   const label=document.createElement('label');const chk=document.createElement('input');chk.type='checkbox';chk.dataset.id=item.id;chk.className='use-segment';
+   label.append(chk,document.createTextNode(' 勾選這段，建立人工預覽'));
+   const input=document.createElement('input');input.type='text';input.dataset.id=item.id;input.className='replacement';input.maxLength=1000;input.placeholder='輸入你自己確認的臺灣繁中建議文字';
+   div.append(heading,before,label,input);box.append(div);
+  }
+ }catch(_){$('#report').hidden=false;$('#state').textContent='REJECTED';$('#errors').textContent='不支援的輸入或資料過大';$('#edit').hidden=true;$('#compare').hidden=true;}
+});
+$('#preview').addEventListener('click',async()=>{
+ if(!current||current.validation.status!=='OK')return;const token=++seq;
+ const edits=[];for(const chk of document.querySelectorAll('input.use-segment:checked')){
+  const input=[...document.querySelectorAll('input.replacement')].find(x=>x.dataset.id===chk.dataset.id);
+  edits.push({id:chk.dataset.id,replacement:input.value});
+ }
+ try{const p=await TLSProtectedR15.preview(original,current,edits);if(token!==seq)return;
+  $('#compare').hidden=false;$('#preview-state').textContent=`${p.status} ｜${p.change_count} 處變更｜沒有修改網站或來源檔`;
+  $('#original').textContent=original;$('#result').textContent=p.preview_text;$('#errors').textContent='';
+ }catch(e){$('#compare').hidden=true;$('#errors').textContent='預覽已拒絕：'+e.message;}
+});
+$('#reset-preview').addEventListener('click',()=>{$('#compare').hidden=true;$('#errors').textContent='';});
+$('#save').addEventListener('click',()=>{if(!current)return;
+ const blob=new Blob([JSON.stringify(TLSProtectedR15.publicReport(current),null,2)+'\n'],{type:'application/json'});
+ const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='TLS_R15_Offline_Structure_Report.json';a.click();URL.revokeObjectURL(url);
+});
+})();
+</script>
+</body></html>

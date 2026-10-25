@@ -30,6 +30,17 @@ jobs:
         run: python tools/check_r12_release_workflow.py
       - name: Validate R13 Release Bash and official CI gates before expensive tests
         run: python tools/check_release_workflow_r13.py
+      - name: Verify R15 standalone structure-protection lab and CLI
+        run: |
+          node tools/build_structured_integrity_r15.js --check
+          node tools/r15_structured_localizer_cli.js --input tests/fixtures/r15/original_markdown.md --format markdown --report "$RUNNER_TEMP/tls-r15-report.json"
+          python tools/check_release_workflow_r15.py
+      - name: Upload R15 original-only structural safety lab
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R15_Standalone_Offline_Structure_Review
+          path: examples/TW_Structured_Integrity_Lab_R15_20261025.html
+          if-no-files-found: error
       - name: Verify R14 independent no-transport Provider decision preview
         run: |
           node tools/build_provider_capability_r14.js --check
@@ -230,6 +241,8 @@ jobs:
       - run: python tests/test_userscript_browser_r11.py
       - run: python tests/test_quality_audit_browser_r12.py
       - run: python tests/test_visual_progress_browser_r5.py
+      - name: Test R15 standalone HTML in real Chromium, no external network
+        run: python tests/test_structured_integrity_browser_r15.py
       - name: Verify R14 offline Provider capability UI, consent and no egress in Chromium
         run: python tests/test_provider_capability_browser_r14.py
       - name: Test R13 closed-shadow selection, code protection and no network in Chromium
@@ -508,4 +521,36 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "R14 本機 Provider 能力與授權判定（獨立離線研究工具）" \
               --notes "Standalone offline capability/consent explanation, not a translation engine. All remote providers remain disabled; no text egress or telemetry. Provider availability is a simulated declaration and not actual device-model verification. R5/R11/R13 installers and R6 frozen dataset are unchanged. Download the HTML locally and verify SHA256."
+          fi
+
+  r15-structured-release:
+    name: Publish R15 offline Markdown/JSON/Prompt structure preview
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser-integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check R15 source and committed offline HTML reproducibility
+        run: |
+          node tools/build_structured_integrity_r15.js --check
+          python tools/check_release_workflow_r15.py
+      - name: Publish immutable R15 offline safety preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha256sum examples/TW_Structured_Integrity_Lab_R15_20261025.html > examples/TW_Structured_Integrity_Lab_R15_20261025.html.sha256
+          if gh release view "r15-structured-integrity-preview-0.1.0" >/dev/null 2>&1; then
+            echo "R15 preview already published; do not overwrite existing release assets."
+          else
+            gh release create "r15-structured-integrity-preview-0.1.0" \
+              examples/TW_Structured_Integrity_Lab_R15_20261025.html \
+              examples/TW_Structured_Integrity_Lab_R15_20261025.html.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "R15 臺灣繁中技術文件結構保真與安全差異預覽（離線 Shadow）" \
+              --notes "Standalone offline typed protected-segment preview for Markdown/JSON/Prompt. Preserves code, URLs, JSON keys, role markers and placeholders; requires explicit per-segment human choice. No automatic source changes, network/cloud translation or quality claims. Conservative lexical scan is not complete AST parsing. Historic R5/R11/R13 browser runtimes, R6 frozen and R7.2 demo remain unchanged."
           fi

@@ -1,0 +1,8 @@
+{
+  "schema": "tls.example.v1",
+  "id": "menu",
+  "text": "click the menu",
+  "url": "https://example.org/api",
+  "config": {"role": "system", "message": "請保留原詞"},
+  "source_code": {"label": "DO NOT CHANGE"}
+}

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:a36349ff0a6b56e77031f605a9254154aa04b90703f4162d84218474e83fecca -->
+<!-- SOURCE_README_SHA256:8635035192b025eef1805227abb481104b1bb1084216947355814cdb1bbfd365 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -14,10 +14,15 @@
 | **R13** | Local selection-based bilingual reading, no page-text rewrite | v0.6.0 Preview |
 | **R11** | Explicit per-site personal glossary and conservative rollback | v0.5.0 Preview |
 | **R14** | Offline provider capability / consent declarations; no remote transport | Research preview |
+| **R15** | Markdown/JSON/Prompt 구조 보호 및 SHA256 기반 로컬 변경 미리보기 | 독립 미리보기 |
 | **R12 / R6** | Frozen 100-case coverage and structural audit; not model correctness | Evaluation only |
 | **R5, R8–R10** | Earlier lexical, human-choice and offline research tools | Preview / prototype |
 
 [Releases](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases) · [R13 bilingual reader](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r13-bilingual-reader-preview-0.6.0) · [R11 glossary](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/r11-manual-site-glossary-0.5.0).
+
+## R15 — Local structure-preview toolkit
+
+[R15 오프라인 구조 보호 도구](examples/TW_Structured_Integrity_Lab_R15_20261025.html)는 코드, JSON 키, URL, 역할과 변수를 보호하고 사용자가 지정한 변경 내용만 미리 보여 줍니다. 자동 번역이나 원본 파일 수정은 하지 않습니다.
 
 ## 일반 웹사이트에서 활용하기
 
