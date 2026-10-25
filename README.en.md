@@ -1,9 +1,9 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:8635035192b025eef1805227abb481104b1bb1084216947355814cdb1bbfd365 -->
+<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
-**Languages:** [繁體中文](README.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+**Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 An open-source, privacy-minded layer for user-controlled Taiwanese terminology, bilingual reading and technical-content integrity; not affiliated with third-party services. **MIT** · Founder / Steward: CA L.
 
@@ -41,3 +41,9 @@ These are previews, not independent certification of translation accuracy, broad
 ## Documentation and participation
 
 [Documentation](docs/FEATURES.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Major updates](CHANGELOG.md).
+
+## Nine practical, original scenarios
+
+[Read the nine original examples](docs/USAGE_EXAMPLES.en.md) (EX01–EX09), covering context-sensitive Taiwan terminology, R13 read-only selection, R11 manual per-site glossary, R14 capability declarations, and R15 Markdown/JSON/Prompt protection.
+
+A **fictional browser-game-like page** with a normal, selectable HTML label such as `Open settings` may allow R13 selection or user-controlled R11 glossary behavior **only where site rules permit**. Text drawn in Canvas/WebGL is not supported. This is not evidence of real-game compatibility and no branded game script or dictionary is distributed. See the [general guide](docs/WEBSITE_LOCALIZATION_GUIDE.md).

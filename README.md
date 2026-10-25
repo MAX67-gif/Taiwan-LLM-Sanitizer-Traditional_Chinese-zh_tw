@@ -1,6 +1,6 @@
 # Taiwan-LLM-Sanitizer｜更安全的臺灣繁體中文在地化工具
 
-**語言／Languages：** [繁體中文](README.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+**語言／Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 > **本專案的工作是提供使用者可控的臺灣中文用語、翻譯顯示與技術內容保真工具，不是語言審查器，也不宣稱是任何第三方服務的官方產品。** 原創開源核心採 [MIT](LICENSE)；Founder／Steward：CA L.。
 
@@ -20,6 +20,14 @@
 ## R15｜技術文件安全預覽（獨立離線工具）
 
 [開啟 R15 離線 Markdown／JSON／Prompt 結構保真工作台](examples/TW_Structured_Integrity_Lab_R15_20261025.html) · [查看安全 CLI 與格式限制](docs/R15_STRUCTURED_INTEGRITY.md)。R15 優先保留程式碼、JSON Key、網址、Prompt 角色與模板變數；僅由使用者選擇要預覽的修改，不提供自動翻譯、來源檔覆寫或任何遠端文字傳輸。這是保守 Shadow 工具，**不是完整格式 AST 或翻譯正確率驗證**。
+
+## 九個可照著理解的實際範例
+
+**[閱讀完整原創使用範例](docs/USAGE_EXAMPLES.md)**（含 `EX01–EX09`）：軟體／餐飲用語差異、R13 選取雙語閱讀、R11 個人詞庫、R14 模型可用性、R15 的 Markdown／JSON／Prompt 安全預覽，以及**一般網頁遊戲型網站的可行與不可行範圍**。
+
+例如：如果一個自製測試網站把 `Open settings` 顯示為一般 DOM 文字，使用者可能透過 R13 手動選取顯示雙語對照；如果文字是 Canvas／WebGL 繪製，**現有工具就不能直接辨識或翻譯**。這是**原創合成示範**，不是任何第三方遊戲的相容性保證，且沒有重新發布任何專用腳本或詞庫。
+
+**簡體中文使用者請看 [简体中文 README](README.zh-CN.md) 與 [简体中文示例](docs/USAGE_EXAMPLES.zh-CN.md)。** 六語內容需要同步更新，但真人母語審核尚待完成。
 
 ## 如何在第三方網站閱讀臺灣繁體中文？
 

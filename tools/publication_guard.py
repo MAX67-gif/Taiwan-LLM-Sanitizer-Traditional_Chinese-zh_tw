@@ -15,7 +15,7 @@ ROOT_PUBLIC={
     ".gitignore", ".github/workflows/ci.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
     "AUTHORS.md","CHANGELOG.md","CONTRIBUTING.md","LICENSE",
-    "PRIVACY.md","README.md","README.en.md","README.ja.md","README.ko.md","README.es.md","SECURITY.md",
+    "PRIVACY.md","README.md","README.zh-CN.md","README.en.md","README.ja.md","README.ko.md","README.es.md","SECURITY.md",
     ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
@@ -23,6 +23,14 @@ DOCS_PUBLIC={
     "docs/GLOSSARY.md",
     "docs/ROADMAP.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.md",
+    "docs/WEBSITE_LOCALIZATION_GUIDE.zh-CN.md",
+    "docs/MULTILINGUAL_DOCUMENTATION_STANDARD.md",
+    "docs/USAGE_EXAMPLES.md",
+    "docs/USAGE_EXAMPLES.zh-CN.md",
+    "docs/USAGE_EXAMPLES.en.md",
+    "docs/USAGE_EXAMPLES.ja.md",
+    "docs/USAGE_EXAMPLES.ko.md",
+    "docs/USAGE_EXAMPLES.es.md",
     "docs/THIRD_PARTY_RIGHTS_POLICY.md",
     "docs/DEVELOPER_GUIDE.md",
     "docs/QUALITY_EVALUATION.md",
@@ -146,6 +154,8 @@ def validate(paths:list[str])->list[str]:
 
 def self_test():
     assert allowed_path("README.md")
+    assert allowed_path("README.zh-CN.md")
+    assert allowed_path("docs/USAGE_EXAMPLES.zh-CN.md")
     assert allowed_path("docs/ROADMAP.md")
     assert allowed_path("src/core/preferences.js")
     assert allowed_path("skills/taiwan-zh-tw-localization/SKILL.md")

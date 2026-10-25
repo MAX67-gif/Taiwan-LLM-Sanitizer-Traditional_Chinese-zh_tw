@@ -1,11 +1,12 @@
-"""Enforce zh-TW master + four translated README source-synchronization and rights-neutral links."""
+"""Enforce zh-TW master + five translated README source-synchronization and rights-neutral links."""
 from __future__ import annotations
 from pathlib import Path
 import hashlib,re,sys
 ROOT=Path(__file__).resolve().parents[1]
-FILES=('README.md','README.en.md','README.ja.md','README.ko.md','README.es.md')
+FILES=('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md')
 SOURCE='docs/WEBSITE_LOCALIZATION_GUIDE.md'
 RIGHTS='docs/THIRD_PARTY_RIGHTS_POLICY.md'
+EXAMPLE_PREFIX='docs/USAGE_EXAMPLES'
 MARKER=re.compile(r'<!-- SOURCE_README_SHA256:([0-9a-f]{64}) -->')
 MILESTONES=('R13','R11','R14','R12','R6','R5')
 # Game-specific sources once published must never reappear on a public branch.
@@ -23,8 +24,9 @@ def run()->list[str]:
     txt=p.read_text(encoding='utf-8')
     if not txt.startswith('<!--') and fn!='README.md':errors.append(fn+': translation marker expected')
     if '# Taiwan-LLM-Sanitizer' not in txt:errors.append(fn+': title missing')
-    for item in (SOURCE,RIGHTS):
+    for item in (('docs/WEBSITE_LOCALIZATION_GUIDE.zh-CN.md' if fn=='README.zh-CN.md' else SOURCE),RIGHTS):
       if item not in txt:errors.append(fn+': missing '+item)
+    if EXAMPLE_PREFIX not in txt:errors.append(fn+': missing original examples link')
     for item in MILESTONES:
       if item not in txt:errors.append(fn+': milestone '+item)
     for item in LANGUAGE_LINKS:
@@ -49,4 +51,4 @@ if __name__=='__main__':
     if problems:
       for p in problems:print('README_I18N_BLOCKED',p,file=sys.stderr)
       raise SystemExit(1)
-    print('README_I18N_SYNC_PASS: 5 languages and rights policy')
+    print('README_I18N_SYNC_PASS: 6 languages and rights policy')
