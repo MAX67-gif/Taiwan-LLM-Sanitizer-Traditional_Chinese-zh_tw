@@ -1,0 +1,13 @@
+{
+  "provider": {
+    "id": "chrome_local_demo", "version": "0.1", "mode": "on_device",
+    "languagePairs": [["en", "zh-Hant"], ["ja", "zh-Hant"]],
+    "availability": "available", "requiresNetwork": false,
+    "requiresDownload": false, "pricing": "UNKNOWN", "retention": "LOCAL_ONLY",
+    "privacyUrl": "UNKNOWN"
+  },
+  "request": {"sourceLanguage":"en","targetLanguage":"zh-Hant","sequence":1,"nonce":"demo_request_001","cancelled":false},
+  "site": {"origin":"https://example.org"},
+  "consent": null,
+  "now": 1792900000000
+}

@@ -1,3 +1,7 @@
+## R14 · 2026-10-25 · Provider 能力與同意安全決策（獨立離線 Preview）
+- 加入模型能力／語言組／下載及 per-origin consent 保守判定，未知、跨站、撤銷、逾期、取消 fail-closed；本版所有遠端 Provider 仍禁止傳輸。
+- 提供可直接開啟的單檔離線 HTML、CLI、嚴格 Schema、Node／Chromium 回歸及可重現建置；不修改 R5／R11／R13 安裝版本或 R6 Frozen。
+
 # Taiwan-LLM-Sanitizer｜重要更新大綱
 
 ## R13 · 2026-10-25 · 雙語閱讀獨立 Preview 0.6.0

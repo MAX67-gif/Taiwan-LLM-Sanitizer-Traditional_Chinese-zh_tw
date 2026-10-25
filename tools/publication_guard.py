@@ -32,6 +32,7 @@ DOCS_PUBLIC={
     "docs/R11_SITE_GLOSSARY.md",
     "docs/R11_STAGE_CHECK.md",
     "docs/R12_QUALITY_AUDIT_LAB.md",
+    "docs/R14_PROVIDER_CAPABILITY.md",
     "docs/R13_BILINGUAL_READER.md","docs/TAIWAN_UI_TERMS_R13.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
