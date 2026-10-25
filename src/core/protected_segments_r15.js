@@ -95,6 +95,54 @@ function names(){
  if(!api&&typeof require==='function'){try{api=require('./entities.js');}catch(_){} }
  return api&&typeof api.find==='function'?api:null;
 }
+// R15.1 conservative token scanner.  This is NOT a complete CommonMark parser.
+// Balanced link syntax is treated as one protected atom: unmatched/multiline links
+// are rejected instead of exposing the tail of a destination as editable prose.
+function markdownLinkSpan(source,start,end){
+ let i=start,depth=0;
+ if(source[i]==='!')i++;
+ if(source[i]!=='[')return null;
+ for(;i<end;i++){
+  const c=source[i];
+  if(c==='\\'){if(i+1>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i++;continue;}
+  if(c==='['){if(++depth>64)fail('LINK_BRACKET_DEPTH');}
+  else if(c===']'){
+   if(--depth===0){i++;break;}
+   if(depth<0)fail('UNBALANCED_MARKDOWN_LINK');
+  }
+ }
+ if(depth!==0)fail('UNBALANCED_MARKDOWN_LINK');
+ // Protect shortcut references as one conservative atom.  A GFM checkbox is
+ // handled as a separate list marker before entering this tokenizer.
+ if(source[i]==='['){
+  let level=1;i++;
+  while(i<end&&level){
+   const c=source[i++];
+   if(c==='\\'){if(i>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i++;continue;}
+   if(c==='['){if(++level>64)fail('LINK_REFERENCE_DEPTH');}
+   else if(c===']')level--;
+  }
+  if(level)fail('UNBALANCED_MARKDOWN_REFERENCE');
+ }
+ if(source[i]!=='(')return {length:i-start,type:'reference_candidate'};
+ i++;let parens=1,angle=false,quote=null;
+ while(i<end){
+  const c=source[i];
+  if(c==='\\'){if(i+1>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i+=2;continue;}
+  if(angle){if(c==='>')angle=false;i++;continue;}
+  if(quote){if(c===quote)quote=null;i++;continue;}
+  // Angle form is allowed to contain otherwise unbalanced parentheses.
+  if(c==='<'){angle=true;i++;continue;}
+  // Titles only begin following a whitespace separator, never inside URLs.
+  if((c==='"'||c==="'")&&/\s/u.test(source[i-1]||'')){quote=c;i++;continue;}
+  if(c==='('){if(++parens>64)fail('LINK_DESTINATION_DEPTH');}
+  else if(c===')'){
+   if(--parens===0){i++;return {length:i-start,type:'link'};}
+  }
+  i++;
+ }
+ fail('UNCLOSED_LINK_DESTINATION');
+}
 function scanPlain(source,start,end,c,kind){
  if(end<=start)return;
  const list=names()?.find(source.slice(start,end))||[];
@@ -116,13 +164,9 @@ function scanPlain(source,start,end,c,kind){
    if(close<0||close+run.length>end)fail('UNCLOSED_INLINE_CODE');
    match=[source.slice(i,close+run.length)];typ='inline_code';why='INLINE_CODE';
   }
-  if(!match&&kind==='markdown'&&tail.startsWith('![')){
-   match=tail.match(/^!\[[^\]\r\n]*\]\([^\)\r\n]*\)/u);
-   if(!match)fail('UNBALANCED_IMAGE_SYNTAX');typ='link';why='IMAGE_SOURCE';
-  }
-  if(!match&&kind==='markdown'&&tail[0]==='['){
-   match=tail.match(/^\[[^\]\r\n]*\]\([^\)\r\n]*\)/u);
-   if(!match)fail('UNKNOWN_MARKDOWN_REFERENCE');typ='link';why='LINK_DESTINATION_AND_LABEL';
+  if(!match&&kind==='markdown'&&(tail.startsWith('![')||tail[0]==='[')){
+   const atom=markdownLinkSpan(source,i,end);
+   if(atom){match=[source.slice(i,i+atom.length)];typ=atom.type;why='LINK_OR_REFERENCE_IMMUTABLE';}
   }
   if(!match&&kind==='markdown'&&tail[0]==='<'){
    match=tail.match(/^<[^>\r\n]*>/u);
@@ -154,33 +198,79 @@ function linesOf(source){
  while((m=re.exec(source))!==null){if(m[0]==='')break;lines.push({start:m.index,text:m[0],end:m.index+m[0].length});}
  return lines;
 }
+// Markdown blockquote/list markers are only syntactic containers.  Consume them
+// for state detection without changing UTF-16 offsets or rebuilding the source.
+function markdownContainerPrefix(text){
+ let pos=0,steps=0,m;
+ while(steps++<32&&(m=text.slice(pos).match(/^ {0,3}(?:>[ \t]?|[-+*][ \t]+|\d{1,9}[.)][ \t]+)/u))){pos+=m[0].length;}
+ return pos;
+}
+const RAW_HTML_TAGS=/^(?:address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|nav|noframes|ol|optgroup|option|output|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul)$/iu;
+function htmlBlockStart(text){
+ const t=text.trimStart();
+ if(t.startsWith('<!--'))return {ending:'-->',kind:'HTML_COMMENT'};
+ if(t.startsWith('<![CDATA['))return {ending:']]>',kind:'HTML_CDATA'};
+ if(t.startsWith('<?'))return {ending:'?>',kind:'HTML_PROCESSING_INSTRUCTION'};
+ if(/^<![A-Z]/u.test(t))return {ending:'>',kind:'HTML_DECLARATION'};
+ const raw=t.match(/^<(script|pre|style|textarea)(?=[\s>/])/iu);
+ if(raw){if(!t.includes('>'))fail('AMBIGUOUS_HTML_OPEN_TAG');return {closingTag:raw[1],kind:'RAW_HTML_ELEMENT'};}
+ const block=t.match(/^<\/?([A-Za-z][\w-]*)(?=[\s>/])/u);
+ if(block){
+  // Unsupported or incomplete HTML stays protected, never inferred editable.
+  if(!t.includes('>'))fail('AMBIGUOUS_HTML_OPEN_TAG');
+  const name=block[1];
+  if(RAW_HTML_TAGS.test(name)||/^<\/?[A-Za-z][^>]*>\s*$/u.test(t)){
+   const closing=/^<\//u.test(t);
+   const selfClosing=/\/\s*>\s*$/u.test(t)||/^(?:hr|link|meta|input|br|img)$/iu.test(name);
+   return {closingTag:closing||selfClosing?null:name,untilBlank:closing||selfClosing,kind:'RAW_HTML_BLOCK'};
+  }
+ }
+ return null;
+}
+function htmlBlockComplete(html,text){
+ if(html.ending)return text.includes(html.ending);
+ if(html.closingTag){
+  const re=new RegExp('</'+html.closingTag+'\\s*>','iu');
+  return re.test(text);
+ }
+ return html.untilBlank&&text.trim()==='';
+}
 function scanDocument(source,format,c){
- const lines=linesOf(source);let fence=null,front=false,first=true;
+ const lines=linesOf(source);let fence=null,front=false,first=true,html=null;
  for(const row of lines){
   const {start,end}=row,line=row.text;
   const raw=line.replace(/(?:\r\n|\r|\n)$/u,''),contentEnd=start+raw.length;
+  if(first){first=false;if(raw.startsWith('\ufeff'))c.add(start,start+1,'bom','PROTECT','BYTE_ORDER_MARK');}
+  const s=start+(start===0&&raw.startsWith('\ufeff')?1:0);
+  const text=source.slice(s,contentEnd);
+  const container=format==='markdown'?markdownContainerPrefix(text):0;
+  const content=text.slice(container),t=s+container;
   let reason=null,match;
-  if(first){first=false;if(raw.startsWith('\ufeff')){c.add(start,start+1,'bom','PROTECT','BYTE_ORDER_MARK');}}
-  const text=source.slice(start+(start===0&&raw.startsWith('\ufeff')?1:0),contentEnd),s=start+(start===0&&raw.startsWith('\ufeff')?1:0);
-  if(front){reason='FRONTMATTER';if(/^(?:---|\.\.\.)\s*$/u.test(text))front=false;}
-  else if(fence){reason='CODE_FENCE_BODY';match=text.match(/^ {0,3}(`{3,}|~{3,})(?:\s*)$/u);if(match&&match[1][0]===fence.char&&match[1].length>=fence.size)fence=null;}
-  else if((format==='markdown'||format==='prompt')&&(match=text.match(/^ {0,3}(`{3,}|~{3,})/u))){fence={char:match[1][0],size:match[1].length};reason='CODE_FENCE';}
-  else if(format==='markdown'&&start===0&&/^(?:---|\+\+\+)\s*$/u.test(text)){front=true;reason='FRONTMATTER';}
-  else if(format==='markdown'&&(/^\s{4,}\S/u.test(text)||/^\t/u.test(text)))reason='INDENTED_CODE';
-  else if(format==='markdown'&&(/^\s{0,3}#{1,6}\s/u.test(text)||/^\s{0,3}\[[^\]]+\]:/u.test(text)))reason='HEADING_OR_REFERENCE';
-  else if(format==='markdown'&&(/^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$/u.test(text)||/^\s*\|?\s*:?-{3,}/u.test(text)))reason='THEMATIC_OR_TABLE_RULE';
-  else if(format==='markdown'&&(/^\s*<!--/u.test(text)||/^\s*<(?:script|style|div|pre|table|section|iframe|details|svg)\b/iu.test(text)))reason='HTML_BLOCK';
-  else if(format==='prompt'&&(ROLE_RE.test(text)||/^\s*<\/?(?:system|developer|assistant|user|tool|function)\b/iu.test(text)))reason='PROMPT_ROLE_BOUNDARY';
+  if(html){reason=html.kind;if(htmlBlockComplete(html,content))html=null;}
+  else if(front){reason='FRONTMATTER';if(/^(?:---|\.\.\.)\s*$/u.test(content))front=false;}
+  else if(fence){reason='CODE_FENCE_BODY';match=content.match(/^ {0,3}(`{3,}|~{3,})(?:\s*)$/u);if(match&&match[1][0]===fence.char&&match[1].length>=fence.size)fence=null;}
+  else if((format==='markdown'||format==='prompt')&&(match=content.match(/^ {0,3}(`{3,}|~{3,})/u))){fence={char:match[1][0],size:match[1].length};reason='CODE_FENCE';}
+  else if(format==='markdown'&&start===0&&/^(?:---|\+\+\+)\s*$/u.test(content)){front=true;reason='FRONTMATTER';}
+  else if(format==='markdown'&&(html=htmlBlockStart(content))){reason=html.kind;if(htmlBlockComplete(html,content))html=null;}
+  else if(format==='markdown'&&(/^\s{4,}\S/u.test(content)||/^\t/u.test(content)))reason='INDENTED_CODE';
+  else if(format==='markdown'&&(/^\s{0,3}#{1,6}\s/u.test(content)||/^\s{0,3}\[[^\]]+\]:/u.test(content)))reason='HEADING_OR_REFERENCE';
+  else if(format==='markdown'&&(/^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$/u.test(content)||/^\s*\|?\s*:?-{3,}/u.test(content)))reason='THEMATIC_OR_TABLE_RULE';
+  else if(format==='prompt'&&(ROLE_RE.test(content)||/^\s*<\/?(?:system|developer|assistant|user|tool|function)\b/iu.test(content)))reason='PROMPT_ROLE_BOUNDARY';
   if(reason)c.add(s,contentEnd,'block','PROTECT',reason);
   else{
-   let prefix='';if(format==='markdown')prefix=(text.match(/^\s{0,3}(?:>\s?|[-+*]\s+|\d+[.)]\s+)/u)||[])[0]||'';
-   if(prefix)c.add(s,s+prefix.length,'markdown_token','PROTECT','BLOCK_PREFIX');
-   scanPlain(source,s+prefix.length,contentEnd,c,format);
+   if(container)c.add(s,t,'markdown_token','PROTECT','BLOCK_PREFIX');
+   let local=content,localStart=t;
+   if(format==='markdown'){
+    const task=local.match(/^\[(?: |x|X)\](?=[ \t]|$)/u);
+    if(task){c.add(localStart,localStart+task[0].length,'gfm_task_marker','PROTECT','GFM_CHECKBOX');localStart+=task[0].length;local=content.slice(task[0].length);}
+   }
+   scanPlain(source,localStart,contentEnd,c,format);
   }
   if(contentEnd<end)c.add(contentEnd,end,'newline','PROTECT','LINE_ENDING');
  }
  if(fence)fail('UNCLOSED_CODE_FENCE');
  if(front)fail('UNCLOSED_FRONTMATTER');
+ // Unclosed HTML remains entirely protected until EOF (conservative by design).
 }
 function scanJSON(source,c){
  try{JSON.parse(source.replace(/^\ufeff/u,''));}catch(_){fail('INVALID_JSON');}

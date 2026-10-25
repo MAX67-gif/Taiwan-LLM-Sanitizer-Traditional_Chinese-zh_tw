@@ -178,7 +178,7 @@ test('browser without crypto.subtle uses identical deterministic offline SHA256'
 });
 test('R15 generated HTML includes source verbatim: protects dollar apostrophe from String.replace meta',()=>{
  const generated=fs.readFileSync(path.join(__dirname,'../examples/TW_Structured_Integrity_Lab_R15_20261025.html'),'utf8');
- const src=fs.readFileSync(path.join(__dirname,'../src/core/protected_segments_r15.js'),'utf8');
+ const src=fs.readFileSync(path.join(__dirname,'fixtures/r15/R15_0_1_0_LOCKED_CORE.js'),'utf8');
  const name=fs.readFileSync(path.join(__dirname,'../src/core/entities.js'),'utf8');
  assert(generated.includes(src),'original source not embedded byte-identically');assert(generated.includes(name));
  assert.equal(generated.includes('__TLS_R15_CORE__'),false);
