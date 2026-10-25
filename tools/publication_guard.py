@@ -17,7 +17,6 @@ ROOT_PUBLIC={
     "AUTHORS.md","CHANGELOG.md","CONTRIBUTING.md","LICENSE",
     "PRIVACY.md","README.md","README.en.md","README.ja.md","README.ko.md","README.es.md","SECURITY.md",
     ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
-    ".github/workflows/retire-third-party-demo.yml",
 }
 DOCS_PUBLIC={
     "docs/FEATURES.md",
