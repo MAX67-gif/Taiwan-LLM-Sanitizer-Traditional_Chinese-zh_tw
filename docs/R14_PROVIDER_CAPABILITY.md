@@ -54,5 +54,5 @@ GitHub 的 `verify` 與 `browser-integration` 必須在相同最終 PR commit �
 
 - 僅採保守的 BCP 47 子集、canonical Origin：不是所有合法語言 tag/URL 都能通過，需公開版本化擴充而非默默 normalize；目前未接入瀏覽器的真實 Permission Manager 或 OS 模型 API。
 - 模組不提供持久 nonce 使用紀錄、防跨裝置重放或遠端同意的真實授權信任根；真正遠端 Provider 需要另設用戶授權、隔離、撤銷、成本、保存與可靠的 permission store。
-- 本頁使用了示範用能力資料，**不可用它宣稱 Chrome、TAIDE 等真實模型可用／品質提升**。
+- 本頁使用了示範用能力資料，**不可用它宣稱 Chrome 或其他真實模型可用／品質提升**。
 - 先比較合法且可重現的使用者案例與模型不支援狀態，再決定 R15 何時把路由整合進 R13，而不是現在直接加入不受控的外部傳送。

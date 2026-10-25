@@ -15,7 +15,7 @@ ROOT_PUBLIC={
     ".gitignore", ".github/workflows/ci.yml",
     ".github/PULL_REQUEST_TEMPLATE.md",
     "AUTHORS.md","CHANGELOG.md","CONTRIBUTING.md","LICENSE",
-    "PRIVACY.md","README.md","SECURITY.md",
+    "PRIVACY.md","README.md","README.en.md","README.ja.md","README.ko.md","README.es.md","SECURITY.md",
     ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
