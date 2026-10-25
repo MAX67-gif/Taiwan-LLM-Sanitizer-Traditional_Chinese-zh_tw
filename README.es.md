@@ -1,9 +1,9 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:8635035192b025eef1805227abb481104b1bb1084216947355814cdb1bbfd365 -->
+<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
-**Languages:** [繁體中文](README.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+**Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 Herramienta de código abierto para elegir vocabulario taiwanés, leer textos bilingües y preservar estructuras técnicas. No es un producto oficial de terceros. **MIT** · Founder / Steward: CA L.
 
@@ -41,3 +41,9 @@ Son versiones preliminares: no garantizan exactitud de la traducción, compatibi
 ## Documentación y contribuciones
 
 [Documentation](docs/FEATURES.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Major updates](CHANGELOG.md).
+
+## Nueve casos de uso originales
+
+[Consultar los nueve ejemplos](docs/USAGE_EXAMPLES.es.md) (EX01–EX09): vocabulario contextual de Taiwán, lectura por selección R13, glosario manual R11, capacidad R14 y protección Markdown/JSON/Prompt de R15.
+
+En una **página ficticia parecida a un juego web**, el texto HTML seleccionable `Open settings` podría verse mediante R13 o revisarse con el glosario R11, **solo cuando los términos del sitio lo permitan**. El texto dibujado con Canvas/WebGL no es compatible. No se afirma haber probado ningún juego real ni se distribuyen scripts o diccionarios específicos. [Guía general](docs/WEBSITE_LOCALIZATION_GUIDE.md).

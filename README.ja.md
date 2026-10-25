@@ -1,9 +1,9 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:8635035192b025eef1805227abb481104b1bb1084216947355814cdb1bbfd365 -->
+<!-- SOURCE_README_SHA256:a88bd1d54da98ca299edaed3cec3d3948ff91df85c147626e048cb44ada6f5e8 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
-**Languages:** [繁體中文](README.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+**Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 ユーザー自身が選べる台湾の用語、原文と訳文の対照表示、技術文書の構造保護を目的とするオープンソースツールです。第三者の公式製品ではありません。 **MIT** · Founder / Steward: CA L.
 
@@ -41,3 +41,9 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 ## 資料・参加
 
 [Documentation](docs/FEATURES.md) · [Roadmap](docs/ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [Major updates](CHANGELOG.md).
+
+## 9 つのオリジナル利用例
+
+[具体的な 9 つの例](docs/USAGE_EXAMPLES.ja.md)（EX01–EX09）：台湾の文脈に合わせた語彙、R13 の選択型対訳、R11 の手動用語集、R14 の能力表示、R15 の Markdown／JSON／Prompt 構造保護。
+
+**架空のブラウザーゲーム風サイト**で `Open settings` が通常の選択可能な HTML 文字なら、サイト規約に適合するときに限り R13 または R11 による補助の可能性があります。Canvas／WebGL に描画された文字は対象外です。実ゲームで動作検証したという意味ではなく、特定ゲーム向けのファイルも配布しません。[一般利用ガイド](docs/WEBSITE_LOCALIZATION_GUIDE.md)。
