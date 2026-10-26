@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
+<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -52,3 +52,6 @@
 
 [R16 오프라인 도구](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [사용법 및 안전 제한](docs/R16_LOCALIZATION_STUDIO.md) · [직접 작성한 Markdown 예제](examples/r16/sample_readme.md). Markdown／JSON／Prompt의 보호 구간을 검사하고 후보 문구를 직접 입력한 뒤 차이를 검토하여 **새** 미리보기 파일로 저장합니다. 메타데이터 보고서는 원문을 포함하지 않지만 사용자가 내려받는 미리보기에는 직접 입력한 문구가 포함될 수 있습니다. **자동 번역, 클라우드 전송, 원본 덮어쓰기는 없습니다**. 모든 문법이나 번역 품질을 보증하지 않습니다.
 
+## R17｜오프라인 문서 링크 무결성 검사(읽기 전용)
+
+[R17 Markdown 링크 검사 열기](examples/TW_Document_Trust_Graph_R17_20261026.html) · [사용법 및 한계](docs/R17_DOCUMENT_TRUST_GRAPH.ko.md). 권한이 있는 Markdown 파일을 직접 선택하고 상대 링크와 제목 앵커를 검사합니다. 원문을 포함하지 않는 메타데이터 보고서만 내보냅니다. 외부 또는 알 수 없는 링크는 UNKNOWN으로 남기며 네트워크 요청을 보내지 않습니다. **번역하거나 원본 파일을 수정하지 않습니다.**

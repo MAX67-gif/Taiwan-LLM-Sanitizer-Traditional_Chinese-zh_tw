@@ -40,3 +40,7 @@ Taiwan-LLM-Sanitizer **R5 0.4.0 為實驗性預覽版本**。我們會分清楚�
 ## R16 Offline Localization Safety Studio（獨立 Shadow Preview）
 
 本機單檔 HTML、Node 安全 API 與可選 CLI，提供格式明確選擇、SHA 綁定的受保護段落檢查、人工候選預覽、只輸出 metadata 的報告、僅另存新檔的差異結果、取消清除與惡意輸入拒絕。Markdown／JSON／Prompt 以 R15.1 相同來源驗證規則處理；沒有雲端翻譯、網站寫入、隱藏遙測或真人語言品質認證，仍非完整 AST。詳見 [R16 使用契約](R16_LOCALIZATION_STUDIO.md)。
+
+## R17-P0 離線文件完整性信任圖（獨立 Shadow Preview）
+
+新增 [R17 原創專案級 Markdown 連結與錨點檢查](R17_DOCUMENT_TRUST_GRAPH.md) 和單檔 HTML／Node CLI。使用者必須明確指定本機允許的 Markdown 範圍，外部連結不連線、未選目標不能算 PASS，輸出不含文章原文的假名化 metadata。這不是翻譯品質認證，也不修改既有 R16／R15.1／R5／R11／R13 的執行期。

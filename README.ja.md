@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
+<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -52,3 +52,6 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 
 [R16 オフラインツール](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [利用方法・安全上の制限](docs/R16_LOCALIZATION_STUDIO.md) · [独自作成の Markdown 例](examples/r16/sample_readme.md)。Markdown／JSON／Prompt の保護領域を調べ、候補文を自分で入力して差分を確認し、新しいプレビューとして保存できます。メタデータ報告書には原文を含みませんが、ユーザーが明示的にダウンロードするプレビューには入力文が含まれます。**自動翻訳・クラウド送信・元ファイルの上書きは行いません**。すべての構文や翻訳品質を保証するものではありません。
 
+## R17｜オフライン文書リンク整合性チェック（読み取り専用）
+
+[R17 Markdown リンク検査を開く](examples/TW_Document_Trust_Graph_R17_20261026.html) · [利用方法と制限](docs/R17_DOCUMENT_TRUST_GRAPH.ja.md)。権限のある Markdown ファイルだけを明示的に選び、相対リンクと見出しアンカーを検査できます。結果は本文を含まないメタデータ形式です。外部・未対応リンクは UNKNOWN と表示し、自動的に通信しません。**翻訳やファイルの書換えは行いません**。

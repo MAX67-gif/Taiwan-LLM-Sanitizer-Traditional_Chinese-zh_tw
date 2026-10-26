@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
+<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -52,3 +52,6 @@ En una **página ficticia parecida a un juego web**, el texto HTML seleccionable
 
 [Abrir R16 sin conexión](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [Uso y límites de seguridad](docs/R16_LOCALIZATION_STUDIO.md) · [Ejemplo original de Markdown](examples/r16/sample_readme.md). Permite inspeccionar segmentos protegidos de Markdown／JSON／Prompt, introducir sugerencias manualmente, revisar las diferencias y descargar una vista previa como **archivo nuevo**. El informe de metadatos no contiene el texto original; la vista previa descargada voluntariamente sí puede contener el texto introducido. **No traduce automáticamente, no envía datos a la nube y no sobrescribe el original**. No se garantiza compatibilidad con toda la sintaxis ni calidad semántica.
 
+## R17 — Auditoría local de integridad de documentos (solo lectura)
+
+[Abrir el verificador R17 de enlaces Markdown](examples/TW_Document_Trust_Graph_R17_20261026.html) · [Guía y límites](docs/R17_DOCUMENT_TRUST_GRAPH.es.md). Selecciona de forma explícita archivos Markdown que tengas derecho a procesar, verifica enlaces relativos y anclas y exporta un informe de metadatos sin el texto original. Los enlaces externos o no verificables se marcan UNKNOWN; nunca se consulta la red. **No traduce ni modifica los archivos de origen.**

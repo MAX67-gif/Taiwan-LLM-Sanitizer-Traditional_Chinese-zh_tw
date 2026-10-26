@@ -43,3 +43,9 @@
 **取得歷史版本與證據：** [GitHub Releases](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases) · [Git Commit 歷史](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/commits/main/) · [最新功能狀態](docs/FEATURES.md)。
 
 專案遵守 MIT／Open-Core、資料隱私及來源授權。R6 凍結題庫與私人開發決策須保留；第三方權利不明的公開程式及下載資產則優先下架，並保留必要的治理稽核索引。
+
+## R17-P0 · 2026-10-26 · Document Trust Graph (offline/read-only)
+- New optional project-scoped Markdown link and anchor validator, explicit local file allowlist, no network, metadata-only receipt, safe CLI and standalone HTML.
+- PASS/WARN/BLOCK/UNKNOWN separate confirmed invalid targets, unsupported syntax, external unchecked links and missing allowlist permissions.
+- R16/R15.1/R15.0/R14 and R5/R11/R13 releases preserved. No remote translation, file rewrite or third-party branded game content.
+- Technical integrity evidence is not linguistic quality or copyright authorization; six documentation languages require later native review.

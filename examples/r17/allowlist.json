@@ -1,0 +1,7 @@
+{
+  "schema": "tls.repo-audit-request.v1",
+  "file_allowlist": ["index.md", "docs/guide.md"],
+  "locale": "zh-TW",
+  "check_external": false,
+  "network_requested": false
+}
