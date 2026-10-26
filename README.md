@@ -55,6 +55,10 @@
 
 **翻譯內容的法律責任與網站條款取決於具體使用情形；本專案不保證任何特定第三方網站授權或所有功能的普遍適用性。**
 
+## R17.1｜每次 Release 都提供完整工具套件（All-Tools Full Suite）
+
+以 **[All-Tools 全工具完整下載與驗證說明](docs/ALL_TOOLS_RELEASE.md)** 為準：新的正式 Release 必須一次包含所有仍受支援且合法發行的 Chrome Extension、Tampermonkey `.user.js`、13 個離線 HTML 工作台、R6 品質套件，以及可執行的 CLI/Skill 開發者包。**未更新的工具保留舊版號與原始 SHA256，缺一不可。** 發布流程先建立 Draft，等完整附件下載回驗後才公開；權利不明或此前已下架的第三方專用內容不納入。R17.1 工具套件 [Release 頁](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) 須待 GitHub main CI／附件實際成功才視為可用。
+
 ## R17｜專案級文件信任圖（唯讀工具）
 
 [開啟 R17 離線 Markdown 文件連結檢查](examples/TW_Document_Trust_Graph_R17_20261026.html) · [閱讀 R17 完整使用與安全限制](docs/R17_DOCUMENT_TRUST_GRAPH.md)。由使用者勾選自己有權使用的 Markdown 檔案，檢查跨檔連結與錨點，輸出不含文件原文的報告；未知或外部連結**不能冒稱 PASS**。這是結構檢查，**非自動翻譯、全文語義認證或網站相容性保證**。

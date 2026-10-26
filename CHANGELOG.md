@@ -49,3 +49,9 @@
 - PASS/WARN/BLOCK/UNKNOWN separate confirmed invalid targets, unsupported syntax, external unchecked links and missing allowlist permissions.
 - R16/R15.1/R15.0/R14 and R5/R11/R13 releases preserved. No remote translation, file rewrite or third-party branded game content.
 - Technical integrity evidence is not linguistic quality or copyright authorization; six documentation languages require later native review.
+
+## 2026-10-26 R17.1 All-Tools Release Completeness
+- 新增 26 個固定工具身分的公開權利／版本／SHA 鎖定清單；Chrome R5/R11/R13、Tampermonkey R5/R11/R13、13 個離線工作台、R6 公開品質包及開發者 CLI/Skill。
+- 新增可直接使用的完整套件建置、26 附件檢查、Draft→下載驗雜湊→公開發布 Gate、26 項原創負向／正向測試。**沒有修改舊版產品的執行期。**
+- 每次新發行若缺少合法必收工具或授權、SHA 不符，必須 BLOCK；先前已因第三方權利下架的專用內容永不自動復活。
+- 新完整套件的 GitHub 發行證據以正式 Actions 與 Release 頁為準，不能因程式碼或 PR 已提交而宣稱成功。
