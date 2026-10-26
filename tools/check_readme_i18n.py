@@ -8,7 +8,7 @@ SOURCE='docs/WEBSITE_LOCALIZATION_GUIDE.md'
 RIGHTS='docs/THIRD_PARTY_RIGHTS_POLICY.md'
 EXAMPLE_PREFIX='docs/USAGE_EXAMPLES'
 MARKER=re.compile(r'<!-- SOURCE_README_SHA256:([0-9a-f]{64}) -->')
-MILESTONES=('R13','R11','R14','R12','R6','R5')
+MILESTONES=('R17','R13','R11','R14','R12','R6','R5')
 # Game-specific sources once published must never reappear on a public branch.
 FORBIDDEN_WORDS=('poke'+'bonk','pok'+'émon','宝可'+'梦','寶可'+'夢')
 FORBIDDEN_RELEASE='r7-'+'poke'+'bonk-demo'

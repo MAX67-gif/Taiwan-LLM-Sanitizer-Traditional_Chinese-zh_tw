@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
+<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -52,3 +52,6 @@
 
 [打开 R16 离线工具](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [功能与安全限制](docs/R16_LOCALIZATION_STUDIO.md) · [原创 Markdown 示例](examples/r16/sample_readme.md)。在本机检查 Markdown／JSON／Prompt 中受保护的代码、链接和变量，手动填写候选文字、查看差异后另存新文件。元数据报告不包含原文，但用户主动下载的预览文件会包含输入文本。**不自动翻译、不上传、不覆盖原文件**；不保证所有语法与翻译语义都正确。
 
+## R17｜项目级文档完整性检查（离线、只读）
+
+[打开 R17 离线 Markdown 链接检查工具](examples/TW_Document_Trust_Graph_R17_20261026.html) · [阅读简体中文使用与安全指南](docs/R17_DOCUMENT_TRUST_GRAPH.zh-CN.md)。用户明确勾选有权使用的文件，检查跨文件链接和标题锚点；报告不包含文档正文。外部链接与未知语法标记为 UNKNOWN，不会自动访问网络。此工具**不会翻译、修改文件或证明翻译正确**。

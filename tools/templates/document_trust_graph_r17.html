@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>TLS R17｜離線文件完整性信任圖 0.1.0</title>
+<style>
+:root{color-scheme:light;--ink:#193044;--muted:#60798d;--bg:#f5f8fb;--border:#dce5ed;--blue:#1767ad;--surface:#fff}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;line-height:1.6}
+header{background:linear-gradient(125deg,#0d2c47,#145781);color:white;padding:38px clamp(16px,4vw,50px)}header h1{margin:0;font-size:clamp(1.35rem,2.3vw,2.15rem)}header p{max-width:840px;color:#d3e8f7}
+main{max-width:980px;margin:0 auto;padding:22px 16px 60px}.panel{border:1px solid var(--border);background:var(--surface);padding:24px;border-radius:14px;margin:14px 0;box-shadow:0 2px 14px #1736530a}h2{margin:0 0 12px;font-size:1.24rem}
+small,.small{font-size:.88rem;color:var(--muted)}.tag{display:inline-block;background:#e1edf7;color:#225271;border-radius:18px;padding:3px 12px;font-size:.85rem}
+label{display:block;margin:12px 0;font-weight:650}input[type=file],select{display:block;width:100%;max-width:500px;border:1px solid var(--border);background:#fff;border-radius:7px;padding:10px;margin-top:8px}input[type=checkbox]{margin-right:10px;accent-color:var(--blue);transform:scale(1.15)}.files{border:1px dashed var(--border);border-radius:8px;padding:12px;max-height:270px;overflow:auto}.files label{font-weight:400;margin:7px 0;word-wrap:break-word}
+button{padding:11px 16px;cursor:pointer;background:var(--blue);border:1px solid var(--blue);color:#fff;border-radius:7px;font-weight:650;margin:3px}button.secondary{background:#fff;color:var(--blue)}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:3px solid #89c7f2;outline-offset:3px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}.kpi{border:1px solid var(--border);padding:12px;border-radius:9px;background:#f9fbfd}.kpi strong{display:block;font-size:1.4rem}#status{min-height:26px;font-weight:700}.warn{color:#9c3d20}.ok{color:#176748}ul{padding-left:24px}footer{text-align:center;color:var(--muted);font-size:.87rem;padding-top:18px}code{background:#ecf2f7;padding:2px 5px;border-radius:4px}#reasons{max-height:260px;overflow:auto}a{color:var(--blue)}
+@media(max-width:520px){.panel{padding:17px}.actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+@media print{header{background:none;color:var(--ink)}button,input{display:none}.panel{box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+<span class="tag">R17-P0 · Offline · Shadow / Read-only</span>
+<h1>文件完整性信任圖</h1>
+<p>讓你檢查自己有權使用的 Markdown 專案中，跨檔連結與章節錨點是否仍然有效。由你手動選取範圍；絕不修改原始檔、連線檢查外部網址，或收集文件原文。</p>
+</header>
+<main>
+<section class="panel" aria-labelledby="select-title"><h2 id="select-title">1. 選擇本機專案資料夾</h2>
+<p class="small">資料夾只會在你的瀏覽器中列出檔名。請再自行勾選准許讀取的 Markdown 文件；沒有勾選的檔案不會被讀取。這是瀏覽器檔案選擇器，不是本機系統層的符號連結審查；如需嚴格防 symlink，使用 Node CLI。</p>
+<label>本機資料夾<input id="pick" type="file" webkitdirectory directory multiple aria-label="選擇包含 Markdown 文件的資料夾"></label>
+<div class="actions"><button type="button" class="secondary" id="chooseall">勾選所有可見的 Markdown</button><button type="button" class="secondary" id="none">取消勾選</button></div>
+<p id="files-help" class="small">目前尚未選擇檔案</p><div class="files" id="file-list" aria-live="polite"></div>
+</section>
+<section class="panel"><h2>2. 執行完全離線檢查</h2>
+<label>文件顯示語言（僅為 metadata，不會翻譯）<select id="locale"><option value="">不指定</option><option value="zh-TW">zh-TW</option><option value="zh-CN">zh-CN</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="es">Español</option></select></label>
+<label><input id="paths" type="checkbox">於本機報告中包含相對路徑（手動開啟，有檔名洩露風險）</label>
+<div class="actions"><button id="audit" type="button">檢查已勾選文件</button><button id="download" type="button" disabled>下載 metadata-only JSON</button><button id="clear" type="button" class="secondary">清除這次資料</button></div>
+<p id="status" role="status">等待使用者選取文件</p></section>
+<section class="panel"><h2>3. 檢查摘要</h2><div id="metrics" class="cards" aria-live="polite"></div><h3>裁決原因（不包含原文）</h3><ul id="reasons"></ul>
+<p class="small">PASS 僅代表目前採用的保守語法契約驗證過連結。UNKNOWN 包含外部網址、未勾選的目標、未知 Markdown 語法；它不等於通過。BLOCK 代表已確認失效或安全阻擋。此工具不證明翻譯正確、著作權合法或數位簽章。</p></section>
+<footer>MIT 原創離線工具 · R16／R15.1 舊版不變 · 不依賴伺服器、CDN 或外部套件</footer>
+</main>
+<script>__TLS_R17_SHA_CORE__</script>
+<script>__TLS_R17_DTG_CORE__</script>
+<script>
+(()=>{'use strict';
+ const R=globalThis.TLSDocumentTrustR17;
+ const el=id=>document.getElementById(id), candidates=[],checks=new Map();let report=null;
+ const status=(msg,level='')=>{el('status').textContent=msg;el('status').className=level};
+ function clearReport(){report=null;el('download').disabled=true;el('metrics').replaceChildren();el('reasons').replaceChildren();}
+ function reset(){candidates.length=0;checks.clear();el('pick').value='';el('file-list').replaceChildren();el('files-help').textContent='目前尚未選擇檔案';clearReport();status('已清除，沒有保留文件原文。');}
+ function refresh(){const box=el('file-list');box.replaceChildren();checks.clear();
+  for(const item of candidates){const row=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.dataset.path=item.path;cb.checked=false;row.append(cb,document.createTextNode(item.path));box.append(row);checks.set(item.path,cb)}
+  el('files-help').textContent='有 '+candidates.length+' 個 Markdown 候選；請逐項勾選准許讀取的檔案';
+ }
+ el('pick').addEventListener('change',()=>{
+  candidates.length=0;clearReport();let filenames=[...el('pick').files];
+  const paths=new Set();for(const f of filenames){
+   const full=(f.webkitRelativePath||f.name).replace(/\\/gu,'/');const rel=full.includes('/')?full.slice(full.indexOf('/')+1):full;
+   if(!/\.(?:md|markdown)$/iu.test(rel))continue;
+   try{R.checkPath(rel)}catch(_){continue}
+   if(f.size>R.MAX_FILE_BYTES||paths.has(rel))continue;
+   paths.add(rel);candidates.push({path:rel,file:f});
+  }
+  if(candidates.length>R.MAX_FILES){candidates.length=0;status('候選檔案超過 200，請改用更小的資料夾。','warn')}
+  refresh();
+ });
+ el('chooseall').addEventListener('click',()=>{for(const cb of checks.values())cb.checked=true});
+ el('none').addEventListener('click',()=>{for(const cb of checks.values())cb.checked=false});
+ el('clear').addEventListener('click',reset);
+ el('audit').addEventListener('click',async()=>{
+  clearReport();const selected=candidates.filter(item=>checks.get(item.path)?.checked);
+  if(!selected.length){status('請先明確勾選至少一個 Markdown 檔案。','warn');return}
+  if(selected.length>R.MAX_FILES){status('檔案數量超出限制','warn');return}
+  el('audit').disabled=true;status('正在本機讀取已勾選的檔案...');
+  try{
+   let total=0;const files=[];
+   for(const e of selected){const bytes=new Uint8Array(await e.file.arrayBuffer());total+=bytes.length;
+    if(bytes.length>R.MAX_FILE_BYTES||total>R.MAX_TOTAL_BYTES)throw Error('SIZE_BUDGET');
+    const txt=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);
+    files.push({path:e.path,text:txt});
+   }
+   report=await R.audit({schema:R.REQUEST,file_allowlist:selected.map(x=>x.path),files,locale:el('locale').value||undefined,check_external:false,network_requested:false},{include_paths:el('paths').checked});
+   files.length=0;
+   status('本機檢查完成：'+report.decision,report.decision==='PASS'?'ok':'warn');el('download').disabled=false;
+   const d=report.summary;
+   for(const [label,count] of [['文件',d.files_checked],['連結',d.edges_checked],['PASS',d.pass_count],['WARN',d.warn_count],['BLOCK',d.block_count],['UNKNOWN',d.unknown_count]]){
+    const b=document.createElement('div'),t=document.createElement('span'),v=document.createElement('strong');b.className='kpi';t.textContent=label;v.textContent=String(count);b.append(t,v);el('metrics').append(b);
+   }
+   for(const [name,count] of Object.entries(report.edges.reduce((a,e)=>(a[e.reason_code]=(a[e.reason_code]||0)+1,a),{})).sort((a,b)=>b[1]-a[1])){const li=document.createElement('li');li.textContent=name+'：'+count;el('reasons').append(li)}
+  }catch(err){report=null;status('檢查被保守拒絕：'+(String(err?.message||'').match(/^TLS_R17_[A-Z_]+$/u)?err.message:'INVALID_FILES_OR_ENCODING'),'warn')}
+  finally{el('audit').disabled=false}
+ });
+ el('download').addEventListener('click',()=>{if(!report)return;const blob=new Blob([JSON.stringify(report,null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='TLS_R17_Metadata_Only_Report.json';a.click();URL.revokeObjectURL(url)});
+})();
+</script>
+</body></html>

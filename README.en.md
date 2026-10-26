@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:14815731cb29e86beda1e471255d9ef0de899f40d5ba41226c9b5f7944b9ddfb -->
+<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -52,3 +52,6 @@ A **fictional browser-game-like page** with a normal, selectable HTML label such
 
 [Open the R16 offline studio](examples/TW_Localization_Safety_Studio_R16_20261026.html) · [Usage and safety contract](docs/R16_LOCALIZATION_STUDIO.md) · [Original Markdown example](examples/r16/sample_readme.md). Scan protected Markdown/JSON/Prompt spans, enter candidate wording manually, review differences, and download a **new** preview. Metadata exports contain no source text, although an explicitly downloaded preview includes what you entered. **No automatic translation, cloud upload, or source-file overwrite.** This remains a conservative scanner, not a full grammar or translation-quality certification.
 
+## R17 — Offline project document integrity audit (read-only)
+
+[Open R17 Markdown link audit](examples/TW_Document_Trust_Graph_R17_20261026.html) · [R17 usage and limits](docs/R17_DOCUMENT_TRUST_GRAPH.en.md). Explicitly select Markdown files you own or may process, inspect relative links and headings, then download a source-text-free metadata report. External and unresolved links are UNKNOWN, never verified silently. This is **not translation, semantic certification, network checking, or file modification**.

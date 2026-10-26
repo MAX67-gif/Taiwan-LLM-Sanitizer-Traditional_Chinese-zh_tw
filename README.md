@@ -54,3 +54,7 @@
 [安裝說明](docs/INSTALL_CHROME.md) · [Tampermonkey 教學](docs/INSTALL_TAMPERMONKEY.md) · [功能與限制](docs/FEATURES.md) · [路線圖](docs/ROADMAP.md) · [貢獻指南](CONTRIBUTING.md) · [重要更新摘要](CHANGELOG.md)。技術資料和未經審核的私人內容不應提交到公開 Issues／PR。
 
 **翻譯內容的法律責任與網站條款取決於具體使用情形；本專案不保證任何特定第三方網站授權或所有功能的普遍適用性。**
+
+## R17｜專案級文件信任圖（唯讀工具）
+
+[開啟 R17 離線 Markdown 文件連結檢查](examples/TW_Document_Trust_Graph_R17_20261026.html) · [閱讀 R17 完整使用與安全限制](docs/R17_DOCUMENT_TRUST_GRAPH.md)。由使用者勾選自己有權使用的 Markdown 檔案，檢查跨檔連結與錨點，輸出不含文件原文的報告；未知或外部連結**不能冒稱 PASS**。這是結構檢查，**非自動翻譯、全文語義認證或網站相容性保證**。
