@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
+<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -55,3 +55,8 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 ## R17｜オフライン文書リンク整合性チェック（読み取り専用）
 
 [R17 Markdown リンク検査を開く](examples/TW_Document_Trust_Graph_R17_20261026.html) · [利用方法と制限](docs/R17_DOCUMENT_TRUST_GRAPH.ja.md)。権限のある Markdown ファイルだけを明示的に選び、相対リンクと見出しアンカーを検査できます。結果は本文を含まないメタデータ形式です。外部・未対応リンクは UNKNOWN と表示し、自動的に通信しません。**翻訳やファイルの書換えは行いません**。
+
+## R17.1｜毎回の Release に全対応ツールを収録
+
+[全ツールの配布・検証ガイド](docs/ALL_TOOLS_RELEASE.md)を参照してください。新しい正式 Release には、合法的に配布可能でサポート中の Chrome 拡張、Tampermonkey スクリプト、13 個のオフライン HTML ツール、R6 品質研究キット、CLI／Skill 開発者パッケージが必要です。更新のないツールも元のバージョンと SHA256 を保持します。Draft の全添付ファイルを検証してから公開します。以前に権利上の問題で撤回した第三者専用パッケージは含みません。[R17.1 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) は正式 CI と実際の添付ファイルが成功した場合に限り利用可能とします。
+

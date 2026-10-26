@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
+<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -55,3 +55,8 @@ A **fictional browser-game-like page** with a normal, selectable HTML label such
 ## R17 — Offline project document integrity audit (read-only)
 
 [Open R17 Markdown link audit](examples/TW_Document_Trust_Graph_R17_20261026.html) · [R17 usage and limits](docs/R17_DOCUMENT_TRUST_GRAPH.en.md). Explicitly select Markdown files you own or may process, inspect relative links and headings, then download a source-text-free metadata report. External and unresolved links are UNKNOWN, never verified silently. This is **not translation, semantic certification, network checking, or file modification**.
+
+## R17.1 | Every Release includes the complete supported tool suite
+
+Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md). Each new release must include every legally distributable, still-supported Chrome extension, Tampermonkey userscript, 13 offline HTML labs, the R6 public quality kit, and the self-contained CLI/Skill developer bundle. Unchanged tools retain their original versions and SHA256 digests. The Draft release is verified before publication. Previously withdrawn third-party-specific packages remain excluded. Only use the [R17.1 suite release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) after its GitHub main CI and assets have actually passed.
+

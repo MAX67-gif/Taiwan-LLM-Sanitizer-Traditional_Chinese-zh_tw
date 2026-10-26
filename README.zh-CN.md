@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
+<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -55,3 +55,8 @@
 ## R17｜项目级文档完整性检查（离线、只读）
 
 [打开 R17 离线 Markdown 链接检查工具](examples/TW_Document_Trust_Graph_R17_20261026.html) · [阅读简体中文使用与安全指南](docs/R17_DOCUMENT_TRUST_GRAPH.zh-CN.md)。用户明确勾选有权使用的文件，检查跨文件链接和标题锚点；报告不包含文档正文。外部链接与未知语法标记为 UNKNOWN，不会自动访问网络。此工具**不会翻译、修改文件或证明翻译正确**。
+
+## R17.1｜每次 Release 都包含完整工具套装（All-Tools Full Suite）
+
+请参阅 [完整工具下载与验证说明](docs/ALL_TOOLS_RELEASE.md)。新版正式 Release 必须保留所有仍受支持、具备合法分发权限的 Chrome 扩展、Tampermonkey 脚本、13 个离线 HTML 工作台、R6 质量研究包，以及带依赖项的 CLI/Skill 开发者包；未更新的工具仍保留原版本号与 SHA256。GitHub 必须先验证全部 Draft 附件后才能公开发布。因版权或安全问题下架的第三方专用内容不得恢复。请在正式 CI 成功后使用 [R17.1 工具套装页面](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)。
+

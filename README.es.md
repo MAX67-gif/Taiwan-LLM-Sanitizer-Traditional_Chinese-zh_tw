@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4eb41d89e43dd44a3dbbda3d37b9d4f3ea2043ad7b0c783a5ea903bbb6c86b0 -->
+<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -55,3 +55,8 @@ En una **página ficticia parecida a un juego web**, el texto HTML seleccionable
 ## R17 — Auditoría local de integridad de documentos (solo lectura)
 
 [Abrir el verificador R17 de enlaces Markdown](examples/TW_Document_Trust_Graph_R17_20261026.html) · [Guía y límites](docs/R17_DOCUMENT_TRUST_GRAPH.es.md). Selecciona de forma explícita archivos Markdown que tengas derecho a procesar, verifica enlaces relativos y anclas y exporta un informe de metadatos sin el texto original. Los enlaces externos o no verificables se marcan UNKNOWN; nunca se consulta la red. **No traduce ni modifica los archivos de origen.**
+
+## R17.1 | Cada Release incluye todas las herramientas admitidas
+
+Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEASE.md). Cada versión oficial debe incluir todas las extensiones de Chrome, los scripts de Tampermonkey, los 13 laboratorios HTML sin conexión, el kit público de calidad R6 y el paquete de CLI/Skill para desarrolladores que sigan admitidos y puedan redistribuirse legalmente. Las herramientas sin cambios conservan su versión y SHA256 originales. Se comprueban todos los adjuntos del borrador antes de publicar. Nunca se reincorporan paquetes específicos de terceros retirados por derechos. La [Release R17.1](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) solo se considera disponible tras verificarse el CI oficial y sus adjuntos.
+
