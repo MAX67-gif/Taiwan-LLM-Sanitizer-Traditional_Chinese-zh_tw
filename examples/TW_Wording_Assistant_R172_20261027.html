@@ -1,0 +1,809 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Taiwan-LLM-Sanitizer｜臺灣用語修稿助手 R17.2 Preview</title>
+<style>
+:root{color-scheme:light;--ink:#192b40;--muted:#617389;--line:#d7e1ee;--accent:#195eaa;--light:#f3f7fb;--bg:#f6f9fc;--focus:#f49a41}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+main{max-width:1110px;margin:0 auto;padding:28px 20px 70px}header{padding:30px 32px;color:#fff;border-radius:21px;background:linear-gradient(120deg,#113957,#206b88);margin-bottom:18px}
+small.tag{font-size:12px;letter-spacing:.11em;font-weight:800;color:#aee6f3;text-transform:uppercase}h1{font-size:clamp(27px,4vw,42px);margin:6px 0}header p{color:#e5f5f9;max-width:780px;margin:8px 0 0}h2{font-size:20px;margin:0 0 12px}p{margin:8px 0}section{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:18px;box-shadow:0 4px 16px #152a4810}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}button,.file{border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-weight:700;padding:9px 14px;cursor:pointer;font:inherit}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.negative{color:#94442e}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+textarea{display:block;width:100%;min-height:260px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:15px;font:15px/1.75 ui-monospace,Consolas,"Microsoft JhengHei",monospace;background:#fcfdff;color:var(--ink)}#result{min-height:170px}#status,#previewState{display:block;padding:10px 12px;background:#f1f6fc;border-radius:9px;margin:10px 0;color:#245581}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}.stat{border-radius:100px;background:#eaf2fa;padding:3px 12px;font-weight:700;font-size:13px}.candidate{border:1px solid var(--line);padding:16px;border-radius:13px;margin:12px 0}.candidate h3{font-size:17px;margin:0 0 4px;overflow-wrap:anywhere}.candidate .meta{font-size:13px;color:var(--muted)}.candidate .why{font-size:13px;color:#654e15}.candidate .sel{background:#ebf4ec;border-radius:7px;padding:5px 8px;display:inline-block;margin-top:5px;font-weight:700;font-size:13px}
+.note{color:var(--muted);font-size:14px}.notice{border-left:3px solid #f1a84c;background:#fffbf1;padding:11px 14px;margin:14px 0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+footer{color:var(--muted);font-size:13px;margin-top:18px}.file{display:inline-block}input[type=file]{max-width:100%}#resultPanel[hidden],#candidatePanel[hidden]{display:none}.mono{font-family:ui-monospace,monospace;word-break:break-word}.gap{height:3px}
+@media(max-width:760px){main{padding:12px 10px}header{padding:21px;border-radius:14px}.two{grid-template-columns:1fr}section{padding:16px}button{max-width:100%;font-size:14px}textarea{min-height:210px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style></head><body><main>
+<header><small class="tag">Taiwan-LLM-Sanitizer · R17.2 Preview</small><h1>讓中文更貼近臺灣習慣</h1><p>貼入已寫好的中文，逐項選擇「軟體／資料庫／點選」等用語。程式碼、網址與模板變數先受保護，再確認新稿。全部在此瀏覽器本機運行，不會自動傳送內容。</p></header>
+<section aria-labelledby="step1"><h2 id="step1">01｜貼入內容或試用範例</h2><p class="note">僅支援 Markdown 保守規則；不做全文翻譯、任意 JSON 改寫或語意認證。輸入最大 64 KiB。若要處理 JSON／Prompt，請使用既有 R16 工作台。</p>
+<label for="source">原始內容</label><textarea id="source" spellcheck="false" placeholder="請貼入自己的文字（保護程式片段、URL 與變數）"></textarea>
+<div class="actions"><button id="demo">載入原創範例</button><label class="file" for="file">讀取本機 Markdown／文字檔</label><input id="file" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain"><button class="primary" id="inspect">尋找臺灣用語建議</button><button class="negative" id="clear">清除所有內容</button></div>
+<p class="notice">請只貼入你有權處理的文件。若文字來自雲端 Codex、Claude 或 Grok，那段 AI 互動本身可能已經傳送到供應商；本工具不會替雲端平台保證隱私。</p><output id="status" role="status" aria-live="polite">尚未分析：原文不會被修改。</output></section>
+<section id="candidatePanel" hidden aria-labelledby="step2"><h2 id="step2">02｜逐項確認語境或保留原文</h2><div id="stats" class="stats"></div><p class="note">每一處皆預設不更動；按「採用」只記錄當次選擇，必須再產生安全預覽。多義詞如 menu（選單／菜單）不會自動決定。</p><div id="candidates"></div><div class="actions"><button class="primary" id="previewBtn">產生安全差異預覽</button><button id="reportBtn">另存不含原文的檢查摘要</button></div></section>
+<section id="resultPanel" hidden aria-labelledby="step3"><h2 id="step3">03｜核對並帶走新稿</h2><p class="note">只顯示已確認項目。結果包含你自己的全文；下載只建立新檔案，原始檔不會被覆寫。此工具不保證語意完全等價。</p><output id="previewState" role="status" aria-live="polite"></output><label for="result">新稿（可以自行選取複製）</label><textarea id="result" readonly spellcheck="false"></textarea><div class="actions"><button id="copy" class="primary">複製新稿</button><button id="download">下載新稿 .md</button><button id="discard">取消此預覽</button></div></section>
+<footer>本工具為有限臺灣用語候選 Preview；詞彙尚未取得獨立母語真人品質認證。無伺服器、無遙測、無自動套用。保留原始版本及來源資料由使用者自行管理。</footer>
+<script>/* Taiwan-LLM-Sanitizer R5 - MIT. Protected-name router; no network calls.
+ * EDIT lexicon/protected_names_r5.json, then run tools/generate_names_r5.py. */
+(function(global){
+'use strict';
+const VERSION='0.4.0';
+const REGISTRY=/* TLS_NAMES_BEGIN */[{"id":"openai-codex-for-open-source","name":"Codex for Open Source","aliases":["OpenAI Codex for Open Source","Codex for Open Source","Codex for OSS"],"bad":["開源法典","开源法典"],"note_zh_tw":"OpenAI 的 Codex 開源專案支持計畫（說明性譯法，非官方正式譯名）"},{"id":"openai-codex","name":"OpenAI Codex","aliases":["OpenAI Codex","Codex"],"bad":["開放人工智慧法典"],"note_zh_tw":"OpenAI 的程式協作產品名稱"},{"id":"anthropic-claude-code","name":"Claude Code","aliases":["Anthropic Claude Code","Claude Code"],"bad":[],"note_zh_tw":"Anthropic 的程式協作產品名稱"},{"id":"anthropic-claude","name":"Claude","aliases":["Anthropic Claude","Claude"],"bad":[],"note_zh_tw":"AI 產品名稱或專有姓名，保持原文"},{"id":"openai-chatgpt","name":"ChatGPT","aliases":["ChatGPT"],"bad":[],"note_zh_tw":"產品品牌"},{"id":"openai-organization","name":"OpenAI","aliases":["OpenAI"],"bad":[],"note_zh_tw":"品牌"},{"id":"anthropic-organization","name":"Anthropic","aliases":["Anthropic"],"bad":[],"note_zh_tw":"品牌"},{"id":"github-brand","name":"GitHub","aliases":["GitHub"],"bad":[],"note_zh_tw":"軟體服務商標"},{"id":"tampermonkey-brand","name":"Tampermonkey","aliases":["Tampermonkey"],"bad":[],"note_zh_tw":"使用者腳本管理工具"},{"id":"read-frog-brand","name":"Read Frog","aliases":["Read Frog"],"bad":[],"note_zh_tw":"產品專有名稱"},{"id":"pytorch-brand","name":"PyTorch","aliases":["PyTorch"],"bad":[],"note_zh_tw":"開源框架名稱"},{"id":"huggingface-brand","name":"Hugging Face","aliases":["Hugging Face"],"bad":[],"note_zh_tw":"AI 開源平台名稱"},{"id":"model-context-protocol","name":"Model Context Protocol","aliases":["Model Context Protocol"],"bad":[],"note_zh_tw":"通訊協定正式名稱"},{"id":"agent-skill","name":"Agent Skills","aliases":["Agent Skills"],"bad":[],"note_zh_tw":"AI Agent 標準用語，先保留正式英文名稱"},{"id":"manifest-v3","name":"Manifest V3","aliases":["Manifest V3"],"bad":[],"note_zh_tw":"Chrome 擴充功能規範名稱"},{"id":"nodejs-name","name":"Node.js","aliases":["Node.js"],"bad":[],"note_zh_tw":"執行環境名稱"}]/* TLS_NAMES_END */;
+const SORTED=REGISTRY.flatMap(r=>r.aliases.map(alias=>({alias,id:r.id,note:r.note_zh_tw,bad:r.bad||[]})))
+ .sort((a,b)=>b.alias.length-a.alias.length||a.alias.localeCompare(b.alias,'en'));
+function boundary(before,after){
+  return !/[A-Za-z0-9_]/u.test(before||'')&&!/[A-Za-z0-9_]/u.test(after||'');
+}
+function find(text) {
+  if(typeof text!=='string'||text.length>20000)return [];
+  const found=[];
+  for(let i=0;i<text.length;){
+    let hit=null;
+    for(const entry of SORTED) {
+      if(!text.startsWith(entry.alias,i))continue;
+      if(!boundary(text[i-1],text[i+entry.alias.length]))continue;
+      hit=entry;break;
+    }
+    if(!hit){i++;continue;}
+    found.push(Object.freeze({start:i,end:i+hit.alias.length,literal:hit.alias,id:hit.id}));
+    i+=hit.alias.length;
+  }
+  return found;
+}
+function mask(text){
+  if(typeof text!=='string')return {ok:false,reason:'TYPE'};
+  const spans=find(text);
+  let output='',cursor=0;
+  const replacements=[];
+  for(const span of spans){
+    const token='⟪TLSNAME'+replacements.length+'⟫';
+    if(text.includes(token))return {ok:false,reason:'COLLISION'};
+    output+=text.slice(cursor,span.start)+token;
+    replacements.push({...span,token});
+    cursor=span.end;
+  }
+  output+=text.slice(cursor);
+  return {ok:true,text:output,spans:replacements,restore(translated){
+    if(typeof translated!=='string')return {ok:false,reason:'BAD_RESULT'};
+    let last=-1;
+    for(const r of replacements){
+      if(translated.split(r.token).length!==2)return {ok:false,reason:'NAME_LOST_OR_DUPLICATED',id:r.id};
+      const index=translated.indexOf(r.token);
+      if(index<=last)return {ok:false,reason:'NAME_REORDERED',id:r.id};
+      last=index;
+    }
+    let value=translated;
+    for(const r of replacements)value=value.replace(r.token,r.literal);
+    if(/⟪TLSNAME\d+⟫/u.test(value))return {ok:false,reason:'UNEXPECTED_NAME_TOKEN'};
+    return {ok:true,text:value};
+  }};
+}
+function audit(source,target) {
+  const warnings=[];
+  if(typeof source!=='string'||typeof target!=='string')
+    return {ok:false,issues:[{code:'NON_STRING'}],protectedCount:0};
+  const matches=find(source);
+  for(const span of matches){
+    const row=REGISTRY.find(r=>r.id===span.id);
+    if(!target.includes(span.literal)){
+      warnings.push({code:'PROTECTED_NAME_CHANGED',id:span.id,name:span.literal});
+    }
+    if(row)for(const mistranslation of (row.bad||[])){
+      if(target.includes(mistranslation))
+        warnings.push({code:'KNOWN_MISTRANSLATION',id:span.id,badForm:mistranslation});
+    }
+  }
+  return {ok:warnings.length===0,issues:warnings,protectedCount:matches.length};
+}
+const api=Object.freeze({VERSION,ENTRIES:Object.freeze(REGISTRY),find,mask,audit});
+global.TLSNames=api;
+if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script><script>/* Taiwan-LLM-Sanitizer R15: offline, immutable typed protected segments (MIT).
+ * Preview only: no transport, no model, no filesystem changes, no approval.
+ * Positions are UTF-16 code-unit offsets, [start,end), not bytes or code points.
+ */
+(function(global){
+'use strict';
+const SCHEMA='tls.structured-segments.v1';
+const MAX_BYTES=1048576, MAX_SEGMENTS=20000,MAX_EDITS=120,MAX_REPLACEMENT=1000;
+const FIELDS=new Set(['text','description','summary','message','label','title','caption','help','tooltip','body','instructions','hint','placeholder_text']);
+const BLOCKED=new Set(['code','script','source_code','html','css','json','key','id','type','role','path','url','uri','href','src','schema','$schema','pattern','regex','model','locale','language','checksum','signature','token','api_key','password','secret','command','function','function_name','example_code']);
+const ROLE_RE=/^\s*(?:system|developer|assistant|user|tool|function|instruction|context)\s*[:：]/iu;
+const DANGEROUS=/(?:\{\{[^}\r\n]*\}\}|\$\{[^}\r\n]*\}|\$[A-Z][A-Z\d_]*|https?:\/\/|www\.|--[A-Za-z][\w-]*)/u;
+const NEWLINES=/\r\n|\r|\n/gu;
+function plainObject(x){return x!==null&&typeof x==='object'&&!Array.isArray(x)&&Object.getPrototypeOf(x)===Object.prototype;}
+function fail(code){throw new Error('TLS_R15_'+code);}
+function byteLength(text){return new TextEncoder().encode(text).length;}
+function pureSHA256(bytes){
+ // Offline SHA-256 for browser contexts where SubtleCrypto is absent (for example about:blank test fixtures).
+ const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+ 0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+ 0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+ 0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+ 0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+ 0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+ 0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+ 0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ const H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,
+                          0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+ const n=bytes.length,padLen=Math.ceil((n+9)/64)*64,b=new Uint8Array(padLen);
+ b.set(bytes);b[n]=0x80;
+ const view=new DataView(b.buffer);
+ view.setUint32(padLen-8,0,false);view.setUint32(padLen-4,(n*8)>>>0,false);
+ const r=(x,k)=>(x>>>k)|(x<<(32-k));
+ for(let block=0;block<padLen;block+=64){
+  const w=new Uint32Array(64);
+  for(let i=0;i<16;i++)w[i]=view.getUint32(block+i*4,false);
+  for(let i=16;i<64;i++){
+   const a=w[i-15],c=w[i-2];
+   const s0=r(a,7)^r(a,18)^(a>>>3),s1=r(c,17)^r(c,19)^(c>>>10);
+   w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+  }
+  let [a,c,d,e,f,g,h,j]=H;
+  for(let i=0;i<64;i++){
+   const S1=r(f,6)^r(f,11)^r(f,25),ch=(f&g)^(~f&h);
+   const t1=(j+S1+ch+K[i]+w[i])>>>0;
+   const S0=r(a,2)^r(a,13)^r(a,22),maj=(a&c)^(a&d)^(c&d);
+   const t2=(S0+maj)>>>0;
+   j=h;h=g;g=f;f=(e+t1)>>>0;e=d;d=c;c=a;a=(t1+t2)>>>0;
+  }
+  const t=[a,c,d,e,f,g,h,j];for(let i=0;i<8;i++)H[i]=(H[i]+t[i])>>>0;
+ }
+ return Array.from(H,x=>x.toString(16).padStart(8,'0')).join('');
+}
+async function hash(text){
+ const data=new TextEncoder().encode(text);
+ if(global.crypto&&global.crypto.subtle){const result=new Uint8Array(await global.crypto.subtle.digest('SHA-256',data));return Array.from(result,x=>x.toString(16).padStart(2,'0')).join('');}
+ if(typeof require==='function')return require('node:crypto').createHash('sha256').update(data).digest('hex');
+ return pureSHA256(data);
+}
+function checkInput(source,format){
+ if(typeof source!=='string'||!['markdown','json','prompt'].includes(format))fail('INVALID_FORMAT_OR_TEXT');
+ // TextEncoder normalizes unpaired UTF-16 surrogates to the replacement character.
+ // Reject those inputs to prevent non-identical sources sharing the same SHA256.
+ for(let i=0;i<source.length;i++){
+  const n=source.charCodeAt(i);
+  if(n>=0xD800&&n<=0xDBFF){const next=source.charCodeAt(++i);if(!(next>=0xDC00&&next<=0xDFFF))fail('UNPAIRED_SURROGATE');}
+  else if(n>=0xDC00&&n<=0xDFFF)fail('UNPAIRED_SURROGATE');
+ }
+ const length=byteLength(source);if(length>MAX_BYTES)fail('INPUT_TOO_LARGE');
+ if(source.includes('\0'))fail('INPUT_BINARY_REJECTED');
+ return length;
+}
+function buildCollector(source){
+ const rows=[];let cursor=0;
+ function add(start,end,type,policy,reason){
+  if(!Number.isInteger(start)||!Number.isInteger(end)||start<cursor||end>source.length||start>end)fail('INVALID_SEGMENT_RANGE');
+  if(start>cursor)push(cursor,start,'structural','PROTECT','SYNTAX_OR_WHITESPACE');
+  if(end>start)push(start,end,type,policy,reason);
+  cursor=end;
+ }
+ function push(start,end,type,policy,reason){
+  const prev=rows[rows.length-1];
+  if(prev&&prev.end===start&&prev.type===type&&prev.policy===policy&&prev.reason===reason)prev.end=end;
+  else rows.push({start,end,type,policy,reason});
+  if(rows.length>MAX_SEGMENTS)fail('TOO_MANY_SEGMENTS');
+ }
+ function finish(){
+  if(cursor<source.length)push(cursor,source.length,'structural','PROTECT','SYNTAX_OR_WHITESPACE');
+  return rows.map((r,i)=>({...r,id:'s'+String(i).padStart(5,'0')}));
+ }
+ return {add,finish};
+}
+function names(){
+ let api=global.TLSNames;
+ if(!api&&typeof require==='function'){try{api=require('./entities.js');}catch(_){} }
+ return api&&typeof api.find==='function'?api:null;
+}
+// R15.1 conservative token scanner.  This is NOT a complete CommonMark parser.
+// Balanced link syntax is treated as one protected atom: unmatched/multiline links
+// are rejected instead of exposing the tail of a destination as editable prose.
+function markdownLinkSpan(source,start,end){
+ let i=start,depth=0;
+ if(source[i]==='!')i++;
+ if(source[i]!=='[')return null;
+ for(;i<end;i++){
+  const c=source[i];
+  if(c==='\\'){if(i+1>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i++;continue;}
+  if(c==='['){if(++depth>64)fail('LINK_BRACKET_DEPTH');}
+  else if(c===']'){
+   if(--depth===0){i++;break;}
+   if(depth<0)fail('UNBALANCED_MARKDOWN_LINK');
+  }
+ }
+ if(depth!==0)fail('UNBALANCED_MARKDOWN_LINK');
+ // Protect shortcut references as one conservative atom.  A GFM checkbox is
+ // handled as a separate list marker before entering this tokenizer.
+ if(source[i]==='['){
+  let level=1;i++;
+  while(i<end&&level){
+   const c=source[i++];
+   if(c==='\\'){if(i>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i++;continue;}
+   if(c==='['){if(++level>64)fail('LINK_REFERENCE_DEPTH');}
+   else if(c===']')level--;
+  }
+  if(level)fail('UNBALANCED_MARKDOWN_REFERENCE');
+ }
+ if(source[i]!=='(')return {length:i-start,type:'reference_candidate'};
+ i++;let parens=1,angle=false,quote=null;
+ while(i<end){
+  const c=source[i];
+  if(c==='\\'){if(i+1>=end)fail('UNCLOSED_MARKDOWN_ESCAPE');i+=2;continue;}
+  if(angle){if(c==='>')angle=false;i++;continue;}
+  if(quote){if(c===quote)quote=null;i++;continue;}
+  // Angle form is allowed to contain otherwise unbalanced parentheses.
+  if(c==='<'){angle=true;i++;continue;}
+  // Titles only begin following a whitespace separator, never inside URLs.
+  if((c==='"'||c==="'")&&/\s/u.test(source[i-1]||'')){quote=c;i++;continue;}
+  if(c==='('){if(++parens>64)fail('LINK_DESTINATION_DEPTH');}
+  else if(c===')'){
+   if(--parens===0){i++;return {length:i-start,type:'link'};}
+  }
+  i++;
+ }
+ fail('UNCLOSED_LINK_DESTINATION');
+}
+function scanPlain(source,start,end,c,kind){
+ if(end<=start)return;
+ const list=names()?.find(source.slice(start,end))||[];
+ const named=new Map(list.map(x=>[start+x.start,start+x.end]));
+ let i=start;
+ while(i<end){
+  if(named.has(i)){const bound=named.get(i);if(bound<=end){c.add(i,bound,'named_entity','PROTECT','PROTECTED_PRODUCT_NAME');i=bound;continue;}}
+  const tail=source.slice(i,end);let match=null,typ='literal',why='PROTECTED_MARKER';
+  if(tail.startsWith('{{'))match=tail.match(/^\{\{[^}\r\n]{0,160}\}\}/u);
+  if(!match&&tail.startsWith('${'))match=tail.match(/^\$\{[^}\r\n]{0,160}\}/u);
+  if(!match&&tail.startsWith('$'))match=tail.match(/^\$[A-Z][A-Z\d_]*/u);
+  if(match){typ='placeholder';why='TEMPLATE_VARIABLE';}
+  if(!match&&tail.startsWith('--')){match=tail.match(/^--[A-Za-z][\w-]*/u);typ='cli_flag';why='COMMAND_OPTION';}
+  if(!match&&(tail.startsWith('https://')||tail.startsWith('http://')||tail.startsWith('www.'))){match=tail.match(/^(?:https?:\/\/|www\.)[^\s\[\]<>"'`|]+/u);typ='url';why='URL_PRESERVED';}
+  if(!match&&(tail.startsWith('{{')||tail.startsWith('${')))fail('UNCLOSED_TEMPLATE');
+  if(!match&&(kind==='markdown'||kind==='prompt')&&tail[0]==='`'){
+   const run=tail.match(/^`+/u)[0],from=i+run.length;
+   const close=source.indexOf(run,from);
+   if(close<0||close+run.length>end)fail('UNCLOSED_INLINE_CODE');
+   match=[source.slice(i,close+run.length)];typ='inline_code';why='INLINE_CODE';
+  }
+  if(!match&&kind==='markdown'&&(tail.startsWith('![')||tail[0]==='[')){
+   const atom=markdownLinkSpan(source,i,end);
+   if(atom){match=[source.slice(i,i+atom.length)];typ=atom.type;why='LINK_OR_REFERENCE_IMMUTABLE';}
+  }
+  if(!match&&kind==='markdown'&&tail[0]==='<'){
+   match=tail.match(/^<[^>\r\n]*>/u);
+   if(!match)fail('UNCLOSED_HTML_OR_AUTOLINK');typ='html';why='HTML_OR_AUTOLINK';
+  }
+  if(!match&&kind==='markdown'&&tail[0]==='\\'){
+   match=tail.slice(0,2)?[tail.slice(0,2)]:null;typ='escape';why='MARKDOWN_ESCAPE';
+  }
+  if(!match&&(tail[0]==='|'&&kind==='markdown')){match=['|'];typ='table_pipe';why='TABLE_STRUCTURE';}
+  if(!match&&kind==='markdown'&&/^[*_~#\[\]>]/u.test(tail)){match=[tail[0]];typ='markdown_token';why='MARKDOWN_MARKER';}
+  if(match){c.add(i,i+match[0].length,typ,'PROTECT',why);i+=match[0].length;continue;}
+  const nextSpecial=(pos)=>{const s=source[pos];return s==='`'||s==='{'||s==='$'||s==='-'||s==='h'||s==='w'||(kind==='markdown'&&'![<\\|*_~#]>'.includes(s))||named.has(pos);};
+  let j=i+1;
+  while(j<end&&!nextSpecial(j))j++;
+  const chunk=source.slice(i,j);
+  if(!chunk.trim())c.add(i,j,'whitespace','PROTECT','WHITESPACE');
+  else{
+   const first=chunk.search(/\S/u),last=chunk.search(/\s*$/u);
+   if(first>0)c.add(i,i+first,'whitespace','PROTECT','WHITESPACE');
+   const actualStart=i+Math.max(0,first),actualEnd=i+last;
+   if(actualEnd>actualStart)c.add(actualStart,actualEnd,'prose','EDITABLE','LOCAL_TEXT_PREVIEW_ONLY');
+   if(actualEnd<j)c.add(actualEnd,j,'whitespace','PROTECT','WHITESPACE');
+  }
+  i=j;
+ }
+}
+function linesOf(source){
+ const lines=[],re=/(?:[^\r\n]*)(?:\r\n|\r|\n|$)/gu;let m;
+ while((m=re.exec(source))!==null){if(m[0]==='')break;lines.push({start:m.index,text:m[0],end:m.index+m[0].length});}
+ return lines;
+}
+// Markdown blockquote/list markers are only syntactic containers.  Consume them
+// for state detection without changing UTF-16 offsets or rebuilding the source.
+function markdownContainerPrefix(text){
+ let pos=0,steps=0,m;
+ while(steps++<32&&(m=text.slice(pos).match(/^ {0,3}(?:>[ \t]?|[-+*][ \t]+|\d{1,9}[.)][ \t]+)/u))){pos+=m[0].length;}
+ return pos;
+}
+const RAW_HTML_TAGS=/^(?:address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|nav|noframes|ol|optgroup|option|output|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul)$/iu;
+function htmlBlockStart(text){
+ const t=text.trimStart();
+ if(t.startsWith('<!--'))return {ending:'-->',kind:'HTML_COMMENT'};
+ if(t.startsWith('<![CDATA['))return {ending:']]>',kind:'HTML_CDATA'};
+ if(t.startsWith('<?'))return {ending:'?>',kind:'HTML_PROCESSING_INSTRUCTION'};
+ if(/^<![A-Z]/u.test(t))return {ending:'>',kind:'HTML_DECLARATION'};
+ const raw=t.match(/^<(script|pre|style|textarea)(?=[\s>/])/iu);
+ if(raw){if(!t.includes('>'))fail('AMBIGUOUS_HTML_OPEN_TAG');return {closingTag:raw[1],kind:'RAW_HTML_ELEMENT'};}
+ const block=t.match(/^<\/?([A-Za-z][\w-]*)(?=[\s>/])/u);
+ if(block){
+  // Unsupported or incomplete HTML stays protected, never inferred editable.
+  if(!t.includes('>'))fail('AMBIGUOUS_HTML_OPEN_TAG');
+  const name=block[1];
+  if(RAW_HTML_TAGS.test(name)||/^<\/?[A-Za-z][^>]*>\s*$/u.test(t)){
+   const closing=/^<\//u.test(t);
+   const selfClosing=/\/\s*>\s*$/u.test(t)||/^(?:hr|link|meta|input|br|img)$/iu.test(name);
+   return {closingTag:closing||selfClosing?null:name,untilBlank:closing||selfClosing,kind:'RAW_HTML_BLOCK'};
+  }
+ }
+ return null;
+}
+function htmlBlockComplete(html,text){
+ if(html.ending)return text.includes(html.ending);
+ if(html.closingTag){
+  const re=new RegExp('</'+html.closingTag+'\\s*>','iu');
+  return re.test(text);
+ }
+ return html.untilBlank&&text.trim()==='';
+}
+function scanDocument(source,format,c){
+ const lines=linesOf(source);let fence=null,front=false,first=true,html=null;
+ for(const row of lines){
+  const {start,end}=row,line=row.text;
+  const raw=line.replace(/(?:\r\n|\r|\n)$/u,''),contentEnd=start+raw.length;
+  if(first){first=false;if(raw.startsWith('\ufeff'))c.add(start,start+1,'bom','PROTECT','BYTE_ORDER_MARK');}
+  const s=start+(start===0&&raw.startsWith('\ufeff')?1:0);
+  const text=source.slice(s,contentEnd);
+  const container=format==='markdown'?markdownContainerPrefix(text):0;
+  const content=text.slice(container),t=s+container;
+  let reason=null,match;
+  if(html){reason=html.kind;if(htmlBlockComplete(html,content))html=null;}
+  else if(front){reason='FRONTMATTER';if(/^(?:---|\.\.\.)\s*$/u.test(content))front=false;}
+  else if(fence){reason='CODE_FENCE_BODY';match=content.match(/^ {0,3}(`{3,}|~{3,})(?:\s*)$/u);if(match&&match[1][0]===fence.char&&match[1].length>=fence.size)fence=null;}
+  else if((format==='markdown'||format==='prompt')&&(match=content.match(/^ {0,3}(`{3,}|~{3,})/u))){fence={char:match[1][0],size:match[1].length};reason='CODE_FENCE';}
+  else if(format==='markdown'&&start===0&&/^(?:---|\+\+\+)\s*$/u.test(content)){front=true;reason='FRONTMATTER';}
+  else if(format==='markdown'&&(html=htmlBlockStart(content))){reason=html.kind;if(htmlBlockComplete(html,content))html=null;}
+  else if(format==='markdown'&&(/^\s{4,}\S/u.test(content)||/^\t/u.test(content)))reason='INDENTED_CODE';
+  else if(format==='markdown'&&(/^\s{0,3}#{1,6}\s/u.test(content)||/^\s{0,3}\[[^\]]+\]:/u.test(content)))reason='HEADING_OR_REFERENCE';
+  else if(format==='markdown'&&(/^\s{0,3}(?:-{3,}|\*{3,}|_{3,})\s*$/u.test(content)||/^\s*\|?\s*:?-{3,}/u.test(content)))reason='THEMATIC_OR_TABLE_RULE';
+  else if(format==='prompt'&&(ROLE_RE.test(content)||/^\s*<\/?(?:system|developer|assistant|user|tool|function)\b/iu.test(content)))reason='PROMPT_ROLE_BOUNDARY';
+  if(reason)c.add(s,contentEnd,'block','PROTECT',reason);
+  else{
+   if(container)c.add(s,t,'markdown_token','PROTECT','BLOCK_PREFIX');
+   let local=content,localStart=t;
+   if(format==='markdown'){
+    const task=local.match(/^\[(?: |x|X)\](?=[ \t]|$)/u);
+    if(task){c.add(localStart,localStart+task[0].length,'gfm_task_marker','PROTECT','GFM_CHECKBOX');localStart+=task[0].length;local=content.slice(task[0].length);}
+   }
+   scanPlain(source,localStart,contentEnd,c,format);
+  }
+  if(contentEnd<end)c.add(contentEnd,end,'newline','PROTECT','LINE_ENDING');
+ }
+ if(fence)fail('UNCLOSED_CODE_FENCE');
+ if(front)fail('UNCLOSED_FRONTMATTER');
+ // Unclosed HTML remains entirely protected until EOF (conservative by design).
+}
+function scanJSON(source,c){
+ try{JSON.parse(source.replace(/^\ufeff/u,''));}catch(_){fail('INVALID_JSON');}
+ const stack=[];let i=0;
+ while(i<source.length){
+  const ch=source[i],top=stack[stack.length-1];
+  if(ch==='"'){
+   const start=i++;let escaped=false;
+   while(i<source.length){const v=source[i++];if(escaped){escaped=false;continue}if(v==='\\'){escaped=true;continue}if(v==='"')break;}
+   if(source[i-1]!=='"')fail('INVALID_JSON_STRING');
+   const end=i,inner=source.slice(start+1,end-1),decoded=JSON.parse(source.slice(start,end));
+   let k=i;while(/\s/u.test(source[k]||'')&&k<source.length)k++;
+   const isKey=source[k]===':';
+   if(isKey){
+    if(!top||top.type!=='object')fail('INVALID_JSON_KEY_SCOPE');
+    if(['__proto__','prototype','constructor'].includes(decoded))fail('DANGEROUS_JSON_KEY');
+    if(top.keys.has(decoded))fail('DUPLICATE_JSON_KEY');
+    top.keys.add(decoded);top.key=decoded;
+   }
+   const safe=!isKey&&top?.type==='object'&&!top.unsafe&&FIELDS.has(top.key)&&!BLOCKED.has(top.key)
+    &&!inner.includes('\\')&&!DANGEROUS.test(decoded)&&!/[<>`\[\]{}]/u.test(decoded)&&decoded.trim().length>0;
+   c.add(start,start+1,'json_quote','PROTECT','JSON_SYNTAX');
+   c.add(start+1,end-1,isKey?'json_key':safe?'json_string_value':'json_value',safe?'EDITABLE':'PROTECT',isKey?'JSON_KEY_IMMUTABLE':safe?'JSON_VALUE_PREVIEW_ONLY':'UNKNOWN_OR_ESCAPED_VALUE');
+   c.add(end-1,end,'json_quote','PROTECT','JSON_SYNTAX');
+   continue;
+  }
+  if(ch==='{'||ch==='['){
+   const parent=top;const unsafe=Boolean(parent?.unsafe||parent?.type==='object'&&BLOCKED.has(parent.key));
+   stack.push({type:ch==='{'?'object':'array',key:null,unsafe,keys:new Set()});
+  }else if(ch==='}'||ch===']')stack.pop();
+  else if(ch===','&&top?.type==='object')top.key=null;
+  i++;
+ }
+}
+function rejected(source,format,bytes,sha,err){
+ return {schema:SCHEMA,format,input_sha256:sha,offset_unit:'utf16',input_bytes:bytes,
+  segments:source.length?[{id:'s00000',start:0,end:source.length,type:'unsafe_document',policy:'PROTECT',reason:err}]:[],
+  protected_count:source.length?1:0,mutable_count:0,validation:{status:'REJECTED',errors:[err]},approval:'NONE'};
+}
+async function analyze(source,format){
+ const bytes=checkInput(source,format),sha=await hash(source),c=buildCollector(source);
+ try{
+  if(format==='json')scanJSON(source,c);else scanDocument(source,format,c);
+  const segments=c.finish();const count=segments.filter(s=>s.policy==='EDITABLE').length;
+  return {schema:SCHEMA,format,input_sha256:sha,offset_unit:'utf16',input_bytes:bytes,
+   segments,protected_count:segments.length-count,mutable_count:count,validation:{status:'OK',errors:[]},approval:'NONE'};
+ }catch(error){const code=String(error?.message||'').startsWith('TLS_R15_')?error.message:'TLS_R15_INVALID_DOCUMENT';return rejected(source,format,bytes,sha,code);}
+}
+function safeReplacement(s,format){return typeof s==='string'&&s.length<=MAX_REPLACEMENT&&s.trim().length>0
+ &&!/[\x00-\x1f\x7f<>`\[\]{}]/u.test(s)&&!DANGEROUS.test(s)
+ &&!/[\u202a-\u202e\u2066-\u2069\u200e\u200f]/u.test(s)
+ &&!(format==='markdown'&&/[\*_~|\\]/u.test(s))
+ &&!/^\s*(?:#{1,6}\s|[-*_]{3,}\s*$|>\s|(?:[-+*]|\d+[.)])\s)/u.test(s);
+}
+function structuralMatch(a,b){
+ if(Array.isArray(a)||Array.isArray(b))return Array.isArray(a)&&Array.isArray(b)&&a.length===b.length&&a.every((x,i)=>structuralMatch(x,b[i]));
+ if(a&&b&&typeof a==='object'&&typeof b==='object'){
+  const x=Object.keys(a),y=Object.keys(b);
+  return x.length===y.length&&x.every((k,i)=>k===y[i]&&structuralMatch(a[k],b[k]));
+ }
+ return typeof a===typeof b;
+}
+async function preview(source,analysis,edits){
+ if(typeof source!=='string'||!plainObject(analysis)||analysis.schema!==SCHEMA||analysis.approval!=='NONE'
+   ||analysis.validation?.status!=='OK'||analysis.offset_unit!=='utf16')fail('PREVIEW_INVALID_ANALYSIS');
+ if(await hash(source)!==analysis.input_sha256)fail('PREVIEW_SOURCE_HASH_MISMATCH');
+ const check=await analyze(source,analysis.format);
+ if(check.validation.status!=='OK'||JSON.stringify(check.segments)!==JSON.stringify(analysis.segments))fail('PREVIEW_ANALYSIS_TAMPERED');
+ if(!Array.isArray(edits)||edits.length>MAX_EDITS)fail('TOO_MANY_EDITS');
+ const mutable=new Map(analysis.segments.filter(x=>x.policy==='EDITABLE').map(x=>[x.id,x]));
+ const seen=new Set();let result='',pos=0,diff=[];
+ for(const edit of [...edits].sort((x,y)=>(mutable.get(x.id)?.start??Infinity)-(mutable.get(y.id)?.start??Infinity))){
+  if(!plainObject(edit)||Object.keys(edit).some(k=>!['id','replacement'].includes(k))||!mutable.has(edit.id)||seen.has(edit.id))fail('PREVIEW_INVALID_TARGET');
+  seen.add(edit.id);const segment=mutable.get(edit.id);
+  if(!safeReplacement(edit.replacement,analysis.format))fail('PREVIEW_UNSAFE_REPLACEMENT');
+  const old=source.slice(segment.start,segment.end);
+  let replacement=edit.replacement;
+  if(analysis.format==='json')replacement=JSON.stringify(replacement).slice(1,-1);
+  if(replacement===old)continue;
+  result+=source.slice(pos,segment.start)+replacement;pos=segment.end;
+  diff.push({id:edit.id,start:segment.start,end:segment.end,type:segment.type,originalLength:old.length,newLength:replacement.length});
+ }
+ result+=source.slice(pos);
+ if(analysis.format==='json'){
+  let before,after;try{before=JSON.parse(source.replace(/^\ufeff/u,''));after=JSON.parse(result.replace(/^\ufeff/u,''));}catch(_){fail('PREVIEW_JSON_INVALID');}
+  if(!structuralMatch(before,after))fail('PREVIEW_JSON_STRUCTURE_CHANGED');
+ }
+ if(byteLength(result)>MAX_BYTES)fail('PREVIEW_SIZE_LIMIT');
+ return {schema:'tls.structured-preview.v1',status:'SAFE_PREVIEW_NOT_APPLIED',input_sha256:analysis.input_sha256,
+  preview_sha256:await hash(result),approval:'NONE',change_count:diff.length,changes:diff,preview_text:result};
+}
+function publicReport(analysis){
+ if(!plainObject(analysis)||analysis.schema!==SCHEMA)fail('INVALID_REPORT');
+ const {schema,format,input_sha256,offset_unit,input_bytes,protected_count,mutable_count,segments,validation,approval}=analysis;
+ return {schema,format,input_sha256,offset_unit,input_bytes,protected_count,mutable_count,segments,validation,approval,
+  contains_original_text:false,contains_replacement_text:false,transport:'NONE'};
+}
+const API=Object.freeze({SCHEMA,MAX_BYTES,MAX_EDITS,analyze,preview,publicReport});
+global.TLSProtectedR15=API;
+if(typeof module!=='undefined'&&module.exports)module.exports=API;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script><script>/* TLS R16 Offline Localization Safety Studio — original MIT shadow wrapper.
+ * User-supplied data never leaves in-memory session; no provider or transport.
+ * All preview edits re-enter the locked R15.1 validation contract.
+ */
+(function(global){'use strict';
+const SCHEMA='tls.local-workbench.v1';
+const CORE=global.TLSProtectedR15||(typeof require==='function'?require('./protected_segments_r15.js'):null);
+if(!CORE||typeof CORE.analyze!=='function'||typeof CORE.preview!=='function')throw Error('TLS_R16_MISSING_R151_CORE');
+const formats=new Set(['markdown','json','prompt']);
+const isObject=x=>x!==null&&typeof x==='object'&&!Array.isArray(x)&&Object.getPrototypeOf(x)===Object.prototype;
+const cleanReason=x=>String(x||'INVALID').replace(/[^A-Z0-9_]/g,'').slice(0,88)||'INVALID';
+const fail=code=>{throw Error('TLS_R16_'+code);};
+let currentIndex=0;
+function openSession({source,format}={}){
+ let original=typeof source==='string'?source:null;
+ const kind=formats.has(format)?format:'UNSUPPORTED';
+ let generation=0,closed=false,analysis=null,rejected=[];
+ const id=++currentIndex;
+ const alive=epoch=>{if(closed||epoch!==generation)fail('SESSION_CANCELLED');};
+ const freshReport=(a,issues,previewSha=null,changes=0)=>({
+   schema:SCHEMA,format:kind,source_sha256:a?.input_sha256||null,
+   source_bytes:a?.input_bytes??null,offset_unit:'utf16',
+   protected_spans:(a?.segments||[]).filter(s=>s.policy==='PROTECT').map(s=>({id:s.id,start:s.start,end:s.end,type:s.type,reason:s.reason})),
+   safe_edit_ids:(a?.segments||[]).filter(s=>s.policy==='EDITABLE').map(s=>s.id),
+   validation_status:issues.length?'REJECTED':'OK',reject_reasons:issues.slice(),
+   preview_output_sha256:previewSha,preview_change_count:changes,network_requested:false,
+   approval:'NONE',contains_original_text:false,contains_replacement_text:false,
+   session_id:`local-${id}`,transport:'NONE'
+ });
+ async function inspect(){
+   const rev=generation;alive(rev);
+   if(kind==='UNSUPPORTED'||original===null||!original.trim()){
+     rejected=[kind==='UNSUPPORTED'?'INVALID_FORMAT':!original?'EMPTY_SOURCE':'EMPTY_SOURCE'];
+     analysis=null;return freshReport(null,rejected);
+   }
+   try{
+     const a=await CORE.analyze(original,kind);alive(rev);
+     analysis=a;
+     rejected=a.validation.status==='OK'?[]:a.validation.errors.map(cleanReason);
+     return freshReport(analysis,rejected);
+   }catch(e){alive(rev);analysis=null;rejected=[cleanReason(e.message)];return freshReport(null,rejected);}
+ }
+ async function prepare(plan){
+   const rev=generation;alive(rev);
+   if(!analysis||rejected.length||analysis.validation.status!=='OK')fail('INSPECTION_REQUIRED');
+   if(!isObject(plan)||Object.keys(plan).some(k=>!['schema','input_sha256','edits'].includes(k))||
+      plan.schema!=='tls.structured-edits.v1'||plan.input_sha256!==analysis.input_sha256||!Array.isArray(plan.edits))fail('INVALID_EDIT_PLAN');
+   // CORE.preview rechecks SHA, editable ranges and structural consistency, and returns only a preview.
+   const result=await CORE.preview(original,analysis,plan.edits);alive(rev);
+   if(result.approval!=='NONE'||result.status!=='SAFE_PREVIEW_NOT_APPLIED')fail('UNSAFE_CORE_RESULT');
+   return {schema:'tls.local-workbench-preview.v1',status:'SAFE_PREVIEW_NOT_APPLIED',
+     preview_text:result.preview_text,report:freshReport(analysis,[],result.preview_sha256,result.change_count),
+     changes:result.changes.map(c=>({id:c.id,start:c.start,end:c.end,type:c.type,originalLength:c.originalLength,newLength:c.newLength}))};
+ }
+ function revoke(){++generation;closed=true;analysis=null;original=null;rejected=['SESSION_REVOKED'];return Object.freeze({status:'REVOKED',session_id:`local-${id}`,approval:'NONE'});}
+ function changesAllowed(){return !closed&&analysis?.validation.status==='OK'?analysis.segments.filter(s=>s.policy==='EDITABLE').map(s=>({id:s.id,start:s.start,end:s.end,type:s.type})):[];}
+ function excerpt(id){if(closed||!analysis)return null;const s=analysis.segments.find(t=>t.policy==='EDITABLE'&&t.id===id);return s?original.slice(s.start,s.end):null;}
+ return Object.freeze({inspect,prepare,revoke,changesAllowed,excerpt});
+}
+const API=Object.freeze({SCHEMA,openSession});
+global.TLSLocalWorkbenchR16=API;
+if(typeof module!=='undefined'&&module.exports)module.exports=API;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>window.TLSWordingCatalogR172=Object.freeze({"schema_version":"r3.0","project":"Taiwan-LLM-Sanitizer","published_on":"2026-10-24","purpose":"少量人工挑選、保守啟用詞條；使用者可選擇原文與個人偏好","license_scope":"original editorial","status":"assistant_editorial_seed_pending_independent_community_validation","entries":[{"id":"approved_001","from":"软件","to":"軟體","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_002","from":"软体","to":"軟體","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_003","from":"硬件","to":"硬體","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_004","from":"数据库","to":"資料庫","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_005","from":"数据集","to":"資料集","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_006","from":"服务器","to":"伺服器","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_007","from":"鼠标","to":"滑鼠","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_008","from":"鼠標","to":"滑鼠","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_009","from":"硬盘","to":"硬碟","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_010","from":"光盘","to":"光碟","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_011","from":"文件夹","to":"資料夾","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_012","from":"回收站","to":"資源回收筒","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_013","from":"配置文件","to":"設定檔","domain":"software","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_014","from":"源代码","to":"原始碼","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_015","from":"代码仓库","to":"程式碼儲存庫","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_016","from":"字符串","to":"字串","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_017","from":"全局变量","to":"全域變數","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_018","from":"局部变量","to":"區域變數","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_019","from":"调试器","to":"除錯器","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_020","from":"正则表达式","to":"正規表示式","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_021","from":"二进制","to":"二進位","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_022","from":"数组","to":"陣列","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_023","from":"布尔值","to":"布林值","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_024","from":"异常处理","to":"例外處理","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_025","from":"死循环","to":"無限迴圈","domain":"engineering","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_026","from":"人工智能","to":"人工智慧","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_027","from":"大语言模型","to":"大型語言模型","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_028","from":"神经网络","to":"神經網路","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_029","from":"训练数据","to":"訓練資料","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_030","from":"数据清洗","to":"資料清洗","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_031","from":"数据污染","to":"資料污染","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_032","from":"检索增强生成","to":"檢索增強生成","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_033","from":"向量数据库","to":"向量資料庫","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_034","from":"上下文窗口","to":"上下文視窗","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_035","from":"机器学习","to":"機器學習","domain":"ai","scope":"general","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"approved_default","alternatives":[],"source_type":"original_editorial_seed","note":"仍可能有語境例外，允許使用者停用或覆寫。"},{"id":"approved_036","from":"快捷键","to":"快速鍵","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_037","from":"下拉菜单","to":"下拉式選單","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_038","from":"菜单栏","to":"選單列","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_039","from":"主菜单","to":"主選單","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_040","from":"菜单","to":"選單","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_041","from":"menu","to":"選單","domain":"ui","scope":"ui","source_locale":"en","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_042","from":"main menu","to":"主選單","domain":"ui","scope":"ui","source_locale":"en","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_043","from":"菜单","to":"菜單","domain":"food","scope":"food","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_044","from":"menu","to":"菜單","domain":"food","scope":"food","source_locale":"en","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_045","from":"点餐","to":"點餐","domain":"food","scope":"food","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_046","from":"内存","to":"記憶體","domain":"software","scope":"software","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_047","from":"网络","to":"網路","domain":"software","scope":"software","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_048","from":"信息","to":"資訊","domain":"software","scope":"software","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_049","from":"视频","to":"影片","domain":"media","scope":"media","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_050","from":"视频通话","to":"視訊通話","domain":"media","scope":"media","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_051","from":"智能体","to":"AI 代理","domain":"ai","scope":"ai","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_052","from":"提示工程","to":"提示詞工程","domain":"ai","scope":"ai","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_053","from":"接口","to":"介面","domain":"engineering","scope":"engineering","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_054","from":"收益率","to":"報酬率","domain":"finance","scope":"finance","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_055","from":"止损","to":"停損","domain":"finance","scope":"finance","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_056","from":"仓位","to":"部位","domain":"finance","scope":"finance","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_057","from":"股票代码","to":"股票代號","domain":"finance","scope":"finance","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_058","from":"外卖","to":"外送","domain":"food","scope":"food","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_059","from":"公交车","to":"公車","domain":"travel","scope":"travel","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_060","from":"地铁","to":"捷運","domain":"travel","scope":"travel","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_061","from":"打印机","to":"印表機","domain":"software","scope":"software","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_062","from":"登录","to":"登入","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_063","from":"退出登录","to":"登出","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_064","from":"滚动条","to":"捲軸","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_065","from":"选项卡","to":"分頁","domain":"ui","scope":"ui","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_066","from":"购物车","to":"購物車","domain":"ecommerce","scope":"ecommerce","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"},{"id":"approved_067","from":"分红","to":"股利分配","domain":"finance","scope":"finance","source_locale":"zh-CN","target_locale":"zh-Hant-TW","review_status":"editorial_seed_not_externally_verified","automation":"domain_opt_in","alternatives":[],"source_type":"original_editorial_seed","note":"僅在明確領域語境使用；不可跨領域硬套。"}]});</script><script>window.TLSWordingOverlayR172=Object.freeze({"schema":"tls.wording-overlay.v1","version":"R17.2-0.1.0-preview","locale":"zh-TW","rights":"ORIGINAL_PROJECT_EDITORIAL_CANDIDATES","human_review":"NOT_PERFORMED","default":"UNSELECTED","auto_apply":false,"forms":[{"id":"r172_alias_01","from_text":"軟件","to":"軟體","context":"software","parent_concept_id":"approved_001","kind":"R172_CANDIDATE_ALIAS","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"技術文件中的「軟件」","negative_example":"非技術義項或專有名稱時請保留原文"},{"id":"r172_alias_02","from_text":"數據庫","to":"資料庫","context":"software","parent_concept_id":"approved_004","kind":"R172_CANDIDATE_ALIAS","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"技術文件中的「數據庫」","negative_example":"非技術義項或專有名稱時請保留原文"},{"id":"r172_alias_03","from_text":"服務器","to":"伺服器","context":"software","parent_concept_id":"approved_006","kind":"R172_CANDIDATE_ALIAS","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"技術文件中的「服務器」","negative_example":"非技術義項或專有名稱時請保留原文"},{"id":"r172_alias_04","from_text":"文件夾","to":"資料夾","context":"software","parent_concept_id":"approved_011","kind":"R172_CANDIDATE_ALIAS","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"技術文件中的「文件夾」","negative_example":"非技術義項或專有名稱時請保留原文"},{"id":"r172_alias_05","from_text":"源代碼","to":"原始碼","context":"engineering","parent_concept_id":"approved_014","kind":"R172_CANDIDATE_ALIAS","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"技術文件中的「源代碼」","negative_example":"非技術義項或專有名稱時請保留原文"},{"id":"r172_alias_06","from_text":"數組","to":"陣列","context":"engineering","parent_concept_id":"approved_022","kind":"R172_CANDIDATE_ALIAS","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"技術文件中的「數組」","negative_example":"非技術義項或專有名稱時請保留原文"},{"id":"r172_ui_01","from_text":"click","to":"點選","context":"ui_action","parent_concept_id":"lexicon/ui_actions_r13.json","kind":"R172_UI_PREFERENCE","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"使用滑鼠操作介面按鈕","negative_example":"點擊率、點擊量、click聲、點擊聲請保留"},{"id":"r172_ui_02","from_text":"点击","to":"點選","context":"ui_action","parent_concept_id":"lexicon/ui_actions_r13.json","kind":"R172_UI_PREFERENCE","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"使用滑鼠操作介面按鈕","negative_example":"點擊率、點擊量、click聲、點擊聲請保留"},{"id":"r172_ui_03","from_text":"點擊","to":"點選","context":"ui_action","parent_concept_id":"lexicon/ui_actions_r13.json","kind":"R172_UI_PREFERENCE","evidence_status":"CANDIDATE_ONLY","auto_apply":false,"positive_example":"使用滑鼠操作介面按鈕","negative_example":"點擊率、點擊量、click聲、點擊聲請保留"}]});</script><script>window.TLSWordingDigestsR172=Object.freeze({"catalog_sha256":"83fc3680a363cdc4e4ef963b2eff4edc6f8f72b8ec19c64625ee05afd874153a","overlay_sha256":"0e7d478a7de199d386821f89d2504fed26c459b9b35731e39c2f6de2c7dac0db"});</script>
+<script>/* Taiwan-LLM-Sanitizer R17.2 original local-only wording assistant.
+ * Every candidate is inside an R16-validated EDITABLE segment.  Preview is
+ * delegated to the unmodified R16 -> R15.1 contract. Nothing is auto-applied.
+ */
+(function(g){'use strict';
+const WORK=g.TLSLocalWorkbenchR16||(typeof require==='function'?require('./local_workbench_r16.js'):null);
+const CATALOG=g.TLSWordingCatalogR172||(typeof require==='function'?require('../../lexicon/approved_r3.json'):null);
+const OVERLAY=g.TLSWordingOverlayR172||(typeof require==='function'?require('../../lexicon/wording_overlay_r172.json'):null);
+if(!WORK||!CATALOG||!OVERLAY)throw Error('TLS_R172_MISSING_LOCKED_SOURCE');
+const FAIL=code=>{throw Error('TLS_R172_'+code);};
+const MAX_BYTES=65536, MAX_CANDIDATES=120, MAX_REPLACEMENT=1000;
+const IDENT='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+const safeObj=x=>x!==null&&typeof x==='object'&&!Array.isArray(x)&&Object.getPrototypeOf(x)===Object.prototype;
+const frozen=x=>{if(x&&typeof x==='object'&&!Object.isFrozen(x)){Object.values(x).forEach(frozen);Object.freeze(x);}return x;};
+// Canonical byte strings are embedded by the builder; the runtime hashes its
+// immutable in-memory data, never accepts a caller-supplied lexicon.
+const metadata={catalog_version:CATALOG.schema_version,overlay_version:OVERLAY.version,
+  catalog_sha256:null,overlay_sha256:null};
+// Both SHAs are of the in-memory canonical catalog and overlay content.
+// The standalone builder injects SHA-256 digests; Node computes them directly.
+if(g.TLSWordingDigestsR172){
+ metadata.catalog_sha256=g.TLSWordingDigestsR172.catalog_sha256;
+ metadata.overlay_sha256=g.TLSWordingDigestsR172.overlay_sha256;
+}else if(typeof require==='function'){
+ const crypto=require('node:crypto');
+ metadata.catalog_sha256=crypto.createHash('sha256').update(JSON.stringify(CATALOG)).digest('hex');
+ metadata.overlay_sha256=crypto.createHash('sha256').update(JSON.stringify(OVERLAY)).digest('hex');
+}
+if(![metadata.catalog_sha256,metadata.overlay_sha256].every(x=>typeof x==='string'&&/^[0-9a-f]{64}$/.test(x)))FAIL('HASH_BINDING_MISSING');
+
+let nextSession=0;
+const contextSet=new Set(['unknown','ui_menu','food_menu','ui_action','statistics','sound',
+ 'software','engineering','general','food','ui','hardware','cloud','internet','document']);
+const knownNonUI=(surface,after,before)=>{
+ // Only match tokens attached to THIS occurrence, not another word later
+ // in the sentence. Never infer UI action from document-level language.
+ const suffix=after.slice(0,8);
+ if(/^(?:率|量|數|数|聲|声|聲音|次数|次數)/u.test(suffix))return true;
+ if(/^\s*(?:rate|through|sound|noise)\b/iu.test(suffix)&&/^click$/iu.test(surface))return true;
+ return false;
+};
+function isLatin(form){return /^[a-zA-Z][\w -]*$/u.test(form);}
+function matchesBoundary(text,start,end,word){
+ if(!isLatin(word))return true;
+ return !(IDENT.includes(text[start-1]||'\0')||IDENT.includes(text[end]||'\0'));
+}
+function entries(){
+ const rows=[];
+ for(const r of CATALOG.entries){
+  if(!r.from||!r.to||r.from===r.to)continue;
+  const ctx=r.scope==='ui'?'ui_menu':r.scope==='food'?'food_menu':
+   r.domain==='ui'?'ui_action':r.domain==='food'?'food_menu':(r.domain||'general');
+  rows.push({source:r.from,replacement:r.to,context:ctx,source_entry_id:r.id,
+   source_kind:'BASE_INTERNAL_APPROVED',parent_concept_id:r.id,evidence_status:'INTERNAL_EDITORIAL_SEED'});
+ }
+ for(const r of OVERLAY.forms)rows.push({source:r.from_text,replacement:r.to,
+   context:r.context,source_entry_id:r.id,source_kind:r.kind,parent_concept_id:r.parent_concept_id,
+   evidence_status:'CANDIDATE_ONLY'});
+ return rows;
+}
+const dictionary=entries();
+function createWordingSession({source}={}){
+ if(typeof source!=='string'||!source.trim()||source.includes('\0'))FAIL('UNSUPPORTED_CONTENT');
+ for(let i=0;i<source.length;i++){
+  const c=source.charCodeAt(i);
+  if(c>=0xD800&&c<=0xDBFF){const n=source.charCodeAt(++i);if(!(n>=0xDC00&&n<=0xDFFF))FAIL('UNSUPPORTED_CONTENT');}
+  else if(c>=0xDC00&&c<=0xDFFF)FAIL('UNSUPPORTED_CONTENT');
+ }
+ if(new TextEncoder().encode(source).length>MAX_BYTES)FAIL('INPUT_LIMIT');
+ const trimmed=source.trim();
+ if(/^[\[{]/u.test(trimmed)){
+  try{const obj=JSON.parse(trimmed);if(obj!==null&&typeof obj==='object')FAIL('UNSUPPORTED_CONTENT');}
+  catch(e){if(String(e.message).includes('TLS_R172_'))throw e;}
+ }
+ // Unfenced JSON key-looking material must not receive Markdown rewrites.
+ const jsonish=/(?:^|\n)\s*["'][^\n"']{1,80}["']\s*:\s*(?:["'\[{]|\d|true|false|null)/u.test(source);
+ const sid=++nextSession;let state='NEW',generation=0,revision=0,session=null,
+   original=source,report=null,candidates=[],limited=0,omitted=0,lastPreview=null,seen=[];
+ const alive=()=>{if(state==='REVOKED')FAIL('SESSION_REVOKED');};
+ const stamp=()=>`r172-${sid}-${generation}-${revision}`;
+ function snapshot(){
+  return frozen({schema:'tls.wording-candidates.v1',snapshot_id:stamp(),selection_revision:revision,
+   source_sha256:report?.source_sha256||null,format:'markdown',offset_unit:'utf16',
+   catalog_version:metadata.catalog_version,catalog_sha256:metadata.catalog_sha256,
+   overlay_version:metadata.overlay_version,overlay_sha256:metadata.overlay_sha256,
+   state,candidates:candidates.map(x=>({...x,options:x.options.map(o=>({...o})),reason_codes:[...x.reason_codes]})),
+   coverage:{editable_segments:seen.length,protected_segments:report?.protected_spans?.length||0,
+    scanned_candidate_count:candidates.length+omitted,limited_segments:limited,omitted_candidate_count:omitted},
+   approval:'NONE',semantic_equivalence_verified:false});
+ }
+ async function inspect(){
+  alive();++generation;++revision;lastPreview=null;candidates=[];limited=0;omitted=0;state='INSPECTING';
+  const current=generation;
+  session?.revoke();session=WORK.openSession({source:original,format:'markdown'});
+  const r=await session.inspect();if(current!==generation||state==='REVOKED')FAIL('STALE_SNAPSHOT');
+  report=r;seen=session.changesAllowed();
+  if(r.validation_status!=='OK'||jsonish){state='REJECTED';return snapshot();}
+  const raw=[];
+  for(const seg of seen){
+   const part=session.excerpt(seg.id);
+   if(!part)continue;
+   for(const entry of dictionary){
+    let from=0;const phrase=entry.source;const latin=isLatin(phrase);
+    const hay=latin?part.toLowerCase():part,needle=latin?phrase.toLowerCase():phrase;
+    for(;;){let index=hay.indexOf(needle,from);if(index<0)break;from=index+needle.length;
+     const start=seg.start+index,end=start+needle.length;
+     if(!matchesBoundary(original,start,end,phrase))continue;
+     raw.push({start,end,segment_id:seg.id,original_text:original.slice(start,end),entry});
+    }
+   }
+  }
+  raw.sort((a,b)=>a.start-b.start||(b.end-b.start)-(a.end-a.start));
+  const groups=[];let boundary=-1;
+  for(const hit of raw){
+   if(hit.start<boundary){const last=groups[groups.length-1];
+     if(last&&hit.start===last.start&&hit.end===last.end)last.rows.push(hit.entry);
+     continue;
+   }
+   groups.push({start:hit.start,end:hit.end,segment_id:hit.segment_id,original_text:hit.original_text,rows:[hit.entry]});boundary=hit.end;
+  }
+  for(const hit of groups){
+   if(candidates.length>=MAX_CANDIDATES){omitted++;continue;}
+   const s=seen.find(x=>x.id===hit.segment_id),segmentText=session.excerpt(hit.segment_id);
+   const options=[],ids=new Set();
+   for(const r of hit.rows){const id=r.source_entry_id+':'+r.context;
+    if(ids.has(id))continue;ids.add(id);
+    options.push({id,replacement:r.replacement,context:r.context,
+      context_label:({ui_menu:'介面選單',food_menu:'餐飲菜單',ui_action:'介面操作',software:'軟體技術',engineering:'工程／程式',general:'一般'})[r.context]||r.context,
+      source_entry_id:r.source_entry_id,source_kind:r.source_kind,
+      parent_concept_id:r.parent_concept_id,evidence_status:r.evidence_status,auto_apply:false});
+   }
+   const forbidden=hit.rows.some(x=>x.source_kind==='R172_UI_PREFERENCE')&&knownNonUI(hit.original_text,original.slice(hit.end,hit.end+9),original.slice(Math.max(0,hit.start-9),hit.start));
+   const isLong=segmentText?.length>MAX_REPLACEMENT;
+   const resolution=forbidden?'BLOCKED':isLong?'LIMITED':options.length?'CONTEXT_REQUIRED':'BLOCKED';
+   if(resolution==='LIMITED')limited++;
+   candidates.push({id:'c'+String(candidates.length+1).padStart(5,'0'),segment_id:hit.segment_id,
+    start:hit.start,end:hit.end,source_entry_ids:hit.rows.map(x=>x.source_entry_id),scope:'occurrence',
+    original_text:hit.original_text,options:forbidden?[]:options,resolution,
+    choice:'UNSELECTED',selected_option_id:null,occurrence_context:'unknown',reason_codes:[forbidden?'KNOWN_NON_UI_CONTEXT':isLong?'SEGMENT_REPLACEMENT_LIMIT':'USER_CONTEXT_REQUIRED']});
+  }
+  state='READY';return snapshot();
+ }
+ function choose(command){
+  alive();if(state!=='READY')FAIL('NOT_READY');
+  if(!safeObj(command)||command.snapshot_id!==stamp())FAIL('STALE_SNAPSHOT');
+  if(!['SET_CONTEXT','CONFIRM','KEEP_ORIGINAL','RESET'].includes(command.action))FAIL('INVALID_CHOICE');
+  const target=candidates.find(c=>c.id===command.candidate_id);if(!target)FAIL('INVALID_CHOICE');
+  if(target.resolution==='BLOCKED'||target.resolution==='LIMITED')FAIL('INVALID_CHOICE');
+  let value={...target};
+  if(command.action==='SET_CONTEXT'){
+   if(!contextSet.has(command.context))FAIL('INVALID_CHOICE');
+   // Existing KEEP persists across context adjustment.
+   value.occurrence_context=command.context;
+   if(value.choice==='CONFIRM'){value.choice='UNSELECTED';value.selected_option_id=null;}
+  }else if(command.action==='CONFIRM'){
+   const option=value.options.find(o=>o.id===command.option_id);
+   if(!option)FAIL('INVALID_CHOICE');
+   if(!contextSet.has(option.context))FAIL('INVALID_CHOICE');
+   value.choice='CONFIRM';value.selected_option_id=option.id;value.occurrence_context=option.context;
+  }else if(command.action==='KEEP_ORIGINAL'){
+   value.choice='KEEP_ORIGINAL';value.selected_option_id=null;
+  }else{
+   value.choice='UNSELECTED';value.selected_option_id=null;value.occurrence_context='unknown';
+  }
+  candidates=candidates.map(c=>c===target?value:c);++revision;lastPreview=null;
+  return snapshot();
+ }
+ async function preview({snapshot_id}={}){
+  alive();if(state!=='READY')FAIL('NOT_READY');if(snapshot_id!==stamp())FAIL('STALE_SNAPSHOT');
+  const epoch=generation,rev=revision,selected=candidates.filter(c=>c.choice==='CONFIRM'&&c.resolution==='CONTEXT_REQUIRED');
+  const perSegment=new Map();
+  for(const c of selected){const option=c.options.find(o=>o.id===c.selected_option_id);
+   const seg=seen.find(x=>x.id===c.segment_id),originalSegment=session.excerpt(c.segment_id);
+   if(!option||!seg||original.slice(c.start,c.end)!==c.original_text||!originalSegment)FAIL('PREVIEW_REJECTED');
+   const part=perSegment.get(seg.id)||[];part.push({candidate:c,option,seg});perSegment.set(seg.id,part);
+  }
+  const edits=[];
+  for(const [id,items] of perSegment){
+   const seg=items[0].seg;const before=session.excerpt(id);let pos=0,result='';
+   for(const {candidate:c,option:o} of items.sort((a,b)=>a.candidate.start-b.candidate.start)){
+    const start=c.start-seg.start,end=c.end-seg.start;
+    if(start<pos||before.slice(start,end)!==c.original_text)FAIL('PREVIEW_REJECTED');
+    result+=before.slice(pos,start)+o.replacement;pos=end;
+   }
+   result+=before.slice(pos);
+   if(result.length>MAX_REPLACEMENT)FAIL('PREVIEW_REJECTED');
+   if(result!==before)edits.push({id,replacement:result});
+  }
+  let outcome;
+  try{outcome=await session.prepare({schema:'tls.structured-edits.v1',input_sha256:report.source_sha256,edits});}
+  catch(e){if(state==='REVOKED')FAIL('SESSION_REVOKED');if(epoch!==generation||rev!==revision)FAIL('STALE_SNAPSHOT');FAIL('PREVIEW_REJECTED');}
+  if(state==='REVOKED')FAIL('SESSION_REVOKED');
+  if(epoch!==generation||rev!==revision||snapshot_id!==stamp())FAIL('STALE_SNAPSHOT');
+  if(outcome.status!=='SAFE_PREVIEW_NOT_APPLIED'||outcome.report.approval!=='NONE')FAIL('PREVIEW_REJECTED');
+  lastPreview=frozen({schema:'tls.wording-preview.v1',snapshot_id:stamp(),source_sha256:report.source_sha256,
+   status:'SAFE_PREVIEW_NOT_APPLIED',approval:'NONE',preview_text:outcome.preview_text,
+   preview_output_sha256:outcome.report.preview_output_sha256,change_count:outcome.report.preview_change_count,
+   semantic_equivalence_verified:false});
+  return lastPreview;
+ }
+ function publicReport(){return frozen({schema:'tls.wording-report.v1',state,
+  source_sha256:report?.source_sha256||null,catalog_sha256:metadata.catalog_sha256,
+  overlay_sha256:metadata.overlay_sha256,selected_count:candidates.filter(c=>c.choice==='CONFIRM').length,
+  keep_count:candidates.filter(c=>c.choice==='KEEP_ORIGINAL').length,
+  unresolved_count:candidates.filter(c=>c.choice==='UNSELECTED').length,limited_count:limited+omitted,
+  protected_span_count:report?.protected_spans?.length||0,
+  preview_output_sha256:lastPreview?.preview_output_sha256||null,network_requested:false,
+  transport:'NONE',approval:'NONE',contains_original_text:false,contains_replacement_text:false,
+  semantic_equivalence_verified:false});}
+ function revoke(){++generation;++revision;state='REVOKED';session?.revoke();session=null;
+  original=null;report=null;candidates=[];seen=[];lastPreview=null;return frozen({status:'REVOKED',approval:'NONE'});}
+ return Object.freeze({inspect,choose,preview,report:publicReport,revoke});
+}
+const API=Object.freeze({createWordingSession,MAX_BYTES,MAX_CANDIDATES,MAX_REPLACEMENT});
+g.TLSWordingAssistantR172=API;if(typeof module!=='undefined'&&module.exports)module.exports=API;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script><script>(function(){'use strict';
+const $=s=>document.querySelector(s),make=(t,txt,cls)=>{const el=document.createElement(t);if(txt!==undefined)el.textContent=txt;if(cls)el.className=cls;return el;};
+const API=window.TLSWordingAssistantR172;
+let active=null,snapshot=null,preview=null,epoch=0,canExport=false;
+const report=status=>$('#status').textContent=status;
+function reset(){++epoch;active?.revoke();active=null;snapshot=null;preview=null;canExport=false;$('#candidatePanel').hidden=true;$('#resultPanel').hidden=true;$('#candidates').replaceChildren();$('#stats').replaceChildren();$('#result').value='';}
+function invalidatePreview(){preview=null;canExport=false;$('#resultPanel').hidden=true;$('#result').value='';$('#previewState').textContent='';}
+function save(name,text,type){const object=URL.createObjectURL(new Blob([text],{type:type||'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=object;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(object),800);}
+function render(){if(!snapshot||snapshot.state!=='READY')return;
+ const list=$('#candidates');list.replaceChildren();const stats=$('#stats');stats.replaceChildren();
+ for(const text of [snapshot.candidates.length+' 個可檢視項目',snapshot.coverage.protected_segments+' 個受保護片段',snapshot.coverage.omitted_candidate_count+' 個超出上限',snapshot.coverage.limited_segments+' 個受限段落'])stats.appendChild(make('span',text,'stat'));
+ if(!snapshot.candidates.length)list.appendChild(make('p','目前沒有可建議的詞。這不表示全文已正確或已完成語意審核。','note'));
+ for(const item of snapshot.candidates){const card=make('article',undefined,'candidate');card.dataset.candidateId=item.id;
+   const heading=make('h3','「'+item.original_text+'」 · 位置 '+(item.start+1));card.appendChild(heading);
+   card.appendChild(make('div','來源：'+item.source_entry_ids.join('、')+'｜'+item.resolution,'meta'));
+   const actions=make('div',undefined,'actions');
+   if(item.resolution==='BLOCKED'||item.resolution==='LIMITED')card.appendChild(make('p','此處不提供採用操作：'+item.reason_codes.join('、'),'why'));
+   else{
+     for(const opt of item.options){const button=make('button','採用「'+opt.replacement+'」（'+opt.context_label+'）'+(opt.evidence_status==='CANDIDATE_ONLY'?' · 待審':''));
+       button.type='button';button.setAttribute('aria-pressed',String(item.selected_option_id===opt.id&&item.choice==='CONFIRM'));
+       button.addEventListener('click',()=>select(item.id,'CONFIRM',{option_id:opt.id}));actions.appendChild(button);
+     }
+     const keep=make('button','保留這一處原文');keep.type='button';keep.addEventListener('click',()=>select(item.id,'KEEP_ORIGINAL'));actions.appendChild(keep);
+     const undo=make('button','取消這一處選擇');undo.type='button';undo.addEventListener('click',()=>select(item.id,'RESET'));actions.appendChild(undo);
+     card.appendChild(actions);
+     card.appendChild(make('div',item.choice==='CONFIRM'?'本處已確認替換':item.choice==='KEEP_ORIGINAL'?'本處明確保留原文':'尚未選擇，保留原文','sel'));
+   }
+   list.appendChild(card);
+ }
+}
+function select(id,action,more={}){try{snapshot=active.choose({snapshot_id:snapshot.snapshot_id,candidate_id:id,action,...more});invalidatePreview();render();report('已記錄單一位置的選擇。其他位置與原始內容不變；請產生新預覽才可匯出。');}catch(e){report('選擇無效：'+String(e.message).slice(0,85));}}
+$('#source').addEventListener('input',()=>{reset();report('原文已更新；舊建議與預覽已全部取消。');});
+$('#file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;reset();if(!/\.(md|markdown|txt)$/iu.test(file.name)){report('UNSUPPORTED_CONTENT：此版本只接受 .md／.markdown／.txt 檔。JSON 請改用 R16。');return;}
+ if(file.size>API.MAX_BYTES){report('INPUT_LIMIT：來源檔超過 64 KiB，未載入或截斷。');return;}
+ try{const text=await file.text();$('#source').value=text;report('已於本機載入文字；尚未分析。');}catch(_){report('READ_FILE_FAILED：檔案無法讀取。');}finally{e.target.value='';}});
+$('#demo').addEventListener('click',()=>{reset();$('#source').value='# 原創安全範例\n\n請 click 主選單，修改軟件中的數據庫設定。\n餐廳的 menu 請看情境；點擊率與點擊聲不等於滑鼠點選。\n\n<!-- click 和數據庫在註解中：保護原樣 -->\n\n程式：`const click = "menu"`；網址 https://example.test/menu\n請保留 {{USER_PATH}}。\n\n```js\nconst menu = "点击";\n```\n';report('已載入原創示例。請點選「尋找臺灣用語建議」。');});
+$('#clear').addEventListener('click',()=>{reset();$('#source').value='';$('#file').value='';report('全部來源、選擇與預覽已清除，記憶體 session 已撤銷。');});
+$('#inspect').addEventListener('click',async()=>{reset();const token=epoch;try{active=API.createWordingSession({source:$('#source').value});const next=await active.inspect();if(token!==epoch||!active)return;
+ snapshot=next;if(snapshot.state!=='READY'){report('UNSUPPORTED_CONTENT：此段可能包含 JSON 鍵值或不安全語法，請使用 R16 專門工具／以 code fence 保護。');return;}
+ $('#candidatePanel').hidden=false;render();report('分析完成：共 '+snapshot.candidates.length+' 個位置。沒有自動修改；受保護片段保持原文。');
+ }catch(e){if(token!==epoch)return;report('分析遭拒絕：'+String(e.message).slice(0,100));}});
+$('#previewBtn').addEventListener('click',async()=>{if(!active||!snapshot)return;const token=epoch,at=snapshot.snapshot_id;invalidatePreview();$('#previewState').textContent='正在依來源雜湊重新驗證…';try{const outcome=await active.preview({snapshot_id:at});if(token!==epoch||!snapshot||snapshot.snapshot_id!==at)return;
+ preview=outcome;canExport=true;$('#resultPanel').hidden=false;$('#result').value=outcome.preview_text;
+ $('#previewState').textContent='SAFE_PREVIEW_NOT_APPLIED | '+outcome.change_count+' 個段落有更動 | 原始內容未被覆寫';
+ }catch(e){if(token!==epoch)return;invalidatePreview();report('預覽遭拒絕：'+String(e.message).slice(0,100));}});
+$('#reportBtn').addEventListener('click',()=>{if(!active)return;save('TLS_Wording_Metadata_R172.json',JSON.stringify(active.report(),null,2)+'\n','application/json');});
+$('#copy').addEventListener('click',async()=>{if(!canExport||!preview)return;try{if(!navigator.clipboard?.writeText)throw Error('CLIPBOARD_NOT_AVAILABLE');await navigator.clipboard.writeText(preview.preview_text);$('#previewState').textContent='已複製最新版預覽到剪貼簿（此操作由使用者觸發）。';}
+ catch(_){$('#result').focus();$('#result').select();$('#previewState').textContent='瀏覽器不允許直接複製；已選取預覽全文，請使用 Ctrl+C。';}});
+$('#download').addEventListener('click',()=>{if(!canExport||!preview)return;save('TLS_Wording_Reviewed_Preview.md',preview.preview_text);});
+$('#discard').addEventListener('click',()=>{invalidatePreview();report('預覽已取消；原始內容與已選決定未變。');});
+})();
+</script>
+</main></body></html>

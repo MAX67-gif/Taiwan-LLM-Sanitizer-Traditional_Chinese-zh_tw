@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
+<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
 
 # 대만 번체 중국어 현지화: 독창적인 사용 사례 9가지
 
@@ -60,7 +60,12 @@ DOM에 표시된 `Open settings`나 `Start` 같은 단순 문구는 사이트 �
 
 [R16 오프라인 도구](../examples/TW_Localization_Safety_Studio_R16_20261026.html)에서 [Markdown 예제](../examples/r16/sample_readme.md)를 열고 보호 구간을 확인한 다음 후보 문구를 직접 입력합니다. 코드, 변수, HTML 주석 및 URL은 변경할 수 없습니다. 원본을 덮어쓰지 않고 새 미리보기를 다운로드합니다. **자동 번역이나 업로드는 없습니다**.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+#### EX10｜Codex, Claude, Grok와 TLS 사용하기
+
+원본 사용 권한이 있는 중국어 Markdown을 AI로 작성하고 [R17.2 오프라인 도구](../examples/TW_Wording_Assistant_R172_20261027.html)에서 단어를 직접 검토한 뒤 새 파일로 내보냅니다. [AI 가이드(영어)](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Grok 네이티브 플러그인은 제공하지 않습니다.
+
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 ## 전체 도구 다운로드
 

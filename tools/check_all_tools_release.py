@@ -66,7 +66,7 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     tools=B.validate_registry(expected_registry,fixture=fixture_ok)
     expected_names={t['artifact_filename'] for t in tools if t['standalone_required']}
     expected_names.add(B.DEVELOPER_BUNDLE)
-    expect(len(expected_names)==21,'EXPECTED_STANDALONE_COUNT')
+    expect(len(expected_names)==22,'EXPECTED_STANDALONE_COUNT')
     expected_names |= REQ_NAMES
     actual_names={p.name for p in stage.iterdir()}
     expect(actual_names==expected_names,'INCOMPLETE_OR_EXTRA_ASSETS missing='+str(sorted(expected_names-actual_names))+' extra='+str(sorted(actual_names-expected_names)))
@@ -111,7 +111,7 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
         current={x['tool_id'] for x in m['tools']}
         prior={x['tool_id'] for x in old['tools'] if x.get('status') not in ('EXCLUDED_RIGHTS_WITHDRAWN','PRIVATE_ONLY','BLOCKED_SECURITY')}
         expect(not prior-current,'TOOL_ID_REMOVAL_NOT_AUTHORIZED:'+','.join(sorted(prior-current)))
-    expect(len(m.get('artifacts',[]))==21,'ARTIFACT_MANIFEST_COUNT')
+    expect(len(m.get('artifacts',[]))==22,'ARTIFACT_MANIFEST_COUNT')
     artifacts={x['name']:x for x in m['artifacts']}
     expect(set(artifacts)==expected_names-REQ_NAMES,'ARTIFACT_NAME_LIST')
     for name,entry in artifacts.items():
@@ -120,13 +120,16 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     B.validate_zip_bytes(assets[B.SUITE_FILENAME],B.SUITE_FILENAME)
     with ZipFile(io.BytesIO(assets[B.SUITE_FILENAME])) as z:
         members={x.filename:x for x in z.infolist()}
-        expected_member_names={'ALL_TOOLS_MANIFEST.json','BUILD_PROVENANCE.json','BUNDLE_SHA256SUMS.txt','SHA256SUMS.txt','README_6_LANGUAGES.txt','VALIDATION.json','ALL_TOOLS_REGISTRY.json'}
+        expected_member_names={'ALL_TOOLS_MANIFEST.json','BUILD_PROVENANCE.json','BUNDLE_SHA256SUMS.txt','SHA256SUMS.txt','README_6_LANGUAGES.txt','VALIDATION.json','ALL_TOOLS_REGISTRY.json','START_HERE.html'}
         expected_member_names|={'TOOLS/'+next(t['package_subdir'] for t in tools if t['artifact_filename']==name and t['standalone_required'])+'/'+name for name in artifacts if name!=B.DEVELOPER_BUNDLE}
         expected_member_names.add('TOOLS/developer/'+B.DEVELOPER_BUNDLE)
         expect(set(members)==expected_member_names,'SUITE_MISSING_EXTRA_FILES')
         expect(z.read('ALL_TOOLS_MANIFEST.json')==assets['ALL_TOOLS_MANIFEST.json'],'MANIFEST_IN_SUITE_CHANGED')
         expect(z.read('BUILD_PROVENANCE.json')==assets['BUILD_PROVENANCE.json'],'PROVENANCE_IN_SUITE_CHANGED')
         expect(z.read('ALL_TOOLS_REGISTRY.json') == registry.read_bytes(), 'REGISTRY_IN_SUITE_CHANGED')
+        expect(z.read('START_HERE.html') == B.safe_file(B.ROOT/'tools/templates/start_here_suite_r172.html', B.ROOT), 'SUITE_START_HERE_CHANGED')
+        from build_start_here_r172 import verify as verify_start
+        expect(verify_start(z.read('START_HERE.html').decode('utf8'),set(members)) >= 3, 'SUITE_START_HERE_LINKS')
         inner_validation = readjson(z.read('VALIDATION.json'), 'inner_validation')
         expect(inner_validation.get('schema') == 'tls.all-tools-bundle-validation.v1' and inner_validation.get('source_git_sha') == m['source_git_sha'], 'INNER_VALIDATION_SOURCE')
         expect(inner_validation.get('registry_sha256') == B.digest(registry.read_bytes()) and inner_validation.get('tool_count_present') == len(tools) and inner_validation.get('missing_tool_ids') == [], 'INNER_VALIDATION_PARITY')
@@ -152,7 +155,8 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
         for f in ['README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md',
                   'docs/INSTALL_CHROME.md','docs/INSTALL_TAMPERMONKEY.md','LICENSE', 'release/all_tools_registry.json',
                   'docs/USAGE_EXAMPLES.md','docs/USAGE_EXAMPLES.zh-CN.md','docs/USAGE_EXAMPLES.en.md',
-                  'docs/USAGE_EXAMPLES.ja.md','docs/USAGE_EXAMPLES.ko.md','docs/USAGE_EXAMPLES.es.md']:
+                  'docs/USAGE_EXAMPLES.ja.md','docs/USAGE_EXAMPLES.ko.md','docs/USAGE_EXAMPLES.es.md',
+                  'docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md','docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md','START_HERE.html']:
             expect(f in paths,'DEVELOPER_SOURCE_MISSING:'+f)
         for t in tools:
             if t['source_kind']=='developer_bundle':

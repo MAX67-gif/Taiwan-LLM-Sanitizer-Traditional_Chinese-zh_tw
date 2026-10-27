@@ -4,6 +4,12 @@
 
 > **本專案的工作是提供使用者可控的臺灣中文用語、翻譯顯示與技術內容保真工具，不是語言審查器，也不宣稱是任何第三方服務的官方產品。** 原創開源核心採 [MIT](LICENSE)；Founder／Steward：CA L.。
 
+### R17.2｜先試做一篇臺灣用語修稿，再接續 AI 協作
+
+[立即開始](START_HERE.html) · [R17.2 離線臺灣用語修稿助手](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex／Claude Code／Grok AI 實戰教學](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) · [English AI guide](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。
+
+貼入自己的中文 Markdown，僅在可修改片段給出有限的臺灣用語候選，使用者逐項採用或保留後才預覽、另存。不是全文翻譯、字形正規化、模型品質認證，也不會自動連線 AI；使用雲端 Codex／Claude／Grok 時原稿是否送出由使用者在該平台決定。原 R5/R11/R13 與舊 HTML 原樣保留；完整 Suite v17.2.0 仍有所有合法受支援工具。
+
 ## 現在能使用什麼？
 
 | 工具 | 現況 | 用途 |
@@ -63,6 +69,6 @@
 
 [開啟 R17 離線 Markdown 文件連結檢查](examples/TW_Document_Trust_Graph_R17_20261026.html) · [閱讀 R17 完整使用與安全限制](docs/R17_DOCUMENT_TRUST_GRAPH.md)。由使用者勾選自己有權使用的 Markdown 檔案，檢查跨檔連結與錨點，輸出不含文件原文的報告；未知或外部連結**不能冒稱 PASS**。這是結構檢查，**非自動翻譯、全文語義認證或網站相容性保證**。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

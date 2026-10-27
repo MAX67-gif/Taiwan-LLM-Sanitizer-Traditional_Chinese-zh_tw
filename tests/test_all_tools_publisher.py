@@ -24,7 +24,7 @@ import test_all_tools_release as F
 
 REPOSITORY = 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw'
 BASE = 'repos/' + REPOSITORY
-TAG = 'all-tools-suite-v17.1.0'
+TAG = 'all-tools-suite-v17.2.0'
 DRAFT_SLUG = 'untagged-0123456789abcdef0123'
 SHA = '8c8194105ba02f4f8e1e1c337fde943d9e32fcee'
 REAL_VERIFY = C.verify_stage

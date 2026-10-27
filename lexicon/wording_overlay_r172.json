@@ -1,0 +1,119 @@
+{
+  "schema": "tls.wording-overlay.v1",
+  "version": "R17.2-0.1.0-preview",
+  "locale": "zh-TW",
+  "rights": "ORIGINAL_PROJECT_EDITORIAL_CANDIDATES",
+  "human_review": "NOT_PERFORMED",
+  "default": "UNSELECTED",
+  "auto_apply": false,
+  "forms": [
+    {
+      "id": "r172_alias_01",
+      "from_text": "軟件",
+      "to": "軟體",
+      "context": "software",
+      "parent_concept_id": "approved_001",
+      "kind": "R172_CANDIDATE_ALIAS",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "技術文件中的「軟件」",
+      "negative_example": "非技術義項或專有名稱時請保留原文"
+    },
+    {
+      "id": "r172_alias_02",
+      "from_text": "數據庫",
+      "to": "資料庫",
+      "context": "software",
+      "parent_concept_id": "approved_004",
+      "kind": "R172_CANDIDATE_ALIAS",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "技術文件中的「數據庫」",
+      "negative_example": "非技術義項或專有名稱時請保留原文"
+    },
+    {
+      "id": "r172_alias_03",
+      "from_text": "服務器",
+      "to": "伺服器",
+      "context": "software",
+      "parent_concept_id": "approved_006",
+      "kind": "R172_CANDIDATE_ALIAS",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "技術文件中的「服務器」",
+      "negative_example": "非技術義項或專有名稱時請保留原文"
+    },
+    {
+      "id": "r172_alias_04",
+      "from_text": "文件夾",
+      "to": "資料夾",
+      "context": "software",
+      "parent_concept_id": "approved_011",
+      "kind": "R172_CANDIDATE_ALIAS",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "技術文件中的「文件夾」",
+      "negative_example": "非技術義項或專有名稱時請保留原文"
+    },
+    {
+      "id": "r172_alias_05",
+      "from_text": "源代碼",
+      "to": "原始碼",
+      "context": "engineering",
+      "parent_concept_id": "approved_014",
+      "kind": "R172_CANDIDATE_ALIAS",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "技術文件中的「源代碼」",
+      "negative_example": "非技術義項或專有名稱時請保留原文"
+    },
+    {
+      "id": "r172_alias_06",
+      "from_text": "數組",
+      "to": "陣列",
+      "context": "engineering",
+      "parent_concept_id": "approved_022",
+      "kind": "R172_CANDIDATE_ALIAS",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "技術文件中的「數組」",
+      "negative_example": "非技術義項或專有名稱時請保留原文"
+    },
+    {
+      "id": "r172_ui_01",
+      "from_text": "click",
+      "to": "點選",
+      "context": "ui_action",
+      "parent_concept_id": "lexicon/ui_actions_r13.json",
+      "kind": "R172_UI_PREFERENCE",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "使用滑鼠操作介面按鈕",
+      "negative_example": "點擊率、點擊量、click聲、點擊聲請保留"
+    },
+    {
+      "id": "r172_ui_02",
+      "from_text": "点击",
+      "to": "點選",
+      "context": "ui_action",
+      "parent_concept_id": "lexicon/ui_actions_r13.json",
+      "kind": "R172_UI_PREFERENCE",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "使用滑鼠操作介面按鈕",
+      "negative_example": "點擊率、點擊量、click聲、點擊聲請保留"
+    },
+    {
+      "id": "r172_ui_03",
+      "from_text": "點擊",
+      "to": "點選",
+      "context": "ui_action",
+      "parent_concept_id": "lexicon/ui_actions_r13.json",
+      "kind": "R172_UI_PREFERENCE",
+      "evidence_status": "CANDIDATE_ONLY",
+      "auto_apply": false,
+      "positive_example": "使用滑鼠操作介面按鈕",
+      "negative_example": "點擊率、點擊量、click聲、點擊聲請保留"
+    }
+  ]
+}

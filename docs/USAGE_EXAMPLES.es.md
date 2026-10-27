@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
+<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
 
 # Nueve ejemplos originales de localización al chino tradicional de Taiwán
 
@@ -60,7 +60,12 @@ No extraer textos de imágenes, diálogos protegidos de terceros ni mensajes pri
 
 Abra el [estudio R16 sin conexión](../examples/TW_Localization_Safety_Studio_R16_20261026.html) y el [ejemplo de Markdown original](../examples/r16/sample_readme.md). Revise los segmentos protegidos antes de escribir propuestas manuales; código, variables, comentarios HTML y URL no se alteran. Se descarga una vista previa nueva sin sobrescribir el original. **Sin traducción automática ni subida de datos**.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+#### EX10 | Usar Codex, Claude y Grok con TLS
+
+Genera Markdown chino autorizado mediante tu IA y luego revisa los términos en [R17.2 local](../examples/TW_Wording_Assistant_R172_20261027.html); confirma cada cambio y guarda el resultado. [Guía de IA (inglés)](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). No es un complemento nativo de Grok.
+
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 ## Descarga de todas las herramientas
 

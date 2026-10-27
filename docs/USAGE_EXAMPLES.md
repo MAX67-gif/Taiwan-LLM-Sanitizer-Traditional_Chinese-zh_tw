@@ -90,7 +90,12 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 使用 [R16 工作台](../examples/TW_Localization_Safety_Studio_R16_20261026.html) 開啟 [原創 Markdown 範例](../examples/r16/sample_readme.md)，先看保護範圍，再親手將一般 UI 文句修改為自己確認的臺灣用語。程式區塊、模板變數、HTML 註解與 URL 不可編輯；新預覽需要額外下載，報告不含原文。**沒有自動翻譯或網路傳輸**。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+#### EX10｜AI 產稿到 TLS 修稿（手動安全工作流程）
+
+使用者可讓 Codex、Claude 或 Grok 協助產生有權處理的中文 Markdown，再開啟 [R17.2 修稿助手](../examples/TW_Wording_Assistant_R172_20261027.html)，逐項確認「點選」「選單／菜單」等建議，透過 R16 核對後下載新稿；對照安全區塊與保留原文。完整 AI 使用教學：[臺灣繁中](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) · [English](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。**這是可操作程序，不是原生 Grok 插件或自動翻譯品質認證。**
+
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 ## 完整工具下載
 

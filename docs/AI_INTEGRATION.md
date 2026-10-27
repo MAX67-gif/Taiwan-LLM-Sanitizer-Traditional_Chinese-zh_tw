@@ -43,3 +43,9 @@ node tools/translation_qa.js --source original.txt --translated result.txt
 
 [回首頁](../README.md) · [詞庫與貢獻](GLOSSARY.md) · [隱私政策](../PRIVACY.md)
 
+
+## R17.2 AI-to-local revision tutorial
+
+完整實戰教學（含 Codex、Claude、Grok 的不同載入方式、本機貼稿、選詞、安全預覽及回滾）：[Codex／Claude／Grok × TLS 工作流程](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。
+
+這是對原有 Skill／CLI 的加法式操作文件；舊 R5 Skill 原文未改。未經真人測試，不宣稱 AI 供應商已原生整合 R17.2 或翻譯準確率有所提升。

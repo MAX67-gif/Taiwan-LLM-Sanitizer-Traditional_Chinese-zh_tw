@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
+<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
 
 # 台湾繁体中文工具的九个使用示例（原创／概念示范）
 
@@ -82,7 +82,12 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 打开 [R16 工作台](../examples/TW_Localization_Safety_Studio_R16_20261026.html) 并使用 [原创 Markdown 示例](../examples/r16/sample_readme.md)，先查看受保护的内容，再自行填写候选。代码、模板变量、HTML 注释与网址不可编辑；只能下载新的预览文件。**不自动翻译或上传**。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+#### EX10｜Codex／Claude／Grok 与 TLS 合作
+
+先用所选 AI 生成你有权使用的中文 Markdown，再用 [R17.2 离线助手](../examples/TW_Wording_Assistant_R172_20261027.html) 确认台湾用词、保护代码/网址，下载修订稿。详细：[多平台 AI 指南](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。此流程需人工操作，Grok 不是 TLS 内置插件。
+
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 ## 完整工具下载
 

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
+<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
 
 # Nine original examples of Taiwanese Chinese localization (offline concepts)
 
@@ -60,7 +60,12 @@ Keep the original if text is inside a picture, Canvas, unauthorized game dialogu
 
 Open the [R16 offline studio](../examples/TW_Localization_Safety_Studio_R16_20261026.html) and paste the [original Markdown sample](../examples/r16/sample_readme.md). Inspect protected spans, manually type a suggestion, and download a **new** preview. Code, placeholders, HTML comments and URLs remain protected. **No automatic translation or network upload.**
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+#### EX10 | Use AI with TLS without automatic integration
+
+Draft authorized Chinese Markdown with Codex, Claude or Grok; inspect it in the [R17.2 offline assistant](../examples/TW_Wording_Assistant_R172_20261027.html), manually confirm options, export, and review changes. [AI workflow guide](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). This is not a direct Grok plugin or quality certification.
+
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 ## Complete tool download
 
