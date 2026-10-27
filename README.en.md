@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:fc83b63bbf3daa33d70b07fbe7fa1c7ff9452cd0d61f18d57e17990ccef39279 -->
+<!-- SOURCE_README_SHA256:c4e5f24061fd15beef7c6226f0facf66c8beffcb853cd00771fd72e10075d14a -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -63,6 +63,8 @@ A **fictional browser-game-like page** with a normal, selectable HTML label such
 ## R17.1 | Every Release includes the complete supported tool suite
 
 Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md). Each new release must include every legally distributable, still-supported Chrome extension, Tampermonkey userscript, 13 offline HTML labs, the R6 public quality kit, and the self-contained CLI/Skill developer bundle. Unchanged tools retain their original versions and SHA256 digests. The Draft release is verified before publication. Previously withdrawn third-party-specific packages remain excluded. Only use the [R17.1 suite release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) after its GitHub main CI and assets have actually passed.
+
+**R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** Suite 17.2.0 and all prior supported tools remain unchanged.
 
 <!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 

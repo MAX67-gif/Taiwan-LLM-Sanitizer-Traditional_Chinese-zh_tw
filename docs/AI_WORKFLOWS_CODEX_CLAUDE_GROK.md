@@ -80,3 +80,7 @@ Grok Build 官方開發者入門：<https://docs.x.ai/build/overview>；Grok API
 - Grok Build：<https://docs.x.ai/build/overview>
 
 [返回首頁](../README.md) · [全工具使用說明](ALL_TOOLS_RELEASE.md) · [現有 AI 整合規格](AI_INTEGRATION.md) · [私人資料規範](../PRIVACY.md)
+
+## R17.3：如何客觀檢查 AI 結果，而不是被漂亮稿件騙過
+
+AI 初稿經過 TLS 的安全預覽後，若想研究它與 OpenCC、直接替換的差異，請使用[公平比較與自願回饋研究規格](R173_COMPARISON_AND_ADOPTION.md)。**這是工程研究，不代表已經完成真人語言品質驗收。** 將同一組可編輯散文交給各比較方案；沒有 OpenCC 正式安裝時不得聲稱拿到 OpenCC 成績，Codex/Claude/Grok 也不能被本機工具自動呼叫或冒充已執行。別把含私人文字的結果貼進公開 GitHub Issue 或 PR。

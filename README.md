@@ -69,6 +69,8 @@
 
 [開啟 R17 離線 Markdown 文件連結檢查](examples/TW_Document_Trust_Graph_R17_20261026.html) · [閱讀 R17 完整使用與安全限制](docs/R17_DOCUMENT_TRUST_GRAPH.md)。由使用者勾選自己有權使用的 Markdown 檔案，檢查跨檔連結與錨點，輸出不含文件原文的報告；未知或外部連結**不能冒稱 PASS**。這是結構檢查，**非自動翻譯、全文語義認證或網站相容性保證**。
 
+**R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，不影響既有 Suite 17.2.0 完整下載與使用。
+
 <!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

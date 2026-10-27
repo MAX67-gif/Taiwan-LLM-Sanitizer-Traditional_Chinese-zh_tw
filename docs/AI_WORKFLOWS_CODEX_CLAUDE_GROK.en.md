@@ -17,3 +17,7 @@ Help adapt my authorized technical prose into natural Taiwanese Traditional Chin
 **Privacy:** TLS local HTML makes no provider/API requests. If you paste text into an online AI, that interaction is outside TLS's local privacy boundary. Read service policies; do not submit credentials, private conversations, third-party copyrighted corpora, or customer data without authorization.
 
 **Official references:** [OpenAI Codex](https://developers.openai.com/learn/codex), [Claude Code](https://code.claude.com/docs/en/overview), [Grok Build](https://docs.x.ai/build/overview). See the [complete Traditional Chinese guide](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) for per-provider step-by-step prompts, limitations and examples.
+
+## R17.3: Verify AI output fairly, without inventing a leaderboard
+
+See the [fair-comparison and voluntary-adoption research guide](R173_COMPARISON_AND_ADOPTION.en.md). Give every textual competitor the same editable prose spans. An absent real OpenCC `s2twp` installation or an unexecuted Codex/Claude/Grok task means `NOT_RUN` or `BASELINE_NOT_AVAILABLE`, not a win for TLS. This tool never calls cloud models or uploads private input to public reports.
