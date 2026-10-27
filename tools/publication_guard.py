@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 ROOT_PUBLIC={
-    ".gitignore", ".github/workflows/ci.yml",
+    ".gitignore", ".github/workflows/ci.yml", "START_HERE.html",
     "release/all_tools_registry.json",
     ".github/PULL_REQUEST_TEMPLATE.md",
     "AUTHORS.md","CHANGELOG.md","CONTRIBUTING.md","LICENSE",
@@ -24,6 +24,8 @@ DOCS_PUBLIC={
     "docs/GLOSSARY.md",
     "docs/ROADMAP.md",
     "docs/ALL_TOOLS_RELEASE.md",
+    "docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md", "docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md",
+    "docs/R172_WORDING_ASSISTANT.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.zh-CN.md",
     "docs/MULTILINGUAL_DOCUMENTATION_STANDARD.md",

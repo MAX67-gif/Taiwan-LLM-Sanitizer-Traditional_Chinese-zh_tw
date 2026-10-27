@@ -51,3 +51,11 @@ Git 提交識別碼採 40 位十六進位；檔案 SHA256 採 64 位。兩者分
 封包驗證也拒絕重複 JSON key、未知授權、已撤回資產、密鑰指紋、非 UTF-8/BOM 文字、重複 ZIP 路徑、Windows 裝置名稱／資料流路徑與 symlink。這些檢查是完整性和發布規則，無法取代第三方權利調查或人工翻譯審閱。
 
 維護驗證：`python -m unittest discover -s tests -p 'test_all_tools*.py' -v`。公開版本的實際可用狀態仍以對應 main CI 與上述 Release 附件為準。
+
+## Suite 17.2.0（R17.2 新增候選助手）
+
+R17.2 新增**一個**可單獨下載的臺灣用語修稿 HTML；舊 26 工具仍沿用合法來源。若正式 CI、Draft 與 Published 全附件實際下載驗證全部成功，預期總數為 **27 工具、22 個獨立工具資產、27 個 GitHub 附件**。在正式 Release 尚未出現前，此段僅作規格，不是已發布宣告。
+
+- [R17.2 單檔工具與使用限制](R172_WORDING_ASSISTANT.md)
+- [Codex／Claude／Grok AI 搭配實戰教學](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)
+- 新正式版本需維持 Draft → 完整下載驗證 → Publish → 再次下載核對與固定舊資產 SHA。

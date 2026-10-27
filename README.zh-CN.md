@@ -1,11 +1,15 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:4c857bf85b7de657d4a56908904c6977edd6352f3d4ea665c101577ca49601b9 -->
+<!-- SOURCE_README_SHA256:fc83b63bbf3daa33d70b07fbe7fa1c7ff9452cd0d61f18d57e17990ccef39279 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
 **语言 / Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 > **产品定位：**提供面向台湾繁体中文（zh-TW）的用户自主选词、只读双语阅读和技术文档结构保护；不是文字审查工具，也不是任何第三方平台的官方产品。原创开源核心使用 [MIT 许可证](LICENSE)，Founder / Steward：CA L.。
+### R17.2｜台灣用語校訂与 AI 协作
+
+[开始使用](START_HERE.html) · [R17.2 离线台灣用语校订助手](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex、Claude、Grok 完整实操指南](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。请先使用自己有权处理的中文 Markdown，逐项确认候选，再下载保护结构后的预览文件；没有自动云端翻译或人工认证。
+
 
 ## 现在可以使用的功能
 
@@ -60,6 +64,6 @@
 
 请参阅 [完整工具下载与验证说明](docs/ALL_TOOLS_RELEASE.md)。新版正式 Release 必须保留所有仍受支持、具备合法分发权限的 Chrome 扩展、Tampermonkey 脚本、13 个离线 HTML 工作台、R6 质量研究包，以及带依赖项的 CLI/Skill 开发者包；未更新的工具仍保留原版本号与 SHA256。GitHub 必须先验证全部 Draft 附件后才能公开发布。因版权或安全问题下架的第三方专用内容不得恢复。请在正式 CI 成功后使用 [R17.1 工具套装页面](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 发布完整性检查会直接核对原始工具的锁定 SHA256、实际下载内容与 Git 提交。草稿阶段和公开后分别下载一次；同一标签已发布时只验证相同内容，不覆盖。六种语言的说明仍等待人工审阅（HUMAN_TRANSLATION_REVIEW_PENDING）。

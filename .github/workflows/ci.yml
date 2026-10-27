@@ -51,6 +51,12 @@ jobs:
         run: |
           node tools/build_local_workbench_r16.js --check
           python tools/check_release_workflow_r16.py
+      - name: Check R17.2 same-source offline wording assistant and AI onboarding
+        run: |
+          node tools/build_wording_assistant_r172.js --check
+          node --test tests/test_wording_assistant_r172.js
+          python tools/build_start_here_r172.py
+          python -m unittest tests/test_r172_suite_monotonic.py -v
       - name: Verify R17 project-level read-only Markdown integrity toolkit
         run: |
           node tools/build_document_trust_r17.js --check
@@ -297,6 +303,8 @@ jobs:
         run: python tests/test_structured_integrity_browser_r151.py
       - name: Test R17 explicitly authorized offline folder audit in Chromium
         run: python tests/test_document_trust_browser_r17.py
+      - name: Test R17.2 real Chromium offline selection and download
+        run: python tests/test_wording_assistant_browser_r172.py
       - name: Test R16 standalone offline Studio in real Chromium and mobile layout
         run: python tests/test_local_workbench_browser_r16.py
       - name: Verify R14 offline Provider capability UI, consent and no egress in Chromium

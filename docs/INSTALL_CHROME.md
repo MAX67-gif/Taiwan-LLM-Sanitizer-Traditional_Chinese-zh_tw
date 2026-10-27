@@ -1,3 +1,5 @@
+> **新使用者優先：** 想選取文字進行雙語閱讀，從 [R13](R13_BILINGUAL_READER.md) 開始；想逐站套用自己的詞庫，選 R11；只需要 AI 中文稿的離線臺灣用語修稿，請直接開啟 [R17.2 工作台](../examples/TW_Wording_Assistant_R172_20261027.html)，**不需要安裝擴充功能**。以下 R5 歷史安裝步驟仍保留。
+
 # Chrome／Chromium 擴充功能安裝｜完整教學（R5）
 
 Taiwan-LLM-Sanitizer 目前使用 **Manifest V3**，不是 Chrome Web Store 官方商店上架版。安裝檔提供 **ZIP**，請先解壓再載入，**不能雙擊 ZIP 或將 ZIP 拖入 Chrome 當作商店擴充功能**。Chrome 會把它當成你自行安裝的開發者版本。

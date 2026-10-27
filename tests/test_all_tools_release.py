@@ -70,7 +70,7 @@ class FullSuiteSafetyContract(unittest.TestCase):
     for p in self.stage.iterdir()]}
 
  def test_01_full_fixture_passes(self):
-  x=self.verify();self.assertEqual(x['tools'],26);self.assertEqual(x['github_assets_expected'],26)
+  x=self.verify();self.assertEqual(x['tools'],27);self.assertEqual(x['github_assets_expected'],27)
  def test_02_production_refuses_fixture(self):
   with self.assertRaisesRegex(B.ReleaseBlock,'FIXTURE_NOT_PUBLISHABLE'):C.verify_stage(self.stage,self.fixture_registry,fixture_ok=False)
  def test_03_production_rejects_replacement_R5_release_zip(self):

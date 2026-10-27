@@ -43,10 +43,10 @@
     "tls.skill.taiwan-zh-tw-localization"
   ],
   "project": "MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw",
-  "release_tag": "all-tools-suite-v17.1.0",
+  "release_tag": "all-tools-suite-v17.2.0",
   "rights_policy": "docs/THIRD_PARTY_RIGHTS_POLICY.md",
   "schema": "tls.all-tools-registry.v1",
-  "suite_version": "17.1.0",
+  "suite_version": "17.2.0",
   "tools": [
     {
       "artifact_filename": "TLS_Chrome_MV3_R5_20261024.zip",
@@ -567,6 +567,25 @@
       "supported_since": "R17.1 full suite baseline (preexisting tool)",
       "tool_id": "tls.skill.taiwan-zh-tw-localization",
       "tool_version": "R17 version"
+    },
+    {
+      "tool_id": "tls.html.tw-wording-assistant-r172-20261027",
+      "family": "offline_html",
+      "status": "PREVIEW",
+      "tool_version": "0.1.0-preview",
+      "artifact_filename": "TW_Wording_Assistant_R172_20261027.html",
+      "source_kind": "git_source",
+      "source_path": "examples/TW_Wording_Assistant_R172_20261027.html",
+      "package_subdir": "html",
+      "rights_review": "PUBLIC_ORIGINAL_CHECKED_NO_GAME_SPECIFIC",
+      "license_review": "MIT_ORIGINAL_PUBLIC",
+      "last_verified_at_utc": "2026-10-27T04:10:00Z",
+      "standalone_required": true,
+      "original_tag": null,
+      "source_commit_mode": "CURRENT_SOURCE_COMMIT",
+      "expected_sha256": "4ce1cfae97832937907ec6aa3c56c11b552d2cbd04c7b27c676379637be6b873",
+      "build_command_or_reuse_reason": "Rebuild from original R17.2 source and verify committed HTML SHA256",
+      "changelog_ref": "CHANGELOG.md"
     }
   ]
 }

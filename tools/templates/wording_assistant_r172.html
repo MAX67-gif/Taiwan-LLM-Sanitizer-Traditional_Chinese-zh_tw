@@ -1,0 +1,29 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Taiwan-LLM-Sanitizer｜臺灣用語修稿助手 R17.2 Preview</title>
+<style>
+:root{color-scheme:light;--ink:#192b40;--muted:#617389;--line:#d7e1ee;--accent:#195eaa;--light:#f3f7fb;--bg:#f6f9fc;--focus:#f49a41}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+main{max-width:1110px;margin:0 auto;padding:28px 20px 70px}header{padding:30px 32px;color:#fff;border-radius:21px;background:linear-gradient(120deg,#113957,#206b88);margin-bottom:18px}
+small.tag{font-size:12px;letter-spacing:.11em;font-weight:800;color:#aee6f3;text-transform:uppercase}h1{font-size:clamp(27px,4vw,42px);margin:6px 0}header p{color:#e5f5f9;max-width:780px;margin:8px 0 0}h2{font-size:20px;margin:0 0 12px}p{margin:8px 0}section{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:18px;box-shadow:0 4px 16px #152a4810}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}button,.file{border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-weight:700;padding:9px 14px;cursor:pointer;font:inherit}button.primary{background:var(--accent);color:white;border-color:var(--accent)}button.negative{color:#94442e}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+textarea{display:block;width:100%;min-height:260px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:15px;font:15px/1.75 ui-monospace,Consolas,"Microsoft JhengHei",monospace;background:#fcfdff;color:var(--ink)}#result{min-height:170px}#status,#previewState{display:block;padding:10px 12px;background:#f1f6fc;border-radius:9px;margin:10px 0;color:#245581}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}.stat{border-radius:100px;background:#eaf2fa;padding:3px 12px;font-weight:700;font-size:13px}.candidate{border:1px solid var(--line);padding:16px;border-radius:13px;margin:12px 0}.candidate h3{font-size:17px;margin:0 0 4px;overflow-wrap:anywhere}.candidate .meta{font-size:13px;color:var(--muted)}.candidate .why{font-size:13px;color:#654e15}.candidate .sel{background:#ebf4ec;border-radius:7px;padding:5px 8px;display:inline-block;margin-top:5px;font-weight:700;font-size:13px}
+.note{color:var(--muted);font-size:14px}.notice{border-left:3px solid #f1a84c;background:#fffbf1;padding:11px 14px;margin:14px 0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+footer{color:var(--muted);font-size:13px;margin-top:18px}.file{display:inline-block}input[type=file]{max-width:100%}#resultPanel[hidden],#candidatePanel[hidden]{display:none}.mono{font-family:ui-monospace,monospace;word-break:break-word}.gap{height:3px}
+@media(max-width:760px){main{padding:12px 10px}header{padding:21px;border-radius:14px}.two{grid-template-columns:1fr}section{padding:16px}button{max-width:100%;font-size:14px}textarea{min-height:210px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style></head><body><main>
+<header><small class="tag">Taiwan-LLM-Sanitizer · R17.2 Preview</small><h1>讓中文更貼近臺灣習慣</h1><p>貼入已寫好的中文，逐項選擇「軟體／資料庫／點選」等用語。程式碼、網址與模板變數先受保護，再確認新稿。全部在此瀏覽器本機運行，不會自動傳送內容。</p></header>
+<section aria-labelledby="step1"><h2 id="step1">01｜貼入內容或試用範例</h2><p class="note">僅支援 Markdown 保守規則；不做全文翻譯、任意 JSON 改寫或語意認證。輸入最大 64 KiB。若要處理 JSON／Prompt，請使用既有 R16 工作台。</p>
+<label for="source">原始內容</label><textarea id="source" spellcheck="false" placeholder="請貼入自己的文字（保護程式片段、URL 與變數）"></textarea>
+<div class="actions"><button id="demo">載入原創範例</button><label class="file" for="file">讀取本機 Markdown／文字檔</label><input id="file" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain"><button class="primary" id="inspect">尋找臺灣用語建議</button><button class="negative" id="clear">清除所有內容</button></div>
+<p class="notice">請只貼入你有權處理的文件。若文字來自雲端 Codex、Claude 或 Grok，那段 AI 互動本身可能已經傳送到供應商；本工具不會替雲端平台保證隱私。</p><output id="status" role="status" aria-live="polite">尚未分析：原文不會被修改。</output></section>
+<section id="candidatePanel" hidden aria-labelledby="step2"><h2 id="step2">02｜逐項確認語境或保留原文</h2><div id="stats" class="stats"></div><p class="note">每一處皆預設不更動；按「採用」只記錄當次選擇，必須再產生安全預覽。多義詞如 menu（選單／菜單）不會自動決定。</p><div id="candidates"></div><div class="actions"><button class="primary" id="previewBtn">產生安全差異預覽</button><button id="reportBtn">另存不含原文的檢查摘要</button></div></section>
+<section id="resultPanel" hidden aria-labelledby="step3"><h2 id="step3">03｜核對並帶走新稿</h2><p class="note">只顯示已確認項目。結果包含你自己的全文；下載只建立新檔案，原始檔不會被覆寫。此工具不保證語意完全等價。</p><output id="previewState" role="status" aria-live="polite"></output><label for="result">新稿（可以自行選取複製）</label><textarea id="result" readonly spellcheck="false"></textarea><div class="actions"><button id="copy" class="primary">複製新稿</button><button id="download">下載新稿 .md</button><button id="discard">取消此預覽</button></div></section>
+<footer>本工具為有限臺灣用語候選 Preview；詞彙尚未取得獨立母語真人品質認證。無伺服器、無遙測、無自動套用。保留原始版本及來源資料由使用者自行管理。</footer>
+<script>__TLS_R172_ENTITIES__</script><script>__TLS_R172_CORE_R151__</script><script>__TLS_R172_R16__</script>
+<script>__TLS_R172_CATALOG__</script><script>__TLS_R172_OVERLAY__</script><script>__TLS_R172_DIGESTS__</script>
+<script>__TLS_R172_ASSISTANT__</script><script>__TLS_R172_UI__</script>
+</main></body></html>

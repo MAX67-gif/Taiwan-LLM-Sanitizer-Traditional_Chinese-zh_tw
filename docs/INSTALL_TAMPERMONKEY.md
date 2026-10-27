@@ -1,3 +1,5 @@
+> **新使用者優先：** 想選取文字進行雙語閱讀，從 [R13](R13_BILINGUAL_READER.md) 開始；想逐站套用自己的詞庫，選 R11；只需要 AI 中文稿的離線臺灣用語修稿，請直接開啟 [R17.2 工作台](../examples/TW_Wording_Assistant_R172_20261027.html)，**不需要安裝擴充功能**。以下 R5 歷史安裝步驟仍保留。
+
 # Tampermonkey 使用者腳本安裝｜完整教學（R5）
 
 Tampermonkey 是 **Taiwan-LLM-Sanitizer 的其中一種使用方式**，不是整個專案的核心。R5 腳本為**一個自含的 .user.js 檔案**，不需第二段初始化指令、外部 CDN 或私人服務。

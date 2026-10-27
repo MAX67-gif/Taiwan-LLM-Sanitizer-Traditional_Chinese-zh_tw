@@ -1,11 +1,15 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:4c857bf85b7de657d4a56908904c6977edd6352f3d4ea665c101577ca49601b9 -->
+<!-- SOURCE_README_SHA256:fc83b63bbf3daa33d70b07fbe7fa1c7ff9452cd0d61f18d57e17990ccef39279 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 An open-source, privacy-minded layer for user-controlled Taiwanese terminology, bilingual reading and technical-content integrity; not affiliated with third-party services. **MIT** · Founder / Steward: CA L.
+### R17.2 | Review AI-written Chinese for Taiwan, safely
+
+[Start here](START_HERE.html) · [Offline Taiwan wording assistant](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex, Claude and Grok workflow guide](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Paste your own Chinese Markdown, review each suggestion and download a new safety-checked preview. No automatic cloud translation, no native Grok integration, no certified linguistic accuracy. All earlier supported tools remain available in the full suite.
+
 
 ## What is available
 
@@ -60,6 +64,6 @@ A **fictional browser-game-like page** with a normal, selectable HTML label such
 
 Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md). Each new release must include every legally distributable, still-supported Chrome extension, Tampermonkey userscript, 13 offline HTML labs, the R6 public quality kit, and the self-contained CLI/Skill developer bundle. Unchanged tools retain their original versions and SHA256 digests. The Draft release is verified before publication. Previously withdrawn third-party-specific packages remain excluded. Only use the [R17.1 suite release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) after its GitHub main CI and assets have actually passed.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
 
 Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).

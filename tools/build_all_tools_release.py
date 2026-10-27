@@ -21,14 +21,16 @@ import publication_guard as P
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'release/all_tools_registry.json'
-DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_1_0.zip'
-SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_1_0.zip'
+DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_2_0.zip'
+SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_2_0.zip'
 HEADER_FILES = ('ALL_TOOLS_MANIFEST.json', 'BUILD_PROVENANCE.json')
 HEX64 = re.compile(r'^[0-9a-f]{64}$')
 GIT_SHA = re.compile(r'^[0-9a-f]{40}$')
 # First supported inventory, independently anchored in code rather than a mutable
 # registry field. New suite versions must explicitly preserve these tool IDs.
 BASELINE_IDS_SHA256 = '75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492'
+CURRENT_IDS_SHA256 = 'f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769'
+NEW_TOOL_ID = 'tls.html.tw-wording-assistant-r172-20261027'
 LOCALES = ('zh-TW', 'zh-CN', 'en', 'ja', 'ko', 'es')
 TEXT_SUFFIXES = ('.md', '.txt', '.js', '.json', '.jsonl', '.html', '.css', '.yml', '.yaml', '.py', '.svg', '.sha256')
 WINDOWS_RESERVED = re.compile(r'^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)', re.I)
@@ -156,21 +158,21 @@ def tracked_files() -> list[str]:
     return result
 
 def validate_registry(reg: dict, fixture: bool) -> list[dict]:
-    if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.1.0' or reg.get('release_tag') != 'all-tools-suite-v17.1.0':
+    if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.2.0' or reg.get('release_tag') != 'all-tools-suite-v17.2.0':
         fail('REGISTRY_SCHEMA_VERSION')
     if reg.get('project') != 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw' or reg.get('locales') != list(LOCALES):
         fail('REGISTRY_PROJECT_OR_LOCALES')
     if reg.get('excluded_rights_withdrawn') != ['game_specific_userscripts', 'game_specific_chrome_extensions', 'game_specific_glossaries']:
         fail('RIGHTS_EXCLUSION_CHANGED')
     tools = reg.get('tools')
-    if not isinstance(tools, list) or len(tools) != 26:
+    if not isinstance(tools, list) or len(tools) != 27:
         fail('REGISTRY_COUNT')
     ids = [x.get('tool_id') for x in tools]
-    if ids != reg.get('monotonic_baseline_tool_ids') or len(ids) != len(set(ids)):
+    if ids[:26] != reg.get('monotonic_baseline_tool_ids') or ids[26:] != [NEW_TOOL_ID] or len(ids) != len(set(ids)):
         fail('REGISTRY_ID_MONOTONIC_BASELINE')
-    if not all(isinstance(x, str) for x in ids) or digest('\n'.join(ids).encode('utf-8')) != BASELINE_IDS_SHA256:
+    if not all(isinstance(x, str) for x in ids) or (digest('\n'.join(ids[:26]).encode('utf-8')) != BASELINE_IDS_SHA256 or digest('\n'.join(ids).encode('utf-8')) != CURRENT_IDS_SHA256):
         fail('REGISTRY_INDEPENDENT_BASELINE')
-    if len([x for x in tools if x.get('family') == 'browser']) != 6 or len([x for x in tools if x.get('family') == 'offline_html']) != 13 or len([x for x in tools if x.get('family') == 'quality']) != 1 or len([x for x in tools if x.get('family') in ('developer_cli','developer_skill')]) != 6:
+    if len([x for x in tools if x.get('family') == 'browser']) != 6 or len([x for x in tools if x.get('family') == 'offline_html']) != 14 or len([x for x in tools if x.get('family') == 'quality']) != 1 or len([x for x in tools if x.get('family') in ('developer_cli','developer_skill')]) != 6:
         fail('REGISTRY_FAMILY_COMPLETENESS')
     for x in tools:
         if not isinstance(x.get('tool_id'), str) or not x['tool_id'].startswith('tls.'):
@@ -187,7 +189,12 @@ def validate_registry(reg: dict, fixture: bool) -> list[dict]:
             fail('BAD_SOURCE_KIND:' + x['tool_id'])
         if not safe_archive_path(x.get('source_path', '')) or not safe_filename(x.get('package_subdir', '')):
             fail('REGISTRY_UNSAFE_PATH:' + x['tool_id'])
-        if not GIT_SHA.fullmatch(x.get('original_commit_sha', '')):
+        if x['tool_id'] == NEW_TOOL_ID:
+            if x.get('source_commit_mode') != 'CURRENT_SOURCE_COMMIT' or x.get('source_kind') != 'git_source' or x.get('original_commit_sha') is not None:
+                fail('NEW_TOOL_SOURCE_COMMIT_AUTHORITY')
+            if x.get('source_path') != 'examples/TW_Wording_Assistant_R172_20261027.html':
+                fail('NEW_TOOL_PATH')
+        elif not GIT_SHA.fullmatch(x.get('original_commit_sha', '')):
             fail('REGISTRY_SOURCE_COMMIT:' + x['tool_id'])
         if not isinstance(x.get('tool_version'), str) or not x['tool_version'].strip():
             fail('REGISTRY_TOOL_VERSION:' + x['tool_id'])
@@ -222,7 +229,7 @@ def fetch_official_assets(tools: list[dict], cache: Path, fixture: bool) -> None
 
 def validate_catalog_docs(contents: dict[str, bytes], registry: dict) -> None:
     """Mechanical source/catalog parity only; no human language-quality claim."""
-    marker = '<!-- ALL_TOOLS_CATALOG: suite=' + registry['suite_version'] + '; tools=26; standalone=21; tool_ids_sha256=' + BASELINE_IDS_SHA256 + ' -->'
+    marker = '<!-- ALL_TOOLS_CATALOG: suite=' + registry['suite_version'] + '; tools=27; standalone=22; tool_ids_sha256=' + CURRENT_IDS_SHA256 + ' -->'
     for prefix, source_prefix in (('README', 'SOURCE_README_SHA256'), ('docs/USAGE_EXAMPLES', 'SOURCE_EXAMPLES_SHA256')):
         master = prefix + '.md'
         if master not in contents:
@@ -242,9 +249,9 @@ def validate_catalog_docs(contents: dict[str, bytes], registry: dict) -> None:
 
 def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     # Include exact, locally runnable CLI and all their dependencies + six-language docs.
-    prefixes = ('src/','tools/','skills/','.agents/skills/','.claude/skills/','benchmarks/r6/','docs/','lexicon/','tests/','examples/r16/','examples/r17/')
+    prefixes = ('src/','tools/','skills/','.agents/skills/','.claude/skills/','benchmarks/r6/','docs/','lexicon/','tests/','examples/',)
     names = sorted(p for p in all_tracked if p.startswith(prefixes) or p in
-                   ('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md','LICENSE','AGENTS.md','CLAUDE.md','PRIVACY.md','SECURITY.md','release/all_tools_registry.json'))
+                   ('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md','LICENSE','AGENTS.md','CLAUDE.md','PRIVACY.md','SECURITY.md','CONTRIBUTING.md','CHANGELOG.md','START_HERE.html','release/all_tools_registry.json'))
     contents = {}
     for p in names:
         if not safe_archive_path(p):fail('DEVELOPER_BUNDLE_UNSAFE_PATH:'+p)
@@ -254,7 +261,7 @@ def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     validate_catalog_docs(contents, strict_json(REGISTRY.read_bytes(), 'registry'))
     contents['START_HERE_ALL_TOOLS.txt'] = ('Taiwan-LLM-Sanitizer developer CLI + Skill source bundle\n'
         'Extract this ZIP before running Node. Node.js 22+ required. CLI usage is documented under docs/.\n'
-        'All source is the existing R17 baseline plus Release packaging; no cloud API, game asset or private records.\n'
+        'Public source includes the R17.2 offline wording assistant and Codex/Claude/Grok guides; no model API, game assets or private records.\n'
         'The included files are not an independently reviewed language-accuracy certification.\n').encode('utf-8')
     return contents
 
@@ -304,12 +311,12 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
         artifacts[original]=data
         member='TOOLS/'+tool['package_subdir']+'/'+original
         members[member]=data
-        manifest_tools.append({**tool,'source_sha256':digest(data),'location_in_suite':member,'artifact_bytes':len(data),'artifact_sha256':digest(data),
+        manifest_tools.append({**tool, **({'original_commit_sha':source_sha or 'FIXTURE_LOCAL_PREVIEW'} if tool['tool_id']==NEW_TOOL_ID else {}),'source_sha256':digest(data),'location_in_suite':member,'artifact_bytes':len(data),'artifact_sha256':digest(data),
             'suite_version':reg['suite_version'],'unchanged_from_last_suite':None,'unchanged_from_original_source':True,'verification_status':'SHA256_PASS'})
     developer_data=make_developer_bundle(all_tracked)
     artifacts[DEVELOPER_BUNDLE]=developer_data
     members['TOOLS/developer/'+DEVELOPER_BUNDLE]=developer_data
-    if len(artifacts)!=21:fail('ASSET_COUNT_EXPECTED_21')
+    if len(artifacts)!=22:fail('ASSET_COUNT_EXPECTED_22')
     manifest={
       'schema':'tls.all-tools-release-manifest.v1','suite_version':reg['suite_version'],'release_tag':reg['release_tag'],
       'source_main_baseline_sha':reg['base_commit_sha'],'source_git_sha':source_sha or 'LOCAL_PREVIEW_UNPUBLISHED',
@@ -332,12 +339,13 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
         'missing_tool_ids': [], 'registry_sha256': digest(registry_path.read_bytes()),
         'post_publish_all_assets': 'NOT_RUN',
         'archive_digest_location': 'external VALIDATION.json avoids recursive self-hash'}
+    members['START_HERE.html']=safe_file(ROOT/'tools/templates/start_here_suite_r172.html',ROOT)
     members.update(metadata)
     members['VALIDATION.json'] = json_bytes(inner_validation)
     members['ALL_TOOLS_REGISTRY.json'] = registry_path.read_bytes()
-    members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.1.0 / 全工具套件\n'
+    members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.2.0 / 全工具套件\n'
        'zh-TW / zh-CN / English / 日本語 / 한국어 / Español usage guides are inside developer source bundle.\n'
-       'All tool versions are unchanged, pinned to their original release/source digests.\n'
+       'All 26 previous tools retain their original versions and bytes; one new R17.2 HTML Preview is added.\n'
        'Manual opt-in only; never install conflicting R5/R11/R13 versions on one site.\n'
        'Retired third-party game-specific packages are excluded. No automatic translation or model certification.\n').encode('utf-8')
     bundle_checksum = ''.join(digest(v) + '  ' + k + '\n' for k, v in sorted(members.items())).encode('utf-8')
@@ -347,10 +355,10 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
     validation={
        'schema':'tls.all-tools-validation.v1','release_tag':reg['release_tag'],'suite_version':reg['suite_version'],
        'status':'FIXTURE_TEST_ONLY' if fixture else 'PACKAGE_READY_NOT_PUBLISHED',
-       'fixture':fixture,'tool_count_expected':26,'tool_count_present':26,'tool_count_updated':0,
+       'fixture':fixture,'tool_count_expected':27,'tool_count_present':27,'tool_count_updated':1,
        'source_git_sha': source_sha or 'LOCAL_PREVIEW_UNPUBLISHED',
-       'tool_count_reused_from_origins':26,'tool_count_unchanged_from_previous_suite':'FIRST_SUITE_NO_PREDECESSOR',
-       'tool_count_legacy':2,'standalone_asset_count':21,
+       'tool_count_reused_from_origins':26,'tool_count_unchanged_from_previous_suite':26,
+       'tool_count_legacy':2,'standalone_asset_count':22,
        'suite_file':SUITE_FILENAME,'suite_bytes':len(suite),'suite_sha256':digest(suite),
        'sha256_verified':True,'crc_valid':True,'privacy_guard':'PUBLIC_SOURCE_ONLY',
        'license_review':'PUBLIC_MIT_AND_PINNED_OFFICIAL_RELEASES',
@@ -359,7 +367,7 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
        'missing_tool_ids':[],'excluded_rights_withdrawn':len(reg['excluded_rights_withdrawn'])}
     staging={**artifacts,**metadata,SUITE_FILENAME:suite,'VALIDATION.json':json_bytes(validation)}
     staging['SHA256SUMS.txt']=''.join(digest(v)+'  '+k+'\n' for k,v in sorted(staging.items())).encode('utf8')
-    if len(staging)!=26:fail('TOTAL_RELEASE_ASSET_COUNT')
+    if len(staging)!=27:fail('TOTAL_RELEASE_ASSET_COUNT')
     for name,content in staging.items():
         (stage/name).write_bytes(content)
     return manifest

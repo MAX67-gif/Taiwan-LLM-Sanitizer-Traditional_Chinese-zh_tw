@@ -1,3 +1,9 @@
+## R17.2.0 | Taiwan Wording Assistant & AI workflows (2026-10-27)
+
+- Added one new offline Markdown Taiwan terminology review tool, reusing unchanged R15.1/R16 safe preview and six fixed traditional aliases; every suggestion requires explicit confirmation. This is a bounded Preview, not automatic translation or human linguistic certification.
+- Added guides for Codex, Claude Code and Grok/Grok Build, task-oriented START_HERE entry, multilingual links and original examples. AI cloud content policy is separate from TLS offline processing.
+- Full Suite v17.2.0 carries every lawful supported tool, preserving all R17.1 tool versions and byte-locked previous assets. Six-language native review and real-user validation remain pending.
+
 ## R16 · 2026-10-26 · 本機在地化安全工作台（Shadow Preview）
 
 ## R17.1 publication recovery — 2026-10-27
