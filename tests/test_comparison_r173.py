@@ -77,9 +77,20 @@ class ComparisonR173Test(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'DUPLICATE'):S.aggregate([x,x])
 
     def test_critical_safety_not_offset_by_acceptable_suggestions(self):
-        x=self.sample(status='EXECUTED',critical_unauthorized_change_count=1,suggestions_reviewed=20,suggestions_acceptable=20)
+        x=self.sample(status='EXECUTED',critical_unauthorized_change_count=1,suggestions_reviewed=20)
         result=S.aggregate([x]);self.assertEqual(result['status'],'BLOCKED_CRITICAL_SAFETY')
         self.assertEqual(result['critical_events'],1)
+
+    def test_no_numeric_quality_without_two_consenting_reviewers(self):
+        for example in [
+            self.sample(status='EXECUTED',suggestions_reviewed=10,suggestions_acceptable=10),
+            self.sample(status='EXECUTED',evidence_class='CONSENTED_USER_SELF_REPORT',suggestions_reviewed=10,suggestions_acceptable=9),
+            self.sample(status='EXECUTED',evidence_class='CONSENTED_REVIEWER_REPORT',consent_verified=True,suggestions_reviewed=10,suggestions_acceptable=7),
+        ]:
+            with self.assertRaisesRegex(ValueError,'ACCEPTABILITY_REQUIRES_TWO_CONSENTED_REVIEWERS'):
+                S.aggregate([example])
+        dev = S.aggregate([self.sample(status='EXECUTED',suggestions_reviewed=10)])
+        self.assertIsNone(dev['groups'][0]['suggestion_acceptability'])
 
     def test_no_fake_reviewer(self):
         with self.assertRaisesRegex(ValueError,'HUMAN_PROVENANCE'):S.aggregate([self.sample(status='EXECUTED',reviewers=[{'reviewer_code':'1','decision':'ACCEPTABLE'},{'reviewer_code':'2','decision':'ACCEPTABLE'}])])

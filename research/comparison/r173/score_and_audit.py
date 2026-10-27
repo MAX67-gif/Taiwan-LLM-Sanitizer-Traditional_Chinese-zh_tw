@@ -50,6 +50,15 @@ def validate_record(item):
         if not isinstance(r,list) or len(r)<2 or len(r)>4 or any(not isinstance(x,dict) or set(x)!={'reviewer_code','decision'} or x.get('decision') not in ('ACCEPTABLE','UNACCEPTABLE','UNSURE') or not isinstance(x.get('reviewer_code'),str) or len(x['reviewer_code'])>30 for x in r):
             raise ValueError('INVALID_REVIEWER_RECORD')
         if len({x['reviewer_code'] for x in r})!=len(r):raise ValueError('REVIEWERS_NOT_INDEPENDENT')
+    # Numeric language acceptability requires a recorded two-reviewer, consented claim.
+    # Synthetic DEV_ONLY measurements and self-reports must never publish a quality ratio.
+    if item.get('suggestions_acceptable') is not None:
+        if (item['status'] != 'EXECUTED' or item['evidence_class'] not in
+            {'CONSENTED_REVIEWER_REPORT','EXTERNAL_VERIFIED'} or
+            item.get('consent_verified') is not True or len(r)<2):
+            raise ValueError('ACCEPTABILITY_REQUIRES_TWO_CONSENTED_REVIEWERS')
+        if item.get('suggestions_reviewed') is None:
+            raise ValueError('ACCEPTABILITY_REQUIRES_DENOMINATOR')
     if item.get('human_equivalence_verified') is True and not r:
         raise ValueError('HUMAN_QUALITY_WITHOUT_REVIEWERS')
     # Re-reviewing/auto promoting known design fixtures is not Fresh OOS.
@@ -79,7 +88,7 @@ def aggregate(items):
           'not_run_n':sum(r['status']=='NOT_RUN' for r in rows),
           'critical_unauthorized_change_count':s('critical_unauthorized_change_count'),
           'protected_segments_checked':s('protected_segments_checked'),
-          'suggestion_acceptability':ratio(s('suggestions_acceptable'),s('suggestions_reviewed')),
+          'suggestion_acceptability':ratio(s('suggestions_acceptable'),s('suggestions_reviewed')) if reviews else None,
           'suggestions_reviewed':s('suggestions_reviewed'),'coverage_on_eligible':ratio(s('eligible_opportunities_hit'),s('eligible_opportunities')),
           'eligible_opportunities':s('eligible_opportunities'),
           'task_success_rate':ratio(s('task_success'),sum(r.get('task_success') is not None for r in executed)),
