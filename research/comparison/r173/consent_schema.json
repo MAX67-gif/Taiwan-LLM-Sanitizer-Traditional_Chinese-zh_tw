@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R17.3 Opt-in Deidentified Task Summary (local only)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "consent_to_anonymous_aggregate",
+    "owns_or_is_authorized",
+    "test_protocol",
+    "task_completed",
+    "time_seconds",
+    "feedback_category",
+    "public_sharing_allowed"
+  ],
+  "properties": {
+    "schema": {
+      "const": "tls.r173.optin-aggregate.v1"
+    },
+    "consent_to_anonymous_aggregate": {
+      "const": true
+    },
+    "owns_or_is_authorized": {
+      "const": true
+    },
+    "test_protocol": {
+      "enum": [
+        "L3_FIRST_USE",
+        "L4_REPEAT_TASK"
+      ]
+    },
+    "task_completed": {
+      "type": "boolean"
+    },
+    "time_seconds": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 7200
+    },
+    "feedback_category": {
+      "enum": [
+        "USEFUL",
+        "NO_SUGGESTIONS",
+        "UNSAFE_PROPOSED",
+        "UNSUPPORTED",
+        "CONFUSING",
+        "OTHER_UNSPECIFIED"
+      ]
+    },
+    "public_sharing_allowed": {
+      "type": "boolean"
+    },
+    "second_actual_completed": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "human_text_reviewed": {
+      "const": false
+    }
+  },
+  "description": "Do NOT include original text, user identity, paths, free text, source hashes or user-contact information. Consent can be withdrawn from unpublished records."
+}

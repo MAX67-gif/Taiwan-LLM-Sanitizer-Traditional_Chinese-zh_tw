@@ -238,6 +238,23 @@ def verify_workflow(workflow_text=None):
     expect(re.search(r'^      contents: write$', header, re.M), 'CENTRAL_RELEASE_PERMISSION')
     expect(re.search(r'^    concurrency:\n      group: tls-all-tools-release-\$\{\{ github.repository \}\}\n      cancel-in-progress: false$', header, re.M),
            'CENTRAL_RELEASE_CONCURRENCY')
+    # Research-only source changes must never attempt to republish an immutable
+    # 17.2 tag. A closed git-diff allowlist chooses a read-only prior-release
+    # inspection; any runtime, registry or unrecognized path still invokes the
+    # full suite stage + publisher. This must be tested by the central checker.
+    for fragment in (
+        'tools/check_r173_research_scope.py --base',
+        'id: r173_scope',
+        "if: steps.r173_scope.outputs.product_changed == 'true'",
+        "if: steps.r173_scope.outputs.research_only == 'true'",
+        'gh release view "all-tools-suite-v17.2.0"',
+        'tools/check_r173_research_scope.py',
+        '--existing-release-json',
+        'fetch-depth: 2',
+    ):
+        expect(fragment in block, 'RESEARCH_RELEASE_SCOPE_GATE_MISSING:' + fragment)
+    expect(block.count("if: steps.r173_scope.outputs.product_changed == 'true'") == 2,
+           'RESEARCH_SCOPE_MUST_GUARD_BOTH_BUILD_AND_PUBLISH')
     for fragment in ('tools/build_all_tools_release.py', 'tools/check_all_tools_release.py',
                      'tools/publish_all_tools_release.py', '--expected-sha', '--source-sha', '--fetch-official'):
         expect(fragment in block, 'CENTRAL_RELEASE_GATE_MISSING:' + fragment)

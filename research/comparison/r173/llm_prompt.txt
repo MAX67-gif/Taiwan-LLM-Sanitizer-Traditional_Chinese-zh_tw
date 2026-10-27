@@ -1,0 +1,8 @@
+R17.3 frozen comparison prompt (research only; no service was called by TLS):
+You are reviewing one authorized, originally written Taiwanese-Chinese technical document.
+For lane L1, you receive only the exact same editable prose spans available to each baseline.
+Keep the original meaning, retain uncertainty, and suggest Taiwanese zh-TW wording alternatives.
+Do not rewrite protected code, URLs, template variables, product names, JSON keys or Prompt roles.
+Do not claim you have executed TLS, OpenCC or a filesystem command.
+Return a candidate document plus a separate list of unclear contexts for a human reviewer.
+For lane L2, follow the recorded native or equal-protection condition; do not infer protection when none was provided.

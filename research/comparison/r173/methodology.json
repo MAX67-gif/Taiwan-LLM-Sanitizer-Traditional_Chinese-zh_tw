@@ -1,0 +1,106 @@
+{
+  "schema": "tls.r173.research-methodology.v1",
+  "study": "R17.3 Evidence & Adoption Lab",
+  "registered_at": "2026-10-27",
+  "study_status": "ENGINEERING_DEV_NO_HUMAN_RESULTS",
+  "research_only": true,
+  "release_reference": {
+    "tag": "all-tools-suite-v17.2.0",
+    "main_commit": "a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4",
+    "original_tools_preserved": 27
+  },
+  "frozen_runtime_sha256": {
+    "src/core/protected_segments_r15.js": "b436da248ed272e841289b2e5c6043b260e98ca3e64b4f3c6d927d82dce38ed9",
+    "src/core/local_workbench_r16.js": "f5680c4b788a3ddd9e917d40ef1aadceaa7ba4e25614aa1b3531bd0ac907be80",
+    "src/core/wording_assistant_r172.js": "ce0570400d8d43466206884217553a1a120be546f11d90a40012564d8cf4c8ee",
+    "lexicon/wording_overlay_r172.json": "bb13c04be634466d95b60f14210bac832856fbc3bd85da30b56573cd28abfaba",
+    "lexicon/approved_r3.json": "664dd0f0f733b6aac378c69d36f9765af651dedd39cd1404dfb35732a314878f"
+  },
+  "languages": [
+    "zh-TW"
+  ],
+  "format": "markdown",
+  "lane1": {
+    "name": "L1_EDITABLE_TEXT",
+    "comparison_set": [
+      "TLS_R172",
+      "NAIVE_LITERAL",
+      "OPENCC_S2TWP",
+      "LLM_DECLARED"
+    ],
+    "eligibility": "same R16 EDITABLE spans; no protected code/URL/JSON keys passed to competing converters",
+    "naive_rules": "R17.2 six candidate-only alias pairs; independent frozen direct replacement comparator, not competing native language model",
+    "opencc_config": "s2twp.json",
+    "opencc_runtime_status": "BASELINE_NOT_AVAILABLE_UNTIL_REAL_INSTALLED_AND_RECORDED",
+    "llm_status": "NOT_RUN_OFFLINE_IMPORT_ONLY",
+    "human_review": "TWO_INDEPENDENT_REVIEWERS_PENDING",
+    "text_quality_equivalence_claim": false
+  },
+  "lane2": {
+    "name": "L2_END_TO_END_SAFETY",
+    "comparators": [
+      "TLS_R172",
+      "R16_MANUAL",
+      "OPENCC_RAW",
+      "OPENCC_EQUAL_PROTECTION",
+      "LLM_RAW",
+      "LLM_EQUAL_PROTECTION"
+    ],
+    "raw_is_not_equal_protection": true,
+    "raw_is_diagnostic_not_claim_of_fair_superiority": true,
+    "metrics": [
+      "critical_unauthorized_change_count",
+      "protected_segments_checked",
+      "time_to_safe_export_seconds",
+      "task_success",
+      "meaning_preserved"
+    ],
+    "condition": "record native and equal-protection separately; DO NOT pool into single score"
+  },
+  "lane3": {
+    "name": "L3_FIRST_USE",
+    "registered_first_time_n": 10,
+    "understands_in_15s_target_n": 8,
+    "finishes_own_document_under_180s_target_n": 8,
+    "median_time_reduction_vs_R16_target_pct": 30,
+    "status": "NOT_RUN"
+  },
+  "lane4": {
+    "name": "L4_REAL_RETURN",
+    "fixed_first_five_users": 5,
+    "actual_second_task_in_7d_target_n": 3,
+    "intention_only_not_counted": true,
+    "status": "NOT_RUN"
+  },
+  "must_log": [
+    "real_provider_version",
+    "official_dictionary_config",
+    "runtime_digest",
+    "input_provenance_and_license",
+    "prompt_sha256",
+    "model_temperature",
+    "order",
+    "consent",
+    "actual_reviewers"
+  ],
+  "prohibited": [
+    "no tuning based on frozen exposed cases",
+    "no dynamic cloud calls",
+    "no third party raw dictionaries committed",
+    "no model fabricated result",
+    "no silent source overwrite",
+    "no one-number composite leaderboard",
+    "no hidden analytics",
+    "no README victory claim"
+  ],
+  "data_stewardship": {
+    "original_private_text_in_public": false,
+    "consented_only": true,
+    "linkable_source_hash_public": false,
+    "human_review_required_for_quality": true
+  },
+  "dev_cases": "Only original synthetic examples, never Fresh OOS",
+  "source": "Private Project Brain A R17.3 plan and B engineering contract; documented in PR #22",
+  "llm_comparison_prompt_sha256": "0cafff05c3448efd6f28f0417abae4e09adc6d240e66f1a8e7e71ab724ecdd0e",
+  "llm_comparison_prompt_path": "research/comparison/r173/llm_prompt.txt"
+}

@@ -57,6 +57,15 @@ jobs:
           node --test tests/test_wording_assistant_r172.js
           python tools/build_start_here_r172.py
           python -m unittest tests/test_r172_suite_monotonic.py -v
+      - name: Validate R17.3 fairness research sidecar (not model/human performance)
+        run: |
+          node --check research/comparison/r173/naive_baseline.js
+          node --check research/comparison/r173/prepare_spans.js
+          node --test tests/test_comparison_r173.js
+          python -m unittest tests/test_comparison_r173.py -v
+          python -m unittest tests/test_r173_research_scope.py -v
+          python -m py_compile research/comparison/r173/*.py tools/check_r173_research_scope.py
+          node research/comparison/r173/naive_baseline.js --input research/comparison/r173/fixtures_first_task.md > "$RUNNER_TEMP/tls-r173-dev-only.json"
       - name: Verify R17 project-level read-only Markdown integrity toolkit
         run: |
           node tools/build_document_trust_r17.js --check
@@ -722,7 +731,7 @@ jobs:
           fi
 
   all-tools-full-suite-release:
-    name: Publish complete All-Tools Suite (no partial release)
+    name: Full-Suite Release Gate (publish only when the product changes)
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [verify, browser-integration]
     runs-on: ubuntu-latest
@@ -733,13 +742,22 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Decide whether this main commit is an explicitly allowlisted R17.3 research-only delta
+        id: r173_scope
+        run: |
+          set -euo pipefail
+          BASE_SHA="$(git rev-parse "$GITHUB_SHA^")"
+          python tools/check_r173_research_scope.py --base "$BASE_SHA" --head "$GITHUB_SHA"
       - name: Fail closed if any pinned original release asset is missing or modified
+        if: steps.r173_scope.outputs.product_changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -754,6 +772,7 @@ jobs:
             --stage "$RUNNER_TEMP/tls_all_tools_stage" \
             --expected-sha "$GITHUB_SHA" --check-workflow
       - name: Verify Draft downloads, publish once, and verify fresh published downloads
+        if: steps.r173_scope.outputs.product_changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -761,6 +780,16 @@ jobs:
           python tools/publish_all_tools_release.py \
             --stage "$RUNNER_TEMP/tls_all_tools_stage" \
             --expected-sha "$GITHUB_SHA" \
+            --receipt "$RUNNER_TEMP/tls_all_tools_publication_receipt.json"
+      - name: Verify prior immutable Suite stays published when only R17.3 research changes
+        if: steps.r173_scope.outputs.research_only == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view "all-tools-suite-v17.2.0" --json tagName,isDraft,targetCommitish,assets > "$RUNNER_TEMP/tls-r173-existing-release.json"
+          python tools/check_r173_research_scope.py \
+            --existing-release-json "$RUNNER_TEMP/tls-r173-existing-release.json" \
             --receipt "$RUNNER_TEMP/tls_all_tools_publication_receipt.json"
       - name: Preserve verified publication outcome or blocking reason
         if: always()

@@ -26,6 +26,7 @@ DOCS_PUBLIC={
     "docs/ALL_TOOLS_RELEASE.md",
     "docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md", "docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md",
     "docs/R172_WORDING_ASSISTANT.md",
+    "docs/R173_COMPARISON_AND_ADOPTION.md", "docs/R173_COMPARISON_AND_ADOPTION.en.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.zh-CN.md",
     "docs/MULTILINGUAL_DOCUMENTATION_STANDARD.md",
@@ -58,6 +59,14 @@ DOCS_PUBLIC={
     "docs/R13_BILINGUAL_READER.md","docs/TAIWAN_UI_TERMS_R13.md",
 }
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
+# Research files are explicitly allowlisted and NEVER silently become a distributed tool.
+PUBLIC_R173_RESEARCH={
+    "research/comparison/r173/methodology.json", "research/comparison/r173/consent_schema.json",
+    "research/comparison/r173/feedback_template.md", "research/comparison/r173/llm_prompt.txt",
+    "research/comparison/r173/fixtures_first_task.md", "research/comparison/r173/naive_baseline.js",
+    "research/comparison/r173/prepare_spans.js", "research/comparison/r173/opencc_adapter.py",
+    "research/comparison/r173/import_model_result.py", "research/comparison/r173/score_and_audit.py",
+}
 PUBLIC_BENCHMARK_FILES={
     "benchmarks/r6/public_frozen_v1.jsonl",
     "benchmarks/r6/frozen_manifest_v1.json",
@@ -93,7 +102,7 @@ def allowed_path(name:str)->bool:
         return False
     if name.lower().endswith(BAD_EXT):
         return False
-    if name in ROOT_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES:
+    if name in ROOT_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES or name in PUBLIC_R173_RESEARCH:
         return True
     if name.startswith("docs/"):
         return False
@@ -166,6 +175,8 @@ def validate(paths:list[str])->list[str]:
 def self_test():
     assert allowed_path("README.md")
     assert allowed_path("README.zh-CN.md")
+    assert allowed_path("research/comparison/r173/methodology.json")
+    assert not allowed_path("research/comparison/r173/actual_private_outputs.jsonl")
     assert allowed_path("docs/USAGE_EXAMPLES.zh-CN.md")
     assert allowed_path("docs/ROADMAP.md")
     assert allowed_path("src/core/preferences.js")
