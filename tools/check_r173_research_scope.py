@@ -18,10 +18,13 @@ PINNED_SUITE_TAG = 'all-tools-suite-v17.2.0'
 PINNED_ASSET_COUNT = 27
 EXACT = {'.github/workflows/ci.yml',
          'tools/publication_guard.py', 'tools/check_all_tools_release.py', 'tools/check_r173_research_scope.py',
-         'tests/test_comparison_r173.py', 'tests/test_comparison_r173.js',
+         'tests/test_comparison_r173.py', 'tests/test_comparison_r173.js', 'tests/test_r173_research_scope.py',
          'CHANGELOG.md', 'README.md', 'README.en.md', 'README.es.md',
          'README.ja.md', 'README.ko.md', 'README.zh-CN.md'}
 PREFIX = ('docs/', 'research/comparison/r173/')
+# The only permitted standalone correction to this route selector is this exact pair,
+# audited by the changed-path regression. Not a general docs-only exemption.
+HOTFIX_ONLY = {'tools/check_r173_research_scope.py', 'tests/test_r173_research_scope.py'}
 
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
@@ -36,6 +39,8 @@ def classify(changes):
             return False, 'PRODUCT_OR_UNRECOGNIZED_CHANGE'
         paths.append(p)
     if not any(x.startswith('research/comparison/r173/') for x in paths):
+        if set(paths) == HOTFIX_ONLY and len(paths) == len(HOTFIX_ONLY):
+            return True, 'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY'
         return False, 'NOT_EXPLICIT_R173_RESEARCH'
     return True, 'R173_RESEARCH_ONLY'
 
