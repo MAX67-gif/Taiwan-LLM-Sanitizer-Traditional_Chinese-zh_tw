@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
+<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
 
 # 台湾繁体字中国語ローカライズ：9 つのオリジナル利用例
 
@@ -59,3 +59,9 @@ HTML／DOM の通常テキスト `Open settings` や `Start` は、規約に適�
 ## R16 ハンズオン（独自作成の例）
 
 [R16 オフラインツール](../examples/TW_Localization_Safety_Studio_R16_20261026.html) で [Markdown のオリジナル例](../examples/r16/sample_readme.md) を開き、保護領域を確認してから候補文を手動入力します。コード、変数、HTML コメント、URL は変更できません。元ファイルを上書きせず、新しいプレビューを保存します。**自動翻訳・送信なし**。
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+## 全ツールのダウンロード
+
+これらの例で使う、合法的に配布可能なツールは [R17.1 全ツールと検証ガイド](ALL_TOOLS_RELEASE.md) にまとめています。Chrome、Tampermonkey、オフライン HTML、CLI ではインストール方法が異なります。元のバージョンを保持し、目的に合う入口を選んでください。同一サイトで複数バージョンを同時に有効にしないでください。このパッケージは翻訳品質の人による認証を提供しません。

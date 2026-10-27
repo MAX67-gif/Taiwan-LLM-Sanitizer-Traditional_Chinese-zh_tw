@@ -59,6 +59,15 @@ class FullSuiteSafetyContract(unittest.TestCase):
   def modify(folder):
    p=folder/name;p.write_bytes(mutator(p.read_bytes()))
   return self.altered(modify)
+ def github_release(self, *, draft=False, bad_digest=False):
+  manifest=json.loads((self.stage/'ALL_TOOLS_MANIFEST.json').read_bytes())
+  tag=manifest['release_tag']
+  return {'tag_name':tag,'target_commitish':manifest['source_git_sha'],
+   'draft':draft,'prerelease':False,'assets':[
+    {'name':p.name,'size':p.stat().st_size,'state':'uploaded',
+     'digest':'sha256:'+('f'*64 if bad_digest else B.digest(p.read_bytes())),
+     'browser_download_url':'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/download/'+tag+'/'+p.name}
+    for p in self.stage.iterdir()]}
 
  def test_01_full_fixture_passes(self):
   x=self.verify();self.assertEqual(x['tools'],26);self.assertEqual(x['github_assets_expected'],26)
@@ -78,22 +87,22 @@ class FullSuiteSafetyContract(unittest.TestCase):
   p=self.altered(lambda d:(d/'TW_Localization_Safety_Studio_R16_20261026.html').unlink())
   with self.assertRaisesRegex(C.GuardError,'INCOMPLETE'):self.verify(p)
  def test_07_sha_mutation_block(self):
-  with self.assertRaisesRegex(C.GuardError,'ARTIFACT_BYTES_SHA'):self.verify(self.corrupt('TW_Document_Trust_Graph_R17_20261026.html'))
+  with self.assertRaisesRegex(C.GuardError,'LOCKED_ARTIFACT_SHA'):self.verify(self.corrupt('TW_Document_Trust_Graph_R17_20261026.html'))
  def test_08_partial_R17_release_must_fail(self):
   data={'assets':[{'name':'TW_Document_Trust_Graph_R17_20261026.html','size':46034},{'name':'TW_Document_Trust_Graph_R17_20261026.html.sha256','size':108}],'draft':False}
   with self.assertRaisesRegex(C.GuardError,'GITHUB_RELEASE_INCOMPLETE'):self.verify(release_data=data,require_published=True)
  def test_09_complete_realistic_GitHub_asset_parity(self):
-  data={'assets':[{'name':p.name,'size':p.stat().st_size,'digest':'sha256:'+B.digest(p.read_bytes())} for p in self.stage.iterdir()],'draft':False,'prerelease':False}
+  data=self.github_release()
   self.assertEqual(self.verify(release_data=data,require_published=True)['status'],'PASS')
  def test_10_wrong_GitHub_digest_block(self):
-  data={'assets':[{'name':p.name,'size':p.stat().st_size,'digest':'sha256:'+('f'*64)} for p in self.stage.iterdir()],'draft':False}
+  data=self.github_release(bad_digest=True)
   with self.assertRaisesRegex(C.GuardError,'GITHUB_ASSET_SHA'):self.verify(release_data=data)
  def test_11_draft_cannot_be_published(self):
-  data={'assets':[{'name':p.name,'size':p.stat().st_size,'digest':'sha256:'+B.digest(p.read_bytes())} for p in self.stage.iterdir()],'draft':True}
+  data=self.github_release(draft=True)
   with self.assertRaisesRegex(C.GuardError,'GITHUB_RELEASE_NOT_PUBLISHED'):self.verify(release_data=data,require_published=True)
  def test_12_cannot_claim_approval_in_fixture(self):
   p=self.altered(lambda d:(d/'VALIDATION.json').write_bytes((d/'VALIDATION.json').read_bytes().replace(b'FIXTURE_TEST_ONLY',b'PACKAGE_READY_NOT_PUBLISHED')))
-  with self.assertRaisesRegex(C.GuardError,'SHA256_MISMATCH|FIXTURE_STATUS_MISMATCH'):self.verify(p)
+  with self.assertRaisesRegex(C.GuardError,'INNER_VALIDATION_STATUS'):self.verify(p)
  def test_13_zip_member_traversal_rejected(self):
   import io
   s=io.BytesIO()

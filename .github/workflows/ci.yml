@@ -2,6 +2,8 @@ name: TLS complete All-Tools release, frozen runtimes and third-party rights gua
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -26,7 +28,7 @@ jobs:
           python tools/check_examples_i18n.py
       - name: Preflight All-Tools registry, fail-closed suite completeness and immutable publishing gates
         run: |
-          python -m unittest tests/test_all_tools_release.py -v
+          python -m unittest discover -s tests -p 'test_all_tools*.py' -v
           python tools/check_all_tools_release.py --check-workflow
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
@@ -216,6 +218,21 @@ jobs:
             dist/r11/TLS_Tampermonkey_R11_20261025.user.js
             dist/r11/SHA256SUMS_R11_20261025.txt
           if-no-files-found: error
+
+      - name: Build and verify production All-Tools suite from the checked-out commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # PR merge refs and main builds must name their actual checked-out source.
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python tools/build_all_tools_release.py \
+            --cache "$RUNNER_TEMP/tls_all_tools_verify_original_assets" \
+            --stage "$RUNNER_TEMP/tls_all_tools_verify_stage" \
+            --source-sha "$GITHUB_SHA" --fetch-official
+          python tools/check_all_tools_release.py \
+            --stage "$RUNNER_TEMP/tls_all_tools_verify_stage" \
+            --expected-sha "$GITHUB_SHA" --check-workflow
 
       - name: Bundle public tracked source for reproducible private handoff
         run: |
@@ -703,6 +720,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    concurrency:
+      group: tls-all-tools-release-${{ github.repository }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -716,6 +736,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           # Fetch ONLY the approved public prior Releases, never private/quarantined assets.
           python tools/build_all_tools_release.py \
             --cache "$RUNNER_TEMP/tls_all_tools_original_assets" \
@@ -724,41 +745,19 @@ jobs:
           python tools/check_all_tools_release.py \
             --stage "$RUNNER_TEMP/tls_all_tools_stage" \
             --expected-sha "$GITHUB_SHA" --check-workflow
-      - name: Verify all standalone assets before making Draft public
+      - name: Verify Draft downloads, publish once, and verify fresh published downloads
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          STAGE="$RUNNER_TEMP/tls_all_tools_stage"
-          test -s "$STAGE/SHA256SUMS.txt"
-          test -s "$STAGE/ALL_TOOLS_MANIFEST.json"
-          test -s "$STAGE/BUILD_PROVENANCE.json"
-          test -s "$STAGE/VALIDATION.json"
-          TAG="all-tools-suite-v17.1.0"
-          REPORT="$RUNNER_TEMP/tls_all_tools_remote_release.json"
-          DL="$RUNNER_TEMP/tls_all_tools_downloaded"
-          mkdir -p "$DL"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo 'Suite tag exists. Verify exact historical bytes; never overwrite assets or silently repair a published release.'
-          else
-            # The ONLY new suite publisher: create an unpublished Draft WITH ALL assets.
-            # Never create a public partial release and add remaining tools later.
-            gh release create "$TAG" "$STAGE"/* --draft \
-              --target "$GITHUB_SHA" \
-              --title 'Taiwan-LLM-Sanitizer All Tools Suite v17.1.0｜合法完整工具集' \
-              --notes '26 registered tools in 21 installable/downloadable assets, one full-suite ZIP, and four integrity/provenance attachments. Includes original version-locked R5/R11/R13 Chrome and Tampermonkey, 13 offline workbenches, public R6 quality kit and runnable developer source bundle; six-language documentation. No third-party game-specific assets, no cloud text upload, no automatic translation/quality claims. Existing historic releases remain unmodified.'
-          fi
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "$REPORT"
-          gh release download "$TAG" --dir "$DL"
-          # Draft must already have the exact file set, sizes, SHA256 and usable downloaded bytes.
-          python tools/check_all_tools_release.py --stage "$STAGE" \
-            --expected-sha "$GITHUB_SHA" --release-json "$REPORT" --download-dir "$DL"
-          IS_DRAFT="$(python -c 'import json,sys; print(str(json.load(open(sys.argv[1]))["draft"]).lower())' "$REPORT")"
-          if [ "$IS_DRAFT" = 'true' ]; then
-            gh release edit "$TAG" --draft=false
-          fi
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "$REPORT"
-          # Downloaded bytes verified again after publishing. No 'upload --clobber'.
-          python tools/check_all_tools_release.py --stage "$STAGE" \
-            --expected-sha "$GITHUB_SHA" --release-json "$REPORT" \
-            --download-dir "$DL" --require-published
+          python tools/publish_all_tools_release.py \
+            --stage "$RUNNER_TEMP/tls_all_tools_stage" \
+            --expected-sha "$GITHUB_SHA" \
+            --receipt "$RUNNER_TEMP/tls_all_tools_publication_receipt.json"
+      - name: Preserve verified publication outcome or blocking reason
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_All_Tools_Publication_Receipt
+          path: ${{ runner.temp }}/tls_all_tools_publication_receipt.json
+          if-no-files-found: warn

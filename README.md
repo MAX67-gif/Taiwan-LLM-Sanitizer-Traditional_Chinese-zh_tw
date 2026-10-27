@@ -62,3 +62,7 @@
 ## R17｜專案級文件信任圖（唯讀工具）
 
 [開啟 R17 離線 Markdown 文件連結檢查](examples/TW_Document_Trust_Graph_R17_20261026.html) · [閱讀 R17 完整使用與安全限制](docs/R17_DOCUMENT_TRUST_GRAPH.md)。由使用者勾選自己有權使用的 Markdown 檔案，檢查跨檔連結與錨點，輸出不含文件原文的報告；未知或外部連結**不能冒稱 PASS**。這是結構檢查，**非自動翻譯、全文語義認證或網站相容性保證**。
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

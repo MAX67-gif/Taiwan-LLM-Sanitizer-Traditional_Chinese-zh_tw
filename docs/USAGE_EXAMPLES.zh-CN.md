@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
+<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
 
 # 台湾繁体中文工具的九个使用示例（原创／概念示范）
 
@@ -81,3 +81,9 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 ## R16 补充实践｜原创示例的人工安全预览
 
 打开 [R16 工作台](../examples/TW_Localization_Safety_Studio_R16_20261026.html) 并使用 [原创 Markdown 示例](../examples/r16/sample_readme.md)，先查看受保护的内容，再自行填写候选。代码、模板变量、HTML 注释与网址不可编辑；只能下载新的预览文件。**不自动翻译或上传**。
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+## 完整工具下载
+
+这些示例使用的合法工具集中在 [R17.1 完整工具包与验证说明](ALL_TOOLS_RELEASE.md)。Chrome、Tampermonkey、离线 HTML 与 CLI 的安装方式不同；保留原版本号，按任务选择入口。同一网站避免同时启用多个版本。该工具包不提供人工翻译质量认证。

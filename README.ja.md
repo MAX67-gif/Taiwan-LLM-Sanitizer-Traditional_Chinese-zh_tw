@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
+<!-- SOURCE_README_SHA256:4c857bf85b7de657d4a56908904c6977edd6352f3d4ea665c101577ca49601b9 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -60,3 +60,6 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 
 [全ツールの配布・検証ガイド](docs/ALL_TOOLS_RELEASE.md)を参照してください。新しい正式 Release には、合法的に配布可能でサポート中の Chrome 拡張、Tampermonkey スクリプト、13 個のオフライン HTML ツール、R6 品質研究キット、CLI／Skill 開発者パッケージが必要です。更新のないツールも元のバージョンと SHA256 を保持します。Draft の全添付ファイルを検証してから公開します。以前に権利上の問題で撤回した第三者専用パッケージは含みません。[R17.1 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) は正式 CI と実際の添付ファイルが成功した場合に限り利用可能とします。
 
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+リリース検証では、実際のツールとダウンロードしたファイルを、固定された元の SHA256 と Git コミットに照合します。Draft と公開後にそれぞれダウンロードし、既存タグは上書きせず検証します。6 言語の説明は引き続き人によるレビュー待ちです（HUMAN_TRANSLATION_REVIEW_PENDING）。
