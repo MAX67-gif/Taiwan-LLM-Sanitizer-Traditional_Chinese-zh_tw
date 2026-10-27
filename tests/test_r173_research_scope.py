@@ -12,6 +12,30 @@ class ScopeTest(unittest.TestCase):
  def test_research_only_explicit_set(self):
   yes,why=C.classify([('A','research/comparison/r173/methodology.json'),('M','README.md'),('M','.github/workflows/ci.yml'),('M','tools/check_all_tools_release.py')]);self.assertTrue(yes)
   self.assertEqual(why,'R173_RESEARCH_ONLY')
+ def test_complete_27_file_original_pr_change_list_is_research_only(self):
+  # Exact R17.3 public PR #32 changed paths. This catches any accidental
+  # omission from the classifier's closed list before main tries publishing.
+  changes=[('M',p) for p in ('.github/workflows/ci.yml', 'README.en.md','README.es.md',
+    'README.ja.md','README.ko.md','README.md','README.zh-CN.md',
+    'docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md','docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md',
+    'tools/check_all_tools_release.py','tools/publication_guard.py')]
+  changes += [('A',p) for p in (
+    'docs/R173_COMPARISON_AND_ADOPTION.en.md','docs/R173_COMPARISON_AND_ADOPTION.md',
+    'research/comparison/r173/consent_schema.json','research/comparison/r173/feedback_template.md',
+    'research/comparison/r173/fixtures_first_task.md','research/comparison/r173/import_model_result.py',
+    'research/comparison/r173/llm_prompt.txt','research/comparison/r173/methodology.json',
+    'research/comparison/r173/naive_baseline.js','research/comparison/r173/opencc_adapter.py',
+    'research/comparison/r173/prepare_spans.js','research/comparison/r173/score_and_audit.py',
+    'tests/test_comparison_r173.js','tests/test_comparison_r173.py',
+    'tests/test_r173_research_scope.py','tools/check_r173_research_scope.py')]
+  self.assertEqual(len(changes),27)
+  self.assertEqual(C.classify(changes),(True,'R173_RESEARCH_ONLY'))
+ def test_research_router_hotfix_only_exact_pair(self):
+  pair=[('M','tools/check_r173_research_scope.py'),('M','tests/test_r173_research_scope.py')]
+  self.assertEqual(C.classify(pair),(True,'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY'))
+  for changed in (pair[:1], pair+ [('M','README.md')], [('M','README.md')],
+                  [('M','tools/check_all_tools_release.py'),('M','tests/test_r173_research_scope.py')]):
+   self.assertFalse(C.classify(changed)[0])
  def test_any_product_change_triggers_full_suite(self):
   for path in ('src/core/engine.js','release/all_tools_registry.json','examples/TW_Wording_Assistant_R172_20261027.html','dist/chrome/content.js','tools/build_all_tools_release.py', 'research/comparison/r174/future.py','notes_private/secret.md'):
    with self.subTest(path=path):
