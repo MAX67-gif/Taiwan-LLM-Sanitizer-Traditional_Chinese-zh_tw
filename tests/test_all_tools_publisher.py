@@ -73,8 +73,9 @@ class FakeGitHub:
             endpoint = next(a for a in args if a.startswith('repos/'))
             method = args[args.index('--method') + 1]
             self.events.append(method + ' ' + endpoint)
-            if endpoint in self.failures:
-                failure = self.failures[endpoint]
+            failure_key = method + ' ' + endpoint if method + ' ' + endpoint in self.failures else endpoint
+            if failure_key in self.failures:
+                failure = self.failures[failure_key]
                 if failure == 'NETWORK':
                     return subprocess.CompletedProcess(args, 1, '', 'connection reset')
                 return self.response(args, failure, {'message': 'request failed'})
@@ -255,15 +256,44 @@ class AllToolsPublisher(unittest.TestCase):
             self.run_publisher(fake, self.receipt_path())
         self.assertEqual(fake.mutations, [])
 
-    def test_explicit_permission_denial_or_invalid_repository_blocks(self):
-        for change in ({'permissions': {'push': False}}, {'permissions': {}}, {'permissions': None},
-                       {'permissions': {'push': 1}}, {'private': True},
-                       {'full_name': 'another/project'}):
+    def test_private_or_wrong_repository_blocks(self):
+        for change in ({'private': True}, {'full_name': 'another/project'}):
             with self.subTest(change=change):
                 fake = FakeGitHub(self.stage); fake.repo.update(change)
                 with self.assertRaises(B.ReleaseBlock):
                     self.run_publisher(fake, self.receipt_path())
                 self.assertEqual(fake.mutations, [])
+
+    def test_user_permissions_metadata_is_not_installation_authorization(self):
+        for permissions in ({'push': False}, {}, None):
+            with self.subTest(permissions=permissions):
+                fake = FakeGitHub(self.stage); fake.repo['permissions'] = permissions
+                result = self.run_publisher(fake, self.receipt_path())
+                self.assertEqual(result['status'], 'PUBLISHED')
+                self.assertEqual(fake.mutations, ['create', 'publish'])
+
+    def test_user_permissions_metadata_never_overrides_create_api_denial(self):
+        for permissions in ({'push': True}, {'push': False}, None):
+            with self.subTest(permissions=permissions):
+                fake = FakeGitHub(self.stage); fake.repo['permissions'] = permissions
+                fake.create_failure = 403
+                receipt = self.receipt_path()
+                with self.assertRaisesRegex(B.ReleaseBlock, 'GITHUB_DRAFT_CREATE_OR_UPLOAD_FAILED'):
+                    self.run_publisher(fake, receipt)
+                self.assertIn('create:denied', fake.events)
+                self.assertEqual(fake.mutations, [])
+                self.assertIsNone(fake.release)
+                self.assertFalse(json.loads(receipt.read_bytes())['published_this_run'])
+
+    def test_publish_api_denial_keeps_verified_draft_unpublished(self):
+        fake = FakeGitHub(self.stage)
+        fake.failures['PATCH ' + BASE + '/releases/171'] = 403
+        receipt = self.receipt_path()
+        with self.assertRaisesRegex(B.ReleaseBlock, 'GITHUB_HTTP_403'):
+            self.run_publisher(fake, receipt)
+        self.assertEqual(fake.mutations, ['create'])
+        self.assertTrue(fake.release['draft'])
+        self.assertFalse(json.loads(receipt.read_bytes())['published_this_run'])
 
     def test_installation_token_without_user_permissions_can_publish(self):
         fake = FakeGitHub(self.stage); del fake.repo['permissions']

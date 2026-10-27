@@ -75,13 +75,12 @@ class GitHubCLI:
         repository = self.api(API_BASE)
         require(isinstance(repository, dict) and repository.get('full_name') == REPOSITORY
                 and repository.get('private') is False, 'PUBLIC_REPOSITORY_IDENTITY_UNVERIFIED')
-        # Actions installation tokens may omit user-level repository permissions.
-        # Absence is not proof of access: each API operation still enforces its
-        # authorization, and every failure blocks. A supplied denial is fatal.
-        if 'permissions' in repository:
-            permissions = repository['permissions']
-            require(isinstance(permissions, dict) and permissions.get('push') is True,
-                    'GITHUB_WRITE_PERMISSION_DENIED_OR_INVALID')
+        # GetRepo's user-level permissions are not an installation token's
+        # effective API authorization (even a supplied push value is advisory).
+        # Never infer write access from that metadata. GitHub authorizes every
+        # actual list/create/PATCH request; all API/CLI failures remain fatal.
+        # In particular, a hidden existing draft cannot be replaced: a rejected
+        # create stops, and this publisher never retries with upload or clobber.
 
     def release_by_id(self, release_id):
         require(type(release_id) is int and release_id > 0, 'GITHUB_RELEASE_ID_INVALID')
