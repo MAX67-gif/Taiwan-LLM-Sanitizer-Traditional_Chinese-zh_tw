@@ -1,6 +1,6 @@
 # All-Tools Full Suite R17.1｜每次 Release 都要有所有合法且受支援的工具
 
-> 2026-10-26。此頁是公開操作與版本治理契約，不表示所有工具皆已取得真人翻譯品質認證。所有未變更舊工具保留自己的原版號與來源 SHA256；完整套件版號不等於工具更新。
+> 2026-10-27。此頁是公開操作與版本治理契約，不表示所有工具皆已取得真人翻譯品質認證。所有未變更舊工具保留自己的原版號與來源 SHA256；完整套件版號不等於工具更新。
 
 ## 為什麼新增完整套件？
 
@@ -39,3 +39,15 @@
 ## 可追溯狀態
 
 `SHADOW/PREVIEW`、`LEGACY_SUPPORTED`、`RESEARCH_ONLY_APPROVED` 會在 manifest 明示。不論未更新工具、研究用範例或 Extension，均不得藉套件版本號誤稱新的模型效果或已真人驗證。公開六語 README 提供不同使用語言入口，但依然以臺灣繁體中文在地化為產品目標。
+
+## R17.1 發行驗證修復
+
+Git 提交識別碼採 40 位十六進位；檔案 SHA256 採 64 位。兩者分開檢查，並要求實際 checkout、manifest、provenance、Release 目標及已解析的 Tag commit 一致。PR 階段會先以官方原始資產建置完整套件，避免只通過合成 fixture 後才在 main 發現發行錯誤。
+
+每個獨立工具的實際位元組直接比對 registry 鎖定值。CLI/Skill 包比對來源中完整檔案集合與內容，不能只保留入口 JS 卻遺漏依賴。套件內另附 ALL_TOOLS_REGISTRY.json、VALIDATION.json 及使用實際相對路徑的 SHA256SUMS.txt；套件外的 VALIDATION.json 記錄整個 ZIP 的 hash，避免檔案自我雜湊循環。
+
+中央發布器先驗草稿全部附件，再公開，然後重新下載全部附件到另一個空目錄核對；不以 GitHub API 宣告的 digest 取代實際下載。若同版本已發布且內容完全一致，回報 ALREADY_PUBLISHED_MATCH；任何差異一律 EXISTING_RELEASE_MISMATCH_BLOCKED。**下一次來源內容變更要正式發版，必須明確升級 suite 版號及相應契約；不能覆寫同一標籤。**各舊工具的原版本不因此改變。
+
+封包驗證也拒絕重複 JSON key、未知授權、已撤回資產、密鑰指紋、非 UTF-8/BOM 文字、重複 ZIP 路徑、Windows 裝置名稱／資料流路徑與 symlink。這些檢查是完整性和發布規則，無法取代第三方權利調查或人工翻譯審閱。
+
+維護驗證：`python -m unittest discover -s tests -p 'test_all_tools*.py' -v`。公開版本的實際可用狀態仍以對應 main CI 與上述 Release 附件為準。

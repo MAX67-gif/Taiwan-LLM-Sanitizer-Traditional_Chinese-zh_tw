@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
+<!-- SOURCE_README_SHA256:4c857bf85b7de657d4a56908904c6977edd6352f3d4ea665c101577ca49601b9 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -60,3 +60,6 @@ En una **página ficticia parecida a un juego web**, el texto HTML seleccionable
 
 Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEASE.md). Cada versión oficial debe incluir todas las extensiones de Chrome, los scripts de Tampermonkey, los 13 laboratorios HTML sin conexión, el kit público de calidad R6 y el paquete de CLI/Skill para desarrolladores que sigan admitidos y puedan redistribuirse legalmente. Las herramientas sin cambios conservan su versión y SHA256 originales. Se comprueban todos los adjuntos del borrador antes de publicar. Nunca se reincorporan paquetes específicos de terceros retirados por derechos. La [Release R17.1](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) solo se considera disponible tras verificarse el CI oficial y sus adjuntos.
 
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+La validación compara los archivos reales y descargados con el SHA256 original fijado y la revisión de Git. Se descargan por separado los archivos del borrador y los publicados; una etiqueta existente se verifica sin sobrescribirla. Las seis guías siguen pendientes de revisión humana (HUMAN_TRANSLATION_REVIEW_PENDING).

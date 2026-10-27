@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
+<!-- SOURCE_README_SHA256:4c857bf85b7de657d4a56908904c6977edd6352f3d4ea665c101577ca49601b9 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -60,3 +60,6 @@ A **fictional browser-game-like page** with a normal, selectable HTML label such
 
 Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md). Each new release must include every legally distributable, still-supported Chrome extension, Tampermonkey userscript, 13 offline HTML labs, the R6 public quality kit, and the self-contained CLI/Skill developer bundle. Unchanged tools retain their original versions and SHA256 digests. The Draft release is verified before publication. Previously withdrawn third-party-specific packages remain excluded. Only use the [R17.1 suite release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) after its GitHub main CI and assets have actually passed.
 
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).

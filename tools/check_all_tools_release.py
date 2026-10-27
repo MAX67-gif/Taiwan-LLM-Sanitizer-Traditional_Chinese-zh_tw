@@ -13,6 +13,7 @@ import build_all_tools_release as B
 
 ROOT = Path(__file__).resolve().parents[1]
 REQ_NAMES={'ALL_TOOLS_MANIFEST.json','BUILD_PROVENANCE.json','VALIDATION.json','SHA256SUMS.txt', B.SUITE_FILENAME}
+GITHUB_REPOSITORY='MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw'
 
 class GuardError(B.ReleaseBlock):pass
 
@@ -20,15 +21,39 @@ def expect(ok,reason):
     if not ok:raise GuardError(reason)
 
 def readjson(b,where):
-    try:return json.loads(b)
-    except (ValueError,UnicodeDecodeError) as e:raise GuardError('INVALID_JSON:'+where) from e
+    return B.strict_json(b, where)
 
-def checksums(b,where):
+def asset_download_url_matches(asset, release_tag, *, draft=False):
+    """Bind GitHub's temporary draft URLs to their authenticated asset identity.
+
+    GitHub may assign an untagged-* browser URL before publication. The final
+    published URL must use the exact release tag. Temporary URLs are accepted
+    only for a draft, in this repository, with the exact asset API ID and name;
+    the caller still verifies freshly downloaded bytes against the pinned SHA.
+    """
+    name = asset.get('name')
+    if not isinstance(name, str) or not B.safe_filename(name):
+        return False
+    prefix = 'https://github.com/' + GITHUB_REPOSITORY + '/releases/download/'
+    actual = asset.get('browser_download_url')
+    if actual == prefix + release_tag + '/' + name:
+        return True
+    if draft is not True or not isinstance(actual, str) or not actual.startswith(prefix):
+        return False
+    slug, separator, filename = actual[len(prefix):].partition('/')
+    asset_id = asset.get('id')
+    return (separator == '/' and filename == name
+            and re.fullmatch(r'untagged-[A-Za-z0-9][A-Za-z0-9_-]{0,127}', slug) is not None
+            and type(asset_id) is int and asset_id > 0
+            and asset.get('url') == 'https://api.github.com/repos/' + GITHUB_REPOSITORY
+                + '/releases/assets/' + str(asset_id))
+
+def checksums(b,where,allow_paths=False):
     out={}
     try:
         for line in b.decode('utf-8').splitlines():
             h,n=line.split('  ',1)
-            expect(B.HEX64.fullmatch(h)!=None and B.safe_filename(n),'CHECKSUM_FORMAT:'+where)
+            expect(B.HEX64.fullmatch(h)!=None and (B.safe_archive_path(n) if allow_paths else B.safe_filename(n)),'CHECKSUM_FORMAT:'+where)
             expect(n not in out,'DUPLICATE_CHECKSUM:'+where)
             out[n]=h
         return out
@@ -46,15 +71,21 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     actual_names={p.name for p in stage.iterdir()}
     expect(actual_names==expected_names,'INCOMPLETE_OR_EXTRA_ASSETS missing='+str(sorted(expected_names-actual_names))+' extra='+str(sorted(actual_names-expected_names)))
     assets={name:B.safe_file(stage/name,stage) for name in actual_names}
-    assert all(B.safe_filename(x) for x in actual_names)
+    expect(all(B.safe_filename(x) for x in actual_names), 'UNSAFE_ASSET_FILENAME')
     m=readjson(assets['ALL_TOOLS_MANIFEST.json'],'manifest')
     prov=readjson(assets['BUILD_PROVENANCE.json'],'provenance')
     valid=readjson(assets['VALIDATION.json'],'validation')
     expect(m.get('schema')=='tls.all-tools-release-manifest.v1','MANIFEST_SCHEMA')
+    expect(prov.get('schema') == 'tls.all-tools-provenance.v1' and valid.get('schema') == 'tls.all-tools-validation.v1', 'PROVENANCE_VALIDATION_SCHEMA')
     expect(m.get('release_tag')==expected_registry['release_tag'] and valid.get('release_tag')==m.get('release_tag'),'RELEASE_TAG_MISMATCH')
     expect(m.get('suite_version')==expected_registry['suite_version'] and prov.get('suite_version')==m.get('suite_version'),'SUITE_VERSION_MISMATCH')
     expect(m.get('tool_count')==len(tools)==valid.get('tool_count_expected')==valid.get('tool_count_present'),'MANIFEST_TOOL_COUNT')
     expect(valid.get('missing_tool_ids')==[] and m.get('external_transport')=='NONE','UNSAFE_TOOL_PERMISSION')
+    expect(m.get('approval') == 'NONE' and valid.get('manual_human_translation_review') == 'NOT_RUN', 'FALSE_HUMAN_APPROVAL')
+    expect(m.get('locales') == expected_registry['locales'] and m.get('excluded_rights_withdrawn') == expected_registry['excluded_rights_withdrawn'], 'LOCALE_OR_RIGHTS_PARITY')
+    expect(m.get('source_main_baseline_sha') == prov.get('baseline_git_sha') == valid.get('source_main_baseline_sha') == expected_registry['base_commit_sha'], 'SOURCE_BASELINE_PARITY')
+    expect(m.get('source_git_sha') == prov.get('current_git_sha') == valid.get('source_git_sha'), 'SOURCE_GIT_SHA_PROVENANCE')
+    expect(prov.get('release_tag') == m.get('release_tag'), 'PROVENANCE_RELEASE_TAG')
     expect(isinstance(m.get('tools'),list) and [x['tool_id'] for x in m['tools']]==[x['tool_id'] for x in tools],'TOOL_ID_PARITY')
     for got,locked in zip(m['tools'],tools):
         for k in locked:
@@ -63,9 +94,18 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
         expect(got.get('artifact_bytes',0)>0 and got.get('artifact_sha256')==locked['expected_sha256'],'TOOL_BYTES_AND_SHA:'+locked['tool_id'])
         expect(got.get('verification_status') in ('SOURCE_SHA_PASS','SHA256_PASS'),'TOOL_UNVERIFIED:'+locked['tool_id'])
     expect(m.get('is_fixture')==prov.get('fixture')==valid.get('fixture'),'FIXTURE_STATUS_MISMATCH')
-    if not fixture_ok:expect(m['is_fixture'] is False and valid.get('status')=='PACKAGE_READY_NOT_PUBLISHED','FIXTURE_NOT_PUBLISHABLE')
+    if not fixture_ok:
+        expect(m['is_fixture'] is False and valid.get('status')=='PACKAGE_READY_NOT_PUBLISHED','FIXTURE_NOT_PUBLISHABLE')
+        expect(registry.resolve() == B.REGISTRY.resolve(), 'PRODUCTION_REGISTRY_OVERRIDE')
+        expect(B.GIT_SHA.fullmatch(m.get('source_git_sha', '')) is not None, 'SOURCE_GIT_SHA')
     if expected_sha is not None:
-        expect(B.HEX64.fullmatch(expected_sha)!=None and m.get('source_git_sha')==expected_sha,'SOURCE_GIT_SHA')
+        expect(B.GIT_SHA.fullmatch(expected_sha)!=None and m.get('source_git_sha')==expected_sha,'SOURCE_GIT_SHA')
+    for locked in tools:
+        if locked['standalone_required']:
+            expect(B.digest(assets[locked['artifact_filename']]) == locked['expected_sha256'], 'LOCKED_ARTIFACT_SHA:' + locked['tool_id'])
+            got = next(row for row in m['tools'] if row['tool_id'] == locked['tool_id'])
+            expect(got['artifact_bytes'] == len(assets[locked['artifact_filename']]), 'TOOL_SIZE:' + locked['tool_id'])
+            expect(got.get('location_in_suite') == 'TOOLS/' + locked['package_subdir'] + '/' + locked['artifact_filename'], 'TOOL_LOCATION:' + locked['tool_id'])
     if previous_manifest:
         old=readjson(Path(previous_manifest).read_bytes(),'previous_manifest')
         current={x['tool_id'] for x in m['tools']}
@@ -80,18 +120,24 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     B.validate_zip_bytes(assets[B.SUITE_FILENAME],B.SUITE_FILENAME)
     with ZipFile(io.BytesIO(assets[B.SUITE_FILENAME])) as z:
         members={x.filename:x for x in z.infolist()}
-        expected_member_names={'ALL_TOOLS_MANIFEST.json','BUILD_PROVENANCE.json','BUNDLE_SHA256SUMS.txt','README_6_LANGUAGES.txt'}
+        expected_member_names={'ALL_TOOLS_MANIFEST.json','BUILD_PROVENANCE.json','BUNDLE_SHA256SUMS.txt','SHA256SUMS.txt','README_6_LANGUAGES.txt','VALIDATION.json','ALL_TOOLS_REGISTRY.json'}
         expected_member_names|={'TOOLS/'+next(t['package_subdir'] for t in tools if t['artifact_filename']==name and t['standalone_required'])+'/'+name for name in artifacts if name!=B.DEVELOPER_BUNDLE}
         expected_member_names.add('TOOLS/developer/'+B.DEVELOPER_BUNDLE)
         expect(set(members)==expected_member_names,'SUITE_MISSING_EXTRA_FILES')
         expect(z.read('ALL_TOOLS_MANIFEST.json')==assets['ALL_TOOLS_MANIFEST.json'],'MANIFEST_IN_SUITE_CHANGED')
         expect(z.read('BUILD_PROVENANCE.json')==assets['BUILD_PROVENANCE.json'],'PROVENANCE_IN_SUITE_CHANGED')
+        expect(z.read('ALL_TOOLS_REGISTRY.json') == registry.read_bytes(), 'REGISTRY_IN_SUITE_CHANGED')
+        inner_validation = readjson(z.read('VALIDATION.json'), 'inner_validation')
+        expect(inner_validation.get('schema') == 'tls.all-tools-bundle-validation.v1' and inner_validation.get('source_git_sha') == m['source_git_sha'], 'INNER_VALIDATION_SOURCE')
+        expect(inner_validation.get('registry_sha256') == B.digest(registry.read_bytes()) and inner_validation.get('tool_count_present') == len(tools) and inner_validation.get('missing_tool_ids') == [], 'INNER_VALIDATION_PARITY')
+        expect(inner_validation.get('status') == valid['status'] and inner_validation.get('post_publish_all_assets') == 'NOT_RUN', 'INNER_VALIDATION_STATUS')
         for name in artifacts:
             dirname=next((t['package_subdir'] for t in tools if t['artifact_filename']==name and t['standalone_required']),'developer')
             expect(z.read('TOOLS/'+dirname+'/'+name)==assets[name],'BUNDLE_ASSET_SHA:'+name)
-        internal=checksums(z.read('BUNDLE_SHA256SUMS.txt'),'inner')
-        expect(set(internal)==set(artifacts)|{'ALL_TOOLS_MANIFEST.json','BUILD_PROVENANCE.json'},'INTERNAL_CHECKSUM_COMPLETE')
-        for name in internal:expect(internal[name]==B.digest(assets[name]),'INTERNAL_SHA_MISMATCH:'+name)
+        expect(z.read('BUNDLE_SHA256SUMS.txt') == z.read('SHA256SUMS.txt'), 'INTERNAL_CHECKSUM_ALIAS')
+        internal=checksums(z.read('BUNDLE_SHA256SUMS.txt'),'inner',allow_paths=True)
+        expect(set(internal)==set(members)-{'BUNDLE_SHA256SUMS.txt','SHA256SUMS.txt'},'INTERNAL_CHECKSUM_COMPLETE')
+        for name in internal:expect(internal[name]==B.digest(z.read(name)),'INTERNAL_SHA_MISMATCH:'+name)
     expect(valid.get('suite_sha256')==B.digest(assets[B.SUITE_FILENAME]) and valid.get('suite_bytes')==len(assets[B.SUITE_FILENAME]),'SUITE_SHA_OR_SIZE')
     sidecar=checksums(assets['SHA256SUMS.txt'],'outer')
     expect(set(sidecar)==actual_names-{'SHA256SUMS.txt'},'OUTER_CHECKSUM_COMPLETE')
@@ -99,8 +145,14 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     # Inspect developer bundle for source bytes and exact six-language usage docs.
     with ZipFile(io.BytesIO(assets[B.DEVELOPER_BUNDLE])) as dev:
         paths=set(dev.namelist())
+        expected_sources = B.developer_contents(B.tracked_files())
+        expect(paths == set(expected_sources), 'DEVELOPER_SOURCE_FILE_SET')
+        for name, source in expected_sources.items():
+            expect(dev.read(name) == source, 'DEVELOPER_SOURCE_SHA:' + name)
         for f in ['README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md',
-                  'docs/INSTALL_CHROME.md','docs/INSTALL_TAMPERMONKEY.md','LICENSE']:
+                  'docs/INSTALL_CHROME.md','docs/INSTALL_TAMPERMONKEY.md','LICENSE', 'release/all_tools_registry.json',
+                  'docs/USAGE_EXAMPLES.md','docs/USAGE_EXAMPLES.zh-CN.md','docs/USAGE_EXAMPLES.en.md',
+                  'docs/USAGE_EXAMPLES.ja.md','docs/USAGE_EXAMPLES.ko.md','docs/USAGE_EXAMPLES.es.md']:
             expect(f in paths,'DEVELOPER_SOURCE_MISSING:'+f)
         for t in tools:
             if t['source_kind']=='developer_bundle':
@@ -113,46 +165,85 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
 
 def check_release(obj,stage:Path,require_published=False,download_dir=None):
     expected={p.name:p for p in stage.iterdir()}
-    real={x.get('name'):x for x in obj.get('assets',[])}
+    asset_rows = obj.get('assets', [])
+    expect(isinstance(asset_rows, list) and all(isinstance(x, dict) for x in asset_rows), 'GITHUB_ASSET_SCHEMA')
+    real={x.get('name'):x for x in asset_rows}
+    expect(len(real) == len(asset_rows), 'GITHUB_DUPLICATE_ASSETS')
     expect(set(real)==set(expected),'GITHUB_RELEASE_INCOMPLETE expected='+str(len(expected))+' actual='+str(sorted(real)))
+    manifest = readjson((stage / 'ALL_TOOLS_MANIFEST.json').read_bytes(), 'release_manifest')
+    expect(obj.get('tag_name') == manifest['release_tag'], 'GITHUB_RELEASE_TAG')
+    expect(obj.get('target_commitish') == manifest['source_git_sha'], 'GITHUB_RELEASE_SOURCE')
+    if 'resolved_tag_commit' in obj:
+        expect(obj['resolved_tag_commit'] == manifest['source_git_sha'], 'GITHUB_TAG_SOURCE')
     if require_published:expect(obj.get('draft') is False and obj.get('prerelease') is False,'GITHUB_RELEASE_NOT_PUBLISHED')
+    if download_dir is not None:
+        dl_root = Path(download_dir)
+        expect(dl_root.is_dir() and not dl_root.is_symlink(), 'GITHUB_DOWNLOADED_SHA:directory')
+        expect({p.name for p in dl_root.iterdir()} == set(expected), 'GITHUB_DOWNLOAD_INCOMPLETE')
     for name,path in expected.items():
         asset=real[name]
         expect(asset.get('size')==path.stat().st_size,'GITHUB_ASSET_LENGTH:'+name)
+        expect(asset.get('state') == 'uploaded', 'GITHUB_ASSET_STATE:' + name)
+        expect(asset_download_url_matches(asset, manifest['release_tag'], draft=obj.get('draft') is True),
+               'GITHUB_ASSET_DOWNLOAD_URL:' + name)
         want=B.digest(path.read_bytes())
         remote=asset.get('digest')
         if remote:
             expect(remote=='sha256:'+want,'GITHUB_ASSET_SHA:'+name)
-        else:
-            expect(download_dir is not None,'GITHUB_MISSING_DIGEST_REQUIRES_DOWNLOAD:'+name)
+        expect(remote or download_dir is not None,'GITHUB_MISSING_DIGEST_REQUIRES_DOWNLOAD:'+name)
+        if download_dir is not None:
             dl=Path(download_dir)/name
-            expect(dl.is_file() and B.digest(dl.read_bytes())==want,'GITHUB_DOWNLOADED_SHA:'+name)
+            expect(dl.is_file() and not dl.is_symlink() and B.digest(B.safe_file(dl, Path(download_dir)))==want,'GITHUB_DOWNLOADED_SHA:'+name)
     return True
 
-def verify_workflow():
-    w=(ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8')
-    name='  all-tools-full-suite-release:\n'
-    expect(w.count(name)==1,'CENTRAL_RELEASE_JOB_MISSING')
-    block=w.split(name,1)[1]
-    for fragment in ("github.event_name == 'push' && github.ref == 'refs/heads/main'",
-                     'needs: [verify, browser-integration]','contents: write',
-                     'tools/build_all_tools_release.py','tools/check_all_tools_release.py',
-                     'gh release create','--draft','gh release download','gh release edit',
-                     '--release-json','--require-published','SHA256SUMS.txt'):
-        expect(fragment in block,'CENTRAL_RELEASE_GATE_MISSING:'+fragment)
-    # Freeze historical single-tool publishers: no future partial Release can be created.
-    legacy = ['release','r6-quality-release','r8-context-review-release','r9-user-terms-release',
-              'r10-context-governance-release','r11-personal-glossary-release','r12-quality-evidence-release',
-              'r13-bilingual-release','r14-capability-release','r151-structured-release',
-              'r16-studio-release','r15-structured-release','r17-trust-graph-release']
+def verify_workflow(workflow_text=None):
+    """Validate this repository's deliberately restricted workflow layout.
+
+    This is a closed schema, not a general YAML parser. New workflow files and
+    unsupported job/header shapes require an explicit reviewed schema update.
+    Comments never satisfy a required executable or dependency declaration.
+    """
+    if workflow_text is None:
+        files = {p.name for p in (ROOT / '.github/workflows').iterdir() if p.is_file()}
+        expect(files == {'ci.yml'}, 'UNAUTHORIZED_PUBLISHER_WORKFLOW')
+        workflow_text = (ROOT / '.github/workflows/ci.yml').read_text(encoding='utf-8')
+    w = '\n'.join(line for line in workflow_text.splitlines() if not line.lstrip().startswith('#')) + '\n'
+    expect(w.count('\njobs:\n') == 1, 'WORKFLOW_JOB_SCHEMA')
+    content = w.split('\njobs:\n', 1)[1]
+    matches = list(re.finditer(r'^  ([A-Za-z][A-Za-z0-9_-]*):\s*$', content, re.M))
+    jobs = {}
+    for i, match in enumerate(matches):
+        key = match.group(1)
+        expect(key not in jobs, 'DUPLICATE_WORKFLOW_JOB')
+        jobs[key] = content[match.end():matches[i + 1].start() if i + 1 < len(matches) else len(content)]
+    central = 'all-tools-full-suite-release'
+    legacy = {'release', 'r6-quality-release', 'r8-context-review-release', 'r9-user-terms-release',
+              'r10-context-governance-release', 'r11-personal-glossary-release', 'r12-quality-evidence-release',
+              'r13-bilingual-release', 'r14-capability-release', 'r151-structured-release',
+              'r16-studio-release', 'r15-structured-release', 'r17-trust-graph-release'}
+    expect(central in jobs, 'CENTRAL_RELEASE_JOB_MISSING')
+    expect(set(jobs) == legacy | {'verify', 'browser-integration', central}, 'UNAUTHORIZED_PUBLISHER_OR_JOB')
     for job in legacy:
-        marker='  '+job+':\n'
-        expect(w.count(marker)==1,'LEGACY_JOB_NOT_FOUND:'+job)
-        block=w.split(marker,1)[1].split('\n    steps:',1)[0]
-        expect("if: github.event_name == 'push' && github.ref == 'refs/heads/main' && false" in block,
-               'LEGACY_PARTIAL_PUBLISHER_NOT_DISABLED:'+job)
-    # Prevent newly introduced ad hoc release tags from silently omitting the suite.
-    expect(w.count('  all-tools-full-suite-release:\n')==1,'MULTIPLE_CENTRAL_RELEASE_JOBS')
+        header = jobs[job].split('\n    steps:', 1)[0]
+        expect(re.search(r"^    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && false$", header, re.M),
+               'LEGACY_PARTIAL_PUBLISHER_NOT_DISABLED:' + job)
+    block = jobs[central]
+    header = block.split('\n    steps:', 1)[0]
+    expect(re.search(r"^    if: github.event_name == 'push' && github.ref == 'refs/heads/main'$", header, re.M), 'CENTRAL_RELEASE_EVENT')
+    expect(re.search(r'^    needs: \[verify, browser-integration\]$', header, re.M), 'CENTRAL_RELEASE_DEPENDENCIES')
+    expect(re.search(r'^      contents: write$', header, re.M), 'CENTRAL_RELEASE_PERMISSION')
+    expect(re.search(r'^    concurrency:\n      group: tls-all-tools-release-\$\{\{ github.repository \}\}\n      cancel-in-progress: false$', header, re.M),
+           'CENTRAL_RELEASE_CONCURRENCY')
+    for fragment in ('tools/build_all_tools_release.py', 'tools/check_all_tools_release.py',
+                     'tools/publish_all_tools_release.py', '--expected-sha', '--source-sha', '--fetch-official'):
+        expect(fragment in block, 'CENTRAL_RELEASE_GATE_MISSING:' + fragment)
+    verify = jobs['verify']
+    expect('tools/build_all_tools_release.py' in verify and '--fetch-official' in verify and '--source-sha' in verify
+           and 'tools/check_all_tools_release.py' in verify and '--expected-sha' in verify, 'PRODUCTION_PREFLIGHT_MISSING')
+    for job in ('verify', 'browser-integration'):
+        block = jobs[job]
+        expect(not re.search(r'contents:\s*write|write-all|gh\s+release\s+(?:create|edit|upload)|publish_all_tools_release|action-gh-release', block),
+               'UNAUTHORIZED_PUBLISHER:' + job)
     return True
 
 def main():

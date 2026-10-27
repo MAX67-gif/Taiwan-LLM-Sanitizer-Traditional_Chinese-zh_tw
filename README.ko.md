@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:3ea808d1341e8e8372736f081bb9c7b4fed794620805158582ffb9ddc1c29249 -->
+<!-- SOURCE_README_SHA256:4c857bf85b7de657d4a56908904c6977edd6352f3d4ea665c101577ca49601b9 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -60,3 +60,6 @@
 
 [전체 도구 배포 및 무결성 안내](docs/ALL_TOOLS_RELEASE.md)를 확인하세요. 새로운 공식 Release에는 합법적으로 배포 가능하고 지원 중인 Chrome 확장, Tampermonkey 스크립트, 오프라인 HTML 작업대 13개, R6 품질 연구 키트, CLI/Skill 개발자 묶음이 모두 포함되어야 합니다. 변경되지 않은 도구는 원래 버전과 SHA256을 유지합니다. Draft의 모든 첨부 파일을 확인한 다음 공개합니다. 기존에 권리 문제로 철회한 제3자 전용 패키지는 제외합니다. 실제 GitHub CI 및 첨부 파일 검사가 성공한 뒤에만 [R17.1 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)를 사용하세요.
 
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+배포 검사는 실제 도구와 다운로드한 파일을 원본에 고정된 SHA256 및 Git 커밋과 대조합니다. Draft 단계와 공개 후 각각 다운로드하며, 기존 태그는 덮어쓰지 않고 검증합니다. 여섯 언어 안내는 아직 사람의 검토를 기다립니다(HUMAN_TRANSLATION_REVIEW_PENDING).

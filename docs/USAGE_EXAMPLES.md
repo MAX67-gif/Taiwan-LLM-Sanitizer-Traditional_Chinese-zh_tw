@@ -89,3 +89,9 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 ## R16 補充實作｜同一份原創範例的人工安全預覽
 
 使用 [R16 工作台](../examples/TW_Localization_Safety_Studio_R16_20261026.html) 開啟 [原創 Markdown 範例](../examples/r16/sample_readme.md)，先看保護範圍，再親手將一般 UI 文句修改為自己確認的臺灣用語。程式區塊、模板變數、HTML 註解與 URL 不可編輯；新預覽需要額外下載，報告不含原文。**沒有自動翻譯或網路傳輸**。
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+## 完整工具下載
+
+所有範例使用的合法工具集中於 [R17.1 全工具套件與驗證說明](ALL_TOOLS_RELEASE.md)。Chrome、Tampermonkey、離線 HTML 與 CLI 各有不同的安裝方式；保留原版號，選擇一種適合任務的入口。同一網站避免同時啟用多個版本。此套件不提供真人翻譯品質認證。

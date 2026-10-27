@@ -1,4 +1,11 @@
 ## R16 · 2026-10-26 · 本機在地化安全工作台（Shadow Preview）
+
+## R17.1 publication recovery — 2026-10-27
+
+- Separate 40-character Git commit identity from SHA256; test the real production bundle during PR verification.
+- Bind original tool bytes and complete CLI dependencies to the source registry; reject self-consistent forged manifests.
+- Verify fresh downloads before and after publication; preserve existing releases and fail closed on mismatched versions.
+- Keep all legacy tool versions and six-language documentation, with no new translation authorization.
 - 將已隔離的 R15.1 保護範圍檢查、人工候選與差異預覽，整合成單檔離線 HTML／Node API／CLI。新來源檔不覆寫，無模型／遠端傳輸；回歸 R15 及 R15.1 安全契約。
 - 六語 README／範例增補，僅使用原創合成文件；第三方權利與隱私安全守門保留。發版結果以 GitHub CI 與實際 Release 為準。
 

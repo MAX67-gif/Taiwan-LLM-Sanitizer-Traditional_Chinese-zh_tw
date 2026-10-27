@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
+<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
 
 # Nine original examples of Taiwanese Chinese localization (offline concepts)
 
@@ -59,3 +59,9 @@ Keep the original if text is inside a picture, Canvas, unauthorized game dialogu
 ## R16 hands-on workflow with original examples
 
 Open the [R16 offline studio](../examples/TW_Localization_Safety_Studio_R16_20261026.html) and paste the [original Markdown sample](../examples/r16/sample_readme.md). Inspect protected spans, manually type a suggestion, and download a **new** preview. Code, placeholders, HTML comments and URLs remain protected. **No automatic translation or network upload.**
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+## Complete tool download
+
+The legally distributable tools used by these examples are collected in the [R17.1 All-Tools Suite and integrity guide](ALL_TOOLS_RELEASE.md). Chrome, Tampermonkey, offline HTML, and CLI have different installation steps. Original tool versions are retained; choose an entry point for your task and avoid enabling multiple versions on the same site. The suite does not certify human-reviewed translation quality.

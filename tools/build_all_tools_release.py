@@ -6,6 +6,7 @@ No telemetry, no remote provider and no substitutions. --fetch-official is expli
 """
 from __future__ import annotations
 import argparse
+from datetime import datetime
 import hashlib
 import json
 import os
@@ -16,6 +17,7 @@ import subprocess
 import sys
 import zlib
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+import publication_guard as P
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'release/all_tools_registry.json'
@@ -23,6 +25,14 @@ DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_1_0.zip'
 SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_1_0.zip'
 HEADER_FILES = ('ALL_TOOLS_MANIFEST.json', 'BUILD_PROVENANCE.json')
 HEX64 = re.compile(r'^[0-9a-f]{64}$')
+GIT_SHA = re.compile(r'^[0-9a-f]{40}$')
+# First supported inventory, independently anchored in code rather than a mutable
+# registry field. New suite versions must explicitly preserve these tool IDs.
+BASELINE_IDS_SHA256 = '75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492'
+LOCALES = ('zh-TW', 'zh-CN', 'en', 'ja', 'ko', 'es')
+TEXT_SUFFIXES = ('.md', '.txt', '.js', '.json', '.jsonl', '.html', '.css', '.yml', '.yaml', '.py', '.svg', '.sha256')
+WINDOWS_RESERVED = re.compile(r'^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)', re.I)
+SECRET_PART = re.compile(r'(?i)(?:^|[_.-])(?:private|quarantine|secrets?|credentials?)(?:[_.-]|$)')
 RETIRE_WORDS = tuple(''.join(x) for x in [('poke', 'bonk'), ('poke', 'mon'), ('pok', 'émon')])
 MAX_ASSET_BYTES = 20 * 1024 * 1024
 FIXED_ZIP_TIME = (2026, 10, 26, 0, 0, 0)
@@ -39,41 +49,87 @@ def digest(data: bytes) -> str:
 def json_bytes(obj: object) -> bytes:
     return (json.dumps(obj, sort_keys=True, ensure_ascii=False, indent=2) + '\n').encode('utf-8')
 
+def text_bytes(data: bytes, label: str) -> str:
+    try:
+        value = data.decode('utf-8', errors='strict')
+    except UnicodeError:
+        fail('NON_UTF8:' + label)
+    if value.startswith('\ufeff') or '\0' in value:
+        fail('BOM_OR_NUL:' + label)
+    if P.scan_secret(label, value):
+        fail('SECRET_CONTENT:' + label)
+    return value
+
+def strict_json(data: bytes, label: str):
+    def pairs(items):
+        value = {}
+        for key, item in items:
+            if key in value:
+                fail('DUPLICATE_JSON_KEY:' + label)
+            value[key] = item
+        return value
+    try:
+        return json.loads(text_bytes(data, label), object_pairs_hook=pairs,
+                          parse_constant=lambda _: fail('NONFINITE_JSON:' + label))
+    except (ValueError, UnicodeError) as exc:
+        fail('INVALID_JSON:' + label + ':' + str(exc))
+
 def safe_filename(name: str) -> bool:
     if not isinstance(name, str) or len(name) > 190 or not name or name in ('.', '..'):
         return False
-    if '/' in name or '\\' in name or name.startswith('.') or '\0' in name:
+    if not name.isascii() or '/' in name or '\\' in name or name.startswith('.') or not safe_archive_path(name):
         return False
     if any(s in name.casefold() for s in RETIRE_WORDS):
         return False
     return True
 
 def safe_archive_path(name: str) -> bool:
-    if not isinstance(name, str) or '\\' in name or name.startswith(('/', './')) or '\0' in name:
+    if not isinstance(name, str) or len(name) > 240 or '\\' in name or name.startswith(('/', './')):
         return False
     parts = name.split('/')
-    return all(x and x not in ('.','..') for x in parts) and not any(s in name.casefold() for s in RETIRE_WORDS)
+    if any(c in name for c in '<>:"|?*') or any(ord(c) < 32 or ord(c) == 127 for c in name):
+        return False
+    for part in parts:
+        if not part or part in ('.', '..') or part.rstrip(' .') != part or WINDOWS_RESERVED.match(part):
+            return False
+        if (part.startswith('.') and part not in ('.agents', '.claude', '.github', '.gitignore')) or SECRET_PART.search(part):
+            return False
+    return not any(s in name.casefold() for s in RETIRE_WORDS)
 
 def safe_file(path: Path, root: Path) -> bytes:
     if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):
         fail('SYMLINK_OR_UNAUTHORIZED_PATH:' + path.name)
     if path.stat().st_size < 1 or path.stat().st_size > MAX_ASSET_BYTES:
         fail('EMPTY_OR_OVERSIZE:' + path.name)
-    return path.read_bytes()
+    data = path.read_bytes()
+    if path.name.endswith(TEXT_SUFFIXES) or path.name == '.gitignore':
+        text_bytes(data, path.name)
+    return data
 
-def validate_zip_bytes(data: bytes, label: str) -> None:
+def validate_zip_bytes(data: bytes, label: str, depth: int = 0) -> None:
     import io
     try:
+        if depth > 4 or len(data) > MAX_ASSET_BYTES:
+            fail('ZIP_LIMIT:' + label)
         with ZipFile(io.BytesIO(data)) as z:
             names = z.namelist()
-            if not names or len(names) != len(set(names)) or not all(safe_archive_path(n) for n in names):
+            if not names or len(names) > 5000 or len(names) != len({n.casefold() for n in names}) or not all(safe_archive_path(n) for n in names):
                 fail('ZIP_PATHS_OR_DUPLICATES:' + label)
+            if sum(f.file_size for f in z.infolist()) > 100 * 1024 * 1024 or any(f.file_size > MAX_ASSET_BYTES for f in z.infolist()):
+                fail('ZIP_EXPANSION_LIMIT:' + label)
             if z.testzip() is not None:
                 fail('ZIP_CRC:' + label)
             for f in z.infolist():
                 # Unix mode type 0120000 means a symlink, never included.
                 if (f.external_attr >> 16) & 0o170000 == 0o120000:
                     fail('ZIP_SYMLINK:' + label)
+                if f.flag_bits & 1:
+                    fail('ZIP_ENCRYPTED:' + label)
+                content = z.read(f)
+                if f.filename.endswith(TEXT_SUFFIXES) or f.filename.endswith('/.gitignore'):
+                    text_bytes(content, f.filename)
+                elif f.filename.endswith('.zip'):
+                    validate_zip_bytes(content, f.filename, depth + 1)
     except (ValueError, OSError, EOFError, zlib.error, __import__('zipfile').BadZipFile) as exc:
         fail('INVALID_ZIP:' + label + ':' + str(exc))
 
@@ -102,12 +158,18 @@ def tracked_files() -> list[str]:
 def validate_registry(reg: dict, fixture: bool) -> list[dict]:
     if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.1.0' or reg.get('release_tag') != 'all-tools-suite-v17.1.0':
         fail('REGISTRY_SCHEMA_VERSION')
+    if reg.get('project') != 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw' or reg.get('locales') != list(LOCALES):
+        fail('REGISTRY_PROJECT_OR_LOCALES')
+    if reg.get('excluded_rights_withdrawn') != ['game_specific_userscripts', 'game_specific_chrome_extensions', 'game_specific_glossaries']:
+        fail('RIGHTS_EXCLUSION_CHANGED')
     tools = reg.get('tools')
     if not isinstance(tools, list) or len(tools) != 26:
         fail('REGISTRY_COUNT')
     ids = [x.get('tool_id') for x in tools]
     if ids != reg.get('monotonic_baseline_tool_ids') or len(ids) != len(set(ids)):
         fail('REGISTRY_ID_MONOTONIC_BASELINE')
+    if not all(isinstance(x, str) for x in ids) or digest('\n'.join(ids).encode('utf-8')) != BASELINE_IDS_SHA256:
+        fail('REGISTRY_INDEPENDENT_BASELINE')
     if len([x for x in tools if x.get('family') == 'browser']) != 6 or len([x for x in tools if x.get('family') == 'offline_html']) != 13 or len([x for x in tools if x.get('family') == 'quality']) != 1 or len([x for x in tools if x.get('family') in ('developer_cli','developer_skill')]) != 6:
         fail('REGISTRY_FAMILY_COMPLETENESS')
     for x in tools:
@@ -123,6 +185,19 @@ def validate_registry(reg: dict, fixture: bool) -> list[dict]:
             fail('RETIRED_ASSET:' + x['tool_id'])
         if x.get('source_kind') not in ('official_release_asset','git_source','developer_bundle'):
             fail('BAD_SOURCE_KIND:' + x['tool_id'])
+        if not safe_archive_path(x.get('source_path', '')) or not safe_filename(x.get('package_subdir', '')):
+            fail('REGISTRY_UNSAFE_PATH:' + x['tool_id'])
+        if not GIT_SHA.fullmatch(x.get('original_commit_sha', '')):
+            fail('REGISTRY_SOURCE_COMMIT:' + x['tool_id'])
+        if not isinstance(x.get('tool_version'), str) or not x['tool_version'].strip():
+            fail('REGISTRY_TOOL_VERSION:' + x['tool_id'])
+        try:
+            date = x['last_verified_at_utc']
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z', date):
+                raise ValueError('expected UTC ISO date')
+            datetime.fromisoformat(date)
+        except (KeyError, TypeError, ValueError):
+            fail('REGISTRY_VERIFIED_DATE:' + x['tool_id'])
         if x['source_kind'] == 'official_release_asset' and (not x.get('original_tag') or x.get('standalone_required') is not True):
             fail('UNVERIFIED_SOURCE:' + x['tool_id'])
     return tools
@@ -145,30 +220,63 @@ def fetch_official_assets(tools: list[dict], cache: Path, fixture: bool) -> None
         if digest(safe_file(target,cache)) != t['expected_sha256']:
             fail('ORIGINAL_RELEASE_SHA:' + target.name)
 
-def make_developer_bundle(all_tracked: list[str]) -> bytes:
+def validate_catalog_docs(contents: dict[str, bytes], registry: dict) -> None:
+    """Mechanical source/catalog parity only; no human language-quality claim."""
+    marker = '<!-- ALL_TOOLS_CATALOG: suite=' + registry['suite_version'] + '; tools=26; standalone=21; tool_ids_sha256=' + BASELINE_IDS_SHA256 + ' -->'
+    for prefix, source_prefix in (('README', 'SOURCE_README_SHA256'), ('docs/USAGE_EXAMPLES', 'SOURCE_EXAMPLES_SHA256')):
+        master = prefix + '.md'
+        if master not in contents:
+            fail('SIX_LANGUAGE_DOC_MISSING:' + master)
+        master_sha = digest(contents[master])
+        for suffix in ('', '.zh-CN', '.en', '.ja', '.ko', '.es'):
+            name = prefix + suffix + '.md'
+            if name not in contents:
+                fail('SIX_LANGUAGE_DOC_MISSING:' + name)
+            value = text_bytes(contents[name], name)
+            if value.count(marker) != 1 or 'ALL_TOOLS_RELEASE.md' not in value:
+                fail('SIX_LANGUAGE_CATALOG:' + name)
+            pending = '<!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->'
+            if suffix and (value.count('<!-- ' + source_prefix + ':' + master_sha + ' -->') != 1
+                           or value.count(pending) != 1 or 'HUMAN_APPROVED' in value):
+                fail('SIX_LANGUAGE_SOURCE_OR_REVIEW:' + name)
+
+def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     # Include exact, locally runnable CLI and all their dependencies + six-language docs.
     prefixes = ('src/','tools/','skills/','.agents/skills/','.claude/skills/','benchmarks/r6/','docs/','lexicon/','tests/','examples/r16/','examples/r17/')
     names = sorted(p for p in all_tracked if p.startswith(prefixes) or p in
-                   ('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md','LICENSE','AGENTS.md','CLAUDE.md','PRIVACY.md','SECURITY.md'))
+                   ('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md','LICENSE','AGENTS.md','CLAUDE.md','PRIVACY.md','SECURITY.md','release/all_tools_registry.json'))
     contents = {}
     for p in names:
         if not safe_archive_path(p):fail('DEVELOPER_BUNDLE_UNSAFE_PATH:'+p)
         contents[p] = safe_file(ROOT/p, ROOT)
     for needed in ('tools/localize_cli.js','tools/r14_capability_cli.js','tools/r15_structured_localizer_cli.js','tools/r16_local_workbench_cli.js','tools/r17_document_trust_cli.js','skills/taiwan-zh-tw-localization/SKILL.md'):
         if needed not in contents:fail('DEVELOPER_CLI_MISSING:'+needed)
+    validate_catalog_docs(contents, strict_json(REGISTRY.read_bytes(), 'registry'))
     contents['START_HERE_ALL_TOOLS.txt'] = ('Taiwan-LLM-Sanitizer developer CLI + Skill source bundle\n'
         'Extract this ZIP before running Node. Node.js 22+ required. CLI usage is documented under docs/.\n'
         'All source is the existing R17 baseline plus Release packaging; no cloud API, game asset or private records.\n'
         'The included files are not an independently reviewed language-accuracy certification.\n').encode('utf-8')
-    return deterministic_zip(contents)
+    return contents
+
+def make_developer_bundle(all_tracked: list[str]) -> bytes:
+    return deterministic_zip(developer_contents(all_tracked))
 
 def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False, fetch: bool=False, source_sha: str|None=None) -> dict:
     if not fixture and registry_path.resolve() != REGISTRY.resolve():fail('PRODUCTION_REGISTRY_OVERRIDE')
-    reg = json.loads(registry_path.read_text(encoding='utf-8'))
+    reg = strict_json(registry_path.read_bytes(), 'registry')
     tools = validate_registry(reg, fixture)
     if not fixture and reg['base_commit_sha'] != '8c8194105ba02f4f8e1e1c337fde943d9e32fcee':
         fail('SOURCE_BASE_LOCK_MOVED')
+    if (source_sha is not None and not GIT_SHA.fullmatch(source_sha)) or (not fixture and source_sha is None):
+        fail('SOURCE_GIT_SHA')
+    if not fixture:
+        actual = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
+        if actual != source_sha:
+            fail('SOURCE_GIT_SHA_DOES_NOT_MATCH_CHECKOUT')
+        if subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--'], cwd=ROOT).returncode != 0:
+            fail('SOURCE_CHECKOUT_DIRTY')
     if fetch:fetch_official_assets(tools, cache, fixture)
+    if stage.is_symlink():fail('STAGE_SYMLINK')
     if stage.exists() and any(stage.iterdir()):fail('STAGE_MUST_START_EMPTY')
     stage.mkdir(parents=True, exist_ok=True)
     all_tracked=tracked_files()
@@ -217,19 +325,30 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
        'publisher_requires_main':True,'publisher_requires_verify_and_browser':True,
        'never_rewrite_old_releases':True,'no_game_specific_assets':True}
     metadata={'ALL_TOOLS_MANIFEST.json':json_bytes(manifest),'BUILD_PROVENANCE.json':json_bytes(provenance)}
-    bundle_checksum=''.join(digest(v)+'  '+k+'\n' for k,v in sorted({**artifacts,**metadata}.items())).encode('utf-8')
+    inner_validation = {'schema': 'tls.all-tools-bundle-validation.v1',
+        'status': 'FIXTURE_TEST_ONLY' if fixture else 'PACKAGE_READY_NOT_PUBLISHED',
+        'source_git_sha': source_sha or 'LOCAL_PREVIEW_UNPUBLISHED',
+        'tool_count_expected': len(tools), 'tool_count_present': len(manifest_tools),
+        'missing_tool_ids': [], 'registry_sha256': digest(registry_path.read_bytes()),
+        'post_publish_all_assets': 'NOT_RUN',
+        'archive_digest_location': 'external VALIDATION.json avoids recursive self-hash'}
     members.update(metadata)
-    members['BUNDLE_SHA256SUMS.txt']=bundle_checksum
+    members['VALIDATION.json'] = json_bytes(inner_validation)
+    members['ALL_TOOLS_REGISTRY.json'] = registry_path.read_bytes()
     members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.1.0 / 全工具套件\n'
        'zh-TW / zh-CN / English / 日本語 / 한국어 / Español usage guides are inside developer source bundle.\n'
        'All tool versions are unchanged, pinned to their original release/source digests.\n'
        'Manual opt-in only; never install conflicting R5/R11/R13 versions on one site.\n'
        'Retired third-party game-specific packages are excluded. No automatic translation or model certification.\n').encode('utf-8')
+    bundle_checksum = ''.join(digest(v) + '  ' + k + '\n' for k, v in sorted(members.items())).encode('utf-8')
+    members['BUNDLE_SHA256SUMS.txt'] = bundle_checksum
+    members['SHA256SUMS.txt'] = bundle_checksum
     suite=deterministic_zip(members)
     validation={
        'schema':'tls.all-tools-validation.v1','release_tag':reg['release_tag'],'suite_version':reg['suite_version'],
        'status':'FIXTURE_TEST_ONLY' if fixture else 'PACKAGE_READY_NOT_PUBLISHED',
        'fixture':fixture,'tool_count_expected':26,'tool_count_present':26,'tool_count_updated':0,
+       'source_git_sha': source_sha or 'LOCAL_PREVIEW_UNPUBLISHED',
        'tool_count_reused_from_origins':26,'tool_count_unchanged_from_previous_suite':'FIRST_SUITE_NO_PREDECESSOR',
        'tool_count_legacy':2,'standalone_asset_count':21,
        'suite_file':SUITE_FILENAME,'suite_bytes':len(suite),'suite_sha256':digest(suite),

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
+<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
 
 # Nueve ejemplos originales de localización al chino tradicional de Taiwán
 
@@ -59,3 +59,9 @@ No extraer textos de imágenes, diálogos protegidos de terceros ni mensajes pri
 ## Práctica R16 con ejemplos originales
 
 Abra el [estudio R16 sin conexión](../examples/TW_Localization_Safety_Studio_R16_20261026.html) y el [ejemplo de Markdown original](../examples/r16/sample_readme.md). Revise los segmentos protegidos antes de escribir propuestas manuales; código, variables, comentarios HTML y URL no se alteran. Se descarga una vista previa nueva sin sobrescribir el original. **Sin traducción automática ni subida de datos**.
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+## Descarga de todas las herramientas
+
+Las herramientas que pueden distribuirse legalmente para estos ejemplos están reunidas en la [guía de la suite R17.1 y su integridad](ALL_TOOLS_RELEASE.md). Chrome, Tampermonkey, HTML sin conexión y CLI requieren pasos de instalación diferentes. Se conservan las versiones originales: elija una entrada adecuada para la tarea y evite activar varias versiones en el mismo sitio. La suite no certifica la calidad de traducción revisada por personas.

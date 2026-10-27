@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:dc1676ca551c97b1480836009e2b7115a60f84776ed4980b660540e396aad5e3 -->
+<!-- SOURCE_EXAMPLES_SHA256:993eeb9044f29b464fe3ded203477d9fd45515eb301b62ff3f7b77abecd29646 -->
 
 # 대만 번체 중국어 현지화: 독창적인 사용 사례 9가지
 
@@ -59,3 +59,9 @@ DOM에 표시된 `Open settings`나 `Start` 같은 단순 문구는 사이트 �
 ## R16 실습（직접 작성한 예제）
 
 [R16 오프라인 도구](../examples/TW_Localization_Safety_Studio_R16_20261026.html)에서 [Markdown 예제](../examples/r16/sample_readme.md)를 열고 보호 구간을 확인한 다음 후보 문구를 직접 입력합니다. 코드, 변수, HTML 주석 및 URL은 변경할 수 없습니다. 원본을 덮어쓰지 않고 새 미리보기를 다운로드합니다. **자동 번역이나 업로드는 없습니다**.
+
+<!-- ALL_TOOLS_CATALOG: suite=17.1.0; tools=26; standalone=21; tool_ids_sha256=75bb89093ed2868f36e0a327d9d0fccb1d1ce60c97c2fd572fb1a69055b82492 -->
+
+## 전체 도구 다운로드
+
+이 예제에서 사용하는 합법적으로 배포 가능한 도구는 [R17.1 전체 도구 및 무결성 안내](ALL_TOOLS_RELEASE.md)에 모았습니다. Chrome, Tampermonkey, 오프라인 HTML, CLI는 설치 방법이 다릅니다. 원래 버전 번호를 유지하므로 작업에 맞는 진입점을 선택하고 같은 사이트에서 여러 버전을 동시에 사용하지 마세요. 이 묶음은 사람이 검토한 번역 품질을 인증하지 않습니다.
