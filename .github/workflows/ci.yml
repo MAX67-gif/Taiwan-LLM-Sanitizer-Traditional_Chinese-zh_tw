@@ -766,6 +766,8 @@ jobs:
           echo '5ec8bc9cd4aed58586af969a66e623b6fe22c24ac66af46aa6c81e8b75fea9e1  '"$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" | sha256sum --check
           # Diagnostic list comes only AFTER verifying exact official release SHA.
           unzip -Z1 "$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" | head -50
+          # This checksum manifest belongs to the already SHA-verified public archive.
+          unzip -p "$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" SHA256SUMS | sed -n '1,16p'
       - name: Prepare frozen R16 markdown editable spans from original fixture
         run: |
           set -euo pipefail
