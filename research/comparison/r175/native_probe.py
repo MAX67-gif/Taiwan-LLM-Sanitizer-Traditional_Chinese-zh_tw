@@ -29,6 +29,12 @@ ASSET = "opencc-1.4.2-1-deb-amd64.zip"
 RELEASE_URL = f"https://github.com/BYVoid/OpenCC/releases/download/{TAG}/{ASSET}"
 OFFICIAL_RELEASE_ASSET_SHA256 = "5ec8bc9cd4aed58586af969a66e623b6fe22c24ac66af46aa6c81e8b75fea9e1"
 CONFIG_NAME = "s2twp.json"
+# Separately licensed Ubuntu runtime package: never bundled in TLS releases.
+MARISA_ASSET = "libmarisa1_0.3.1+git20250817-1build1_amd64.deb"
+MARISA_URL = "https://archive.ubuntu.com/ubuntu/pool/main/m/marisa/libmarisa1_0.3.1%2Bgit20250817-1build1_amd64.deb"
+MARISA_SHA256 = "befd1c30ac2163bb15ea83f26f92dbf4de39a00dcb0eaad133ee2c73306b268b"
+MARISA_VERSION = "0.3.1+git20250817-1build1"
+
 MAX_ARCHIVE_BYTES = 16_000_000
 MAX_SAMPLE_BYTES = 65_536
 MAX_STDOUT_BYTES = 131_072
@@ -106,9 +112,41 @@ def validate_package(path: Path) -> list[tuple[str, bytes]]:
         raise EvidenceBlocked("OFFICIAL_ZIP_UNREADABLE") from exc
 
 
-def unpack_native(archive: Path, stage: Path) -> dict:
+def validate_marisa(path: Path | None) -> dict:
+    """Verify distinct Ubuntu MARISA runtime provenance before extraction."""
+    if path is None or path.is_symlink() or not path.is_file() or path.stat().st_size > 1_000_000:
+        raise EvidenceBlocked("MARISA_PINNED_DEPENDENCY_MISSING_OR_OVERSIZE")
+    if hash_file(path) != MARISA_SHA256:
+        raise EvidenceBlocked("MARISA_DEPENDENCY_SHA256_MISMATCH")
+    try:
+        inspected = subprocess.run(
+            ["dpkg-deb", "--field", str(path), "Package", "Version", "Architecture"],
+            capture_output=True, timeout=12, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise EvidenceBlocked("MARISA_METADATA_UNAVAILABLE") from exc
+    if inspected.returncode:
+        raise EvidenceBlocked("MARISA_METADATA_UNAVAILABLE")
+    expected = {"Package": "libmarisa1", "Version": MARISA_VERSION, "Architecture": "amd64"}
+    fields = {}
+    for line in inspected.stdout.decode("utf-8", "strict").splitlines():
+        if ": " not in line:
+            raise EvidenceBlocked("MARISA_METADATA_MISMATCH")
+        key, val = line.split(": ", 1)
+        if key not in expected or key in fields:
+            raise EvidenceBlocked("MARISA_METADATA_MISMATCH")
+        fields[key] = val
+    if fields != expected:
+        raise EvidenceBlocked("MARISA_METADATA_MISMATCH")
+    return {"url": MARISA_URL, "package": MARISA_ASSET,
+            "sha256": MARISA_SHA256, "package_metadata": fields,
+            "redistributed_in_TLS": False}
+
+
+def unpack_native(archive: Path, stage: Path, marisa_package: Path | None) -> dict:
     """Extract verified Debian assets to a temporary non-root staging folder."""
     packages = validate_package(archive)
+    marisa_provenance = validate_marisa(marisa_package)
     staging = stage / "dpkg"
     runtime = stage / "runtime"
     staging.mkdir(parents=True, exist_ok=False)
@@ -123,6 +161,16 @@ def unpack_native(archive: Path, stage: Path) -> dict:
         result = subprocess.run(["dpkg-deb", "-x", str(p), str(runtime)], capture_output=True, timeout=45, check=False)
         if result.returncode:
             raise EvidenceBlocked("VERIFIED_DEB_EXTRACT_FAILED")
+    dependency_extract = subprocess.run(
+        ["dpkg-deb", "-x", str(marisa_package), str(runtime)],
+        capture_output=True, timeout=15, check=False,
+    )
+    if dependency_extract.returncode:
+        raise EvidenceBlocked("MARISA_PINNED_PACKAGE_EXTRACTION_FAILED")
+    lib = runtime / "usr/lib/x86_64-linux-gnu/libmarisa.so.1"
+    if not lib.is_file() or not lib.resolve().is_relative_to(runtime.resolve()):
+        raise EvidenceBlocked("MARISA_RUNTIME_LIBRARY_UNVERIFIED")
+    marisa_provenance["runtime_library_sha256"] = hash_file(lib)
     binaries = [p for p in runtime.rglob("opencc") if p.is_file() and not p.is_symlink() and os.access(p, os.X_OK)]
     configs = [p for p in runtime.rglob(CONFIG_NAME) if p.is_file() and not p.is_symlink()]
     if len(binaries) != 1 or len(configs) != 1:
@@ -135,11 +183,13 @@ def unpack_native(archive: Path, stage: Path) -> dict:
     for p in dictionary_files:
         if p.is_symlink():
             raise EvidenceBlocked("DICT_SYMLINK_REJECTED")
-    libdirs = sorted({str(p.parent) for p in runtime.rglob("libopencc*.so*") if p.is_file()})
+    libdirs = sorted({str(p.parent) for p in runtime.rglob("*") if p.is_file() and
+                      (p.name.startswith("libopencc") or p.name.startswith("libmarisa")) and ".so" in p.name})
     env = {"PATH": "/usr/bin:/bin", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "LD_LIBRARY_PATH": ":".join(libdirs)}
     return {
         "binary": binary, "config": config, "env": env, "working_dir": config_dir,
         "archive_sha256": hash_file(archive), "deb_sources": debs,
+        "marisa_dependency": marisa_provenance,
         "binary_sha256": hash_file(binary), "config_sha256": hash_file(config),
         "resources": [{"path":str(p.relative_to(config_dir)), "sha256":hash_file(p)} for p in dictionary_files],
         "library_binaries_sha256": [{"file":p.name,"sha256":hash_file(p)} for p in sorted(runtime.rglob("libopencc*.so*")) if p.is_file() and not p.is_symlink()],
@@ -194,7 +244,7 @@ class NativeCLI:
                 raise EvidenceBlocked("NATIVE_OUTPUT_INVALID_UTF8") from exc
 
 
-def run_verified(archive: Path, source_path: Path, spans_path: Path, output_dir: Path) -> dict:
+def run_verified(archive: Path, source_path: Path, spans_path: Path, output_dir: Path, marisa_package: Path | None = None) -> dict:
     if output_dir.exists() or not output_dir.parent.is_dir():
         raise EvidenceBlocked("NO_OVERWRITE_OUTPUT_DIRECTORY")
     if source_path.is_symlink() or not source_path.is_file() or source_path.stat().st_size > MAX_SAMPLE_BYTES:
@@ -209,7 +259,7 @@ def run_verified(archive: Path, source_path: Path, spans_path: Path, output_dir:
         raise EvidenceBlocked("FIXTURE_EMPTY_OR_CONTROL_INPUT")
     # Use native temporary-only input/output, never private user documents or paths.
     with tempfile.TemporaryDirectory(prefix="tls_r175_native_") as td:
-        native=unpack_native(archive,Path(td))
+        native=unpack_native(archive,Path(td),marisa_package)
         version=safe_version(native)
         converter=NativeCLI(native)
         raw=converter.convert(source)
@@ -230,7 +280,7 @@ def run_verified(archive: Path, source_path: Path, spans_path: Path, output_dir:
         receipt={"schema":SCHEMA,"status":"SOURCE_VERIFIED_NATIVE_EXECUTED", "source":{
             "repository":"BYVoid/OpenCC", "tag":TAG, "asset":ASSET, "url":RELEASE_URL,
             "asset_sha256":native["archive_sha256"], "asset_sha256_verified":True,
-            "debs":native["deb_sources"]},
+            "debs":native["deb_sources"]}, "dependency":native["marisa_dependency"],
             "version":{"expected":VERSION,"observed":version,"cli_command":"opencc --version"},
             "platform":platform, "cli_binary_sha256":native["binary_sha256"],
             "config":{"name":CONFIG_NAME,"sha256":native["config_sha256"],
@@ -266,12 +316,14 @@ def run_verified(archive: Path, source_path: Path, spans_path: Path, output_dir:
 def main(argv=None):
     parser=argparse.ArgumentParser(description="Verified native OpenCC v1.4.2 CLI: no fallback")
     parser.add_argument("--archive",required=True)
+    parser.add_argument("--marisa-package")
     parser.add_argument("--fixture",required=True)
     parser.add_argument("--spans",required=True)
     parser.add_argument("--output",required=True)
     args=parser.parse_args(argv)
     try:
-        report=run_verified(Path(args.archive),Path(args.fixture),Path(args.spans),Path(args.output))
+        report=run_verified(Path(args.archive),Path(args.fixture),Path(args.spans),Path(args.output),
+                            Path(args.marisa_package) if args.marisa_package else None)
         print(json.dumps({"status":report["native"],"quality":"NOT_MEASURED","user_data_access":False},sort_keys=True))
         return 0
     except (EvidenceBlocked,ValueError,OSError,UnicodeError,subprocess.SubprocessError,KeyError,TypeError) as exc:

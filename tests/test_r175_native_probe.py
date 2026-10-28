@@ -71,6 +71,40 @@ class NativeEvidenceGuards(unittest.TestCase):
                     with self.subTest(path=path),self.assertRaisesRegex(P.EvidenceBlocked,'SHA256SUMS_FORMAT'):
                         P.validate_package(p)
 
+    def test_pinned_marisa_source_and_sha(self):
+        self.assertEqual(P.MARISA_SHA256,'befd1c30ac2163bb15ea83f26f92dbf4de39a00dcb0eaad133ee2c73306b268b')
+        self.assertEqual(P.MARISA_VERSION,'0.3.1+git20250817-1build1')
+        self.assertIn('archive.ubuntu.com',P.MARISA_URL)
+
+    def test_unpinned_marisa_dependency_is_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'marisa.deb';p.write_bytes(b'unverified')
+            with self.assertRaisesRegex(P.EvidenceBlocked,'MARISA_DEPENDENCY_SHA256_MISMATCH'):
+                P.validate_marisa(p)
+            with self.assertRaisesRegex(P.EvidenceBlocked,'MARISA_PINNED_DEPENDENCY_MISSING'):
+                P.validate_marisa(None)
+
+    def test_pinned_marisa_with_wrong_metadata_is_rejected(self):
+        from subprocess import CompletedProcess
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'marisa.deb';p.write_bytes(b'test-package')
+            h=P.hash_file(p)
+            with patch.object(P,'MARISA_SHA256',h):
+                with patch.object(P.subprocess,'run',return_value=CompletedProcess([],0,b'Package: libmarisa1\nVersion: 0.2.6\nArchitecture: amd64\n',b'')):
+                    with self.assertRaisesRegex(P.EvidenceBlocked,'MARISA_METADATA_MISMATCH'):
+                        P.validate_marisa(p)
+
+    def test_pinned_marisa_metadata_has_no_runtime_credentials(self):
+        from subprocess import CompletedProcess
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'marisa.deb';p.write_bytes(b'test-package')
+            h=P.hash_file(p)
+            meta=f'Package: libmarisa1\nVersion: {P.MARISA_VERSION}\nArchitecture: amd64\n'.encode('utf-8')
+            with patch.object(P,'MARISA_SHA256',h),patch.object(P.subprocess,'run',return_value=CompletedProcess([],0,meta,b'')):
+                result=P.validate_marisa(p)
+                self.assertFalse(result['redistributed_in_TLS'])
+                self.assertNotIn('token',json.dumps(result).lower())
+
     def test_no_unapproved_payload_in_verified_archive(self):
         with tempfile.TemporaryDirectory() as td:
             p=Path(td)/'z.zip';h=self.make_zip(p,[('script.sh',b'evil')])
