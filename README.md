@@ -2,6 +2,15 @@
 
 **語言／Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
+### 第一次使用：只要 3 步，先完成一份 Markdown
+
+**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
+
+**② 解壓 ZIP，使用本機瀏覽器開啟 `START_HERE.html`** → 選「R17.2 離線修稿助手」。**③ 載入原創示例或自己的 Markdown → 逐項採用／保留 → 產生安全預覽 → 下載新稿。**
+
+[三步圖文式操作說明](docs/QUICK_START_R174.md) · [原創 Markdown 練習稿](docs/R174_ORIGINAL_FIRST_TASK.md) · [Codex／Claude／Grok 使用教學](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。**GitHub 裡的 `.html` 原始碼檢視頁不是已託管的線上工具，需下載正式 HTML 後在自己瀏覽器開啟。** 只提供有限用語候選與結構保護，仍須人工確認原意；不是完整翻譯或母語審稿認證。
+
+
 > **本專案的工作是提供使用者可控的臺灣中文用語、翻譯顯示與技術內容保真工具，不是語言審查器，也不宣稱是任何第三方服務的官方產品。** 原創開源核心採 [MIT](LICENSE)；Founder／Steward：CA L.。
 
 ### R17.2｜先試做一篇臺灣用語修稿，再接續 AI 協作

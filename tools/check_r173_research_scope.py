@@ -1,8 +1,7 @@
-"""Fail-closed GitHub main-commit gate for research-only R17.3 updates.
+"""Fail-closed main commit gate for validated research and exact R17.4 docs changes.
 
-This NEVER authorizes skipping a release for changes to runtime, registry,
-installer, user-facing HTML, general tooling, or a deleted/renamed asset.
-Full-suite remains the only allowed producer for product changes.
+This does not authorize skipping full-Suite publication on runtime, registry,
+installer, HTML app, generalized tooling, unknown, deleted, or renamed files.
 """
 from __future__ import annotations
 import argparse
@@ -12,42 +11,55 @@ import re
 import subprocess
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-PINNED_PRODUCT_SHA = 'a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4'
-PINNED_SUITE_TAG = 'all-tools-suite-v17.2.0'
-PINNED_ASSET_COUNT = 27
-EXACT = {'.github/workflows/ci.yml',
-         'tools/publication_guard.py', 'tools/check_all_tools_release.py', 'tools/check_r173_research_scope.py',
-         'tests/test_comparison_r173.py', 'tests/test_comparison_r173.js', 'tests/test_r173_research_scope.py',
-         'CHANGELOG.md', 'README.md', 'README.en.md', 'README.es.md',
-         'README.ja.md', 'README.ko.md', 'README.zh-CN.md'}
-PREFIX = ('docs/', 'research/comparison/r173/')
-# The only permitted standalone correction to this route selector is this exact pair,
-# audited by the changed-path regression. Not a general docs-only exemption.
-HOTFIX_ONLY = {'tools/check_r173_research_scope.py', 'tests/test_r173_research_scope.py'}
+ROOT=Path(__file__).resolve().parents[1]
+PINNED_PRODUCT_SHA='a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4'
+PINNED_SUITE_TAG='all-tools-suite-v17.2.0'
+PINNED_ASSET_COUNT=27
+EXACT={'.github/workflows/ci.yml',
+       'tools/publication_guard.py', 'tools/check_all_tools_release.py','tools/check_r173_research_scope.py',
+       'tests/test_comparison_r173.py','tests/test_comparison_r173.js','tests/test_r173_research_scope.py',
+       'CHANGELOG.md','README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md'}
+PREFIX=('docs/','research/comparison/r173/')
+HOTFIX_ONLY={'tools/check_r173_research_scope.py','tests/test_r173_research_scope.py'}
+# The *one* explicitly audited R17.4 first-use documentation delta. Changing
+# even one other path requires the fail-closed complete-suite publication route.
+R174_FIRST_USE_EXACT={
+    'README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md',
+    'docs/QUICK_START_R174.md','docs/QUICK_START_R174.en.md','docs/R174_ORIGINAL_FIRST_TASK.md',
+    'tools/check_r173_research_scope.py','tools/publication_guard.py','tests/test_r173_research_scope.py','tests/test_r174_first_run_links.py'
+}
 
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
 def classify(changes):
-    """Input (status,path) from trusted git diff. Unrecognized changes are product-critical."""
+    """Input (status, path) from trusted git diff; unknown is product-critical."""
     if not changes:
-        return False, 'EMPTY_DIFF_NOT_RESEARCH'
-    paths = []
-    for state, p in changes:
-        if state not in ('A','M') or not allowed_path(p):
-            return False, 'PRODUCT_OR_UNRECOGNIZED_CHANGE'
+        return False,'EMPTY_DIFF_NOT_RESEARCH'
+    paths=[]
+    for state,p in changes:
+        if state not in ('A','M'):
+            return False,'PRODUCT_OR_UNRECOGNIZED_CHANGE'
         paths.append(p)
+    if len(set(paths)) != len(paths):
+        return False,'DUPLICATE_CHANGED_PATH'
+    # Match exactly the full 13-path R17.4 first-use gateway transaction.
+    # This is *not* a permissive general docs-only bypass.
+    if set(paths)==R174_FIRST_USE_EXACT and len(paths)==len(R174_FIRST_USE_EXACT):
+        return True,'R174_FIRST_RESULT_DOCS_ONLY'
+    for p in paths:
+        if not allowed_path(p):
+            return False,'PRODUCT_OR_UNRECOGNIZED_CHANGE'
     if not any(x.startswith('research/comparison/r173/') for x in paths):
-        if set(paths) == HOTFIX_ONLY and len(paths) == len(HOTFIX_ONLY):
-            return True, 'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY'
-        return False, 'NOT_EXPLICIT_R173_RESEARCH'
-    return True, 'R173_RESEARCH_ONLY'
+        if set(paths)==HOTFIX_ONLY and len(paths)==len(HOTFIX_ONLY):
+            return True,'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY'
+        return False,'NOT_EXPLICIT_R173_RESEARCH'
+    return True,'R173_RESEARCH_ONLY'
 
-def changed_files(base, head):
-    if not re.fullmatch(r'[0-9a-f]{40}', base) or not re.fullmatch(r'[0-9a-f]{40}', head):
+def changed_files(base,head):
+    if not re.fullmatch(r'[0-9a-f]{40}',base) or not re.fullmatch(r'[0-9a-f]{40}',head):
         raise ValueError('BAD_GIT_REVISION')
-    raw = subprocess.check_output(['git','diff','--name-status','-z','--no-renames',base,head],cwd=ROOT)
+    raw=subprocess.check_output(['git','diff','--name-status','-z','--no-renames',base,head],cwd=ROOT)
     entries=raw.decode('utf-8','strict').split('\0');items=[]
     for i in range(0,len(entries)-1,2):
         st,p=entries[i:i+2]
@@ -68,10 +80,8 @@ def validate_existing_release(obj):
 
 def main(argv=None):
     parser=argparse.ArgumentParser()
-    parser.add_argument('--base')
-    parser.add_argument('--head')
-    parser.add_argument('--existing-release-json')
-    parser.add_argument('--receipt')
+    parser.add_argument('--base'); parser.add_argument('--head')
+    parser.add_argument('--existing-release-json'); parser.add_argument('--receipt')
     args=parser.parse_args(argv)
     if args.existing_release_json:
         if not args.receipt:parser.error('--receipt required')
@@ -98,5 +108,4 @@ def main(argv=None):
 if __name__=='__main__':
     try:raise SystemExit(main())
     except (ValueError,OSError,subprocess.CalledProcessError,json.JSONDecodeError) as exc:
-        print('R173_SCOPE_UNVERIFIED_FAIL_CLOSED:',str(exc)[:150])
-        raise SystemExit(2)
+        print('R173_SCOPE_UNVERIFIED_FAIL_CLOSED:',str(exc)[:150]);raise SystemExit(2)

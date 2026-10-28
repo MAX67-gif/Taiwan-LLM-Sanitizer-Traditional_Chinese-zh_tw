@@ -1,9 +1,18 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4e5f24061fd15beef7c6226f0facf66c8beffcb853cd00771fd72e10075d14a -->
+<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+### First result in 3 steps: one safer Markdown edit
+
+**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_2_0.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
+
+**② Unzip and open `START_HERE.html` in your local browser**, then launch the R17.2 offline assistant. **③ Load an original sample or paste Markdown you may edit, review each term or keep it, preview protected changes, and download a new file.**
+
+[Detailed 3-step guide](docs/QUICK_START_R174.en.md) · [Original Markdown example](docs/R174_ORIGINAL_FIRST_TASK.md) · [Codex / Claude / Grok workflow](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). A GitHub `.html` source link is **not** a hosted web app. The local assistant has limited term coverage and cannot certify semantic or linguistic quality. Human language review is pending.
+
 
 An open-source, privacy-minded layer for user-controlled Taiwanese terminology, bilingual reading and technical-content integrity; not affiliated with third-party services. **MIT** · Founder / Steward: CA L.
 ### R17.2 | Review AI-written Chinese for Taiwan, safely

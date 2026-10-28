@@ -1,9 +1,18 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4e5f24061fd15beef7c6226f0facf66c8beffcb853cd00771fd72e10075d14a -->
+<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+### 初回利用：3 ステップで Markdown の修正を確認
+
+**[① GitHub の最新正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（現在の確認済み版。今後はリリース内の実際の名前を確認）、または `TW_Wording_Assistant_R172_20261027.html` をダウンロードします。
+
+**② ZIP を展開し、`START_HERE.html` をローカルブラウザーで開く。** **③ R17.2 でオリジナル例または権利のある Markdown を入力し、候補を一つずつ確認・保留して差分をプレビュー、別ファイルとして保存。**
+
+[英語の詳しい手順](docs/QUICK_START_R174.en.md) · [オリジナル練習文](docs/R174_ORIGINAL_FIRST_TASK.md) · [AI との併用](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。GitHub 上の `.html` ソース表示はホストされた Web アプリではありません。翻訳の自然さや意味の正確さを保証せず、人による言語レビューは未完了です。
+
 
 ユーザー自身が選べる台湾の用語、原文と訳文の対照表示、技術文書の構造保護を目的とするオープンソースツールです。第三者の公式製品ではありません。 **MIT** · Founder / Steward: CA L.
 ### R17.2｜AI で作成した中国語文章を台湾向けに確認
