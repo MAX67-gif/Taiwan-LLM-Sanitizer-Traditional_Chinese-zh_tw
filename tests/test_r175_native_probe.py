@@ -45,7 +45,9 @@ class NativeEvidenceGuards(unittest.TestCase):
 
     def test_explicit_test_sha_allows_safe_deb_extraction_listing_only(self):
         with tempfile.TemporaryDirectory() as td:
-            p=Path(td)/'z.zip';h=self.make_zip(p,[('valid.deb',b'original-test')])
+            p=Path(td)/'z.zip'
+            sig=hashlib.sha256(b'original-test').hexdigest().encode('ascii')+b'  valid.deb\n'
+            h=self.make_zip(p,[('valid.deb',b'original-test'),('SHA256SUMS',sig)])
             with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
                 self.assertEqual(P.validate_package(p),[('valid.deb',b'original-test')])
 
@@ -54,6 +56,22 @@ class NativeEvidenceGuards(unittest.TestCase):
             p=Path(td)/'z.zip';h=self.make_zip(p,[('script.sh',b'evil')])
             with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
                 with self.assertRaisesRegex(P.EvidenceBlocked,'UNEXPECTED_PAYLOAD'):P.validate_package(p)
+
+    def test_verified_package_but_wrong_nested_manifest_is_blocked(self):
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'z.zip'
+            sig=("f"*64+"  valid.deb\n").encode('ascii')
+            h=self.make_zip(p,[('valid.deb',b'original-test'),('SHA256SUMS',sig)])
+            with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
+                with self.assertRaisesRegex(P.EvidenceBlocked,'DEB_SHA256_MISMATCH'):
+                    P.validate_package(p)
+
+    def test_verified_package_missing_nested_manifest_is_blocked(self):
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'z.zip';h=self.make_zip(p,[('valid.deb',b'original-test')])
+            with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
+                with self.assertRaisesRegex(P.EvidenceBlocked,'SHA256SUMS_MISSING'):
+                    P.validate_package(p)
 
     def test_traversal_archive_blocked(self):
         with tempfile.TemporaryDirectory() as td:

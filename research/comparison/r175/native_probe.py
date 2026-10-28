@@ -61,6 +61,7 @@ def validate_package(path: Path) -> list[tuple[str, bytes]]:
                 raise EvidenceBlocked("OFFICIAL_ZIP_CRC_OR_COUNT_INVALID")
             items = []
             seen = set()
+            signed_member = None
             for info in infos:
                 name = info.filename
                 parts = Path(name).parts
@@ -71,6 +72,11 @@ def validate_package(path: Path) -> list[tuple[str, bytes]]:
                 seen.add(name)
                 if name.endswith("/"):
                     continue
+                if name == "SHA256SUMS":
+                    if signed_member is not None or info.file_size > 8192:
+                        raise EvidenceBlocked("OFFICIAL_SHA256SUMS_UNSAFE")
+                    signed_member = z.read(info)
+                    continue
                 if not name.endswith(".deb"):
                     raise EvidenceBlocked("OFFICIAL_ZIP_UNEXPECTED_PAYLOAD")
                 if info.file_size > MAX_ARCHIVE_BYTES:
@@ -78,6 +84,23 @@ def validate_package(path: Path) -> list[tuple[str, bytes]]:
                 items.append((Path(name).name, z.read(info)))
             if not items:
                 raise EvidenceBlocked("OFFICIAL_DEB_NOT_FOUND")
+            if signed_member is None:
+                raise EvidenceBlocked("OFFICIAL_SHA256SUMS_MISSING")
+            try:
+                hashes = {}
+                for line in signed_member.decode("utf-8", "strict").splitlines():
+                    if not line.strip():
+                        continue
+                    match = re.fullmatch(r"([0-9a-f]{64})\s+\*?([A-Za-z0-9_.+-]+\.deb)", line)
+                    if not match or match.group(2) in hashes:
+                        raise EvidenceBlocked("OFFICIAL_SHA256SUMS_FORMAT")
+                    hashes[match.group(2)] = match.group(1)
+            except UnicodeError as exc:
+                raise EvidenceBlocked("OFFICIAL_SHA256SUMS_FORMAT") from exc
+            if hashes.keys() != {name for name, _ in items}:
+                raise EvidenceBlocked("OFFICIAL_SHA256SUMS_NOT_EXACT")
+            if any(hashes[name] != digest(raw) for name, raw in items):
+                raise EvidenceBlocked("OFFICIAL_DEB_SHA256_MISMATCH")
             return items
     except (BadZipFile, OSError) as exc:
         raise EvidenceBlocked("OFFICIAL_ZIP_UNREADABLE") from exc
