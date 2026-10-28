@@ -34,6 +34,12 @@ class ScopeTest(unittest.TestCase):
   for changed in (pair[:1],pair+[('M','README.md')],[('M','README.md')],
                   [('M','tools/check_all_tools_release.py'),('M','tests/test_r173_research_scope.py')]):
    self.assertFalse(C.classify(changed)[0])
+ def test_r175_native_contract_only_exact_10_file_transaction(self):
+  self.assertEqual(len(C.R175_NATIVE_EXACT),10)
+  changed=[('M',p) if p in {'.github/workflows/ci.yml','tests/test_r173_research_scope.py','tools/check_r173_research_scope.py','tools/publication_guard.py','tools/check_all_tools_release.py'} else ('A',p) for p in sorted(C.R175_NATIVE_EXACT)]
+  self.assertEqual(C.classify(changed),(True,'R175_NATIVE_EVIDENCE_EXACT_ONLY'))
+  for bad in (changed[:-1],changed+[('M','README.md')],changed+[('M','src/core/engine.js')], [('D','tools/publication_guard.py')]+changed[1:]):
+   self.assertFalse(C.classify(bad)[0])
  def test_r174_full_13_file_gateway_delta_only(self):
   self.assertEqual(len(C.R174_FIRST_USE_EXACT),13)
   changed=[('M',p) if p.startswith('README') or p.startswith('tools/') or p=='tests/test_r173_research_scope.py' else ('A',p) for p in sorted(C.R174_FIRST_USE_EXACT)]

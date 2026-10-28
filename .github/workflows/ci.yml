@@ -65,6 +65,10 @@ jobs:
           python -m unittest tests/test_comparison_r173.py -v
           python -m unittest tests/test_r173_research_scope.py -v
           python -m py_compile research/comparison/r173/*.py tools/check_r173_research_scope.py
+      - name: Validate R17.5 native evidence contracts without simulating official results
+        run: |
+          python -m unittest tests/test_r175_native_probe.py -v
+          python -m py_compile research/comparison/r175/native_probe.py
           node research/comparison/r173/naive_baseline.js --input research/comparison/r173/fixtures_first_task.md > "$RUNNER_TEMP/tls-r173-dev-only.json"
       - name: Verify R17 project-level read-only Markdown integrity toolkit
         run: |
@@ -729,6 +733,74 @@ jobs:
               --title "R17 離線專案文件完整性信任圖（Shadow 0.1.0）" \
               --notes "Original offline read-only Markdown link and heading audit. Explicit file allowlist; no network, no original source in default report, no file rewrite, no model translation or translation-quality certification. External and unsupported cases are UNKNOWN, never silently PASS. Does not restore retired game-specific assets or modify existing R16/R15.1/R5/R11/R13 Releases."
           fi
+
+  r175-native-evidence:
+    name: R17.5 Pinned Official OpenCC Native Research (read only)
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source guards before running upstream native code
+        run: |
+          set -euo pipefail
+          python -m unittest tests/test_r175_native_probe.py -v
+          python -m py_compile research/comparison/r175/native_probe.py
+          test "$(git status --porcelain)" = ""
+      - name: Download version-locked official OpenCC v1.4.2 release
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/tls_r175_upstream"
+          curl --fail --location --retry 2 --max-time 120 --silent --show-error \
+            --output "$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" \
+            'https://github.com/BYVoid/OpenCC/releases/download/ver.1.4.2/opencc-1.4.2-1-deb-amd64.zip'
+          echo '5ec8bc9cd4aed58586af969a66e623b6fe22c24ac66af46aa6c81e8b75fea9e1  '"$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" | sha256sum --check
+      - name: Prepare frozen R16 markdown editable spans from original fixture
+        run: |
+          set -euo pipefail
+          node research/comparison/r173/prepare_spans.js \
+            --input research/comparison/r175/fixture_native_original.md \
+            --output "$RUNNER_TEMP/tls_r175_upstream/original_editable_spans.json"
+      - name: Execute native OpenCC --version and s2twp on equal spans
+        run: |
+          set -euo pipefail
+          python research/comparison/r175/native_probe.py \
+            --archive "$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" \
+            --fixture research/comparison/r175/fixture_native_original.md \
+            --spans "$RUNNER_TEMP/tls_r175_upstream/original_editable_spans.json" \
+            --output "$RUNNER_TEMP/tls_r175_upstream/receipts"
+      - name: Verify provenance receipt contains no private text or quality claims
+        run: |
+          set -euo pipefail
+          python - <<'PYCODE'
+          import json,os,pathlib
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'tls_r175_upstream'/'receipts'
+          assert {p.name for p in root.iterdir()} == {'NATIVE_SOURCE_RECEIPT.json','R175_NATIVE_PARITY.json','VALIDATION.json'}
+          v=json.loads((root/'VALIDATION.json').read_text('utf-8'))
+          a=json.loads((root/'NATIVE_SOURCE_RECEIPT.json').read_text('utf-8'))
+          p=json.loads((root/'R175_NATIVE_PARITY.json').read_text('utf-8'))
+          assert v['native']=='SOURCE_VERIFIED_NATIVE_EXECUTED' and v['human_review']=='HUMAN_REVIEW_PENDING'
+          assert a['version']['observed']=='1.4.2' and a['source']['asset_sha256_verified'] is True
+          assert p['equal']['protected_segments_changed']==0 and p['equal']['quality_score'] is None
+          assert all(path.stat().st_size<150000 for path in root.iterdir())
+          print('R175_NATIVE_OFFICIAL_EXECUTION_AND_METADATA_PASS')
+          PYCODE
+      - name: Upload metadata only (no user document or third-party binary)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R175_Official_OpenCC_Native_Provenance
+          path: ${{ runner.temp }}/tls_r175_upstream/receipts/*.json
+          if-no-files-found: error
+          retention-days: 30
 
   all-tools-full-suite-release:
     name: Full-Suite Release Gate (publish only when the product changes)

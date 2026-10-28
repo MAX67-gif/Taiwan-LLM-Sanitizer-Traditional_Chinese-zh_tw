@@ -29,6 +29,17 @@ R174_FIRST_USE_EXACT={
     'tools/check_r173_research_scope.py','tools/publication_guard.py','tests/test_r173_research_scope.py','tests/test_r174_first_run_links.py'
 }
 
+# Exact R17.5 native provenance sidecar. No runtime or product release changes.
+R175_NATIVE_EXACT={
+    '.github/workflows/ci.yml', 'tools/check_all_tools_release.py',
+    'research/comparison/r175/native_probe.py',
+    'research/comparison/r175/fixture_native_original.md',
+    'research/comparison/r175/PROTOCOL.md',
+    'tests/test_r175_native_probe.py', 'tests/test_r173_research_scope.py',
+    'tools/check_r173_research_scope.py', 'tools/publication_guard.py',
+    'docs/R175_NATIVE_OPENCC_PROTOCOL.md',
+}
+
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
@@ -43,6 +54,10 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    # Research execution contract is the exact approved 10-path set;
+    # no arbitrary docs/workflows, no deletion, no unsafe product-side effect.
+    if set(paths)==R175_NATIVE_EXACT and len(paths)==len(R175_NATIVE_EXACT):
+        return True,'R175_NATIVE_EVIDENCE_EXACT_ONLY'
     # Match exactly the full 13-path R17.4 first-use gateway transaction.
     # This is *not* a permissive general docs-only bypass.
     if set(paths)==R174_FIRST_USE_EXACT and len(paths)==len(R174_FIRST_USE_EXACT):

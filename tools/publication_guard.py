@@ -28,6 +28,7 @@ DOCS_PUBLIC={
     "docs/R172_WORDING_ASSISTANT.md",
     "docs/QUICK_START_R174.md", "docs/QUICK_START_R174.en.md",
     "docs/R174_ORIGINAL_FIRST_TASK.md",
+    "docs/R175_NATIVE_OPENCC_PROTOCOL.md",
     "docs/R173_COMPARISON_AND_ADOPTION.md", "docs/R173_COMPARISON_AND_ADOPTION.en.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.md",
     "docs/WEBSITE_LOCALIZATION_GUIDE.zh-CN.md",
@@ -69,6 +70,11 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/prepare_spans.js", "research/comparison/r173/opencc_adapter.py",
     "research/comparison/r173/import_model_result.py", "research/comparison/r173/score_and_audit.py",
 }
+PUBLIC_R175_RESEARCH={
+    "research/comparison/r175/native_probe.py",
+    "research/comparison/r175/fixture_native_original.md",
+    "research/comparison/r175/PROTOCOL.md",
+}
 PUBLIC_BENCHMARK_FILES={
     "benchmarks/r6/public_frozen_v1.jsonl",
     "benchmarks/r6/frozen_manifest_v1.json",
@@ -104,7 +110,7 @@ def allowed_path(name:str)->bool:
         return False
     if name.lower().endswith(BAD_EXT):
         return False
-    if name in ROOT_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES or name in PUBLIC_R173_RESEARCH:
+    if name in ROOT_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES or name in PUBLIC_R173_RESEARCH or name in PUBLIC_R175_RESEARCH:
         return True
     if name.startswith("docs/"):
         return False
