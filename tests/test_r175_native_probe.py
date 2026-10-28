@@ -51,6 +51,26 @@ class NativeEvidenceGuards(unittest.TestCase):
             with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
                 self.assertEqual(P.validate_package(p),[('valid.deb',b'original-test')])
 
+    def test_official_dot_slash_sha256sum_paths_are_strictly_verified(self):
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'z.zip'
+            checksum=hashlib.sha256(b'original-test').hexdigest()
+            manifest=f'{checksum}  ./valid.deb\n'.encode('ascii')
+            h=self.make_zip(p,[('valid.deb',b'original-test'),('SHA256SUMS',manifest)])
+            with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
+                self.assertEqual(P.validate_package(p),[('valid.deb',b'original-test')])
+
+    def test_nested_checksum_refuses_unexpected_paths(self):
+        with tempfile.TemporaryDirectory() as td:
+            p=Path(td)/'z.zip'
+            checksum=hashlib.sha256(b'original-test').hexdigest()
+            for path in ('../valid.deb','./../valid.deb','./subdir/valid.deb','other/valid.deb'):
+                manifest=f'{checksum}  {path}\n'.encode('ascii')
+                h=self.make_zip(p,[('valid.deb',b'original-test'),('SHA256SUMS',manifest)])
+                with patch.object(P,'OFFICIAL_RELEASE_ASSET_SHA256',h):
+                    with self.subTest(path=path),self.assertRaisesRegex(P.EvidenceBlocked,'SHA256SUMS_FORMAT'):
+                        P.validate_package(p)
+
     def test_no_unapproved_payload_in_verified_archive(self):
         with tempfile.TemporaryDirectory() as td:
             p=Path(td)/'z.zip';h=self.make_zip(p,[('script.sh',b'evil')])

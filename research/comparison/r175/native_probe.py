@@ -91,7 +91,7 @@ def validate_package(path: Path) -> list[tuple[str, bytes]]:
                 for line in signed_member.decode("utf-8", "strict").splitlines():
                     if not line.strip():
                         continue
-                    match = re.fullmatch(r"([0-9a-f]{64})\s+\*?([A-Za-z0-9_.+-]+\.deb)", line)
+                    match = re.fullmatch(r"([0-9a-f]{64})  (?:\./)?([A-Za-z0-9_.+-]+\.deb)", line)
                     if not match or match.group(2) in hashes:
                         raise EvidenceBlocked("OFFICIAL_SHA256SUMS_FORMAT")
                     hashes[match.group(2)] = match.group(1)
