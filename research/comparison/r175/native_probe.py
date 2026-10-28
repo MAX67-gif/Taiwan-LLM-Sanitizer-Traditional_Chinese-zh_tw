@@ -154,7 +154,7 @@ def safe_version(native: dict) -> str:
         raise EvidenceBlocked("NATIVE_VERSION_EXECUTION_FAILED") from exc
     # A successful version probe must prove that this is the specific official version.
     value = (p.stdout + p.stderr).decode("utf-8", "replace")[:1500]
-    if p.returncode != 0 or not re.search(r"(?<!\\d)1\\.4\\.2(?!\\d)", value):
+    if p.returncode != 0 or not re.search(r"(?<!\d)1\.4\.2(?!\d)", value):
         # Temporary metadata only from hash-verified upstream CLI.
         print("R175_NATIVE_VERSION_DIAGNOSTIC " + json.dumps({
             "exit_code": p.returncode,
