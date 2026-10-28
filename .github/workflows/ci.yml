@@ -768,6 +768,17 @@ jobs:
           unzip -Z1 "$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" | head -50
           # This checksum manifest belongs to the already SHA-verified public archive.
           unzip -p "$RUNNER_TEMP/tls_r175_upstream/opencc-1.4.2-1-deb-amd64.zip" SHA256SUMS | sed -n '1,16p'
+      - name: Audit separate Ubuntu MARISA runtime dependency without executing it
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --max-time 120 --silent --show-error \
+            --output "$RUNNER_TEMP/tls_r175_upstream/libmarisa1_0.3.1+git20250817-1build1_amd64.deb" \
+            'https://archive.ubuntu.com/ubuntu/pool/main/m/marisa/libmarisa1_0.3.1%2Bgit20250817-1build1_amd64.deb'
+          sha256sum "$RUNNER_TEMP/tls_r175_upstream/libmarisa1_0.3.1+git20250817-1build1_amd64.deb"
+          dpkg-deb --field "$RUNNER_TEMP/tls_r175_upstream/libmarisa1_0.3.1+git20250817-1build1_amd64.deb" Package Version Architecture
+          dpkg-deb --contents "$RUNNER_TEMP/tls_r175_upstream/libmarisa1_0.3.1+git20250817-1build1_amd64.deb" | grep 'libmarisa.*\.so'
+          # No execution/install until expected third-party dependency hash is pinned.
+
       - name: Prepare frozen R16 markdown editable spans from original fixture
         run: |
           set -euo pipefail
