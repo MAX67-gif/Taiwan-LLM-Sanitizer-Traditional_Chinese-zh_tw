@@ -14,7 +14,12 @@
 
 `node research/comparison/r173/prepare_spans.js --input research/comparison/r175/fixture_native_original.md --output /tmp/tls-r175-spans.json`
 
-`python research/comparison/r175/native_probe.py --archive /tmp/opencc-1.4.2-1-deb-amd64.zip --fixture research/comparison/r175/fixture_native_original.md --spans /tmp/tls-r175-spans.json --output /tmp/tls-r175-receipts`
+`python research/comparison/r175/native_probe.py --archive /tmp/opencc-1.4.2-1-deb-amd64.zip --marisa-package /tmp/libmarisa1_0.3.1+git20250817-1build1_amd64.deb --fixture research/comparison/r175/fixture_native_original.md --spans /tmp/tls-r175-spans.json --output /tmp/tls-r175-receipts`
+
+
+**額外原生依賴（不可省略）：**此 Linux 官方 ZIP 的 `opencc` CLI 在目前隔離 Runner 需要 `libmarisa1`。請從 Ubuntu 官方 Archive 取得 `libmarisa1_0.3.1+git20250817-1build1_amd64.deb`，先驗證下載的 SHA256 為 `befd1c30ac2163bb15ea83f26f92dbf4de39a00dcb0eaad133ee2c73306b268b`，再以 `--marisa-package` 提供給探針；OpenCC ZIP 本身的 SHA256 必須是 `5ec8bc9cd4aed58586af969a66e623b6fe22c24ac66af46aa6c81e8b75fea9e1`。來源皆為上游依賴，不可混入 TLS MIT 發行套件。缺任一雜湊或依賴時應回報 `B_BLOCKED_NATIVE_EVIDENCE`，**不要**改成系統上隨機找到的不同版本。
+
+來源：<https://github.com/BYVoid/OpenCC/releases/tag/ver.1.4.2>、<https://archive.ubuntu.com/ubuntu/pool/main/m/marisa/>。
 
 GitHub Actions `TLS R17.5 pinned official native evidence (read only)` 執行同樣流程，Runner 以官方 URL 和固定 SHA 查核，執行檔與 `.json`、`.ocd*` 的 SHA 記錄在 `NATIVE_SOURCE_RECEIPT.json`。此流程不讀 GitHub Secrets、不同意任何遠端客戶文字傳輸、也不變更公開 Release。
 
