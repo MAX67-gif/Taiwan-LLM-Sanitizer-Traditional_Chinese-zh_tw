@@ -1,9 +1,18 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4e5f24061fd15beef7c6226f0facf66c8beffcb853cd00771fd72e10075d14a -->
+<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+### 처음 사용하기: Markdown 문서 하나를 3단계로 검토
+
+**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
+
+**② ZIP 압축 해제 후 로컬 브라우저에서 `START_HERE.html` 열기.** **③ R17.2에서 자체 예제 또는 편집 권한이 있는 Markdown을 입력하고, 각 제안을 채택하거나 원문 유지한 다음 안전 미리보기를 확인하고 새 파일로 저장합니다.**
+
+[영어 상세 안내](docs/QUICK_START_R174.en.md) · [원본 연습 문서](docs/R174_ORIGINAL_FIRST_TASK.md) · [AI 연계 가이드](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). GitHub의 `.html` 소스 보기 화면은 호스팅된 웹 앱이 아닙니다. 의미나 번역 자연스러움의 인증이 아니며 사람의 언어 검토는 아직 완료되지 않았습니다.
+
 
 사용자가 대만 용어를 직접 선택하고 원문과 번역문을 비교하며 기술 문서의 구조를 보호할 수 있는 오픈소스 도구입니다. 제3자 서비스의 공식 제품이 아닙니다. **MIT** · Founder / Steward: CA L.
 ### R17.2｜AI 중국어 문서를 대만 용어에 맞게 검토

@@ -1,9 +1,18 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:c4e5f24061fd15beef7c6226f0facf66c8beffcb853cd00771fd72e10075d14a -->
+<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
 **语言 / Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+### 首次使用：3 步完成一份 Markdown
+
+**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
+
+**② 解压后在本地浏览器打开 `START_HERE.html`**，再选择 R17.2 离线修稿助手。**③ 加载原创练习或粘贴有权处理的 Markdown，逐项选择采用/保留，检查安全预览并下载新稿。**
+
+[详细繁体中文操作指南](docs/QUICK_START_R174.md) · [原创 Markdown 练习](docs/R174_ORIGINAL_FIRST_TASK.md) · [AI 协作教学](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。GitHub 的 `.html` 源码页面并非已部署的在线应用；需先下载到本地。工具并非完整翻译或母语质量认证，人工审阅仍待完成。
+
 
 > **产品定位：**提供面向台湾繁体中文（zh-TW）的用户自主选词、只读双语阅读和技术文档结构保护；不是文字审查工具，也不是任何第三方平台的官方产品。原创开源核心使用 [MIT 许可证](LICENSE)，Founder / Steward：CA L.。
 ### R17.2｜台灣用語校訂与 AI 协作
