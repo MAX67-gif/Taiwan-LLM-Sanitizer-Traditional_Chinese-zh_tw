@@ -226,7 +226,17 @@ def verify_workflow(workflow_text=None):
               'r13-bilingual-release', 'r14-capability-release', 'r151-structured-release',
               'r16-studio-release', 'r15-structured-release', 'r17-trust-graph-release'}
     expect(central in jobs, 'CENTRAL_RELEASE_JOB_MISSING')
-    expect(set(jobs) == legacy | {'verify', 'browser-integration', central}, 'UNAUTHORIZED_PUBLISHER_OR_JOB')
+    expect(set(jobs) == legacy | {'verify', 'browser-integration', 'r175-native-evidence', central}, 'UNAUTHORIZED_PUBLISHER_OR_JOB')
+    research_native = jobs['r175-native-evidence']
+    research_header = research_native.split('\n    steps:', 1)[0]
+    expect(re.search(r'^    needs: verify$', research_header, re.M), 'R175_MUST_DEPEND_ON_VERIFY')
+    expect(re.search(r'^    permissions:\n      contents: read$', research_header, re.M), 'R175_NOT_READ_ONLY')
+    for part in ('actions/checkout@v4', 'persist-credentials: false', 'ver.1.4.2',
+                 'native_probe.py', 'OFFICIAL_EXECUTION_AND_METADATA_PASS', 'actions/upload-artifact@v4'):
+        expect(part in research_native, 'R175_NATIVE_PROVENANCE_GATE_MISSING:' + part)
+    for forbidden in ('GH_TOKEN', 'GITHUB_TOKEN', 'secrets.', 'contents: write',
+                      'gh release', 'publish_all_tools_release', 'permissions: write-all'):
+        expect(forbidden not in research_native, 'R175_READONLY_NO_PUBLISHER:' + forbidden)
     for job in legacy:
         header = jobs[job].split('\n    steps:', 1)[0]
         expect(re.search(r"^    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && false$", header, re.M),
