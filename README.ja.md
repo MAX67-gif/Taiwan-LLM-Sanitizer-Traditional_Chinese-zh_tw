@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
+<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -10,7 +10,7 @@
 
 同じ Markdown 内の UI の `menu` は「選單」、飲食の `menu` は「菜單」にし、3 番目は原文のまま残せます。候補ごとに確認してから別ファイルへ出力し、技術的な部分を優先的に保護します。
 
-**[最初の修正を始める](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 次のファイルをダウンロード： `TW_Wording_Assistant_R172_20261027.html`，ローカルブラウザーで開いてください。
+**[最初の修正を始める](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)** — 次のファイルをダウンロード： `TW_Wording_Assistant_R172_20261027.html`，ローカルブラウザーで開いてください。
 
 [実際の操作手順を見る（英語）](docs/showcase/README.en.md) · [実際のプレビュー結果](docs/showcase/preview.md)
 
@@ -96,7 +96,7 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 
 [全ツールの配布・検証ガイド](docs/ALL_TOOLS_RELEASE.md)を参照してください。新しい正式 Release には、合法的に配布可能でサポート中の Chrome 拡張、Tampermonkey スクリプト、13 個のオフライン HTML ツール、R6 品質研究キット、CLI／Skill 開発者パッケージが必要です。更新のないツールも元のバージョンと SHA256 を保持します。Draft の全添付ファイルを検証してから公開します。以前に権利上の問題で撤回した第三者専用パッケージは含みません。[R17.1 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) は正式 CI と実際の添付ファイルが成功した場合に限り利用可能とします。
 
-**R17.3 は研究段階：** [同じ編集可能範囲での公平な比較と任意参加の調査](docs/R173_COMPARISON_AND_ADOPTION.en.md)を参照してください。**OpenCC／LLM に対する優位性や人間の翻訳品質評価は未検証です。** Suite 17.2.0 の既存ツールは変更していません。
+**R17.3 は研究段階：** [同じ編集可能範囲での公平な比較と任意参加の調査](docs/R173_COMPARISON_AND_ADOPTION.en.md)を参照してください。**OpenCC／LLM に対する優位性や人間の翻訳品質評価は未検証です。** R17.2 の修正ツール自体は変更していません。旧 17.1/17.2 の統合 ZIP は公開配布範囲の見直しにより撤回されました。現在の完全版は Suite 17.3.0 を利用してください。
 
 <!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 

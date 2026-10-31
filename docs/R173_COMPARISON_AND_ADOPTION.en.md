@@ -1,6 +1,6 @@
 # R17.3 — Fair comparisons and real-user evidence (research only)
 
-> **STATUS: ENGINEERING_RESEARCH_ONLY. No independent translation-quality or actual-user results have been collected.** The current product remains [Suite 17.2.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0). This is not another translation engine or a claim that TLS beats an alternative.
+> **STATUS: ENGINEERING_RESEARCH_ONLY. No independent translation-quality or actual-user results have been collected.** R17.3 identifies this historical research stream; as of 2026-10-31 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) is the current complete download, and the R17.2 wording assistant stays unchanged. This is not another translation engine or a claim that TLS beats an alternative.
 
 ## One valuable first task
 
@@ -31,4 +31,4 @@ Participation is **opt-in**. The [local consent template](../research/comparison
 
 Previous project goals remain *unmeasured targets*: 8/10 first-time users understand the task in 15 seconds, 8/10 finish in 3 minutes, median duration decreases 30% vs. R16, and 3 of the first five genuine completers actually return for a second task within seven days. A willingness statement is not completed repeat use; a GitHub clone is not a verified user.
 
-No R17.2 production logic, prior immutable Release, or legal third-party exclusion is altered by this research-only addition.
+This research did not modify R17.2 runtime logic or relax third-party exclusions. Historical 17.1/17.2 combined ZIPs have since been withdrawn; use Suite 17.3.0 for the complete release. Git history is not claimed to be purged.

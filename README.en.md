@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
+<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -10,7 +10,7 @@
 
 In one Markdown file, choose 選單 for a UI `menu`, 菜單 for a food `menu`, and keep a third occurrence. Review each choice before exporting a new copy; technical spans receive protection.
 
-**[Start your first safer edit](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — Download `TW_Wording_Assistant_R172_20261027.html`，and open it in your local browser.
+**[Start your first safer edit](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)** — Download `TW_Wording_Assistant_R172_20261027.html`, and open it in your local browser.
 
 [See the real walkthrough](docs/showcase/README.en.md) · [Actual preview output](docs/showcase/preview.md)
 
@@ -96,7 +96,7 @@ A **fictional browser-game-like page** with a normal, selectable HTML label such
 
 Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md). Each new release must include every legally distributable, still-supported Chrome extension, Tampermonkey userscript, 13 offline HTML labs, the R6 public quality kit, and the self-contained CLI/Skill developer bundle. Unchanged tools retain their original versions and SHA256 digests. The Draft release is verified before publication. Previously withdrawn third-party-specific packages remain excluded. Only use the [R17.1 suite release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) after its GitHub main CI and assets have actually passed.
 
-**R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** Suite 17.2.0 and all prior supported tools remain unchanged.
+**R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** The R17.2 wording-assistant runtime remains unchanged; historical Suite 17.1/17.2 combined ZIPs have been withdrawn, so use Suite 17.3.0 for the current complete download.
 
 <!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 

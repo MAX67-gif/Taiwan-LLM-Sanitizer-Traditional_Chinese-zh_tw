@@ -1,10 +1,12 @@
 # First result in 3 steps | Taiwan-LLM-Sanitizer R17.2
 
-> Checked 2026-10-28. R17.4 is an **onboarding documentation update**, not a new translation engine or new release. The R17.2 app stays unchanged. Native-speaker translation validation remains pending.
+> First checked 2026-10-28; download location reverified 2026-10-31. R17.4 is an **onboarding documentation update**, not a new translation engine or new release. The R17.2 app stays unchanged. Native-speaker translation validation remains pending.
 
 ## 1. Download a runnable file from the official release
 
-**[Open the latest official GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, choose the full `TLS_ALL_TOOLS_SUITE_17_2_0.zip` for the verified Suite 17.2.0, or `TW_Wording_Assistant_R172_20261027.html` on its own. Future releases may use new names; check the actual assets.
+**[Open the latest official GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, choose the full `TLS_ALL_TOOLS_SUITE_17_3_0.zip` for the verified complete Suite 17.3.0, or `TW_Wording_Assistant_R172_20261027.html` on its own. Future releases may use new names; check the actual assets.
+
+**Historical download notice:** The combined Suite and Developer ZIP files for 17.1/17.2 were withdrawn after a public-distribution review. Their old manifests may still list these archives; use the [verified Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) for the current complete download. The R17.2 assistant tool itself remains unchanged.
 
 A repository link ending in `examples/*.html` opens the **source file view** on GitHub, not a hosted web app. Download the release HTML first and open it locally in your browser.
 
