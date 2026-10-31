@@ -1,9 +1,21 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
+<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+<!-- R176_SHOWCASE_BEGIN -->
+### AI가 초안을 쓰고, 타이완 용어는 직접 선택하세요.
+
+하나의 Markdown에서 UI의 `menu`는 「選單」, 음식의 `menu`는 「菜單」으로 선택하고 세 번째 표현은 원문으로 남길 수 있습니다. 각 선택을 확인한 뒤 새 파일로 내보내며 기술 구간을 우선 보호합니다.
+
+**[첫 문서 검토 시작](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 다운로드: `TW_Wording_Assistant_R172_20261027.html`，로컬 브라우저에서 여세요.
+
+[실제 사용 안내 보기 (영어)](docs/showcase/README.en.md) · [실제 미리보기 결과](docs/showcase/preview.md)
+
+기존 R17.2를 사용한 예시입니다. 제안 범위는 제한적이며 사람의 검토가 필요합니다. 60초는 안내의 설계 길이이며 측정된 작업 시간이 아닙니다.
+<!-- R176_SHOWCASE_END -->
 
 ### 처음 사용하기: Markdown 문서 하나를 3단계로 검토
 

@@ -1,9 +1,21 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
+<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+<!-- R176_SHOWCASE_BEGIN -->
+### AI が下書き。台湾の用語はあなたが選ぶ。
+
+同じ Markdown 内の UI の `menu` は「選單」、飲食の `menu` は「菜單」にし、3 番目は原文のまま残せます。候補ごとに確認してから別ファイルへ出力し、技術的な部分を優先的に保護します。
+
+**[最初の修正を始める](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 次のファイルをダウンロード： `TW_Wording_Assistant_R172_20261027.html`，ローカルブラウザーで開いてください。
+
+[実際の操作手順を見る（英語）](docs/showcase/README.en.md) · [実際のプレビュー結果](docs/showcase/preview.md)
+
+既存の R17.2 を使う例です。候補には限りがあり、人による確認が必要です。60 秒はガイドの設計上の長さで、実測作業時間ではありません。
+<!-- R176_SHOWCASE_END -->
 
 ### 初回利用：3 ステップで Markdown の修正を確認
 

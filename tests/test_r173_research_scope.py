@@ -76,4 +76,56 @@ class ScopeTest(unittest.TestCase):
  def test_central_publisher_guard_still_recognized(self):
   self.assertTrue(F.verify_workflow())
 
+class R176ScopeTests(unittest.TestCase):
+ def transaction(self):
+  modified = {
+   'README.md','README.en.md','README.zh-CN.md','README.ja.md','README.ko.md','README.es.md',
+   'CHANGELOG.md','.github/workflows/ci.yml','tools/check_r173_research_scope.py',
+   'tools/check_all_tools_release.py','tools/publication_guard.py','tests/test_r173_research_scope.py',
+  }
+  added = {
+   'docs/showcase/source.md','docs/showcase/preview.md','docs/showcase/decisions.json',
+   'docs/showcase/verification.json','docs/showcase/README.md','docs/showcase/README.en.md',
+   'docs/showcase/trial_observation.md','tools/check_showcase_r176.js',
+   'tests/test_showcase_r176.js','tests/test_showcase_browser_r176.py','tests/test_r176_showcase_contract.py',
+  }
+  return [('M',p) for p in sorted(modified)] + [('A',p) for p in sorted(added)]
+ def test_r176_exact_23_path_transaction(self):
+  changes=self.transaction();self.assertEqual(len(changes),23)
+  self.assertEqual(C.classify(changes),(True,'R176_PROOF_FIRST_SHOWCASE_DOCS_ONLY'))
+ def test_r176_each_missing_extra_or_retyped_path_fails_closed(self):
+  changes=self.transaction()
+  for i, (state,path) in enumerate(changes):
+   with self.subTest(path=path):
+    self.assertFalse(C.classify(changes[:i]+changes[i+1:])[0])
+    for wrong in ('A' if state=='M' else 'M','D','R100','C100'):
+     self.assertFalse(C.classify(changes[:i]+[(wrong,path)]+changes[i+1:])[0])
+  for extra in ('src/core/wording_assistant_r172.js','release/all_tools_registry.json',
+                'examples/TW_Wording_Assistant_R172_20261027.html','docs/showcase/extra.md',
+                'research/comparison/r173/fixtures_first_task.md'):
+   self.assertFalse(C.classify(changes+[('M',extra)])[0])
+  self.assertFalse(C.classify(changes+[changes[0]])[0])
+ def test_r176_unsafe_path_aliases_do_not_match(self):
+  changes=self.transaction()
+  for bad in ('docs/showcase/../source.md','docs//showcase/source.md',
+              '/docs/showcase/source.md','docs\\showcase\\source.md','docs/showcase/Source.md'):
+   altered=[(s,bad if p=='docs/showcase/source.md' else p) for s,p in changes]
+   self.assertFalse(C.classify(altered)[0])
+ def test_r176_required_ci_commands_are_executable_and_unconditional(self):
+  text=(ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8')
+  required=('node tools/check_showcase_r176.js --check',
+            'python -m unittest tests/test_r176_showcase_contract.py -v',
+            'python tests/test_showcase_browser_r176.py')
+  self.assertTrue(F.verify_workflow(text))
+  for command in required:
+   needle='        run: '+command
+   self.assertIn(needle,text)
+   for replacement in ('        # run: '+command,
+                       '        if: false\n'+needle,
+                       '        continue-on-error: true\n'+needle,
+                       needle+' || true',
+                       '        run: echo '+command):
+    with self.subTest(command=command,replacement=replacement):
+     with self.assertRaises(F.GuardError):F.verify_workflow(text.replace(needle,replacement,1))
+
 if __name__=='__main__':unittest.main()

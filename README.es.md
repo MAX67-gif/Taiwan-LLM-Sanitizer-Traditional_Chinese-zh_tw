@@ -1,9 +1,21 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
+<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+<!-- R176_SHOWCASE_BEGIN -->
+### La IA redacta. Tú eliges los términos de Taiwán.
+
+En un Markdown, elige 選單 para un `menu` de interfaz, 菜單 para uno de comida y conserva una tercera aparición. Revisa cada decisión antes de exportar otra copia; se prioriza proteger los fragmentos técnicos.
+
+**[Empieza tu primera revisión](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — Descarga `TW_Wording_Assistant_R172_20261027.html`，y ábrelo en tu navegador local.
+
+[Recorrido real (inglés)](docs/showcase/README.en.md) · [Vista previa real](docs/showcase/preview.md)
+
+Usa R17.2 existente. Las sugerencias son limitadas y requieren revisión humana. Los 60 segundos son la duración prevista de la guía, no un tiempo de trabajo medido.
+<!-- R176_SHOWCASE_END -->
 
 ### Primer resultado en 3 pasos: revisa un archivo Markdown
 

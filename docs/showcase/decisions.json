@@ -1,0 +1,79 @@
+{
+  "schema": "tls.showcase.decisions.v1",
+  "source_sha256": "ed8231e55ea41cd777addcbca31477fec49300f0831812baa6a9aa7a17ad4488",
+  "offset_unit": "utf16",
+  "choices": [
+    {
+      "candidate_id": "c00001",
+      "start": 19,
+      "end": 23,
+      "original_text": "menu",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "CONFIRM",
+      "option_id": "approved_041:ui_menu"
+    },
+    {
+      "candidate_id": "c00002",
+      "start": 33,
+      "end": 35,
+      "original_text": "軟件",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "CONFIRM",
+      "option_id": "r172_alias_01:software"
+    },
+    {
+      "candidate_id": "c00003",
+      "start": 36,
+      "end": 39,
+      "original_text": "數據庫",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "CONFIRM",
+      "option_id": "r172_alias_02:software"
+    },
+    {
+      "candidate_id": "c00004",
+      "start": 48,
+      "end": 52,
+      "original_text": "menu",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "CONFIRM",
+      "option_id": "approved_044:food_menu"
+    },
+    {
+      "candidate_id": "c00005",
+      "start": 62,
+      "end": 64,
+      "original_text": "點擊",
+      "resolution": "BLOCKED",
+      "action": "UNSELECTED",
+      "option_id": null
+    },
+    {
+      "candidate_id": "c00006",
+      "start": 76,
+      "end": 80,
+      "original_text": "menu",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "KEEP_ORIGINAL",
+      "option_id": null
+    },
+    {
+      "candidate_id": "c00007",
+      "start": 89,
+      "end": 91,
+      "original_text": "軟件",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "KEEP_ORIGINAL",
+      "option_id": null
+    },
+    {
+      "candidate_id": "c00008",
+      "start": 97,
+      "end": 100,
+      "original_text": "數據庫",
+      "resolution": "CONTEXT_REQUIRED",
+      "action": "UNSELECTED",
+      "option_id": null
+    }
+  ]
+}
