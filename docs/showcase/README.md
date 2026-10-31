@@ -6,9 +6,9 @@
 
 ## 1. 先下載真正可用的工作台
 
-**[開始第一份安全修稿：正式 Suite 17.2.0 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)**
+**[開始第一份安全修稿：正式 Suite 17.3.0 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**
 
-在 Release 的 **Assets** 下載 `TW_Wording_Assistant_R172_20261027.html`，用自己的瀏覽器開啟。也可下載完整 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`，解壓後開 `START_HERE.html`。GitHub 的 HTML 原始碼頁不是已部署的線上工具。
+在 Release 的 **Assets** 下載 `TW_Wording_Assistant_R172_20261027.html`，用自己的瀏覽器開啟。也可下載完整 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`，解壓後開 `START_HERE.html`。GitHub 的 HTML 原始碼頁不是已部署的線上工具。
 
 ## 2. 60 秒導覽：四個主要動作
 
@@ -60,4 +60,4 @@
 | 外部使用者完成率、耗時與回訪 | `NOT_COLLECTED` |
 | 任意大小、多個固定區域持續翻譯（MRFT） | `DESIGN_ONLY`，此工具尚未實作 |
 
-這次增加展示與驗證，正式產品仍為 **Suite 17.2.0**；既有工具和歷史 Release 保持原樣。未經真人評測，不宣稱優於其他轉換器，也不宣稱取得任何活動核准。
+此展示沿用固定 R17.2 修稿引擎；目前完整下載應使用 **Suite 17.3.0**。歷史 17.1／17.2 的兩種整合 ZIP 已撤回，其他舊工具原版仍保留。未經真人評測，不宣稱優於其他轉換器，也不宣稱取得任何活動核准。
