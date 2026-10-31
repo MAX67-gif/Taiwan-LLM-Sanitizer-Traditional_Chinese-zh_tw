@@ -39,8 +39,8 @@ def run():
             fixture.draw(page,'#public-1')
             card=page.locator('[data-mrft-card]').first
             assert 'harbor' in card.locator('[data-mrft-source]').inner_text()
-            card.get_by_role('button',name='準備本機模型',exact=True).click();page.wait_for_timeout(400)
-            native_status=card.locator('[data-mrft-status]').inner_text()
+            card.get_by_role('button',name='準備本機模型',exact=True).click()
+            native_status=fixture.wait_for_local_preparation(card)
             assert any(code in native_status for code in ['MODEL_UNAVAILABLE','DOWNLOAD_REQUIRED','UNSUPPORTED_PAIR','WAITING','READY','USER_ACTIVATION_REQUIRED']),native_status
             capability=popup.evaluate("""async () => {const [tab]=await chrome.tabs.query({active:true,currentWindow:true});return (await chrome.scripting.executeScript({target:{tabId:tab.id},world:'ISOLATED',func:()=>({translator:typeof globalThis.Translator,diagnostics:TLSMRFTActiveR177.controller.diagnostics()})}))[0].result;}""")
             assert capability['diagnostics']['regionCount']==1

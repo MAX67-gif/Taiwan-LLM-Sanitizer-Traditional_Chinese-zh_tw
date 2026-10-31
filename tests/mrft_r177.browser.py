@@ -1,7 +1,7 @@
-"""Real Chromium UI acceptance. No translator stub and no model download."""
+"""Native Chromium UI acceptance plus a labelled async protocol double; no model download."""
 import functools, http.server, json, os, threading, re
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 ROOT = Path(__file__).resolve().parents[1]
 def serve():
     class Quiet(http.server.SimpleHTTPRequestHandler):
@@ -26,6 +26,38 @@ def rawdraw(page,box,mode='FIX_VIEWPORT'):
     page.locator('[data-mrft-action="mode"]').select_option(mode)
     page.get_by_role('button',name='畫出區域',exact=True).click()
     page.mouse.move(box['x'],box['y']);page.mouse.down();page.mouse.move(box['x']+box['width'],box['y']+box['height'],steps=4);page.mouse.up();page.wait_for_timeout(250)
+def wait_for_local_preparation(card, timeout=17000):
+    # Allow the unchanged 15s production deadline plus 2s UI scheduling margin.
+    # Callers still reject ERROR/TIMEOUT; PREPARING is never an accepted outcome.
+    status=card.locator('[data-mrft-status]')
+    expect(status).not_to_contain_text('PREPARING',timeout=timeout)
+    return status.inner_text()
+
+def test_delayed_preparation_protocol(browser, url):
+    """Labelled API double: prove async test synchronization, not native model success."""
+    page=browser.new_page(viewport={'width':1300,'height':950})
+    page.add_init_script("""globalThis.protocolCreateCalls=0;
+        globalThis.Translator={availability:()=>new Promise(resolve=>setTimeout(()=>resolve('downloadable'),1200)),
+        create:()=>{globalThis.protocolCreateCalls++;throw Error('Protocol test must never create a model');}};""")
+    page.goto(url+'/docs/mrft/MRFT_ORIGINAL_FIXTURE.html');enable(page);draw(page,'#public-1')
+    card=page.locator('[data-mrft-card]').first
+    card.get_by_role('button',name='準備本機模型',exact=True).click()
+    assert card.locator('[data-mrft-status]').inner_text()=='WATCHING · PREPARING'
+    status=wait_for_local_preparation(card)
+    assert status=='WATCHING · DOWNLOAD_REQUIRED', status
+    assert page.evaluate('protocolCreateCalls')==0
+    # An unresolved API must still fail the test's bounded wait, never count PREPARING as success.
+    page.evaluate('() => {Translator.availability=()=>new Promise(()=>{});}')
+    card.get_by_role('button',name='準備本機模型',exact=True).click()
+    try:
+        wait_for_local_preparation(card,timeout=250)
+    except AssertionError:
+        assert card.locator('[data-mrft-status]').inner_text()=='WATCHING · PREPARING'
+    else:
+        raise AssertionError('Unresolved preparation must fail its bounded test wait')
+    close(page);page.close()
+    print('R177 delayed-preparation protocol PASS: 1200ms availability settles; unresolved wait rejects; fakeProvider=true; modelCreateCalls=0')
+
 def test_document_root_exclusions(page):
     """Root ancestry changes clear source/manual output; removal restores only source."""
     enable(page);draw(page,'#public-1','FIX_VIEWPORT')
@@ -60,6 +92,7 @@ def run():
     try:
         with sync_playwright() as p:
             browser=p.chromium.launch(executable_path=os.environ.get('TLS_CHROMIUM_PATH'),headless=True,args=['--no-sandbox'])
+            test_delayed_preparation_protocol(browser,url)
             page=browser.new_page(viewport={'width':1300,'height':950},device_scale_factor=1.5)
             errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
             requests=[];page.on('request',lambda r:requests.append(r.url))
@@ -144,8 +177,8 @@ def run():
             page.evaluate("""() => {document.querySelector('#page-counter').addEventListener('click',()=>{const root=document.querySelector('[data-mrft-host]').shadowRoot;root.querySelector('[data-mrft-card] input[type=checkbox]').checked=true;root.querySelector('[data-mrft-card] input[type=checkbox]').dispatchEvent(new Event('change',{bubbles:true}));[...root.querySelectorAll('button')].find(b=>b.textContent==='準備本機模型').click();},{once:true})}""")
             page.locator('#page-counter').click();page.wait_for_timeout(300)
             assert card.locator('select[aria-label^="翻譯方式"]').input_value()=='USER_PASTED', 'Synthetic prepare must not borrow user activation'
-            card.get_by_role('button',name='準備本機模型',exact=True).click();page.wait_for_timeout(500)
-            local_status=card.locator('[data-mrft-status]').inner_text()
+            card.get_by_role('button',name='準備本機模型',exact=True).click()
+            local_status=wait_for_local_preparation(card)
             assert any(x in local_status for x in ['MODEL_UNAVAILABLE','DOWNLOAD_REQUIRED','UNSUPPORTED_PAIR','WAITING','READY','TRANSLATING','USER_ACTIVATION_REQUIRED']),local_status
             assert source(page)!='尚無已確認的可見原文', 'Preparing local must retain or rescan current source'
             # Repeated activation has a single root and releases the previous controller.
