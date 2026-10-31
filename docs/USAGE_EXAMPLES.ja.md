@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
+<!-- SOURCE_EXAMPLES_SHA256:3a7ad38727e421556466f409dc2ce6b8e2db5ed0535e44344c9334be467f1fd7 -->
 
 # 台湾繁体字中国語ローカライズ：9 つのオリジナル利用例
 
@@ -65,8 +65,14 @@ HTML／DOM の通常テキスト `Open settings` や `Start` は、規約に適�
 
 AI で権利を持つ中国語 Markdown を作成し、[R17.2 オフラインレビュー](../examples/TW_Wording_Assistant_R172_20261027.html)で用語と保護対象を確認したうえで保存します。[英語版 AI ガイド](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。Grok 用の直接プラグインではありません。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 ## 全ツールのダウンロード
 
 これらの例で使う、合法的に配布可能なツールは [R17.1 全ツールと検証ガイド](ALL_TOOLS_RELEASE.md) にまとめています。Chrome、Tampermonkey、オフライン HTML、CLI ではインストール方法が異なります。元のバージョンを保持し、目的に合う入口を選んでください。同一サイトで複数バージョンを同時に有効にしないでください。このパッケージは翻訳品質の人による認証を提供しません。
+
+<!-- R177_MRFT_EXAMPLE_BEGIN -->
+## R17.7 の独立した複数枠の練習
+
+従来の EX01–EX09 は保持します。[MRFT の操作とオリジナル練習](mrft/MRFT_DOM_PREVIEW.md)では、最大 8 枠、2 種類の位置指定、手動の訳文または明示的に有効化するローカルモデルを扱います。OCR とクラウド送信は含みません。Suite 17.3.0 は 28 ツール／23 個の独立ツール資産／28 個の Release 添付ファイルを含み、元の 27 ツールのバイト列を保持します。モデルの能力と言語品質の人による評価は別途必要です。
+<!-- R177_MRFT_EXAMPLE_END -->

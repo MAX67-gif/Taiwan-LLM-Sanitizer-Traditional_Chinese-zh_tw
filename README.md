@@ -16,7 +16,7 @@
 
 ### 第一次使用：只要 3 步，先完成一份 Markdown
 
-**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
 
 **② 解壓 ZIP，使用本機瀏覽器開啟 `START_HERE.html`** → 選「R17.2 離線修稿助手」。**③ 載入原創示例或自己的 Markdown → 逐項採用／保留 → 產生安全預覽 → 下載新稿。**
 
@@ -29,7 +29,18 @@
 
 [立即開始](START_HERE.html) · [R17.2 離線臺灣用語修稿助手](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex／Claude Code／Grok AI 實戰教學](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) · [English AI guide](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。
 
-貼入自己的中文 Markdown，僅在可修改片段給出有限的臺灣用語候選，使用者逐項採用或保留後才預覽、另存。不是全文翻譯、字形正規化、模型品質認證，也不會自動連線 AI；使用雲端 Codex／Claude／Grok 時原稿是否送出由使用者在該平台決定。原 R5/R11/R13 與舊 HTML 原樣保留；完整 Suite v17.2.0 仍有所有合法受支援工具。
+貼入自己的中文 Markdown，僅在可修改片段給出有限的臺灣用語候選，使用者逐項採用或保留後才預覽、另存。不是全文翻譯、字形正規化、模型品質認證，也不會自動連線 AI；使用雲端 Codex／Claude／Grok 時原稿是否送出由使用者在該平台決定。原 R5/R11/R13 與舊 HTML 原樣保留；舊版 Suite v17.2.0 保持不變；新版 Suite v17.3.0 在原有工具之外加入 MRFT。
+
+<!-- R177_MRFT_BEGIN -->
+### R17.7｜框住需要閱讀的位置（獨立 Chrome Preview 0.1.0）
+
+在目前分頁明確同意後，拖曳建立最多 **8 個獨立翻譯框**：`FOLLOW_DOM` 跟隨原網頁元素，`FIX_VIEWPORT` 固定在螢幕位置；可移動、調整大小、暫停、重新框選或全部關閉。只讀取框內可見的一般 DOM 文字，原網頁不改寫。
+
+預設由你**手動貼入譯文**。本機 Translator API 需另行啟用；若需要下載模型，須明確同意。不可用時顯示 `MODEL_UNAVAILABLE`，不假裝即時翻譯。限公開、非敏感內容；不支援 OCR、Canvas/WebGL、iframe 或雲端傳輸，也無法自動辨識所有未標記的私人內容。翻譯品質仍需人工確認。
+
+**[下載完整 Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**：28 項工具、23 個獨立工具資產、28 個 Release 附件；原 27 項工具的版本與位元組保留。新安裝檔 `TLS_Chrome_MV3_MRFT_R177_20261031.zip` 內含原創練習頁。**[安裝、操作與限制](docs/mrft/MRFT_DOM_PREVIEW.md)**。尚未經 Chrome Web Store 或真人語言品質認證。
+<!-- R177_MRFT_END -->
+
 
 ## 現在能使用什麼？
 
@@ -92,6 +103,6 @@
 
 **R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，不影響既有 Suite 17.2.0 完整下載與使用。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

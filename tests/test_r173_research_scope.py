@@ -128,4 +128,75 @@ class R176ScopeTests(unittest.TestCase):
     with self.subTest(command=command,replacement=replacement):
      with self.assertRaises(F.GuardError):F.verify_workflow(text.replace(needle,replacement,1))
 
+
+class R177ProductScopeTests(unittest.TestCase):
+ def test_complete_mrft_transaction_requires_full_product_release(self):
+  # Reviewed54-path feature plus public-boundary correction; NOT a bypass allowlist.
+  changes=[
+   ('M', '.github/workflows/ci.yml'),
+   ('M', '.gitignore'),
+   ('M', 'CHANGELOG.md'),
+   ('M', 'README.en.md'),
+   ('M', 'README.es.md'),
+   ('M', 'README.ja.md'),
+   ('M', 'README.ko.md'),
+   ('M', 'README.md'),
+   ('M', 'README.zh-CN.md'),
+   ('M', 'START_HERE.html'),
+   ('M', 'docs/ALL_TOOLS_RELEASE.md'),
+   ('D', 'docs/PRODUCT_POSITIONING_R8.md'),
+   ('M', 'docs/R175_NATIVE_OPENCC_PROTOCOL.md'),
+   ('D', 'docs/R9_PRODUCT_STRATEGY.md'),
+   ('M', 'docs/USAGE_EXAMPLES.en.md'),
+   ('M', 'docs/USAGE_EXAMPLES.es.md'),
+   ('M', 'docs/USAGE_EXAMPLES.ja.md'),
+   ('M', 'docs/USAGE_EXAMPLES.ko.md'),
+   ('M', 'docs/USAGE_EXAMPLES.md'),
+   ('M', 'docs/USAGE_EXAMPLES.zh-CN.md'),
+   ('A', 'docs/mrft/MRFT_DOM_PREVIEW.md'),
+   ('A', 'docs/mrft/MRFT_ORIGINAL_FIXTURE.html'),
+   ('A', 'docs/mrft/session_metadata.schema.json'),
+   ('M', 'release/all_tools_registry.json'),
+   ('M', 'research/comparison/r173/methodology.json'),
+   ('M', 'research/comparison/r175/PROTOCOL.md'),
+   ('A', 'src/core/mrft_local_provider_r177.js'),
+   ('A', 'src/core/mrft_regions_r177.js'),
+   ('A', 'src/r177/chrome/README_INSTALL.md'),
+   ('A', 'src/r177/chrome/content.js'),
+   ('A', 'src/r177/chrome/manifest.json'),
+   ('A', 'src/r177/chrome/popup.html'),
+   ('A', 'src/r177/chrome/popup.js'),
+   ('A', 'src/r177/fixture_r177.js'),
+   ('A', 'src/r177/mrft_dom_r177.js'),
+   ('A', 'tests/mrft_extension_r177.browser.py'),
+   ('A', 'tests/mrft_provider_r177.test.js'),
+   ('A', 'tests/mrft_r177.browser.py'),
+   ('A', 'tests/mrft_r177.test.js'),
+   ('A', 'tests/test_all_tools_mrft_r177.py'),
+   ('M', 'tests/test_all_tools_publisher.py'),
+   ('M', 'tests/test_all_tools_release.py'),
+   ('M', 'tests/test_all_tools_release_recovery.py'),
+   ('A', 'tests/test_mrft_build_r177.py'),
+   ('M', 'tests/test_r172_suite_monotonic.py'),
+   ('M', 'tests/test_r173_research_scope.py'),
+   ('M', 'tests/test_r174_first_run_links.py'),
+   ('M', 'tests/test_r176_showcase_contract.py'),
+   ('M', 'tools/build_all_tools_release.py'),
+   ('A', 'tools/build_mrft_r177.py'),
+   ('M', 'tools/check_all_tools_release.py'),
+   ('M', 'tools/publication_guard.py'),
+   ('M', 'tools/publish_all_tools_release.py'),
+   ('M', 'tools/templates/start_here_suite_r172.html'),
+  ]
+  self.assertEqual(len(changes),54)
+  self.assertEqual(C.classify(changes),(False,'PRODUCT_OR_UNRECOGNIZED_CHANGE'))
+ def test_each_mrft_runtime_or_installer_cannot_join_old_research_bypass(self):
+  for path in ('src/core/mrft_regions_r177.js','src/core/mrft_local_provider_r177.js',
+               'src/r177/mrft_dom_r177.js','src/r177/chrome/manifest.json',
+               'tools/build_mrft_r177.py','release/all_tools_registry.json'):
+   with self.subTest(path=path):
+    changes=[('A','research/comparison/r173/methodology.json'),('A',path)]
+    self.assertFalse(C.classify(changes)[0])
+    self.assertFalse(C.classify(R176ScopeTests().transaction()+[('A',path)])[0])
+
 if __name__=='__main__':unittest.main()

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
+<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -19,7 +19,7 @@ Usa R17.2 existente. Las sugerencias son limitadas y requieren revisión humana.
 
 ### Primer resultado en 3 pasos: revisa un archivo Markdown
 
-**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_2_0.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
+**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_0.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Descomprime el ZIP y abre `START_HERE.html` en el navegador local.** **③ Abre el asistente R17.2, carga el ejemplo original o un Markdown propio, acepta o conserva cada sugerencia y descarga un archivo nuevo tras revisar los cambios protegidos.**
 
@@ -30,6 +30,17 @@ Herramienta de código abierto para elegir vocabulario taiwanés, leer textos bi
 ### R17.2 | Revisión de terminología de Taiwán para textos creados con IA
 
 [Empezar](START_HERE.html) · [Asistente local R17.2](examples/TW_Wording_Assistant_R172_20261027.html) · [Guía para Codex, Claude y Grok](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Pega Markdown chino propio o autorizado, revisa cada sugerencia y descarga un archivo nuevo tras la revisión estructural. Sin traducción automática en la nube, sin integración nativa con Grok ni certificación lingüística.
+
+
+<!-- R177_MRFT_BEGIN -->
+### R17.7 | Enmarca el texto que quieres seguir (Chrome Preview 0.1.0 independiente)
+
+Tras dar consentimiento explícito para la pestaña actual, arrastra para crear hasta **8 regiones de traducción independientes**. `FOLLOW_DOM` sigue al elemento original; `FIX_VIEWPORT` conserva las coordenadas de pantalla. Puedes mover, redimensionar, pausar, volver a seleccionar o cerrar todas las regiones. Solo se lee texto DOM normal y visible dentro de cada región; el texto original de la página no se modifica.
+
+La opción predeterminada es **pegar una traducción manualmente**. Activa la Translator API local por separado, con consentimiento explícito si necesita descargar un modelo. Si no está disponible, aparece `MODEL_UNAVAILABLE`; no se simula traducción en tiempo real. Úsalo solo con contenido público y no sensible. No incluye OCR, Canvas/WebGL, iframe ni transmisión a la nube, y no puede detectar todo contenido privado sin marcar. La calidad de la traducción requiere revisión humana.
+
+**[Descargar Suite 17.3.0 completo](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**: 28 herramientas, 23 recursos de herramientas independientes y 28 adjuntos de Release. Las 27 herramientas anteriores conservan sus versiones y bytes. El nuevo instalador `TLS_Chrome_MV3_MRFT_R177_20261031.zip` incluye una página de práctica original. **[Instalación, uso y límites](docs/mrft/MRFT_DOM_PREVIEW.md)** (chino tradicional). Sin certificación de Chrome Web Store ni de calidad lingüística por personas.
+<!-- R177_MRFT_END -->
 
 
 ## Funciones disponibles
@@ -87,6 +98,6 @@ Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEA
 
 **R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** Las herramientas de Suite 17.2.0 siguen sin cambios.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 La validación compara los archivos reales y descargados con el SHA256 original fijado y la revisión de Git. Se descargan por separado los archivos del borrador y los publicados; una etiqueta existente se verifica sin sobrescribirla. Las seis guías siguen pendientes de revisión humana (HUMAN_TRANSLATION_REVIEW_PENDING).

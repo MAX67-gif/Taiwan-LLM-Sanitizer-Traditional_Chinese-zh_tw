@@ -1,4 +1,23 @@
-# All-Tools Full Suite R17.1｜每次 Release 都要有所有合法且受支援的工具
+# All-Tools Full Suite｜每次 Release 都要有所有合法且受支援的工具
+
+## Suite 17.3.0｜新增 MRFT DOM 多框閱讀預覽
+
+本輪完整套件為 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)，新增一個獨立 `TLS_Chrome_MV3_MRFT_R177_20261031.zip`（工具 0.1.0 Preview，含原創練習頁），保留 Suite 17.2.0 原 27 項工具的版本與位元組。完整下載為 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`；操作與限制見 [MRFT 說明](mrft/MRFT_DOM_PREVIEW.md)。正式可用狀態仍以對應 main CI、已公開 Release 與全部附件實際下載驗證為準。
+
+| 本輪內容 | 數量 | 原工具是否重寫 |
+| --- | ---: | --- |
+| Chrome ZIP | 4 | R5/R11/R13 原位元組保留；只新增 MRFT |
+| Tampermonkey 單檔 | 3 | 原位元組保留；本輪沒有新增 MRFT Userscript |
+| 離線 HTML 工作台 | 14 | 原位元組保留，包括 R17.2 修稿助手 |
+| R6 品質套件 | 1 | 原位元組保留 |
+| CLI/Skill 身分 | 6 | 入口版本與位元組保留，完整依賴放在一個新套件版的開發者 ZIP |
+| **工具身分總數** | **28** | 27 舊項加 1 新項 |
+| **獨立工具資產** | **23** | 上述 22 個獨立檔案加 1 個開發者 ZIP |
+| **Release 附件** | **28** | 23 工具資產加完整 Suite、Manifest、Provenance、Validation、SHA256SUMS |
+
+舊 R17.2 工具的來源提交固定為 `a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4`；不會因新套件重建而冒稱它是新提交產出的新工具。MRFT 則綁定本輪經驗證的實際來源提交。新增 ZIP 必須每次在驗證與中央發布工作的乾淨 checkout 中重建，並比對固定 SHA256；不得假設其他 CI 工作留下了產物。
+
+以下保留 R17.1／17.2 的原始版本背景；歷史數量與檔名不代表本輪 17.3.0 清單。未取得真人審閱的限制不因新增套件而消失。
 
 > 2026-10-27。此頁是公開操作與版本治理契約，不表示所有工具皆已取得真人翻譯品質認證。所有未變更舊工具保留自己的原版號與來源 SHA256；完整套件版號不等於工具更新。
 

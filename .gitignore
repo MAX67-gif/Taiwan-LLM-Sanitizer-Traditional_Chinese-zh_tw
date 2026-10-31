@@ -101,3 +101,7 @@ dist/r13/*.zip
 dist/r13/*SUMS*.txt
 dist/r13/TLS_Tampermonkey_R13_*.user.js
 
+# R17.7 has one source tree; the exact-member installer and unpacked test copy
+# are rebuilt and SHA-verified by CI, not duplicated as tracked source.
+dist/r177/
+

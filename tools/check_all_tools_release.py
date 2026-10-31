@@ -62,11 +62,16 @@ def checksums(b,where,allow_paths=False):
 
 def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expected_sha=None, previous_manifest=None,release_data=None,download_dir=None, require_published=None):
     expect(stage.is_dir() and not stage.is_symlink(),'STAGE_NOT_DIR')
+    # Fixture registries intentionally substitute historical R5/R6 bytes.
+    # Reject declared fixtures before applying production metadata pins.
+    if not fixture_ok and (stage/'ALL_TOOLS_MANIFEST.json').is_file():
+        declared = readjson(B.safe_file(stage/'ALL_TOOLS_MANIFEST.json', stage), 'manifest')
+        expect(declared.get('is_fixture') is not True, 'FIXTURE_NOT_PUBLISHABLE')
     expected_registry=readjson(registry.read_bytes(),'registry')
     tools=B.validate_registry(expected_registry,fixture=fixture_ok)
     expected_names={t['artifact_filename'] for t in tools if t['standalone_required']}
     expected_names.add(B.DEVELOPER_BUNDLE)
-    expect(len(expected_names)==22,'EXPECTED_STANDALONE_COUNT')
+    expect(len(expected_names)==23,'EXPECTED_STANDALONE_COUNT')
     expected_names |= REQ_NAMES
     actual_names={p.name for p in stage.iterdir()}
     expect(actual_names==expected_names,'INCOMPLETE_OR_EXTRA_ASSETS missing='+str(sorted(expected_names-actual_names))+' extra='+str(sorted(actual_names-expected_names)))
@@ -76,6 +81,8 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     prov=readjson(assets['BUILD_PROVENANCE.json'],'provenance')
     valid=readjson(assets['VALIDATION.json'],'validation')
     expect(m.get('schema')=='tls.all-tools-release-manifest.v1','MANIFEST_SCHEMA')
+    expect(m.get('tool_count') == 28 and m.get('asset_count_standalone') == 23, 'CURRENT_INVENTORY_COUNTS')
+    expect(all(valid.get(k) == v for k,v in {'tool_count_expected':28, 'tool_count_present':28, 'tool_count_updated':1, 'tool_count_reused_from_origins':27, 'tool_count_unchanged_from_previous_suite':27, 'standalone_asset_count':23}.items()), 'CURRENT_VALIDATION_COUNTS')
     expect(prov.get('schema') == 'tls.all-tools-provenance.v1' and valid.get('schema') == 'tls.all-tools-validation.v1', 'PROVENANCE_VALIDATION_SCHEMA')
     expect(m.get('release_tag')==expected_registry['release_tag'] and valid.get('release_tag')==m.get('release_tag'),'RELEASE_TAG_MISMATCH')
     expect(m.get('suite_version')==expected_registry['suite_version'] and prov.get('suite_version')==m.get('suite_version'),'SUITE_VERSION_MISMATCH')
@@ -89,7 +96,11 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     expect(isinstance(m.get('tools'),list) and [x['tool_id'] for x in m['tools']]==[x['tool_id'] for x in tools],'TOOL_ID_PARITY')
     for got,locked in zip(m['tools'],tools):
         for k in locked:
+            if locked['tool_id'] == B.NEW_TOOL_ID and k == 'original_commit_sha':
+                continue
             expect(got.get(k)==locked[k],'TOOL_METADATA_OR_VERSION:'+locked['tool_id']+':'+k)
+        if locked['tool_id'] == B.NEW_TOOL_ID:
+            expect(got.get('original_commit_sha') == m.get('source_git_sha'), 'NEW_TOOL_SOURCE_COMMIT_AUTHORITY')
         expect(got.get('source_sha256')==locked['expected_sha256'],'TOOL_SHA_OR_PROVENANCE:'+locked['tool_id'])
         expect(got.get('artifact_bytes',0)>0 and got.get('artifact_sha256')==locked['expected_sha256'],'TOOL_BYTES_AND_SHA:'+locked['tool_id'])
         expect(got.get('verification_status') in ('SOURCE_SHA_PASS','SHA256_PASS'),'TOOL_UNVERIFIED:'+locked['tool_id'])
@@ -104,6 +115,8 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
         if locked['standalone_required']:
             expect(B.digest(assets[locked['artifact_filename']]) == locked['expected_sha256'], 'LOCKED_ARTIFACT_SHA:' + locked['tool_id'])
             got = next(row for row in m['tools'] if row['tool_id'] == locked['tool_id'])
+            if locked['source_kind'] == 'generated_local_artifact':
+                B.validate_generated_installer(assets[locked['artifact_filename']], locked)
             expect(got['artifact_bytes'] == len(assets[locked['artifact_filename']]), 'TOOL_SIZE:' + locked['tool_id'])
             expect(got.get('location_in_suite') == 'TOOLS/' + locked['package_subdir'] + '/' + locked['artifact_filename'], 'TOOL_LOCATION:' + locked['tool_id'])
     if previous_manifest:
@@ -111,7 +124,7 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
         current={x['tool_id'] for x in m['tools']}
         prior={x['tool_id'] for x in old['tools'] if x.get('status') not in ('EXCLUDED_RIGHTS_WITHDRAWN','PRIVATE_ONLY','BLOCKED_SECURITY')}
         expect(not prior-current,'TOOL_ID_REMOVAL_NOT_AUTHORIZED:'+','.join(sorted(prior-current)))
-    expect(len(m.get('artifacts',[]))==22,'ARTIFACT_MANIFEST_COUNT')
+    expect(len(m.get('artifacts',[]))==23,'ARTIFACT_MANIFEST_COUNT')
     artifacts={x['name']:x for x in m['artifacts']}
     expect(set(artifacts)==expected_names-REQ_NAMES,'ARTIFACT_NAME_LIST')
     for name,entry in artifacts.items():
@@ -201,7 +214,7 @@ def check_release(obj,stage:Path,require_published=False,download_dir=None):
     return True
 
 def require_unconditional_single_command(job, command):
-    """Require a single real R17.6 run step, without skip/soft-fail modifiers.
+    """Require one actual command step without skip or soft-fail modifiers.
 
     This intentionally accepts only the small reviewed step shape. An echo,
     comment, shell suffix or disabled step cannot serve as execution evidence.
@@ -264,6 +277,7 @@ def verify_workflow(workflow_text=None):
     expect(re.search(r"^    if: github.event_name == 'push' && github.ref == 'refs/heads/main'$", header, re.M), 'CENTRAL_RELEASE_EVENT')
     expect(re.search(r'^    needs: \[verify, browser-integration\]$', header, re.M), 'CENTRAL_RELEASE_DEPENDENCIES')
     expect(re.search(r'^      contents: write$', header, re.M), 'CENTRAL_RELEASE_PERMISSION')
+    expect(not re.search(r'^    continue-on-error:', header, re.M), 'MRFT_PUBLISHER_MUST_NOT_SOFT_FAIL')
     expect(re.search(r'^    concurrency:\n      group: tls-all-tools-release-\$\{\{ github.repository \}\}\n      cancel-in-progress: false$', header, re.M),
            'CENTRAL_RELEASE_CONCURRENCY')
     # Research-only source changes must never attempt to republish an immutable
@@ -286,7 +300,24 @@ def verify_workflow(workflow_text=None):
     for fragment in ('tools/build_all_tools_release.py', 'tools/check_all_tools_release.py',
                      'tools/publish_all_tools_release.py', '--expected-sha', '--source-sha', '--fetch-official'):
         expect(fragment in block, 'CENTRAL_RELEASE_GATE_MISSING:' + fragment)
+    for job in ('verify', 'browser-integration'):
+        gate_header = jobs[job].split('\n    steps:', 1)[0]
+        expect(not re.search(r'^    (?:if|continue-on-error):', gate_header, re.M), 'MRFT_REQUIRED_JOB_MUST_EXECUTE:' + job)
     verify = jobs['verify']
+    for command in ('python tools/build_mrft_r177.py', 'python tools/build_mrft_r177.py --check',
+                    'python tests/test_mrft_build_r177.py',
+                    'python -m unittest tests/test_all_tools_mrft_r177.py -v'):
+        require_unconditional_single_command(verify, command)
+    expect(verify.index('run: python tools/build_mrft_r177.py\n') < verify.index("python -m unittest discover -s tests -p 'test_all_tools*.py'"), 'MRFT_BUILD_BEFORE_RELEASE_TESTS')
+    require_unconditional_single_command(jobs['browser-integration'], 'sudo apt-get update && sudo apt-get install --yes --no-install-recommends xvfb xauth xdotool')
+    require_unconditional_single_command(jobs['browser-integration'], 'python tools/build_mrft_r177.py')
+    require_unconditional_single_command(jobs['browser-integration'], 'python tests/mrft_r177.browser.py')
+    require_unconditional_single_command(jobs['browser-integration'], 'xvfb-run -a python tests/mrft_extension_r177.browser.py')
+    for browser_command in ('python tests/mrft_r177.browser.py', 'xvfb-run -a python tests/mrft_extension_r177.browser.py'):
+        expect(jobs['browser-integration'].index('run: python tools/build_mrft_r177.py\n') < jobs['browser-integration'].index('run: ' + browser_command), 'MRFT_BUILD_BEFORE_BROWSER_TESTS')
+    require_unconditional_single_command(block, 'python tools/build_mrft_r177.py')
+    require_unconditional_single_command(block, 'python tools/build_mrft_r177.py --check')
+    expect(block.index('run: python tools/build_mrft_r177.py\n') < block.index('python tools/build_all_tools_release.py'), 'MRFT_BUILD_BEFORE_PUBLISHER_STAGE')
     require_unconditional_single_command(verify,'node tools/check_showcase_r176.js --check')
     require_unconditional_single_command(verify,'python -m unittest tests/test_r176_showcase_contract.py -v')
     require_unconditional_single_command(jobs['browser-integration'],'python tests/test_showcase_browser_r176.py')

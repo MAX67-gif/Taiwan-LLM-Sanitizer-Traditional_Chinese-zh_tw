@@ -30,6 +30,9 @@ DOCS_PUBLIC={
     "docs/ALL_TOOLS_RELEASE.md",
     "docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md", "docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md",
     "docs/R172_WORDING_ASSISTANT.md",
+    "docs/mrft/MRFT_DOM_PREVIEW.md",
+    "docs/mrft/session_metadata.schema.json",
+    "docs/mrft/MRFT_ORIGINAL_FIXTURE.html",
     "docs/QUICK_START_R174.md", "docs/QUICK_START_R174.en.md",
     "docs/R174_ORIGINAL_FIRST_TASK.md",
     "docs/R175_NATIVE_OPENCC_PROTOCOL.md",
@@ -48,8 +51,8 @@ DOCS_PUBLIC={
     "docs/QUALITY_EVALUATION.md",
     "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
     "docs/AI_INTEGRATION.md","docs/NAME_PROTECTION.md",
-    "docs/CONTEXT_REVIEW_R8.md","docs/PRODUCT_POSITIONING_R8.md",
-    "docs/R9_USER_TERMS.md","docs/R9_PRODUCT_STRATEGY.md","docs/R9_STAGE_CHECK.md",
+    "docs/CONTEXT_REVIEW_R8.md",
+    "docs/R9_USER_TERMS.md","docs/R9_STAGE_CHECK.md",
     "docs/R10_PROVENANCE_REVIEW.md",
     "docs/R11_SITE_GLOSSARY.md",
     "docs/R11_STAGE_CHECK.md",
@@ -102,7 +105,7 @@ EXFIL_APIS=(
     "chrome.history.", "chrome.cookies.", "document.cookie",
 )
 # Only production JS, not test examples that intentionally name forbidden APIs.
-RUNTIME_PREFIXES=("src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
+RUNTIME_PREFIXES=("src/r177/","dist/r177/","src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
 RUNTIME_SUFFIXES=(".js",".user.js")
 
 def allowed_path(name:str)->bool:
@@ -132,6 +135,48 @@ def scan_runtime(path:str,content:str)->list[str]:
         return []
     return [f"{path}: disallowed outgoing-data API {api}" for api in EXFIL_APIS if api in content]
 
+# This is a narrow narrative boundary, not a blanket ban on public research.
+# Match explicit origin references and clear market/competitor strategy signals;
+# ordinary privacy rules, fair technical comparison, skills and benchmarks remain.
+NEGATED_STRATEGY_HEADING = re.compile(
+    r"(?i)^\s{0,3}#{1,6}\s+(?:"
+    r"(?:do not|never|must not|must never)\s+(?:publish|disclose|share)\s+"
+    r"(?:(?:private|internal|detailed)\s+)*(?:market|competitor|product|customer\s+acquisition)\b"
+    r"|(?:不得|禁止|不要)(?:公開|公布|揭露|發布|發佈)(?:私人|內部|詳細)*(?:市場|產品|競品|競爭|用戶獲取))"
+)
+PRIVATE_BRAIN_LABEL = r"(?:private[\s_-]+(?:project[\s_-]+)?brain|私人(?:專案)?大腦|私人\s*Project\s*Brain)"
+PRIVATE_ORIGIN = re.compile(
+    r"(?i)(?:\b(?:source|origin)\b[\"']?\s*[:=]\s*[\"']?\s*|(?:來源|出處)\s*[:：]\s*|\b(?:based on|derived from|copied from)\s+|(?:源自|取自)\s*)"
+    + PRIVATE_BRAIN_LABEL
+)
+PRIVATE_ORIGIN_LINK = re.compile(r"(?i)(?:\]\(|https?://)[^\s)]{0,180}(?:private[-_/](?:project[-_/])?brain|project[-_]brain)(?:[/\\.#?]|\b)")
+STRATEGY_HEADING = re.compile(
+    r"(?im)^\s{0,3}#{1,6}\s+[^\r\n]{0,100}(?:"
+    r"(?:market|competitor|product|customer\s+acquisition)[\w /&-]{0,40}(?:strategy|positioning|advantage|acquisition)"
+    r"|產品定位|產品策略|產品競爭力|市場策略|競爭優勢|競品分析|用戶獲取|使用者獲取)"
+)
+COMPETITOR_SIGNAL = re.compile(r"(?i)\bcompetitor(?:s)?\b|競爭對手|競品")
+BUSINESS_STRATEGY_SIGNAL = re.compile(r"(?i)customer\s+acquisition|go[- ]to[- ]market|market\s+opportunity|competitive\s+moat|用戶獲取|使用者獲取|市場機會|競爭壁壘")
+
+def scan_public_boundary(path:str,content:str)->list[str]:
+    # Test fixtures and frozen benchmark records are data, not public narrative.
+    if path.startswith(("tests/", "benchmarks/")):
+        return []
+    origin_scope = path.endswith(".md") or (path.startswith(("docs/", "research/")) and path.endswith((".json", ".txt")))
+    strategy_scope = path.startswith(("docs/", "research/", "README")) and path.endswith((".md", ".json", ".txt"))
+    if not origin_scope and not strategy_scope:
+        return []
+    # Origin declarations always inspect original text: an unrelated warning
+    # or privacy clause on the same line cannot cancel a declared private source.
+    # Only explicit strategy-prohibition headings are omitted from strategy text.
+    narrative = "\n".join(line for line in content.splitlines() if not NEGATED_STRATEGY_HEADING.search(line))
+    errors=[]
+    if origin_scope and (PRIVATE_ORIGIN.search(content) or PRIVATE_ORIGIN_LINK.search(content)):
+        errors.append(f"{path}: private planning-origin reference is not public methodology")
+    if strategy_scope and (STRATEGY_HEADING.search(narrative) or (COMPETITOR_SIGNAL.search(narrative) and BUSINESS_STRATEGY_SIGNAL.search(narrative))):
+        errors.append(f"{path}: market/competitor strategy belongs outside public product documentation")
+    return errors
+
 def validate(paths:list[str])->list[str]:
     errors=[]
     present=set(paths)
@@ -155,6 +200,7 @@ def validate(paths:list[str])->list[str]:
             continue
         errors.extend(scan_secret(item,content))
         errors.extend(scan_runtime(item,content))
+        errors.extend(scan_public_boundary(item,content))
     required={"README.md","LICENSE","PRIVACY.md","SECURITY.md","AUTHORS.md",
               "tools/publication_guard.py","AGENTS.md","CLAUDE.md",
               "docs/INSTALL_CHROME.md","docs/INSTALL_TAMPERMONKEY.md",
@@ -209,6 +255,33 @@ def self_test():
     assert scan_runtime("src/core/provider.js","fetch('https://example.com')")
     assert not scan_runtime("src/core/provider.js","const x=1;")
     assert scan_secret("x.md","sk-proj-"+"X"*45)
+    # Synthetic boundary fixtures: no real private repository identifiers.
+    boundary = scan_public_boundary
+    checks = [
+        (not allowed_path("docs/PRODUCT_POSITIONING_R8.md"), "withdraw old positioning allowlist"),
+        (not allowed_path("docs/R9_PRODUCT_STRATEGY.md"), "withdraw old strategy allowlist"),
+        (bool(boundary("research/comparison/r173/methodology.json", '{"source": "Private Project Brain planning note"}')), "private origin metadata"),
+        (bool(boundary("docs/FEATURES.md", "Source: private-project-brain planning note")), "private origin prose"),
+        (bool(boundary("docs/FEATURES.md", "Source: Private Project Brain planning note. Do not edit this paragraph.")), "origin survives unrelated sentence negation"),
+        (bool(boundary("research/comparison/r173/methodology.json", '{"source":"Private Project Brain planning note","warning":"Do not modify frozen inputs"}')), "origin survives unrelated compact JSON warning"),
+        (bool(boundary("skills/example/SKILL.md", "Based on Private Project Brain planning note; never upload user text.")), "skill origin survives unrelated privacy clause"),
+
+        (bool(boundary("docs/FEATURES.md", "[Source](https://example.invalid/project-brain/planning.md)")), "private origin link"),
+        (bool(boundary("docs/FEATURES.md", "# Market and competitor strategy\nCustomer acquisition targets and competitive positioning.")), "renamed English strategy"),
+        (bool(boundary("docs/FEATURES.md", "# 產品定位與競爭優勢\n市場機會與用戶獲取假設。")), "renamed Chinese strategy"),
+        (bool(boundary("research/comparison/r173/feedback_template.md", "Competitor positioning: Example A.\nCustomer acquisition targets: paid conversion.")), "strategy body in research"),
+        (not boundary("docs/THIRD_PARTY_RIGHTS_POLICY.md", "Do not publish private strategy or private Project Brain source notes."), "privacy rule remains public"),
+        (not boundary("docs/ROADMAP.md", "# Do not publish market strategy\n不得公開私人研究原文；公開內容只描述功能、限制與可重現方法。"), "governance rule remains public"),
+        (not boundary("research/comparison/r173/methodology.json", '{"source": "research/comparison/r173/methodology.json; self-contained public methods"}'), "public methodology remains public"),
+        (not boundary("research/comparison/r175/PROTOCOL.md", "# Equal-protection comparison\nEvery textual competitor receives the same editable spans; missing runs are NOT_RUN."), "fair comparison remains public"),
+        (bool(boundary("skills/example/SKILL.md", "Source: private-project-brain synthetic example")), "private origin inside reusable skill"),
+        (bool(boundary("README.en.md", "Source: Private Project Brain planning note")), "private origin in root README"),
+        (not boundary("skills/example/SKILL.md", "# Reusable localization workflow\nUse the public lexicon, preserve protected names and run local QA.\nNever upload private user text."), "legitimate reusable skill remains public"),
+        (not boundary("AGENTS.md", "Private strategy belongs in private records; do not publish Private Project Brain source notes."), "public agent privacy guidance"),
+        (not boundary("tests/fixtures/example.md", "Source: private-project-brain synthetic example"), "test fixtures outside narrative classification"),
+        (not boundary("benchmarks/r6/public_frozen_v1.jsonl", '{"text": "market strategy"}'), "frozen benchmark outside narrative boundary"),
+    ]
+    assert all(ok for ok, _ in checks), "PUBLIC_CONTENT_BOUNDARY_SELF_TEST: " + ", ".join(label for ok, label in checks if not ok)
     print("Publication guard self-test PASS")
 
 def main():

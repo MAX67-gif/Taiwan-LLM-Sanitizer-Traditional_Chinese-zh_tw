@@ -165,6 +165,8 @@ class ReleaseRecovery(unittest.TestCase):
         with ZipFile(io.BytesIO((self.stage / B.DEVELOPER_BUNDLE).read_bytes())) as z:
             self.assertIn('release/all_tools_registry.json', z.namelist())
             self.assertIn('docs/USAGE_EXAMPLES.zh-CN.md', z.namelist())
+            for name in ('tools/build_mrft_r177.py', 'src/core/mrft_regions_r177.js', 'src/core/mrft_local_provider_r177.js', 'src/r177/mrft_dom_r177.js', 'docs/mrft/MRFT_ORIGINAL_FIXTURE.html'):
+                self.assertIn(name, z.namelist())
 
     def test_missing_real_cli_dependency_is_blocked_after_full_reseal(self):
         def edit(stage):
@@ -238,7 +240,7 @@ class ReleaseRecovery(unittest.TestCase):
 
     def test_stale_six_language_suite_catalog_is_blocked(self):
         contents = B.developer_contents(B.tracked_files())
-        contents['README.en.md'] = contents['README.en.md'].replace(b'suite=17.2.0;', b'suite=17.0.0;')
+        contents['README.en.md'] = contents['README.en.md'].replace(b'suite=17.3.0;', b'suite=17.0.0;')
         with self.assertRaisesRegex(B.ReleaseBlock, 'SIX_LANGUAGE_CATALOG'):
             B.validate_catalog_docs(contents, self.fixture_reg)
 

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "TLS MRFT R17.7 multi-region DOM preview",
+  "version": "0.1.0",
+  "description": "Explicit per-tab public HTML region preview. Manual paste or optional browser-local Translator; source unchanged.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+M"
+      },
+      "description": "Open MRFT consent controls"
+    }
+  }
+}

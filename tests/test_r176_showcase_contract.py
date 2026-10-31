@@ -83,8 +83,9 @@ class ShowcaseContractTests(unittest.TestCase):
         data = (ROOT / 'examples/TW_Wording_Assistant_R172_20261027.html').read_bytes()
         self.assertEqual(hashlib.sha256(data).hexdigest(), '4ce1cfae97832937907ec6aa3c56c11b552d2cbd04c7b27c676379637be6b873')
         registry = json.loads((ROOT / 'release/all_tools_registry.json').read_text(encoding='utf-8'))
-        self.assertEqual(registry['suite_version'], '17.2.0')
-        self.assertEqual(len(registry['tools']), 27)
+        historical = next(x for x in registry['tools'] if x['tool_id'] == 'tls.html.tw-wording-assistant-r172-20261027')
+        self.assertEqual(historical['original_tag'], 'all-tools-suite-v17.2.0')
+        self.assertEqual(historical['expected_sha256'], '4ce1cfae97832937907ec6aa3c56c11b552d2cbd04c7b27c676379637be6b873')
 
 
 if __name__ == '__main__':

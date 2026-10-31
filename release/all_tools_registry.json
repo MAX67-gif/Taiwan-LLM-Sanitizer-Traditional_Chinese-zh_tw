@@ -43,10 +43,10 @@
     "tls.skill.taiwan-zh-tw-localization"
   ],
   "project": "MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw",
-  "release_tag": "all-tools-suite-v17.2.0",
+  "release_tag": "all-tools-suite-v17.3.0",
   "rights_policy": "docs/THIRD_PARTY_RIGHTS_POLICY.md",
   "schema": "tls.all-tools-registry.v1",
-  "suite_version": "17.2.0",
+  "suite_version": "17.3.0",
   "tools": [
     {
       "artifact_filename": "TLS_Chrome_MV3_R5_20261024.zip",
@@ -581,10 +581,29 @@
       "license_review": "MIT_ORIGINAL_PUBLIC",
       "last_verified_at_utc": "2026-10-27T04:10:00Z",
       "standalone_required": true,
-      "original_tag": null,
-      "source_commit_mode": "CURRENT_SOURCE_COMMIT",
+      "original_tag": "all-tools-suite-v17.2.0",
       "expected_sha256": "4ce1cfae97832937907ec6aa3c56c11b552d2cbd04c7b27c676379637be6b873",
       "build_command_or_reuse_reason": "Rebuild from original R17.2 source and verify committed HTML SHA256",
+      "changelog_ref": "CHANGELOG.md",
+      "original_commit_sha": "a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4"
+    },
+    {
+      "tool_id": "tls.r177.chrome.mrft",
+      "family": "browser",
+      "status": "PREVIEW",
+      "tool_version": "0.1.0",
+      "artifact_filename": "TLS_Chrome_MV3_MRFT_R177_20261031.zip",
+      "source_kind": "generated_local_artifact",
+      "source_path": "dist/TLS_Chrome_MV3_MRFT_R177_20261031.zip",
+      "package_subdir": "browser",
+      "rights_review": "PUBLIC_ORIGINAL_CHECKED_NO_GAME_SPECIFIC",
+      "license_review": "MIT_ORIGINAL_PUBLIC",
+      "last_verified_at_utc": "2026-10-31T01:24:09Z",
+      "standalone_required": true,
+      "original_tag": null,
+      "source_commit_mode": "CURRENT_SOURCE_COMMIT",
+      "expected_sha256": "5cf0023f26a990bc0c8d0eef499f9bad843d4257e76a1615a033a7bacab973c7",
+      "build_command_or_reuse_reason": "Deterministic tools/build_mrft_r177.py fixed source map, exact ZIP hash and source parity required",
       "changelog_ref": "CHANGELOG.md"
     }
   ]

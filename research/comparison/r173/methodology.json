@@ -100,7 +100,7 @@
     "human_review_required_for_quality": true
   },
   "dev_cases": "Only original synthetic examples, never Fresh OOS",
-  "source": "Private Project Brain A R17.3 plan and B engineering contract; documented in PR #22",
+  "source": "Self-contained public methodology: research/comparison/r173/methodology.json; protocol and limitations: docs/R173_COMPARISON_AND_ADOPTION.md",
   "llm_comparison_prompt_sha256": "0cafff05c3448efd6f28f0417abae4e09adc6d240e66f1a8e7e71ab724ecdd0e",
   "llm_comparison_prompt_path": "research/comparison/r173/llm_prompt.txt"
 }
