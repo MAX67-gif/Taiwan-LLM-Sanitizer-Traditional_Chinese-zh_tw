@@ -1,0 +1,79 @@
+name: TLS R17.7 — one-time legacy Release withdrawal notice
+on:
+  push:
+    branches:
+      - security/withdraw-old-suite-assets-20261031
+    paths:
+      - .github/workflows/tls-legacy-withdrawal-notice-20261031.yml
+permissions:
+  contents: write
+jobs:
+  notice:
+    if: github.repository == 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw' && github.ref == 'refs/heads/security/withdraw-old-suite-assets-20261031'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify scoped retirement and annotate only two old Release descriptions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,json
+          from urllib.request import Request,urlopen
+          from urllib.error import HTTPError
+
+          REPO="MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw"
+          assert os.environ["GITHUB_REPOSITORY"] == REPO
+          assert os.environ["GITHUB_REF"] == "refs/heads/security/withdraw-old-suite-assets-20261031"
+          API="https://api.github.com/repos/"+REPO+"/"
+          TOKEN=os.environ["GH_TOKEN"]
+          def call(path,method="GET",obj=None):
+              data=None if obj is None else json.dumps(obj).encode("utf-8")
+              req=Request(API+path,data=data,method=method,headers={
+                  "Authorization":"Bearer "+TOKEN,
+                  "Accept":"application/vnd.github+json",
+                  "Content-Type":"application/json",
+                  "X-GitHub-Api-Version":"2022-11-28",
+                  "User-Agent":"TLS-legacy-release-notice-20261031"})
+              try:
+                  with urlopen(req,timeout=30) as r:return r.status,json.loads(r.read() or b"{}")
+              except HTTPError as e:return e.code,{"message":e.read().decode("utf-8","replace")[:200]}
+
+          original="26 registered tools, 21 standalone tool assets, one complete suite ZIP, and four integrity attachments. Original version-locked browser tools, 13 offline workbenches, R6 public quality kit and runnable CLI/Skill sources with six-language documentation. Manual opt-in only; no cloud translation, retired third-party game-specific assets or human translation-quality certification."
+          note=("**Historical bundled-download correction (2026-10-31):** The version-specific All-Tools Suite ZIP and Developer CLI/Skill ZIP for this old Release have been withdrawn following a public-distribution boundary review. All other standalone tool assets remain unchanged. The remaining historical manifest/checksum files may still reference the withdrawn bundles and should not be treated as a current download inventory. For a complete supported release, use [All Tools Suite 17.3.0](https://github.com/"+REPO+"/releases/tag/all-tools-suite-v17.3.0). This correction does not rewrite Git history.\n\n---\n\n")
+          specs=[
+              ("all-tools-suite-v17.1.0",424925592,24,"9dcea69bc6357a01e2eb2a60b9da6a9efade9539",(679998973,679999006)),
+              ("all-tools-suite-v17.2.0",425039360,25,"a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4",(680453895,680453920)),
+          ]
+          originals={}
+          for tag,release_id,count,source,withdrawn in specs:
+              code,r=call("releases/tags/"+tag)
+              assert code==200 and r["id"]==release_id and r["tag_name"]==tag
+              assert r["target_commitish"]==source and len(r["assets"])==count
+              assert not any(a["id"] in withdrawn for a in r["assets"])
+              assert r["draft"] is False and r["prerelease"] is False
+              assert r["body"] == original,("RELEASE_BODY_CHANGED",tag)
+              originals[tag]=r
+
+          code,latest=call("releases/tags/all-tools-suite-v17.3.0")
+          assert code==200 and latest["id"]==429671776 and len(latest["assets"])==28
+          print("PRECHECK_PASS: only two legacy Release descriptions will be corrected.")
+          for tag,release_id,count,source,withdrawn in specs:
+              code,after=call("releases/"+str(release_id),"PATCH",{"body":note+original})
+              assert code==200,("NOTICE_PATCH_FAILED",tag,code,after)
+              code,again=call("releases/tags/"+tag)
+              assert code==200
+              prior=originals[tag]
+              assert again["body"]==note+original
+              for attr in ("id","tag_name","target_commitish","name","draft","prerelease"):
+                  assert again[attr]==prior[attr],("META_CHANGED",tag,attr)
+              keep=lambda x:{a["id"]:(a["name"],a["size"],a.get("digest")) for a in x["assets"]}
+              assert keep(again)==keep(prior),("ASSET_CHANGED",tag)
+              print("NOTICE_PUBLISHED_VERIFIED",tag,len(again["assets"]))
+
+          code,latest2=call("releases/tags/all-tools-suite-v17.3.0")
+          assert code==200 and latest2["id"]==latest["id"] and latest2["body"]==latest["body"]
+          assert {a["id"] for a in latest2["assets"]}=={a["id"] for a in latest["assets"]}
+          print("SUCCESS: precise release notices added; v17.3 and all assets preserved.")
+          PY
