@@ -1,3 +1,10 @@
+## 2026-10-31 — R17.8 B0 download routing and public-boundary follow-up
+
+- Correct the six-language first-edit entry, onboarding, showcase and comparison links to the current complete Suite 17.3.0 while keeping the R17.2 tool bytes unchanged.
+- Mark Suite17.1/17.2 combined and developer ZIP assets as withdrawn; remaining historical manifests can still mention these files.
+- Strengthen fail-closed public path checks and recursive ZIP checks for known withdrawn documents, and verify the current 17.3 release without creating another Suite release for an approved docs-only update.
+- The historical Git branch/tag/source-archive copies are still outside this change. Real-user language quality and adoption remain unmeasured.
+
 ## 2026-10-31 — R17.7 MRFT DOM regions / Suite 17.3.0
 
 - Added an independent Chrome MV3 0.1.0 preview: up to eight movable/resizable regions, original-element following or fixed viewport positioning, separate pause/rebind/remove and complete session shutdown. Activation is explicit for the current tab; original page text is unchanged.
