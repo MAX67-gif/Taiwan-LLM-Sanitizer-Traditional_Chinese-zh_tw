@@ -1,6 +1,6 @@
 # R17.3｜開源公平比較與真實使用證據（研究期，不是新的翻譯引擎）
 
-> **狀態：ENGINEERING_RESEARCH_ONLY／真人品質 NOT_RUN。** 最新可用產品仍是 [完整 Suite 17.2.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)。R17.3 是可重現的比較研究程式、最小資料收集範本與透明說明；沒有新版本翻譯模型、沒有自動套用、更不宣稱超越競爭者。
+> **狀態：ENGINEERING_RESEARCH_ONLY／真人品質 NOT_RUN。** R17.3 是這份歷史研究的名稱；截至 2026-10-31，現行完整可用版本是 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)，R17.2 修稿工具仍維持原版。R17.3 是可重現的比較研究程式、最小資料收集範本與透明說明；沒有新版本翻譯模型、沒有自動套用、更不宣稱超越競爭者。
 
 ## 先做一件真正有用的事
 
@@ -48,4 +48,4 @@ python research/comparison/r173/opencc_adapter.py --probe
 
 既定的使用者體驗目標**尚未執行**：10 位新使用者中至少 8 位能在 15 秒說對用途、至少 8 位在 3 分鐘完成任務；中位時間相對 R16 減少 30% 為目標；先固定 5 位真正完成首項任務的自願者，觀察其中至少 3 位是否在 7 天內完成第二個任務。這些數字**均不是目前成績**。意願不等於真正回訪；CI clone/download 不等於人。
 
-**R17.2 正式使用中的程式與全工具 Release 均未因 R17.3 研究而修改；下一輪有發正式 Release 時仍必須含所有合法受支援工具。**
+**R17.3 比較研究本身未變更 R17.2 修稿引擎；舊版 17.1／17.2 的整合 ZIP 現已撤回，請使用 Suite 17.3.0 取得完整工具包。新正式發行仍須包含所有合法受支援工具。**
