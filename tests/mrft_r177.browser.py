@@ -91,7 +91,8 @@ def run():
     server,url=serve()
     try:
         with sync_playwright() as p:
-            browser=p.chromium.launch(executable_path=os.environ.get('TLS_CHROMIUM_PATH'),headless=True,args=['--no-sandbox'])
+            # Native Translator needs the full Chromium channel, not the separate headless shell.
+            browser=p.chromium.launch(channel='chromium',executable_path=os.environ.get('TLS_CHROMIUM_PATH'),headless=True,args=['--no-sandbox'])
             test_delayed_preparation_protocol(browser,url)
             page=browser.new_page(viewport={'width':1300,'height':950},device_scale_factor=1.5)
             errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
