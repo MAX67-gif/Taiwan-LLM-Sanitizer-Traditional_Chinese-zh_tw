@@ -44,6 +44,10 @@ TEXT_SUFFIXES = ('.md', '.txt', '.js', '.json', '.jsonl', '.html', '.css', '.yml
 WINDOWS_RESERVED = re.compile(r'^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)', re.I)
 SECRET_PART = re.compile(r'(?i)(?:^|[_.-])(?:private|quarantine|secrets?|credentials?)(?:[_.-]|$)')
 RETIRE_WORDS = tuple(''.join(x) for x in [('poke', 'bonk'), ('poke', 'mon'), ('pok', 'émon')])
+# Prevent the two withdrawn strategy documents and the private project tree from
+# entering *any* generated archive, including archives nested inside ZIPs.
+WITHDRAWN_PRIVATE_BASENAMES = frozenset({'product_positioning_r8.md', 'r9_product_strategy.md'})
+PRIVATE_TREE_NAME = 'taiwan-llm-sanitizer-project-brain'
 MAX_ASSET_BYTES = 20 * 1024 * 1024
 FIXED_ZIP_TIME = (2026, 10, 26, 0, 0, 0)
 
@@ -98,6 +102,8 @@ def safe_archive_path(name: str) -> bool:
         return False
     parts = name.split('/')
     if any(c in name for c in '<>:"|?*') or any(ord(c) < 32 or ord(c) == 127 for c in name):
+        return False
+    if any(part.casefold() in WITHDRAWN_PRIVATE_BASENAMES or part.casefold() == PRIVATE_TREE_NAME for part in parts):
         return False
     for part in parts:
         if not part or part in ('.', '..') or part.rstrip(' .') != part or WINDOWS_RESERVED.match(part):
