@@ -1,6 +1,6 @@
 # 三步完成第一份臺灣繁中 Markdown｜TLS R17.2 正式版入門
 
-> 最後核對：2026-10-28。R17.4 是**入門文件**更新，不是新的翻譯引擎，也不是新的 Release。原有 R17.2 工具不變。此說明的翻譯語意尚待真人審閱。
+> 初版：2026-10-28；正式下載位置核對：2026-10-31。R17.4 是**入門文件**更新，不是新的翻譯引擎，也不是新的 Release。原有 R17.2 工具不變。此說明的翻譯語意尚待真人審閱。
 
 ## 先確認要完成什麼
 
@@ -10,7 +10,9 @@
 
 **[點選最新正式 Release（GitHub 官方資產頁）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。
 
-在該頁 **Assets** 找到 **`TLS_ALL_TOOLS_SUITE_17_2_0.zip`**（適用目前已確認的 Suite 17.2.0；日後新版依其 Releases 說明與實際附件名稱）。也可以只下載獨立 **`TW_Wording_Assistant_R172_20261027.html`**。
+在該頁 **Assets** 找到 **`TLS_ALL_TOOLS_SUITE_17_3_0.zip`**（目前核對可完整下載的 Suite 17.3.0；日後請依實際新版 Release 顯示的檔名）。也可以只下載獨立 **`TW_Wording_Assistant_R172_20261027.html`**。
+
+**歷史版本警告：**Suite 17.1／17.2 的舊完整套件及開發者 ZIP 因公開內容界線稽核已撤回；其歷史 Manifest／SHA 清單可能仍列有撤回檔案，不應當成目前下載清單。請使用 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 的完整 ZIP；R17.2 修稿工具本身的版本未改。
 
 請注意：GitHub 中 `examples/*.html` 是原始檔檢視頁，**不是**已託管的線上工具；不要以為在 GitHub 上看到 HTML 就已開始操作。Release 的 `.html` 需先下載，再由本機瀏覽器開啟。
 
