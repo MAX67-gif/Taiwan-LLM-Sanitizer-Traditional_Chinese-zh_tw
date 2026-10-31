@@ -200,6 +200,24 @@ def check_release(obj,stage:Path,require_published=False,download_dir=None):
             expect(dl.is_file() and not dl.is_symlink() and B.digest(B.safe_file(dl, Path(download_dir)))==want,'GITHUB_DOWNLOADED_SHA:'+name)
     return True
 
+def require_unconditional_single_command(job, command):
+    """Require a single real R17.6 run step, without skip/soft-fail modifiers.
+
+    This intentionally accepts only the small reviewed step shape. An echo,
+    comment, shell suffix or disabled step cannot serve as execution evidence.
+    """
+    steps=re.split(r'(?=^      - )',job,flags=re.M)[1:]
+    found=[]
+    for step in steps:
+        lines=[line for line in step.splitlines() if line.strip()]
+        if '        run: '+command in lines:
+            found.append(lines)
+    expect(len(found)==1, 'R176_EXECUTABLE_GATE_MISSING:'+command)
+    lines=found[0]
+    expect(len(lines)==2 and lines[0].startswith('      - name: ')
+           and lines[1]=='        run: '+command, 'R176_GATE_MUST_BE_UNCONDITIONAL:'+command)
+
+
 def verify_workflow(workflow_text=None):
     """Validate this repository's deliberately restricted workflow layout.
 
@@ -269,6 +287,9 @@ def verify_workflow(workflow_text=None):
                      'tools/publish_all_tools_release.py', '--expected-sha', '--source-sha', '--fetch-official'):
         expect(fragment in block, 'CENTRAL_RELEASE_GATE_MISSING:' + fragment)
     verify = jobs['verify']
+    require_unconditional_single_command(verify,'node tools/check_showcase_r176.js --check')
+    require_unconditional_single_command(verify,'python -m unittest tests/test_r176_showcase_contract.py -v')
+    require_unconditional_single_command(jobs['browser-integration'],'python tests/test_showcase_browser_r176.py')
     expect('tools/build_all_tools_release.py' in verify and '--fetch-official' in verify and '--source-sha' in verify
            and 'tools/check_all_tools_release.py' in verify and '--expected-sha' in verify, 'PRODUCTION_PREFLIGHT_MISSING')
     for job in ('verify', 'browser-integration'):

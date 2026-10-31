@@ -1,9 +1,21 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
+<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+<!-- R176_SHOWCASE_BEGIN -->
+### AI drafts it. You choose Taiwanese wording.
+
+In one Markdown file, choose 選單 for a UI `menu`, 菜單 for a food `menu`, and keep a third occurrence. Review each choice before exporting a new copy; technical spans receive protection.
+
+**[Start your first safer edit](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — Download `TW_Wording_Assistant_R172_20261027.html`，and open it in your local browser.
+
+[See the real walkthrough](docs/showcase/README.en.md) · [Actual preview output](docs/showcase/preview.md)
+
+Uses existing R17.2, with limited suggestions and human review still required. The 60-second tour is a design length, not a measured task time.
+<!-- R176_SHOWCASE_END -->
 
 ### First result in 3 steps: one safer Markdown edit
 

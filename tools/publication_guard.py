@@ -20,6 +20,10 @@ ROOT_PUBLIC={
     ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
+    "docs/showcase/source.md", "docs/showcase/preview.md",
+    "docs/showcase/decisions.json", "docs/showcase/verification.json",
+    "docs/showcase/README.md", "docs/showcase/README.en.md",
+    "docs/showcase/trial_observation.md",
     "docs/FEATURES.md",
     "docs/GLOSSARY.md",
     "docs/ROADMAP.md",

@@ -1,3 +1,10 @@
+## 2026-10-31 — R17.6 reproducible first-edit showcase
+
+- Added original Markdown, occurrence-level decisions, actual R17.2 preview and deterministic SHA256/protected-span verification under `docs/showcase/`.
+- Added a six-language entry, Traditional Chinese/English walkthrough and a voluntary offline observation form with no source text or automatic submission.
+- Added Node replay, actual Chromium selection/download and exact documentation-only release-routing checks. This does not measure human language quality, adoption or task speed.
+- Product runtime remains Suite 17.2.0. Existing tools, lexicons, original HTML and published assets remain unchanged. Multi-region fixed translation remains design only.
+
 ## R17.2.0 | Taiwan Wording Assistant & AI workflows (2026-10-27)
 
 - Added one new offline Markdown Taiwan terminology review tool, reusing unchanged R15.1/R16 safe preview and six fixed traditional aliases; every suggestion requires explicit confirmation. This is a bounded Preview, not automatic translation or human linguistic certification.

@@ -1,9 +1,21 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:251b74b21e45f7be4010916d8aa53ffe7ddf3c6f04cb8b20b899bbfb6355d7e1 -->
+<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
 **语言 / Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
+
+<!-- R176_SHOWCASE_BEGIN -->
+### AI 写初稿，台湾用词由你决定。
+
+同一份 Markdown，界面的 `menu` 选“選單”，餐饮的 `menu` 选“菜單”，第三处保留原文。逐处确认后才生成新稿，并优先保护技术片段。
+
+**[开始第一份安全修稿](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 下载 `TW_Wording_Assistant_R172_20261027.html`，并在本地浏览器打开。
+
+[查看真实逐步演示](docs/showcase/README.md) · [实际预览输出](docs/showcase/preview.md)
+
+演示使用既有 R17.2，不是新翻译引擎。候选有限，仍需人工确认；60 秒指演示设计长度，不是实测完成时间。
+<!-- R176_SHOWCASE_END -->
 
 ### 首次使用：3 步完成一份 Markdown
 

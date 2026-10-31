@@ -2,6 +2,18 @@
 
 **語言／Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
+<!-- R176_SHOWCASE_BEGIN -->
+### AI 寫初稿，臺灣用詞由你決定。
+
+同一份 Markdown，介面的 `menu` 選「選單」，餐飲的 `menu` 選「菜單」，第三處保留原文。逐處確認後才產生新稿；技術片段優先保護。
+
+**[開始第一份安全修稿](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 下載 `TW_Wording_Assistant_R172_20261027.html`，在本機瀏覽器開啟。
+
+[查看真實逐步展示](docs/showcase/README.md) · [實際預覽輸出](docs/showcase/preview.md)
+
+展示使用既有 R17.2，不是新翻譯引擎。有限候選仍需人工確認；60 秒是導覽設計長度，不是實測完成時間。
+<!-- R176_SHOWCASE_END -->
+
 ### 第一次使用：只要 3 步，先完成一份 Markdown
 
 **[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。

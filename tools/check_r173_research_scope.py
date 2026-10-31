@@ -40,6 +40,22 @@ R175_NATIVE_EXACT={
     'docs/R175_NATIVE_OPENCC_PROTOCOL.md',
 }
 
+# One reviewed R17.6 documentation/showcase transaction. Expected A/M states
+# are part of the contract; these paths do not broaden the legacy R17.3 route.
+R176_SHOWCASE_STATES={
+    **{p:'M' for p in (
+        'README.md','README.en.md','README.zh-CN.md','README.ja.md','README.ko.md','README.es.md',
+        'CHANGELOG.md','.github/workflows/ci.yml','tools/check_r173_research_scope.py',
+        'tools/check_all_tools_release.py','tools/publication_guard.py','tests/test_r173_research_scope.py',
+    )},
+    **{p:'A' for p in (
+        'docs/showcase/source.md','docs/showcase/preview.md','docs/showcase/decisions.json',
+        'docs/showcase/verification.json','docs/showcase/README.md','docs/showcase/README.en.md',
+        'docs/showcase/trial_observation.md','tools/check_showcase_r176.js',
+        'tests/test_showcase_r176.js','tests/test_showcase_browser_r176.py','tests/test_r176_showcase_contract.py',
+    )},
+}
+
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
@@ -54,6 +70,10 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    if set(paths)==set(R176_SHOWCASE_STATES):
+        if all(R176_SHOWCASE_STATES[p]==state for state,p in changes):
+            return True,'R176_PROOF_FIRST_SHOWCASE_DOCS_ONLY'
+        return False,'R176_UNEXPECTED_PATH_STATUS'
     # Research execution contract is the exact approved 10-path set;
     # no arbitrary docs/workflows, no deletion, no unsafe product-side effect.
     if set(paths)==R175_NATIVE_EXACT and len(paths)==len(R175_NATIVE_EXACT):
