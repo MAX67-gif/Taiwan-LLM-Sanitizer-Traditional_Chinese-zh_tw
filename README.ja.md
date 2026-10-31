@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
+<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -19,7 +19,7 @@
 
 ### 初回利用：3 ステップで Markdown の修正を確認
 
-**[① GitHub の最新正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（現在の確認済み版。今後はリリース内の実際の名前を確認）、または `TW_Wording_Assistant_R172_20261027.html` をダウンロードします。
+**[① GitHub の最新正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（現在の確認済み版。今後はリリース内の実際の名前を確認）、または `TW_Wording_Assistant_R172_20261027.html` をダウンロードします。
 
 **② ZIP を展開し、`START_HERE.html` をローカルブラウザーで開く。** **③ R17.2 でオリジナル例または権利のある Markdown を入力し、候補を一つずつ確認・保留して差分をプレビュー、別ファイルとして保存。**
 
@@ -30,6 +30,17 @@
 ### R17.2｜AI で作成した中国語文章を台湾向けに確認
 
 [初めての方はこちら](START_HERE.html) · [オフライン台湾用語レビュー](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex／Claude／Grok 利用手順](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。自分に利用権限がある中国語 Markdown を貼り付け、候補を一つずつ確認し、安全チェック後の新しいファイルを保存します。クラウド自動翻訳、Grok への直接連携、翻訳品質の認証はありません。
+
+
+<!-- R177_MRFT_BEGIN -->
+### R17.7｜読みたい位置を囲む（独立 Chrome Preview 0.1.0）
+
+現在のタブで明示的に同意した後、ドラッグで最大 **8 個の独立した翻訳枠**を作成できます。`FOLLOW_DOM` は元の要素に追従し、`FIX_VIEWPORT` は画面座標に固定されます。移動、サイズ変更、一時停止、再指定、全終了が可能です。枠内の可視の通常 DOM テキストだけを読み取り、元のページ本文は変更しません。
+
+初期設定は**訳文の手動貼り付け**です。ローカルの Translator API は別途有効にし、モデルのダウンロードが必要な場合は明示的な同意を求めます。利用できない場合は `MODEL_UNAVAILABLE` と表示し、リアルタイム翻訳を装いません。公開された機密性のない内容に限定します。OCR、Canvas/WebGL、iframe、クラウド送信には非対応で、印のない私的内容をすべて自動識別することもできません。訳文の品質は人による確認が必要です。
+
+**[完全版 Suite 17.3.0 をダウンロード](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**：28 ツール、23 個の独立ツール資産、28 個の Release 添付ファイル。従来の 27 ツールのバージョンとバイト列は保持します。新しい `TLS_Chrome_MV3_MRFT_R177_20261031.zip` にはオリジナル練習ページが含まれます。**[インストール・操作・制限](docs/mrft/MRFT_DOM_PREVIEW.md)**（繁体字中国語）。Chrome Web Store 審査や人による言語品質認証を受けたものではありません。
+<!-- R177_MRFT_END -->
 
 
 ## 利用できる機能
@@ -87,6 +98,6 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 
 **R17.3 は研究段階：** [同じ編集可能範囲での公平な比較と任意参加の調査](docs/R173_COMPARISON_AND_ADOPTION.en.md)を参照してください。**OpenCC／LLM に対する優位性や人間の翻訳品質評価は未検証です。** Suite 17.2.0 の既存ツールは変更していません。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 リリース検証では、実際のツールとダウンロードしたファイルを、固定された元の SHA256 と Git コミットに照合します。Draft と公開後にそれぞれダウンロードし、既存タグは上書きせず検証します。6 言語の説明は引き続き人によるレビュー待ちです（HUMAN_TRANSLATION_REVIEW_PENDING）。

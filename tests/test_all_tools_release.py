@@ -16,6 +16,7 @@ class FullSuiteSafetyContract(unittest.TestCase):
   cls.tmp=tempfile.TemporaryDirectory(prefix='tls-suite-fixture-')
   cls.root=Path(cls.tmp.name);cls.cache=cls.root/'cache';cls.cache.mkdir()
   cls.stage=cls.root/'stage';cls.fixture_registry=cls.root/'fixture_registry.json'
+  subprocess.run([sys.executable,str(ROOT/'tools/build_mrft_r177.py')],check=True,cwd=ROOT,stdout=subprocess.DEVNULL)
   a=json.loads(B.REGISTRY.read_text(encoding='utf-8'))
   cls.raw_reg=deepcopy(a)
   # The released R5 Chrome ZIP is not byte-reproducible from current archive/build.
@@ -70,7 +71,7 @@ class FullSuiteSafetyContract(unittest.TestCase):
     for p in self.stage.iterdir()]}
 
  def test_01_full_fixture_passes(self):
-  x=self.verify();self.assertEqual(x['tools'],27);self.assertEqual(x['github_assets_expected'],27)
+  x=self.verify();self.assertEqual(x['tools'],28);self.assertEqual(x['github_assets_expected'],28)
  def test_02_production_refuses_fixture(self):
   with self.assertRaisesRegex(B.ReleaseBlock,'FIXTURE_NOT_PUBLISHABLE'):C.verify_stage(self.stage,self.fixture_registry,fixture_ok=False)
  def test_03_production_rejects_replacement_R5_release_zip(self):
@@ -158,6 +159,31 @@ class FullSuiteSafetyContract(unittest.TestCase):
   self.assertTrue((self.stage/'BUILD_PROVENANCE.json').exists())
   self.assertTrue((self.stage/'VALIDATION.json').exists())
 
+ def test_missing_new_mrft_installer_blocks(self):
+  p=self.altered(lambda d:(d/B.MRFT_FILENAME).unlink())
+  with self.assertRaisesRegex(C.GuardError,'INCOMPLETE'):self.verify(p)
+ def test_wrong_new_mrft_installer_hash_blocks(self):
+  with self.assertRaisesRegex(C.GuardError,'LOCKED_ARTIFACT_SHA'):self.verify(self.corrupt(B.MRFT_FILENAME))
+ def test_manifest_has_original_r172_and_current_mrft_source(self):
+  m=json.loads((self.stage/'ALL_TOOLS_MANIFEST.json').read_bytes())
+  rows={r['tool_id']:r for r in m['tools']}
+  self.assertEqual(rows[B.R172_TOOL_ID]['original_commit_sha'],'a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4')
+  self.assertEqual(rows[B.NEW_TOOL_ID]['original_commit_sha'],m['source_git_sha'])
+  self.assertEqual(len(m['artifacts']),23)
+  self.assertEqual(len(list(self.stage.iterdir())),28)
+ def test_false_count_metadata_blocks(self):
+  def edit(d):
+   p=d/'VALIDATION.json';v=json.loads(p.read_bytes());v['tool_count_present']=27;p.write_bytes(B.json_bytes(v))
+  with self.assertRaisesRegex(C.GuardError,'CURRENT_VALIDATION_COUNTS'):self.verify(self.altered(edit))
+ def test_generated_malformed_archive_blocks(self):
+  row=next(x for x in self.fixture_reg['tools'] if x['tool_id']==B.NEW_TOOL_ID)
+  with self.assertRaisesRegex(B.ReleaseBlock,'INVALID_ZIP'):B.validate_generated_installer(b'not a zip',row)
+ def test_generated_source_parity_blocks_self_resealed_zip(self):
+  from unittest.mock import patch
+  row=next(x for x in self.fixture_reg['tools'] if x['tool_id']==B.NEW_TOOL_ID)
+  blob=B.deterministic_zip({'manifest.json':b'{"manifest_version":3}', 'fake.js':b'void 0;'})
+  with patch.object(B,'MRFT_SHA256',B.digest(blob)):
+   with self.assertRaisesRegex(B.ReleaseBlock,'MRFT_INSTALLER_SOURCE_PARITY'):B.validate_generated_installer(blob,row)
  def test_27_only_central_publisher_is_active(self):
   self.assertTrue(C.verify_workflow())
 

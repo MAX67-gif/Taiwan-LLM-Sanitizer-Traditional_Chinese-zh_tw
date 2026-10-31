@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tls:mrft:session-metadata:v0",
+  "title": "MRFT session diagnostic metadata (no source or translation)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "origin",
+    "consent",
+    "disposed",
+    "regionCount",
+    "regions"
+  ],
+  "properties": {
+    "schema": {
+      "const": "tls.mrft.session.v0"
+    },
+    "origin": {
+      "type": "string",
+      "maxLength": 240,
+      "pattern": "^https?://[^/?#]+$"
+    },
+    "consent": {
+      "type": "boolean"
+    },
+    "disposed": {
+      "type": "boolean"
+    },
+    "regionCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8
+    },
+    "regions": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/region"
+      }
+    }
+  },
+  "$defs": {
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "id",
+        "state",
+        "status",
+        "anchorMode",
+        "sourceLanguage",
+        "targetLanguage",
+        "route",
+        "sourceChangeSeq",
+        "requestEpoch"
+      ],
+      "properties": {
+        "schema": {
+          "const": "tls.mrft.region.v0"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^region-[1-9][0-9]*$"
+        },
+        "state": {
+          "enum": [
+            "WATCHING",
+            "PAUSED",
+            "NEEDS_REBIND"
+          ]
+        },
+        "status": {
+          "enum": [
+            "WAITING_SOURCE",
+            "SOURCE_DIRTY",
+            "WAITING_MANUAL",
+            "READY",
+            "WAITING",
+            "PREPARING",
+            "TRANSLATING",
+            "PAUSED",
+            "NEEDS_REBIND",
+            "MODEL_UNAVAILABLE",
+            "DOWNLOAD_REQUIRED",
+            "UNSUPPORTED_PAIR",
+            "ERROR",
+            "INVALID_TEXT",
+            "USER_ACTIVATION_REQUIRED",
+            "NOT_PREPARED",
+            "CANCELLED",
+            "PROVIDER_DISPOSED",
+            "REGION_LIMIT",
+            "TIMEOUT"
+          ]
+        },
+        "anchorMode": {
+          "enum": [
+            "FOLLOW_DOM",
+            "FIX_VIEWPORT"
+          ]
+        },
+        "sourceLanguage": {
+          "type": "string",
+          "maxLength": 36
+        },
+        "targetLanguage": {
+          "type": "string",
+          "maxLength": 36
+        },
+        "route": {
+          "enum": [
+            "LOCAL",
+            "USER_PASTED"
+          ]
+        },
+        "sourceChangeSeq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestEpoch": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

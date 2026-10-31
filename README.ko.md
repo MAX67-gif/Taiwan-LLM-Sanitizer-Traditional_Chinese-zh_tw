@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
+<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -19,7 +19,7 @@
 
 ### 처음 사용하기: Markdown 문서 하나를 3단계로 검토
 
-**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
+**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
 
 **② ZIP 압축 해제 후 로컬 브라우저에서 `START_HERE.html` 열기.** **③ R17.2에서 자체 예제 또는 편집 권한이 있는 Markdown을 입력하고, 각 제안을 채택하거나 원문 유지한 다음 안전 미리보기를 확인하고 새 파일로 저장합니다.**
 
@@ -30,6 +30,17 @@
 ### R17.2｜AI 중국어 문서를 대만 용어에 맞게 검토
 
 [시작하기](START_HERE.html) · [오프라인 대만 용어 검토](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex·Claude·Grok 가이드](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). 사용 권한이 있는 중국어 Markdown을 붙여넣고 각 제안을 직접 선택한 다음 구조 검사를 거친 새 파일을 저장합니다. 자동 클라우드 번역이나 Grok 직접 연동, 언어 품질 인증 기능은 없습니다.
+
+
+<!-- R177_MRFT_BEGIN -->
+### R17.7｜읽을 위치를 영역으로 지정하기 (별도 Chrome Preview 0.1.0)
+
+현재 탭에서 명시적으로 동의한 뒤 드래그하여 **독립적인 번역 영역을 최대 8개** 만들 수 있습니다. `FOLLOW_DOM`은 원래 요소를 따라가고, `FIX_VIEWPORT`는 화면 좌표에 고정됩니다. 이동, 크기 조절, 일시 정지, 다시 지정, 모두 닫기가 가능합니다. 영역 안에 보이는 일반 DOM 텍스트만 읽으며 원래 페이지의 글은 바꾸지 않습니다.
+
+기본 경로는 **번역문을 직접 붙여 넣기**입니다. 로컬 Translator API는 별도로 활성화하며 모델 다운로드가 필요하면 명시적인 동의를 받습니다. 사용할 수 없으면 `MODEL_UNAVAILABLE`을 표시하고 실시간 번역인 것처럼 보이지 않습니다. 공개된 비민감 콘텐츠에만 사용하세요. OCR, Canvas/WebGL, iframe, 클라우드 전송은 지원하지 않으며 표시되지 않은 모든 사적 내용을 자동으로 알아낼 수도 없습니다. 번역 품질은 사람이 확인해야 합니다.
+
+**[전체 Suite 17.3.0 다운로드](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**: 도구 28개, 독립 도구 자산 23개, Release 첨부 파일 28개입니다. 기존 도구 27개의 버전과 바이트는 유지됩니다. 새 설치 파일 `TLS_Chrome_MV3_MRFT_R177_20261031.zip`에는 자체 제작 연습 페이지가 포함됩니다. **[설치, 사용법, 제한 사항](docs/mrft/MRFT_DOM_PREVIEW.md)** (번체 중국어). Chrome Web Store 심사나 사람에 의한 언어 품질 인증을 받은 것은 아닙니다.
+<!-- R177_MRFT_END -->
 
 
 ## 사용 가능한 기능
@@ -87,6 +98,6 @@
 
 **R17.3은 연구 전용:** [동일한 편집 가능 구간의 공정한 비교 및 자발적 사용 검증 계획](docs/R173_COMPARISON_AND_ADOPTION.en.md)을 참고하세요. **OpenCC·LLM 대비 우월성 또는 독립적인 사람의 언어 품질 검증 결과는 아직 없습니다.** 기존 Suite 17.2.0 도구는 변경하지 않습니다.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 배포 검사는 실제 도구와 다운로드한 파일을 원본에 고정된 SHA256 및 Git 커밋과 대조합니다. Draft 단계와 공개 후 각각 다운로드하며, 기존 태그는 덮어쓰지 않고 검증합니다. 여섯 언어 안내는 아직 사람의 검토를 기다립니다(HUMAN_TRANSLATION_REVIEW_PENDING).

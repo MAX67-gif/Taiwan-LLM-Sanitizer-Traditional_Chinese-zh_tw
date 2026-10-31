@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
+<!-- SOURCE_EXAMPLES_SHA256:3a7ad38727e421556466f409dc2ce6b8e2db5ed0535e44344c9334be467f1fd7 -->
 
 # Nine original examples of Taiwanese Chinese localization (offline concepts)
 
@@ -65,8 +65,14 @@ Open the [R16 offline studio](../examples/TW_Localization_Safety_Studio_R16_2026
 
 Draft authorized Chinese Markdown with Codex, Claude or Grok; inspect it in the [R17.2 offline assistant](../examples/TW_Wording_Assistant_R172_20261027.html), manually confirm options, export, and review changes. [AI workflow guide](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). This is not a direct Grok plugin or quality certification.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 ## Complete tool download
 
 The legally distributable tools used by these examples are collected in the [R17.1 All-Tools Suite and integrity guide](ALL_TOOLS_RELEASE.md). Chrome, Tampermonkey, offline HTML, and CLI have different installation steps. Original tool versions are retained; choose an entry point for your task and avoid enabling multiple versions on the same site. The suite does not certify human-reviewed translation quality.
+
+<!-- R177_MRFT_EXAMPLE_BEGIN -->
+## Separate R17.7 multi-region practice
+
+EX01–EX09 are preserved. See [MRFT instructions and original multi-region practice](mrft/MRFT_DOM_PREVIEW.md): up to 8 regions, two positioning modes, manual translations or explicitly enabled local models; no OCR or cloud transport. Suite 17.3.0 has 28 tools / 23 standalone tool assets / 28 Release assets, preserving all original 27 tool bytes. Model capability and human language quality still require separate verification.
+<!-- R177_MRFT_EXAMPLE_END -->

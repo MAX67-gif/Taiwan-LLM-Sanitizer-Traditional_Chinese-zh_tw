@@ -4,7 +4,7 @@
 
 ## 本機與 GitHub Runner 狀態分離
 
-- 若本機或沙盒未具有官方資產（本次 ChatGPT 沙盒沒有網路 DNS），不得虛報原生測試。GitHub Workflow 採唯讀權限下載官方 Release、驗 SHA 後非 root 解包並執行原生 CLI `--version` 與 `-c s2twp.json`。
+- 若執行環境無法取得官方資產或網路無法連線，必須記錄重現限制，不得虛報原生測試。GitHub Workflow 採唯讀權限下載官方 Release、驗 SHA 後非 root 解包並執行原生 CLI `--version` 與 `-c s2twp.json`。
 - 此文件的內部輸入 `fixture_native_original.md` 是自行編寫的公開研究文字。Node 腳本沿用 R17.3 的 R16 EDITABLE spans 分割；失敗就拒絕，不落地含使用者資料。
 - 同一 source：L1 EQUAL_EDITABLE / L2 RAW_DIAGNOSTIC_ONLY；RAW 不能當公平詞彙對比數字。輸出是 SHA、計數、版本、來源與設定／字典雜湊，不含原文或生成全文。
 - 缺 native 來源、版本、SHA、config 或 output 都為 `B_BLOCKED_NATIVE_EVIDENCE`；不是零分，也不是 OpenCC/TLS 勝負。

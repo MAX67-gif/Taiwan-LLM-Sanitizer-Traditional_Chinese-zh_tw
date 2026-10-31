@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
+<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -19,7 +19,7 @@
 
 ### 首次使用：3 步完成一份 Markdown
 
-**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_2_0.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
 
 **② 解压后在本地浏览器打开 `START_HERE.html`**，再选择 R17.2 离线修稿助手。**③ 加载原创练习或粘贴有权处理的 Markdown，逐项选择采用/保留，检查安全预览并下载新稿。**
 
@@ -30,6 +30,17 @@
 ### R17.2｜台灣用語校訂与 AI 协作
 
 [开始使用](START_HERE.html) · [R17.2 离线台灣用语校订助手](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex、Claude、Grok 完整实操指南](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。请先使用自己有权处理的中文 Markdown，逐项确认候选，再下载保护结构后的预览文件；没有自动云端翻译或人工认证。
+
+
+<!-- R177_MRFT_BEGIN -->
+### R17.7｜框选需要阅读的位置（独立 Chrome Preview 0.1.0）
+
+在当前标签页明确同意后，拖动建立最多 **8 个独立翻译框**：`FOLLOW_DOM` 跟随原网页元素，`FIX_VIEWPORT` 固定在屏幕位置；可移动、调整大小、暂停、重新框选或全部关闭。只读取框内可见的普通 DOM 文本，不改写原网页。
+
+默认由你**手动粘贴译文**。本地 Translator API 需另行启用；如需下载模型，必须明确同意。不可用时显示 `MODEL_UNAVAILABLE`，不冒充实时翻译。仅限公开、非敏感内容；不支持 OCR、Canvas/WebGL、iframe 或云端传输，也无法自动识别所有未标记的私人内容。翻译质量仍需人工确认。
+
+**[下载完整 Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**：28 项工具、23 个独立工具资产、28 个 Release 附件；原 27 项工具的版本和字节保持不变。新安装包 `TLS_Chrome_MV3_MRFT_R177_20261031.zip` 包含原创练习页。**[安装、操作和限制](docs/mrft/MRFT_DOM_PREVIEW.md)**（繁体中文）。尚未经 Chrome Web Store 或真人语言质量认证。
+<!-- R177_MRFT_END -->
 
 
 ## 现在可以使用的功能
@@ -87,6 +98,6 @@
 
 **R17.3 公平比较研究（不是新版翻译器）：**请阅读[相同可编辑区域的安全比较、OpenCC／AI 离线导入和自愿试用协议](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前没有 OpenCC、LLM 或真人品质方面的胜出证据。**现有 Suite 17.2.0 工具保持不变。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 发布完整性检查会直接核对原始工具的锁定 SHA256、实际下载内容与 Git 提交。草稿阶段和公开后分别下载一次；同一标签已发布时只验证相同内容，不覆盖。六种语言的说明仍等待人工审阅（HUMAN_TRANSLATION_REVIEW_PENDING）。

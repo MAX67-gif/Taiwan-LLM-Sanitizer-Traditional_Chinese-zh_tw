@@ -1,3 +1,10 @@
+## 2026-10-31 — R17.7 MRFT DOM regions / Suite 17.3.0
+
+- Added an independent Chrome MV3 0.1.0 preview: up to eight movable/resizable regions, original-element following or fixed viewport positioning, separate pause/rebind/remove and complete session shutdown. Activation is explicit for the current tab; original page text is unchanged.
+- Added manual translation and explicitly prepared local Translator API handling. Missing models remain unavailable; downloads require consent. No OCR, iframe/shadow traversal, cloud translation, persistent page text or automatic site activation.
+- Added bounded DOM extraction, sensitive-subtree exclusions, epoch-based stale-result cancellation, original dynamic practice material, actual browser/carrier tests and deterministic installer validation. Engineering tests do not certify human adoption or translation quality.
+- Full Suite 17.3.0 adds one tool while preserving the prior 27 tool versions/bytes: 28 tools, 23 standalone tool assets, 28 Release assets. Six-language guides remain pending native-speaker review; the earlier R17.6 showcase and Suite 17.2.0 are retained.
+
 ## 2026-10-31 — R17.6 reproducible first-edit showcase
 
 - Added original Markdown, occurrence-level decisions, actual R17.2 preview and deterministic SHA256/protected-span verification under `docs/showcase/`.

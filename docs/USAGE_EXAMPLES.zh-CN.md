@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:fba5d40fb9b74c09fa8c9b4c413dfa97e06f096982e35d84ae8aafce77d332b3 -->
+<!-- SOURCE_EXAMPLES_SHA256:3a7ad38727e421556466f409dc2ce6b8e2db5ed0535e44344c9334be467f1fd7 -->
 
 # 台湾繁体中文工具的九个使用示例（原创／概念示范）
 
@@ -87,8 +87,14 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 先用所选 AI 生成你有权使用的中文 Markdown，再用 [R17.2 离线助手](../examples/TW_Wording_Assistant_R172_20261027.html) 确认台湾用词、保护代码/网址，下载修订稿。详细：[多平台 AI 指南](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。此流程需人工操作，Grok 不是 TLS 内置插件。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 ## 完整工具下载
 
 这些示例使用的合法工具集中在 [R17.1 完整工具包与验证说明](ALL_TOOLS_RELEASE.md)。Chrome、Tampermonkey、离线 HTML 与 CLI 的安装方式不同；保留原版本号，按任务选择入口。同一网站避免同时启用多个版本。该工具包不提供人工翻译质量认证。
+
+<!-- R177_MRFT_EXAMPLE_BEGIN -->
+## R17.7 多框阅读的独立练习
+
+原有 EX01–EX09 保留。新增 [MRFT 操作与原创多框练习](mrft/MRFT_DOM_PREVIEW.md)：最多 8 框、两种位置模式、手动译文或明确启用本地模型；不含 OCR 或云端传输。Suite 17.3.0 包含 28 工具／23 独立工具资产／28 Release 附件，原 27 工具字节不变。模型和真人语言质量仍需分别验证。
+<!-- R177_MRFT_EXAMPLE_END -->

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:6e66af2176f117e97aa2a3f095c8967b768f113206106c324a68bd4254df584b -->
+<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -19,7 +19,7 @@ Uses existing R17.2, with limited suggestions and human review still required. T
 
 ### First result in 3 steps: one safer Markdown edit
 
-**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_2_0.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
+**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_0.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Unzip and open `START_HERE.html` in your local browser**, then launch the R17.2 offline assistant. **③ Load an original sample or paste Markdown you may edit, review each term or keep it, preview protected changes, and download a new file.**
 
@@ -30,6 +30,17 @@ An open-source, privacy-minded layer for user-controlled Taiwanese terminology, 
 ### R17.2 | Review AI-written Chinese for Taiwan, safely
 
 [Start here](START_HERE.html) · [Offline Taiwan wording assistant](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex, Claude and Grok workflow guide](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Paste your own Chinese Markdown, review each suggestion and download a new safety-checked preview. No automatic cloud translation, no native Grok integration, no certified linguistic accuracy. All earlier supported tools remain available in the full suite.
+
+
+<!-- R177_MRFT_BEGIN -->
+### R17.7 | Frame the text you want to follow (separate Chrome Preview 0.1.0)
+
+After explicit consent for the current tab, drag to create up to **8 independent translation regions**. `FOLLOW_DOM` follows the original element; `FIX_VIEWPORT` stays at screen coordinates. Move, resize, pause, rebind or close all regions. Only visible ordinary DOM text inside each region is read; original page text is unchanged.
+
+The default route is **manually pasted translation**. Enable the local Translator API separately, with explicit consent if model download is needed. Missing capability shows `MODEL_UNAVAILABLE`, without pretending to translate live. Use only public, non-sensitive content. No OCR, Canvas/WebGL, iframe or cloud transport; unlabelled private content cannot always be detected. Translation quality still needs human review.
+
+**[Download full Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**: 28 tools, 23 standalone tool assets and 28 Release assets; the original 27 tools retain their versions and bytes. New installer `TLS_Chrome_MV3_MRFT_R177_20261031.zip` includes an original practice page. **[Installation, operation and limits](docs/mrft/MRFT_DOM_PREVIEW.md)** (Traditional Chinese). No Chrome Web Store or human language-quality certification.
+<!-- R177_MRFT_END -->
 
 
 ## What is available
@@ -87,6 +98,6 @@ Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md)
 
 **R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** Suite 17.2.0 and all prior supported tools remain unchanged.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.2.0; tools=27; standalone=22; tool_ids_sha256=f1c06a60d53960a91e68f3b6184e801bffc6c5442774097a1e167a38f97aa769 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).
