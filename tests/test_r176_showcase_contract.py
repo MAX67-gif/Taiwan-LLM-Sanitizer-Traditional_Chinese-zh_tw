@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 import publication_guard as G
 import check_readme_i18n as I
 
-TAG_URL = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0'
+TAG_URL = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'
 SHOWCASE_FILES = {
     'docs/showcase/source.md', 'docs/showcase/preview.md',
     'docs/showcase/decisions.json', 'docs/showcase/verification.json',

@@ -295,6 +295,18 @@ def verify_workflow(workflow_text=None):
         'fetch-depth: 2',
     ):
         expect(fragment in block, 'RESEARCH_RELEASE_SCOPE_GATE_MISSING:' + fragment)
+    # R17.8 B0 has its own narrowly-scoped read-only Release metadata check.
+    # Never use the retired full ZIPs from 17.1/17.2 as current download assets.
+    for fragment in (
+        "if: steps.r173_scope.outputs.docs_only == 'true'",
+        'gh release view "all-tools-suite-v17.1.0"',
+        'gh release view "all-tools-suite-v17.3.0"',
+        'tools/check_r178_b0_release.py',
+        '--r171-json', '--r172-json', '--r173-json',
+    ):
+        expect(fragment in block, 'R178_B0_RELEASE_METADATA_GATE_MISSING:' + fragment)
+    expect(block.count("if: steps.r173_scope.outputs.docs_only == 'true'") == 1,
+           'R178_B0_UNEXPECTED_RELEASE_GATE_COUNT')
     expect(block.count("if: steps.r173_scope.outputs.product_changed == 'true'") == 2,
            'RESEARCH_SCOPE_MUST_GUARD_BOTH_BUILD_AND_PUBLISH')
     for fragment in ('tools/build_all_tools_release.py', 'tools/check_all_tools_release.py',
@@ -318,6 +330,7 @@ def verify_workflow(workflow_text=None):
     require_unconditional_single_command(block, 'python tools/build_mrft_r177.py')
     require_unconditional_single_command(block, 'python tools/build_mrft_r177.py --check')
     expect(block.index('run: python tools/build_mrft_r177.py\n') < block.index('python tools/build_all_tools_release.py'), 'MRFT_BUILD_BEFORE_PUBLISHER_STAGE')
+    require_unconditional_single_command(verify,'python -m unittest tests/test_r178_b0_release.py -v')
     require_unconditional_single_command(verify,'node tools/check_showcase_r176.js --check')
     require_unconditional_single_command(verify,'python -m unittest tests/test_r176_showcase_contract.py -v')
     require_unconditional_single_command(jobs['browser-integration'],'python tests/test_showcase_browser_r176.py')

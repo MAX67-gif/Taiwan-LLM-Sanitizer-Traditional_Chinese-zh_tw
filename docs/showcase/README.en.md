@@ -6,9 +6,9 @@
 
 ## 1. Download the real assistant
 
-**[Start your first safer edit: official Suite 17.2.0 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)**
+**[Start your first safer edit: official Suite 17.3.0 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**
 
-Under **Assets**, download `TW_Wording_Assistant_R172_20261027.html` and open it in your local browser. Alternatively, download `TLS_ALL_TOOLS_SUITE_17_2_0.zip`, unzip it and open `START_HERE.html`. A GitHub HTML source page is not a hosted application. The assistant's controls are in Traditional Chinese; their exact labels appear below.
+Under **Assets**, download `TW_Wording_Assistant_R172_20261027.html` and open it in your local browser. Alternatively, download `TLS_ALL_TOOLS_SUITE_17_3_0.zip`, unzip it and open `START_HERE.html`. A GitHub HTML source page is not a hosted application. The assistant's controls are in Traditional Chinese; their exact labels appear below.
 
 ## 2. A four-action, 60-second tour
 
@@ -60,4 +60,4 @@ The [offline anonymous observation template](trial_observation.md) has no submis
 | External completion, task time and return use | `NOT_COLLECTED` |
 | Multiple arbitrary fixed translation regions (MRFT) | `DESIGN_ONLY`; not implemented in this assistant |
 
-This adds documentation and verification. The product remains **Suite 17.2.0** with existing tools and published assets unchanged. It makes no unmeasured superiority claim or claim of program approval.
+This adds documentation and verification. The example uses the unchanged R17.2 wording assistant; the complete current download is **Suite 17.3.0**. Legacy 17.1/17.2 combined ZIPs were withdrawn after a public-distribution review. It makes no unmeasured superiority claim or claim of program approval.

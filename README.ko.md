@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
+<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -10,7 +10,7 @@
 
 하나의 Markdown에서 UI의 `menu`는 「選單」, 음식의 `menu`는 「菜單」으로 선택하고 세 번째 표현은 원문으로 남길 수 있습니다. 각 선택을 확인한 뒤 새 파일로 내보내며 기술 구간을 우선 보호합니다.
 
-**[첫 문서 검토 시작](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 다운로드: `TW_Wording_Assistant_R172_20261027.html`，로컬 브라우저에서 여세요.
+**[첫 문서 검토 시작](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)** — 다운로드: `TW_Wording_Assistant_R172_20261027.html`，로컬 브라우저에서 여세요.
 
 [실제 사용 안내 보기 (영어)](docs/showcase/README.en.md) · [실제 미리보기 결과](docs/showcase/preview.md)
 
@@ -96,7 +96,7 @@
 
 [전체 도구 배포 및 무결성 안내](docs/ALL_TOOLS_RELEASE.md)를 확인하세요. 새로운 공식 Release에는 합법적으로 배포 가능하고 지원 중인 Chrome 확장, Tampermonkey 스크립트, 오프라인 HTML 작업대 13개, R6 품질 연구 키트, CLI/Skill 개발자 묶음이 모두 포함되어야 합니다. 변경되지 않은 도구는 원래 버전과 SHA256을 유지합니다. Draft의 모든 첨부 파일을 확인한 다음 공개합니다. 기존에 권리 문제로 철회한 제3자 전용 패키지는 제외합니다. 실제 GitHub CI 및 첨부 파일 검사가 성공한 뒤에만 [R17.1 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)를 사용하세요.
 
-**R17.3은 연구 전용:** [동일한 편집 가능 구간의 공정한 비교 및 자발적 사용 검증 계획](docs/R173_COMPARISON_AND_ADOPTION.en.md)을 참고하세요. **OpenCC·LLM 대비 우월성 또는 독립적인 사람의 언어 품질 검증 결과는 아직 없습니다.** 기존 Suite 17.2.0 도구는 변경하지 않습니다.
+**R17.3은 연구 전용:** [동일한 편집 가능 구간의 공정한 비교 및 자발적 사용 검증 계획](docs/R173_COMPARISON_AND_ADOPTION.en.md)을 참고하세요. **OpenCC·LLM 대비 우월성 또는 독립적인 사람의 언어 품질 검증 결과는 아직 없습니다.** R17.2 검토 도구 자체는 변경하지 않습니다. 이전 17.1/17.2 통합 ZIP은 공개 범위 검토 후 철회되었으므로 최신 전체 다운로드는 Suite 17.3.0을 사용하세요.
 
 <!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 

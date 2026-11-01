@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:72b9cc992c803c9f832d725a27e3d301e91b71485c6ac7b71525abc77a159f78 -->
+<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -10,7 +10,7 @@
 
 同一份 Markdown，界面的 `menu` 选“選單”，餐饮的 `menu` 选“菜單”，第三处保留原文。逐处确认后才生成新稿，并优先保护技术片段。
 
-**[开始第一份安全修稿](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 下载 `TW_Wording_Assistant_R172_20261027.html`，并在本地浏览器打开。
+**[开始第一份安全修稿](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)** — 下载 `TW_Wording_Assistant_R172_20261027.html`，并在本地浏览器打开。
 
 [查看真实逐步演示](docs/showcase/README.md) · [实际预览输出](docs/showcase/preview.md)
 
@@ -96,7 +96,7 @@
 
 请参阅 [完整工具下载与验证说明](docs/ALL_TOOLS_RELEASE.md)。新版正式 Release 必须保留所有仍受支持、具备合法分发权限的 Chrome 扩展、Tampermonkey 脚本、13 个离线 HTML 工作台、R6 质量研究包，以及带依赖项的 CLI/Skill 开发者包；未更新的工具仍保留原版本号与 SHA256。GitHub 必须先验证全部 Draft 附件后才能公开发布。因版权或安全问题下架的第三方专用内容不得恢复。请在正式 CI 成功后使用 [R17.1 工具套装页面](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)。
 
-**R17.3 公平比较研究（不是新版翻译器）：**请阅读[相同可编辑区域的安全比较、OpenCC／AI 离线导入和自愿试用协议](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前没有 OpenCC、LLM 或真人品质方面的胜出证据。**现有 Suite 17.2.0 工具保持不变。
+**R17.3 公平比较研究（不是新版翻译器）：**请阅读[相同可编辑区域的安全比较、OpenCC／AI 离线导入和自愿试用协议](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前没有 OpenCC、LLM 或真人品质方面的胜出证据。**R17.2 修稿工具原版保持不变；历史 17.1/17.2 的完整整合 ZIP 已撤回，当前完整下载请使用 Suite 17.3.0。
 
 <!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 

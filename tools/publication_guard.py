@@ -93,6 +93,8 @@ BAD_PATH=re.compile(
     r"market_research|research_memo|personal|scratch|"
     r"conversation|secrets?|credentials?|token)(?:[/_.-]|$)"
 )
+WITHDRAWN_STRATEGY_BASENAMES=frozenset({'product_positioning_r8.md','r9_product_strategy.md'})
+PRIVATE_TREE_PART='taiwan-llm-sanitizer-project-brain'
 BAD_EXT=(".pem",".p12",".pfx",".p8",".jks")
 SECRETS=(
     re.compile(r"gh[pousr]_[A-Za-z0-9]{30,}"),
@@ -112,6 +114,8 @@ def allowed_path(name:str)->bool:
     if name.startswith("/") or "\\" in name or name.endswith("/"):
         return False
     if any(part in (".","..","") for part in name.split("/")):
+        return False
+    if any(part.casefold() in WITHDRAWN_STRATEGY_BASENAMES or part.casefold() == PRIVATE_TREE_PART for part in name.split('/')):
         return False
     if BAD_PATH.search(name):
         return False
@@ -249,6 +253,8 @@ def self_test():
     assert not allowed_path("benchmarks/r6/private_model_results.jsonl")
     assert not allowed_path("docs/CODEX_OSS_EVIDENCE_R1.md")
     assert not allowed_path("docs/PRIVATE_ROADMAP.md")
+    assert not allowed_path('src/demo/R9_PRODUCT_STRATEGY.md')
+    assert not allowed_path('examples/Taiwan-LLM-Sanitizer-Project-Brain/readme.md')
     assert not allowed_path("docs/NEW_INTERNAL.md")
     assert not allowed_path("notes_private/mysecret.md")
     assert not allowed_path(".env")

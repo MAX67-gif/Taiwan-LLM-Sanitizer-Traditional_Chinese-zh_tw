@@ -7,7 +7,7 @@
 
 同一份 Markdown，介面的 `menu` 選「選單」，餐飲的 `menu` 選「菜單」，第三處保留原文。逐處確認後才產生新稿；技術片段優先保護。
 
-**[開始第一份安全修稿](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.2.0)** — 下載 `TW_Wording_Assistant_R172_20261027.html`，在本機瀏覽器開啟。
+**[開始第一份安全修稿](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)** — 下載 `TW_Wording_Assistant_R172_20261027.html`，在本機瀏覽器開啟。
 
 [查看真實逐步展示](docs/showcase/README.md) · [實際預覽輸出](docs/showcase/preview.md)
 
@@ -29,7 +29,7 @@
 
 [立即開始](START_HERE.html) · [R17.2 離線臺灣用語修稿助手](examples/TW_Wording_Assistant_R172_20261027.html) · [Codex／Claude Code／Grok AI 實戰教學](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) · [English AI guide](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。
 
-貼入自己的中文 Markdown，僅在可修改片段給出有限的臺灣用語候選，使用者逐項採用或保留後才預覽、另存。不是全文翻譯、字形正規化、模型品質認證，也不會自動連線 AI；使用雲端 Codex／Claude／Grok 時原稿是否送出由使用者在該平台決定。原 R5/R11/R13 與舊 HTML 原樣保留；舊版 Suite v17.2.0 保持不變；新版 Suite v17.3.0 在原有工具之外加入 MRFT。
+貼入自己的中文 Markdown，僅在可修改片段給出有限的臺灣用語候選，使用者逐項採用或保留後才預覽、另存。不是全文翻譯、字形正規化、模型品質認證，也不會自動連線 AI；使用雲端 Codex／Claude／Grok 時原稿是否送出由使用者在該平台決定。原 R5/R11/R13 與舊 HTML 原樣保留；R17.2 修稿工具版本及位元組維持原樣；歷史 Suite 17.1／17.2 的整合完整 ZIP 與開發者 ZIP 已因公開資料範圍稽核撤回，完整下載請選 Suite 17.3.0。
 
 <!-- R177_MRFT_BEGIN -->
 ### R17.7｜框住需要閱讀的位置（獨立 Chrome Preview 0.1.0）
@@ -95,13 +95,13 @@
 
 ## R17.1｜每次 Release 都提供完整工具套件（All-Tools Full Suite）
 
-以 **[All-Tools 全工具完整下載與驗證說明](docs/ALL_TOOLS_RELEASE.md)** 為準：新的正式 Release 必須一次包含所有仍受支援且合法發行的 Chrome Extension、Tampermonkey `.user.js`、13 個離線 HTML 工作台、R6 品質套件，以及可執行的 CLI/Skill 開發者包。**未更新的工具保留舊版號與原始 SHA256，缺一不可。** 發布流程先建立 Draft，等完整附件下載回驗後才公開；權利不明或此前已下架的第三方專用內容不納入。R17.1 工具套件 [Release 頁](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) 須待 GitHub main CI／附件實際成功才視為可用。
+以 **[All-Tools 全工具完整下載與驗證說明](docs/ALL_TOOLS_RELEASE.md)** 為準：新的正式 Release 必須一次包含所有仍受支援且合法發行的 Chrome Extension、Tampermonkey `.user.js`、13 個離線 HTML 工作台、R6 品質套件，以及可執行的 CLI/Skill 開發者包。**未更新的工具保留舊版號與原始 SHA256，缺一不可。** 發布流程先建立 Draft，等完整附件下載回驗後才公開；權利不明或此前已下架的第三方專用內容不納入。R17.1 [歷史 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) 已公告撤回舊版整合 ZIP；現行下載應使用 Suite 17.3.0。
 
 ## R17｜專案級文件信任圖（唯讀工具）
 
 [開啟 R17 離線 Markdown 文件連結檢查](examples/TW_Document_Trust_Graph_R17_20261026.html) · [閱讀 R17 完整使用與安全限制](docs/R17_DOCUMENT_TRUST_GRAPH.md)。由使用者勾選自己有權使用的 Markdown 檔案，檢查跨檔連結與錨點，輸出不含文件原文的報告；未知或外部連結**不能冒稱 PASS**。這是結構檢查，**非自動翻譯、全文語義認證或網站相容性保證**。
 
-**R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，不影響既有 Suite 17.2.0 完整下載與使用。
+**R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，未變動 R17.2 修稿引擎；現行完整下載請用 Suite 17.3.0。
 
 <!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
