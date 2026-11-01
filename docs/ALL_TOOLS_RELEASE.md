@@ -1,5 +1,7 @@
 # All-Tools Full Suite｜每次 Release 都要有所有合法且受支援的工具
 
+> **2026-10-31 下載更新：**Suite 17.1／17.2 的完整套件 ZIP 與 Developer ZIP 已撤回；舊版 Manifest 與 Checksum 僅供歷史查核，可能仍列出這些附件。請從 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 下載目前完整工具包。下方舊版章節保留版本背景，不是現行下載清單。
+
 ## Suite 17.3.0｜新增 MRFT DOM 多框閱讀預覽
 
 本輪完整套件為 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)，新增一個獨立 `TLS_Chrome_MV3_MRFT_R177_20261031.zip`（工具 0.1.0 Preview，含原創練習頁），保留 Suite 17.2.0 原 27 項工具的版本與位元組。完整下載為 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`；操作與限制見 [MRFT 說明](mrft/MRFT_DOM_PREVIEW.md)。正式可用狀態仍以對應 main CI、已公開 Release 與全部附件實際下載驗證為準。
@@ -25,7 +27,7 @@
 
 舊 R17 Release 只附 R17 HTML + SHA，使用者必須翻找歷史 Release 才能安裝 R5/R11/R13 或取得其他工作台。新制把**同一次正式發布的合法且仍維護工具**全部收在同一個 Release，也提供各工具獨立下載。任何缺件會讓 CI 阻擋發布。
 
-新完整套件標籤：[`all-tools-suite-v17.1.0`](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)。只有 GitHub 實際顯示完整附件、CI 發布工作成功，才代表此版本可用。舊版 R5、R11、R13、R14～R17 的原始 Release／Tag **不會被修改**。
+**歷史 R17.1 原發布標籤：**[`all-tools-suite-v17.1.0`](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0)。該版原本有完整套件；2026-10-31 已撤回兩個歷史整合 ZIP，不能再視為現行完整套件。其餘個別工具維持版本身分；目前完整下載請使用 17.3.0。
 
 ## 預定完整工具清單
 
@@ -37,12 +39,12 @@
 | 公開品質套件 | R6 原始品質研究 ZIP（不是自然度認證） | 是 | 原版維持不變 |
 | 開發者 CLI/Skill | 五個 Node CLI 加一個本機 Skill，含原始碼、依賴及六語文件 | 共一個完整開發者 ZIP | 原版維持不變 |
 
-**機器記錄：**`release/all_tools_registry.json` 包含固定 `tool_id`、原始 Release 標籤與 SHA256、版本、法律狀態及在 Full Suite 中的路徑。共 **26 個工具項目、21 個獨立資產**。一個新正式 Release 還必須附上 `TLS_ALL_TOOLS_SUITE_17_1_0.zip`、`ALL_TOOLS_MANIFEST.json`、`BUILD_PROVENANCE.json`、`VALIDATION.json`、`SHA256SUMS.txt`，因此當輪預期 **26 個 GitHub Release 附件**。
+**歷史 R17.1 記錄：**當時機器 Registry 列出 26 個工具、21 個獨立資產、26 個 GitHub 附件；包含已撤回的 `TLS_ALL_TOOLS_SUITE_17_1_0.zip` 與開發者 ZIP。這些是當時發行口徑，不能當作目前完整下載清單。現行版本的正式數量見本頁頂端 Suite 17.3.0 區塊及實際 Release。
 
 ## 如何下載／驗證
 
-1. 到上述完整套件 Release。若 Release 不存在、附件數不足或 GitHub Actions 發布工作失敗，**不要當作正式完整版本**；仍可獨立使用舊版已驗證工具。
-2. 一般使用者直接下載 `TLS_ALL_TOOLS_SUITE_17_1_0.zip`，或僅下載自己需要的 Chrome、`.user.js`、HTML。
+1. 取得當前 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 的完整下載。若當前 Release 不存在或必要附件不足，**不要**把任何撤回的舊 ZIP 當成替代品。
+2. 一般使用者下載現行 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`，或僅下載自己需要的 Chrome、`.user.js`、HTML 獨立附件。
 3. ZIP 中包含同一批實體工具、六語導覽與完整雜湊，個別資產也有 SHA256；可用一般解壓軟體檢查 CRC。
 4. Chrome ZIP 解壓後才可用 `chrome://extensions` 的「載入未封裝項目」；Tampermonkey 單檔匯入。**同一網站不要同時啟用 R5／R11／R13 而造成文字操作衝突**。
 5. HTML 完全離線使用。不同工作台分別處理品質審閱、結構保真、人工預覽、專案連結等，**不會自行變成一套完整自動翻譯器**。
