@@ -102,7 +102,7 @@ def inline_spans(line, ongoing=None):
         pos=end+close.end();spans.append((start,pos))
     return spans,ongoing
 
-def protected_line_spans(text):
+def protected_line_spans(text, include_empty=False):
     lines=text.splitlines(keepends=True)
     start_fence=None
     in_inline=None
@@ -155,7 +155,7 @@ def protected_line_spans(text):
             if end<0:
                 ps.append((beginning,len(clean)));in_comment=True;break
             ps.append((beginning,end+3));i=end+3
-        ranges.append((clean,merge_spans(ps)))
+        ranges.append((clean,[(0,0)] if include_empty and whole and not clean else merge_spans(ps)))
     if in_inline:issues.append('UNCLOSED_INLINE_CODE_PROTECTED')
     if start_fence:issues.append('UNCLOSED_FENCE_PROTECTED')
     if in_frontmatter:issues.append('UNCLOSED_FRONTMATTER_PROTECTED')
@@ -193,6 +193,7 @@ def classify(line, start, end, term, rule, suggestion):
     if rule=='TW_CLICK' and re.match('^(?:[ -]?(?:rate|through|frequency|count|sound|analytics))',line[end:],re.I):
         return ('KEEP_ORIGINAL',None)
     if rule=='TW_DEFAULT':
+        if re.match('^(?:了|其)',line[end:]):return ('KEEP_ORIGINAL',None)
         nearby=line[max(0,start-32):start]+line[end:end+32]
         if UI_CUES.search(nearby) or re.search(r'恢復|恢复|reset|default setting',nearby,re.I):
             return ('SUGGEST','預設')
@@ -277,8 +278,16 @@ NUMBERS=re.compile(r'(?<![A-Za-z_])\d+(?:[.,:/-]\d+)*(?:%|％)?')
 def compare_texts(source, candidate):
     """Metadata-only comparison. PASS cannot certify meaning or naturalness."""
     scans=[scan_text(t) for t in (source,candidate)]
-    rows=[protected_line_spans(t) for t in (source,candidate)]
-    protected=[[line[a:b] for line,spans in rs for a,b in spans] for rs,_ in rows]
+    rows=[protected_line_spans(t,include_empty=True) for t in (source,candidate)]
+    protected=[]
+    for text,(rs,_) in zip((source,candidate),rows):
+        tokens=[]
+        for raw,(line,spans) in zip(text.splitlines(keepends=True),rs):
+            for a,b in spans:
+                # Include protected line endings and empty code lines. Removing
+                # a blank code line must not receive an integrity PASS.
+                tokens.append(line[a:b]+(raw[len(line):] if b==len(line) else ''))
+        protected.append(tokens)
     def structure(rs):
         result=[]
         for line,spans in rs:
