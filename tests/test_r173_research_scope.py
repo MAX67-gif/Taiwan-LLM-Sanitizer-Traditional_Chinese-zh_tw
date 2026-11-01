@@ -65,9 +65,9 @@ class ScopeTest(unittest.TestCase):
   self.assertFalse(C.classify([('M','README.md')])[0])
  def test_empty_change_no_auto_skip(self):
   self.assertFalse(C.classify([])[0])
- def test_existing_release_identity_and_full_27_assets(self):
+ def test_existing_release_identity_after_two_bundle_withdrawals(self):
   correct={'tagName':C.PINNED_SUITE_TAG,'targetCommitish':C.PINNED_PRODUCT_SHA,'isDraft':False,
-    'assets':[{'name':x} for x in ['TLS_ALL_TOOLS_SUITE_17_2_0.zip','TW_Wording_Assistant_R172_20261027.html','VALIDATION.json']+[f'asset-{i}' for i in range(24)]]}
+    'assets':[{'name':x} for x in ['ALL_TOOLS_MANIFEST.json','TW_Wording_Assistant_R172_20261027.html','VALIDATION.json']+[f'asset-{i}' for i in range(22)]]}
   self.assertTrue(C.validate_existing_release(correct))
   for mod in ({'tagName':'fake'},{'isDraft':True},{'targetCommitish':'f'*40},{'assets':[]}):
    with self.subTest(mod=mod):
@@ -128,6 +128,32 @@ class R176ScopeTests(unittest.TestCase):
     with self.subTest(command=command,replacement=replacement):
      with self.assertRaises(F.GuardError):F.verify_workflow(text.replace(needle,replacement,1))
 
+
+class R178B0RouteTests(unittest.TestCase):
+ def test_exact_b0_transaction_skips_new_suite_publication_only(self):
+  changes=[(state,path) for path,state in sorted(C.R178_B0_STATES.items())]
+  self.assertEqual(len(changes),24)
+  self.assertEqual(C.classify(changes),(True,'R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY'))
+  for i,(state,path) in enumerate(changes):
+   with self.subTest(path=path):
+    self.assertFalse(C.classify(changes[:i]+changes[i+1:])[0])
+    alt='M' if state=='A' else 'A'
+    self.assertFalse(C.classify(changes[:i]+[(alt,path)]+changes[i+1:])[0])
+    self.assertFalse(C.classify(changes[:i]+[('D',path)]+changes[i+1:])[0])
+  for extra in ('src/core/engine.js','release/all_tools_registry.json',
+                'examples/TW_Wording_Assistant_R172_20261027.html',
+                'docs/ROADMAP.md','README.private.md'):
+   self.assertFalse(C.classify(changes+[('M',extra)])[0])
+  self.assertFalse(C.classify(changes+[changes[0]])[0])
+
+ def test_old_retired_bundle_not_accepted_in_historical_metadata(self):
+  names=['ALL_TOOLS_MANIFEST.json','TW_Wording_Assistant_R172_20261027.html','VALIDATION.json'] + [f'asset-{i}' for i in range(22)]
+  obj={'tagName':C.PINNED_SUITE_TAG,'targetCommitish':C.PINNED_PRODUCT_SHA,
+       'isDraft':False,'assets':[{'name':n} for n in names]}
+  self.assertTrue(C.validate_existing_release(obj))
+  for withdrawn in ('TLS_ALL_TOOLS_SUITE_17_2_0.zip','TLS_DEVELOPER_CLI_SKILL_17_2_0.zip'):
+   altered={**obj,'assets':[{'name': withdrawn}]+[{'name':n} for n in names[1:]]}
+   with self.assertRaises(ValueError): C.validate_existing_release(altered)
 
 class R177ProductScopeTests(unittest.TestCase):
  def test_complete_mrft_transaction_requires_full_product_release(self):
