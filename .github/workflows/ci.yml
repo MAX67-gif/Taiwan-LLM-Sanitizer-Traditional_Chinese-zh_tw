@@ -82,6 +82,8 @@ jobs:
         run: node tools/check_showcase_r176.js --check
       - name: Verify R17.6 six-language showcase and voluntary feedback contract
         run: python -m unittest tests/test_r176_showcase_contract.py -v
+      - name: Verify R17.8 B0 current-release link recovery and withdrawn archive hard gates
+        run: python -m unittest tests/test_r178_b0_release.py -v
       - name: Verify R17 project-level read-only Markdown integrity toolkit
         run: |
           node tools/build_document_trust_r17.js --check
@@ -903,6 +905,20 @@ jobs:
           gh release view "all-tools-suite-v17.2.0" --json tagName,isDraft,targetCommitish,assets > "$RUNNER_TEMP/tls-r173-existing-release.json"
           python tools/check_r173_research_scope.py \
             --existing-release-json "$RUNNER_TEMP/tls-r173-existing-release.json" \
+            --receipt "$RUNNER_TEMP/tls_all_tools_publication_receipt.json"
+      - name: Validate three known Releases after historical asset withdrawal; docs-only no republish
+        if: steps.r173_scope.outputs.docs_only == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release view "all-tools-suite-v17.1.0" --json tagName,isDraft,targetCommitish,assets > "$RUNNER_TEMP/tls-r178-existing-r171.json"
+          gh release view "all-tools-suite-v17.2.0" --json tagName,isDraft,targetCommitish,assets > "$RUNNER_TEMP/tls-r178-existing-r172.json"
+          gh release view "all-tools-suite-v17.3.0" --json tagName,isDraft,targetCommitish,assets > "$RUNNER_TEMP/tls-r178-existing-r173.json"
+          python tools/check_r178_b0_release.py \
+            --r171-json "$RUNNER_TEMP/tls-r178-existing-r171.json" \
+            --r172-json "$RUNNER_TEMP/tls-r178-existing-r172.json" \
+            --r173-json "$RUNNER_TEMP/tls-r178-existing-r173.json" \
             --receipt "$RUNNER_TEMP/tls_all_tools_publication_receipt.json"
       - name: Preserve verified publication outcome or blocking reason
         if: always()
