@@ -24,7 +24,8 @@ class R174FirstUseTests(unittest.TestCase):
         en=(ROOT/'docs/QUICK_START_R174.en.md').read_text(encoding='utf-8')
         for s in (zh,en):
             self.assertIn(LATEST,s)
-            self.assertIn('TLS_ALL_TOOLS_SUITE_17_2_0.zip',s)
+            self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_0.zip',s)
+            self.assertNotIn('TLS_ALL_TOOLS_SUITE_17_2_0.zip',s)
             self.assertIn('START_HERE.html',s)
             self.assertIn('TW_Wording_Assistant_R172_20261027.html',s)
             self.assertIn('R174_ORIGINAL_FIRST_TASK.md',s)
