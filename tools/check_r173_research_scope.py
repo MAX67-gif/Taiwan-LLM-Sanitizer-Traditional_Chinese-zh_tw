@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PINNED_PRODUCT_SHA='a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4'
 PINNED_SUITE_TAG='all-tools-suite-v17.2.0'
-PINNED_ASSET_COUNT=27
+PINNED_ASSET_COUNT=25
 EXACT={'.github/workflows/ci.yml',
        'tools/publication_guard.py', 'tools/check_all_tools_release.py','tools/check_r173_research_scope.py',
        'tests/test_comparison_r173.py','tests/test_comparison_r173.js','tests/test_r173_research_scope.py',
@@ -56,6 +56,27 @@ R176_SHOWCASE_STATES={
     )},
 }
 
+# Exact audited R17.8 B0: public entry-point correction + forward-only archive
+# safety.  No runtime, registry, or generated installer is changed. Add/remove
+# any path, even a documentation file, and this special route fails closed.
+R178_B0_STATES = {
+    **{p: 'M' for p in (
+        '.github/workflows/ci.yml', 'CHANGELOG.md',
+        'README.md', 'README.en.md', 'README.zh-CN.md',
+        'README.ja.md', 'README.ko.md', 'README.es.md',
+        'docs/QUICK_START_R174.md', 'docs/QUICK_START_R174.en.md',
+        'docs/showcase/README.md', 'docs/showcase/README.en.md',
+        'docs/R173_COMPARISON_AND_ADOPTION.md', 'docs/R173_COMPARISON_AND_ADOPTION.en.md',
+        'docs/ALL_TOOLS_RELEASE.md',
+        'tools/build_all_tools_release.py', 'tools/publication_guard.py',
+        'tools/check_r173_research_scope.py', 'tools/check_all_tools_release.py',
+        'tests/test_r173_research_scope.py', 'tests/test_r174_first_run_links.py',
+        'tests/test_r176_showcase_contract.py',
+    )},
+    'tools/check_r178_b0_release.py': 'A',
+    'tests/test_r178_b0_release.py': 'A',
+}
+
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
@@ -70,6 +91,10 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    if set(paths)==set(R178_B0_STATES):
+        if all(R178_B0_STATES[p] == state for state,p in changes):
+            return True,'R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY'
+        return False,'R178_B0_UNEXPECTED_STATUS'
     if set(paths)==set(R176_SHOWCASE_STATES):
         if all(R176_SHOWCASE_STATES[p]==state for state,p in changes):
             return True,'R176_PROOF_FIRST_SHOWCASE_DOCS_ONLY'
@@ -109,7 +134,10 @@ def validate_existing_release(obj):
     if not isinstance(assets,list) or len(assets)!=PINNED_ASSET_COUNT:
         raise ValueError('PINNED_ASSETS_MISSING')
     names=[a.get('name') for a in assets if isinstance(a,dict)]
-    if len(set(names))!=len(names) or 'TLS_ALL_TOOLS_SUITE_17_2_0.zip' not in names or 'TW_Wording_Assistant_R172_20261027.html' not in names or 'VALIDATION.json' not in names:
+    if (len(set(names))!=len(names) or 'TLS_ALL_TOOLS_SUITE_17_2_0.zip' in names
+            or 'TLS_DEVELOPER_CLI_SKILL_17_2_0.zip' in names
+            or 'TW_Wording_Assistant_R172_20261027.html' not in names
+            or 'ALL_TOOLS_MANIFEST.json' not in names or 'VALIDATION.json' not in names):
         raise ValueError('PINNED_ASSET_INVENTORY_INVALID')
     return True
 
@@ -130,14 +158,17 @@ def main(argv=None):
         Path(args.receipt).write_text(json.dumps(outcome,indent=2)+'\n',encoding='utf-8')
         print('R173_PINNED_RESEARCH_RECEIPT_PASS');return 0
     if not args.base or not args.head:parser.error('--base and --head required')
-    is_research,reason=classify(changed_files(args.base,args.head))
+    allowed_no_release,reason=classify(changed_files(args.base,args.head))
+    docs_only=(reason=='R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY')
+    is_research=allowed_no_release and not docs_only
     ghout=os.environ.get('GITHUB_OUTPUT')
     if ghout:
         with open(ghout,'a',encoding='utf-8') as o:
-            o.write('product_changed='+('false' if is_research else 'true')+'\n')
+            o.write('product_changed='+('false' if allowed_no_release else 'true')+'\n')
             o.write('research_only='+('true' if is_research else 'false')+'\n')
+            o.write('docs_only='+('true' if docs_only else 'false')+'\n')
     print(json.dumps({'schema':'tls.r173.release-scope.v1','status':reason,
-        'research_only':is_research,'product_changed':not is_research}))
+        'research_only':is_research,'docs_only':docs_only,'product_changed':not allowed_no_release}))
     return 0
 
 if __name__=='__main__':
