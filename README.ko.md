@@ -1,7 +1,14 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
+<!-- SOURCE_README_SHA256:497dd8c942b6b90afc60110f84960fca1bebaaaeb369deb1480c9b7102660950 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
+
+<!-- TLS_BRANDING_R3_BEGIN -->
+![Taiwan-LLM-Sanitizer — context-aware Taiwanese wording review](assets/branding/TLS_Premium_Banner_R3_2800x960.png)
+
+*Workflow illustration, not an actual app screenshot. You review every proposed edit.*
+<!-- TLS_BRANDING_R3_END -->
+
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 

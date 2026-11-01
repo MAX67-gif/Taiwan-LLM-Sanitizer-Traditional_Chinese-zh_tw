@@ -1,5 +1,12 @@
 # Taiwan-LLM-Sanitizer｜更安全的臺灣繁體中文在地化工具
 
+<!-- TLS_BRANDING_R3_BEGIN -->
+![Taiwan-LLM-Sanitizer — context-aware Taiwanese wording review](assets/branding/TLS_Premium_Banner_R3_2800x960.png)
+
+*流程示意，非實際產品截圖；用詞候選須由使用者逐處確認。*
+<!-- TLS_BRANDING_R3_END -->
+
+
 **語言／Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
 <!-- R176_SHOWCASE_BEGIN -->

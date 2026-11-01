@@ -68,6 +68,7 @@ DOCS_PUBLIC={
     "docs/R17_DOCUMENT_TRUST_GRAPH.es.md",
     "docs/R13_BILINGUAL_READER.md","docs/TAIWAN_UI_TERMS_R13.md",
 }
+BRANDING_PUBLIC={"assets/branding/TLS_Premium_Banner_R3_2800x960.png"}
 PUBLIC_PREFIXES=("src/","tools/","tests/","dist/","examples/","lexicon/","skills/",".agents/skills/",".claude/skills/")
 # Research files are explicitly allowlisted and NEVER silently become a distributed tool.
 PUBLIC_R173_RESEARCH={
@@ -121,7 +122,7 @@ def allowed_path(name:str)->bool:
         return False
     if name.lower().endswith(BAD_EXT):
         return False
-    if name in ROOT_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES or name in PUBLIC_R173_RESEARCH or name in PUBLIC_R175_RESEARCH:
+    if name in ROOT_PUBLIC or name in BRANDING_PUBLIC or name in DOCS_PUBLIC or name in PUBLIC_BENCHMARK_FILES or name in PUBLIC_R173_RESEARCH or name in PUBLIC_R175_RESEARCH:
         return True
     if name.startswith("docs/"):
         return False
