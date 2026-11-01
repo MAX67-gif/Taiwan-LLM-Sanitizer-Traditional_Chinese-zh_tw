@@ -25,6 +25,8 @@ class ContextV2(unittest.TestCase):
   r=self.decisions('餐廳 menu；software menu');self.assertEqual([x['candidate'] for x in r],['菜單','選單'])
  def test_unknown_default_not_automatically_a_setting(self):
   r=self.decisions('他默認了這項安排。','TW_DEFAULT');self.assertEqual(r[0]['state'],'KEEP_ORIGINAL')
+ def test_acceptance_sense_wins_over_distant_system_cue(self):
+  r=self.decisions('公司系統默認了這項安排。','TW_DEFAULT');self.assertEqual(r[0]['state'],'KEEP_ORIGINAL')
  def test_bare_default_needs_context(self):
   r=self.decisions('默認','TW_DEFAULT');self.assertEqual(r[0]['state'],'NEEDS_CONTEXT')
  def test_restore_default_has_setting_context(self):
@@ -49,6 +51,10 @@ class ComparatorV2(unittest.TestCase):
   s='# 安裝\n軟件 `menu` 有 3 項設定，參閱[文件](./a_(b)/menu.md)。'
   t='# 安裝\n軟體 `menu` 有 3 項設定，參閱[說明](./a_(b)/menu.md)。'
   r=self.compare(s,t);self.assertEqual(r['status'],'CHECKS_PASSED_NOT_SEMANTIC_CERTIFIED')
+ def test_code_blank_line_change_blocks(self):
+  r=self.compare('```js\nconst x=1\n\nrun()\n```','```js\nconst x=1\nrun()\n```');self.assertEqual(r['status'],'BLOCKED_INTEGRITY')
+ def test_code_newline_bytes_change_blocks(self):
+  r=self.compare('```\r\ncode\r\n```','```\ncode\n```');self.assertEqual(r['status'],'BLOCKED_INTEGRITY')
  def test_code_change_blocks(self):
   r=self.compare('軟件 `menu=3`','軟體 `menu=4`');self.assertEqual(r['status'],'BLOCKED_INTEGRITY')
  def test_url_change_blocks(self):
