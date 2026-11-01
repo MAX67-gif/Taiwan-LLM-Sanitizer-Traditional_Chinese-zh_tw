@@ -272,7 +272,7 @@ def scan_text(text,detail=False):
 
 PROTECTED_NAMES=('Codex for Open Source','OpenAI Codex','Claude Code','ChatGPT','GitHub')
 NEGATIONS=re.compile(r'(?i)\b(?:must not|do not|does not|cannot|never|not)\b|不得|不能|不可|不會|不会|不要|禁止|沒有|没有|勿|未|不')
-NUMBERS=re.compile(r'(?<![A-Za-z_])\d+(?:[.,:/-]\d+)*(?:%|％)?')
+NUMBERS=re.compile(r'(?<![A-Za-z_\d])[-+]?(?:\d+(?:[.,:/-]\d+)*|\.\d+)(?:[eE][-+]?\d+)?(?:%|％)?')
 
 
 def compare_texts(source, candidate):
