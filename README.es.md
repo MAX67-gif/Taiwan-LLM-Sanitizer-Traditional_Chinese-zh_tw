@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -26,7 +26,7 @@ Usa R17.2 existente. Las sugerencias son limitadas y requieren revisión humana.
 
 ### Primer resultado en 3 pasos: revisa un archivo Markdown
 
-**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_0.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
+**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_1.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Descomprime el ZIP y abre `START_HERE.html` en el navegador local.** **③ Abre el asistente R17.2, carga el ejemplo original o un Markdown propio, acepta o conserva cada sugerencia y descarga un archivo nuevo tras revisar los cambios protegidos.**
 

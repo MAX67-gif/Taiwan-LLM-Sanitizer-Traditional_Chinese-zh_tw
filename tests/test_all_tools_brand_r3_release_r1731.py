@@ -27,6 +27,15 @@ class BrandR3ReleaseVersion(unittest.TestCase):
   self.assertEqual(len(r['tools']),28)
   self.assertEqual(len(B.validate_registry(r,False)),28)
   self.assertEqual(B.digest('\n'.join(x['tool_id'] for x in r['tools']).encode()),B.CURRENT_IDS_SHA256)
+ def test_latest_first_run_download_matches_new_release(self):
+  expected='TLS_ALL_TOOLS_SUITE_17_3_1.zip'
+  for name in ('README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md'):
+   content=(ROOT/name).read_text('utf-8')
+   first_use=content.split('<!-- R176_SHOWCASE_END -->',1)[1].split('<!-- R177_MRFT_BEGIN -->',1)[0]
+   with self.subTest(name=name):
+    self.assertIn('/releases/latest',first_use)
+    self.assertEqual(first_use.count(expected),1)
+    self.assertNotIn('TLS_ALL_TOOLS_SUITE_17_3_0.zip',first_use)
  def test_publisher_does_not_retarget_v1730(self):
   s=(ROOT/'tools/publish_all_tools_release.py').read_text('utf-8')
   self.assertNotIn("RELEASE_TAG = 'all-tools-suite-v17.3.0'",s)

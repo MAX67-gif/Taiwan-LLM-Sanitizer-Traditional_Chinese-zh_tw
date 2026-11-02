@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -26,7 +26,7 @@ Uses existing R17.2, with limited suggestions and human review still required. T
 
 ### First result in 3 steps: one safer Markdown edit
 
-**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_0.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
+**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_1.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Unzip and open `START_HERE.html` in your local browser**, then launch the R17.2 offline assistant. **③ Load an original sample or paste Markdown you may edit, review each term or keep it, preview protected changes, and download a new file.**
 

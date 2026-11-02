@@ -23,7 +23,7 @@
 
 ### 第一次使用：只要 3 步，先完成一份 Markdown
 
-**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_3_1.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
 
 **② 解壓 ZIP，使用本機瀏覽器開啟 `START_HERE.html`** → 選「R17.2 離線修稿助手」。**③ 載入原創示例或自己的 Markdown → 逐項採用／保留 → 產生安全預覽 → 下載新稿。**
 

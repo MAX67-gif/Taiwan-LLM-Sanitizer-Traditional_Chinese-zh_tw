@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -26,7 +26,7 @@
 
 ### 首次使用：3 步完成一份 Markdown
 
-**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_3_1.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
 
 **② 解压后在本地浏览器打开 `START_HERE.html`**，再选择 R17.2 离线修稿助手。**③ 加载原创练习或粘贴有权处理的 Markdown，逐项选择采用/保留，检查安全预览并下载新稿。**
 

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -26,7 +26,7 @@
 
 ### 처음 사용하기: Markdown 문서 하나를 3단계로 검토
 
-**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
+**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_3_1.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
 
 **② ZIP 압축 해제 후 로컬 브라우저에서 `START_HERE.html` 열기.** **③ R17.2에서 자체 예제 또는 편집 권한이 있는 Markdown을 입력하고, 각 제안을 채택하거나 원문 유지한 다음 안전 미리보기를 확인하고 새 파일로 저장합니다.**
 
