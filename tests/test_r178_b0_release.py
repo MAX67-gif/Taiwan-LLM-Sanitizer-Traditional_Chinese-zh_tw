@@ -31,7 +31,7 @@ class B0Tests(unittest.TestCase):
    for name in C.WITHDRAWN:
     with self.subTest(i=i,name=name),self.assertRaisesRegex(ValueError,'WITHDRAWN_BUNDLE'):
      q=copy.deepcopy(xs);q[i]['assets'][0]['name']=name;C.validate_three(q)
- def test_six_language_first_edit_is_current_release(self):
+ def test_six_language_first_edit_preserves_1730_and_tracks_1731(self):
   for name in README_FILES:
    text=(ROOT/name).read_text('utf-8')
    with self.subTest(name=name):
@@ -40,7 +40,8 @@ class B0Tests(unittest.TestCase):
     self.assertEqual(block.group(1).count(URL),1)
     self.assertNotIn('all-tools-suite-v17.2.0',block.group(1))
     self.assertIn('TW_Wording_Assistant_R172_20261027.html',block.group(1))
-    self.assertIn('suite=17.3.0; tools=28; standalone=23',text)
+    self.assertIn('suite=17.3.1; tools=28; standalone=23',text)
+    self.assertEqual(B.strict_json(B.REGISTRY.read_bytes(), 'registry')['suite_version'],'17.3.1')
     for bad in C.WITHDRAWN:self.assertNotIn(bad,text)
  def test_guides_no_withdrawn_primary_download(self):
   for name in GUIDES:
