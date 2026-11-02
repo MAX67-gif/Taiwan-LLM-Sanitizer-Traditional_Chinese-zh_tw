@@ -17,14 +17,14 @@ class R174FirstUseTests(unittest.TestCase):
                 self.assertIn(LATEST,txt[:2000],f'{name}: missing visible real Release link')
                 self.assertIn('docs/QUICK_START_R174',txt[:2500])
                 self.assertNotIn('github.io/Taiwan-LLM-Sanitizer',txt)
-                self.assertIn('suite=17.3.1; tools=28; standalone=23',txt)
+                self.assertIn('suite=17.3.2; tools=28; standalone=23',txt)
                 self.assertIn('HUMAN_TRANSLATION_REVIEW',txt if name!='README.md' else txt+' HUMAN_TRANSLATION_REVIEW')
     def test_02_honest_local_file_instruction_and_guide_links(self):
         zh=(ROOT/'docs/QUICK_START_R174.md').read_text(encoding='utf-8')
         en=(ROOT/'docs/QUICK_START_R174.en.md').read_text(encoding='utf-8')
         for s in (zh,en):
             self.assertIn(LATEST,s)
-            self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_1.zip',s)
+            self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_2.zip',s)
             self.assertNotIn('TLS_ALL_TOOLS_SUITE_17_2_0.zip',s)
             self.assertIn('START_HERE.html',s)
             self.assertIn('TW_Wording_Assistant_R172_20261027.html',s)

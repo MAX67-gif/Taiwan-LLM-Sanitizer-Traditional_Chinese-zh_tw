@@ -30,6 +30,10 @@ jobs:
         run: python tools/build_mrft_r177.py
       - name: Check R17.7 installer reproducibility and committed delivery parity
         run: python tools/build_mrft_r177.py --check
+      - name: Verify optional TCR 2.0 portable context review and preservation checks
+        run: |
+          python -m unittest discover -s skills/taiwan-context-reviewer/tests -p 'test_*.py' -v
+          node --test tests/test_tcr_context_v2.js
       - name: Verify actual R17.7 packaged manifest and install contract
         run: python tests/test_mrft_build_r177.py
       - name: Verify additive R17.7 suite and executable gate contract
@@ -84,8 +88,8 @@ jobs:
         run: python -m unittest tests/test_r176_showcase_contract.py -v
       - name: Verify R3 branding and six-language image contract
         run: python -m unittest tests/test_branding_r3.py -v
-      - name: Verify Suite 17.3.1 R3 release and latest-download consistency
-        run: python -m unittest tests/test_all_tools_brand_r3_release_r1731.py -v
+      - name: Verify Suite 17.3.2 R3 release and latest-download consistency
+        run: python -m unittest tests/test_all_tools_brand_r3_release_r1732.py -v
       - name: Verify R17.8 B0 current-release link recovery and withdrawn archive hard gates
         run: python -m unittest tests/test_r178_b0_release.py -v
       - name: Verify R17 project-level read-only Markdown integrity toolkit

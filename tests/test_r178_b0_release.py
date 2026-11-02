@@ -40,8 +40,8 @@ class B0Tests(unittest.TestCase):
     self.assertEqual(block.group(1).count(URL),1)
     self.assertNotIn('all-tools-suite-v17.2.0',block.group(1))
     self.assertIn('TW_Wording_Assistant_R172_20261027.html',block.group(1))
-    self.assertIn('suite=17.3.1; tools=28; standalone=23',text)
-    self.assertEqual(B.strict_json(B.REGISTRY.read_bytes(), 'registry')['suite_version'],'17.3.1')
+    self.assertIn('suite=17.3.2; tools=28; standalone=23',text)
+    self.assertEqual(B.strict_json(B.REGISTRY.read_bytes(), 'registry')['suite_version'],'17.3.2')
     for bad in C.WITHDRAWN:self.assertNotIn(bad,text)
  def test_guides_no_withdrawn_primary_download(self):
   for name in GUIDES:

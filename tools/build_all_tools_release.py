@@ -21,8 +21,8 @@ import publication_guard as P
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'release/all_tools_registry.json'
-DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_3_1.zip'
-SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_3_1.zip'
+DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_3_2.zip'
+SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_3_2.zip'
 HEADER_FILES = ('ALL_TOOLS_MANIFEST.json', 'BUILD_PROVENANCE.json')
 HEX64 = re.compile(r'^[0-9a-f]{64}$')
 GIT_SHA = re.compile(r'^[0-9a-f]{40}$')
@@ -171,7 +171,7 @@ def tracked_files() -> list[str]:
     return result
 
 def validate_registry(reg: dict, fixture: bool) -> list[dict]:
-    if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.3.1' or reg.get('release_tag') != 'all-tools-suite-v17.3.1':
+    if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.3.2' or reg.get('release_tag') != 'all-tools-suite-v17.3.2':
         fail('REGISTRY_SCHEMA_VERSION')
     if reg.get('project') != 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw' or reg.get('locales') != list(LOCALES):
         fail('REGISTRY_PROJECT_OR_LOCALES')
@@ -318,7 +318,7 @@ def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     contents['START_HERE_ALL_TOOLS.txt'] = ('Taiwan-LLM-Sanitizer developer CLI + Skill source bundle\n'
         'Extract this ZIP before running Node. Node.js 22+ required. CLI usage is documented under docs/.\n'
         'Public source includes R17.7 MRFT DOM Preview, the R17.2 offline wording assistant and Codex/Claude/Grok guides; no remote model API, game assets or private records.\n'
-        'The included files are not an independently reviewed language-accuracy certification.\n').encode('utf-8')
+        'Optional TCR 2.0 context reviewer is under skills/taiwan-context-reviewer; it reports suggestions/metadata, never auto-rewrites text.\n'\n        'The included files are not an independently reviewed language-accuracy certification.\n').encode('utf-8')
     return contents
 
 def make_developer_bundle(all_tracked: list[str]) -> bytes:
@@ -400,7 +400,7 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
     members.update(metadata)
     members['VALIDATION.json'] = json_bytes(inner_validation)
     members['ALL_TOOLS_REGISTRY.json'] = registry_path.read_bytes()
-    members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.3.1 / 全工具套件\n'
+    members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.3.2 / 全工具套件\n'
        'zh-TW / zh-CN / English / 日本語 / 한국어 / Español usage guides are inside developer source bundle.\n'
        'All 28 tools retain their Suite 17.3.0 versions and bytes; R17.7 MRFT Chrome Preview is preserved.\n'
        'Manual opt-in only; never install conflicting R5/R11/R13 versions on one site.\n'

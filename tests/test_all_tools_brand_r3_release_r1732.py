@@ -1,4 +1,4 @@
-"""Brand R3 Suite 17.3.1 non-publishing release contract."""
+"""Brand R3 Suite 17.3.2 non-publishing release contract."""
 import hashlib, json, pathlib, sys, unittest, io
 from zipfile import ZipFile
 ROOT=pathlib.Path(__file__).resolve().parents[1]
@@ -10,11 +10,11 @@ SHA='4949e243b525e5a82af7fb53d254495b34ef15617233bc1b42db2bc1f2d7a1bb'
 class BrandR3ReleaseVersion(unittest.TestCase):
  def test_versioned_release_does_not_reuse_published_tag(self):
   r=json.loads(B.REGISTRY.read_bytes())
-  self.assertEqual((r['suite_version'],r['release_tag']),('17.3.1','all-tools-suite-v17.3.1'))
+  self.assertEqual((r['suite_version'],r['release_tag']),('17.3.2','all-tools-suite-v17.3.2'))
   self.assertEqual(P.RELEASE_TAG,r['release_tag'])
   self.assertEqual(P.SUITE_VERSION,r['suite_version'])
-  self.assertEqual(B.SUITE_FILENAME,'TLS_ALL_TOOLS_SUITE_17_3_1.zip')
-  self.assertEqual(B.DEVELOPER_BUNDLE,'TLS_DEVELOPER_CLI_SKILL_17_3_1.zip')
+  self.assertEqual(B.SUITE_FILENAME,'TLS_ALL_TOOLS_SUITE_17_3_2.zip')
+  self.assertEqual(B.DEVELOPER_BUNDLE,'TLS_DEVELOPER_CLI_SKILL_17_3_2.zip')
  def test_original_brand_image_digest(self):
   self.assertEqual(hashlib.sha256((ROOT/BANNER).read_bytes()).hexdigest(),SHA)
  def test_developer_bundle_has_image_at_documented_path(self):
@@ -28,7 +28,7 @@ class BrandR3ReleaseVersion(unittest.TestCase):
   self.assertEqual(len(B.validate_registry(r,False)),28)
   self.assertEqual(B.digest('\n'.join(x['tool_id'] for x in r['tools']).encode()),B.CURRENT_IDS_SHA256)
  def test_latest_first_run_download_matches_new_release(self):
-  expected='TLS_ALL_TOOLS_SUITE_17_3_1.zip'
+  expected='TLS_ALL_TOOLS_SUITE_17_3_2.zip'
   for name in ('README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md'):
    content=(ROOT/name).read_text('utf-8')
    first_use=content.split('<!-- R176_SHOWCASE_END -->',1)[1].split('<!-- R177_MRFT_BEGIN -->',1)[0]
@@ -36,6 +36,9 @@ class BrandR3ReleaseVersion(unittest.TestCase):
     self.assertIn('/releases/latest',first_use)
     self.assertEqual(first_use.count(expected),1)
     self.assertNotIn('TLS_ALL_TOOLS_SUITE_17_3_0.zip',first_use)
+ def test_previously_published_1731_tag_is_not_reused(self):
+  script=(ROOT/'tools/publish_all_tools_release.py').read_text('utf-8')
+  self.assertNotIn("RELEASE_TAG = 'all-tools-suite-v17.3.1'",script)
  def test_publisher_does_not_retarget_v1730(self):
   s=(ROOT/'tools/publish_all_tools_release.py').read_text('utf-8')
   self.assertNotIn("RELEASE_TAG = 'all-tools-suite-v17.3.0'",s)
@@ -43,6 +46,6 @@ class BrandR3ReleaseVersion(unittest.TestCase):
   for name in ('README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md'):
    txt=(ROOT/name).read_text('utf-8')
    self.assertEqual(txt.count('<!-- TLS_BRANDING_R3_BEGIN -->'),1)
-   self.assertEqual(txt.count('<!-- ALL_TOOLS_CATALOG: suite=17.3.1;'),1)
+   self.assertEqual(txt.count('<!-- ALL_TOOLS_CATALOG: suite=17.3.2;'),1)
    self.assertLess(txt.index('<!-- TLS_BRANDING_R3_END -->'),txt.index('<!-- R176_SHOWCASE_BEGIN -->'))
 if __name__=='__main__':unittest.main()
