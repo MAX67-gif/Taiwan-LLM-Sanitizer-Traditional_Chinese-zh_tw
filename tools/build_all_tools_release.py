@@ -318,7 +318,8 @@ def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     contents['START_HERE_ALL_TOOLS.txt'] = ('Taiwan-LLM-Sanitizer developer CLI + Skill source bundle\n'
         'Extract this ZIP before running Node. Node.js 22+ required. CLI usage is documented under docs/.\n'
         'Public source includes R17.7 MRFT DOM Preview, the R17.2 offline wording assistant and Codex/Claude/Grok guides; no remote model API, game assets or private records.\n'
-        'Optional TCR 2.0 context reviewer is under skills/taiwan-context-reviewer; it reports suggestions/metadata, never auto-rewrites text.\n'\n        'The included files are not an independently reviewed language-accuracy certification.\n').encode('utf-8')
+        'Optional TCR 2.0 context reviewer is under skills/taiwan-context-reviewer; it reports suggestions/metadata, never auto-rewrites text.\n'
+        'The included files are not an independently reviewed language-accuracy certification.\n').encode('utf-8')
     return contents
 
 def make_developer_bundle(all_tracked: list[str]) -> bytes:
