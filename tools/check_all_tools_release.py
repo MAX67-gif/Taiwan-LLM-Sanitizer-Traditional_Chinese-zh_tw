@@ -82,7 +82,7 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     valid=readjson(assets['VALIDATION.json'],'validation')
     expect(m.get('schema')=='tls.all-tools-release-manifest.v1','MANIFEST_SCHEMA')
     expect(m.get('tool_count') == 28 and m.get('asset_count_standalone') == 23, 'CURRENT_INVENTORY_COUNTS')
-    expect(all(valid.get(k) == v for k,v in {'tool_count_expected':28, 'tool_count_present':28, 'tool_count_updated':1, 'tool_count_reused_from_origins':27, 'tool_count_unchanged_from_previous_suite':27, 'standalone_asset_count':23}.items()), 'CURRENT_VALIDATION_COUNTS')
+    expect(all(valid.get(k) == v for k,v in {'tool_count_expected':28, 'tool_count_present':28, 'tool_count_updated':0, 'tool_count_reused_from_origins':28, 'tool_count_unchanged_from_previous_suite':28, 'standalone_asset_count':23}.items()), 'CURRENT_VALIDATION_COUNTS')
     expect(prov.get('schema') == 'tls.all-tools-provenance.v1' and valid.get('schema') == 'tls.all-tools-validation.v1', 'PROVENANCE_VALIDATION_SCHEMA')
     expect(m.get('release_tag')==expected_registry['release_tag'] and valid.get('release_tag')==m.get('release_tag'),'RELEASE_TAG_MISMATCH')
     expect(m.get('suite_version')==expected_registry['suite_version'] and prov.get('suite_version')==m.get('suite_version'),'SUITE_VERSION_MISMATCH')

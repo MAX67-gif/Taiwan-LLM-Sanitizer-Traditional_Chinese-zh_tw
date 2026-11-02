@@ -110,6 +110,6 @@
 
 **R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，未變動 R17.2 修稿引擎；現行完整下載請用 Suite 17.3.0。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:497dd8c942b6b90afc60110f84960fca1bebaaaeb369deb1480c9b7102660950 -->
+<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -105,6 +105,6 @@ Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md)
 
 **R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** The R17.2 wording-assistant runtime remains unchanged; historical Suite 17.1/17.2 combined ZIPs have been withdrawn, so use Suite 17.3.0 for the current complete download.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).

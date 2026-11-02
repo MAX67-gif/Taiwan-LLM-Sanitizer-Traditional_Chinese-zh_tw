@@ -121,8 +121,8 @@ class MRFTAdditiveContract(unittest.TestCase):
  def registry(self):return json.loads(B.REGISTRY.read_bytes())
  def test_exact_current_inventory(self):
   r=self.registry()
-  self.assertEqual(r['suite_version'],'17.3.0')
-  self.assertEqual(r['release_tag'],'all-tools-suite-v17.3.0')
+  self.assertEqual(r['suite_version'],'17.3.1')
+  self.assertEqual(r['release_tag'],'all-tools-suite-v17.3.1')
   self.assertEqual(len(r['tools']),28)
   self.assertEqual([(x['tool_id'],x['tool_version'],x['artifact_filename'],x['expected_sha256']) for x in r['tools'][:27]],OLD)
   self.assertEqual(r['tools'][27]['tool_id'],NEW_ID)

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:497dd8c942b6b90afc60110f84960fca1bebaaaeb369deb1480c9b7102660950 -->
+<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -105,6 +105,6 @@
 
 **R17.3 公平比较研究（不是新版翻译器）：**请阅读[相同可编辑区域的安全比较、OpenCC／AI 离线导入和自愿试用协议](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前没有 OpenCC、LLM 或真人品质方面的胜出证据。**R17.2 修稿工具原版保持不变；历史 17.1/17.2 的完整整合 ZIP 已撤回，当前完整下载请使用 Suite 17.3.0。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 发布完整性检查会直接核对原始工具的锁定 SHA256、实际下载内容与 Git 提交。草稿阶段和公开后分别下载一次；同一标签已发布时只验证相同内容，不覆盖。六种语言的说明仍等待人工审阅（HUMAN_TRANSLATION_REVIEW_PENDING）。

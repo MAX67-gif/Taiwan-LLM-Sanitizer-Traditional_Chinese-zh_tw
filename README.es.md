@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:497dd8c942b6b90afc60110f84960fca1bebaaaeb369deb1480c9b7102660950 -->
+<!-- SOURCE_README_SHA256:9113ed9d0eb9bf1079fe6f7098ef7d5c8b01347b6f5562afa294abdb95d44514 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -105,6 +105,6 @@ Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEA
 
 **R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** La herramienta de revisión R17.2 no cambia; los ZIP integrales antiguos 17.1/17.2 se retiraron tras una revisión del alcance público. Utiliza Suite 17.3.0 para la descarga completa actual.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 La validación compara los archivos reales y descargados con el SHA256 original fijado y la revisión de Git. Se descargan por separado los archivos del borrador y los publicados; una etiqueta existente se verifica sin sobrescribirla. Las seis guías siguen pendientes de revisión humana (HUMAN_TRANSLATION_REVIEW_PENDING).
