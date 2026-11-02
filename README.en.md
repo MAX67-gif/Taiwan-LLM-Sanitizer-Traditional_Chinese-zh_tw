@@ -1,7 +1,14 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
+
+<!-- TLS_BRANDING_R3_BEGIN -->
+![Taiwan-LLM-Sanitizer — context-aware Taiwanese wording review](assets/branding/TLS_Premium_Banner_R3_2800x960.png)
+
+*Workflow illustration, not an actual app screenshot. You review every proposed edit.*
+<!-- TLS_BRANDING_R3_END -->
+
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
@@ -19,7 +26,7 @@ Uses existing R17.2, with limited suggestions and human review still required. T
 
 ### First result in 3 steps: one safer Markdown edit
 
-**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_0.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
+**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_1.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Unzip and open `START_HERE.html` in your local browser**, then launch the R17.2 offline assistant. **③ Load an original sample or paste Markdown you may edit, review each term or keep it, preview protected changes, and download a new file.**
 
@@ -98,6 +105,6 @@ Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md)
 
 **R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** The R17.2 wording-assistant runtime remains unchanged; historical Suite 17.1/17.2 combined ZIPs have been withdrawn, so use Suite 17.3.0 for the current complete download.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).

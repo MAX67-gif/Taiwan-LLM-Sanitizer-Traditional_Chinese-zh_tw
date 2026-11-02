@@ -1,7 +1,14 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
+
+<!-- TLS_BRANDING_R3_BEGIN -->
+![Taiwan-LLM-Sanitizer — context-aware Taiwanese wording review](assets/branding/TLS_Premium_Banner_R3_2800x960.png)
+
+*Workflow illustration, not an actual app screenshot. You review every proposed edit.*
+<!-- TLS_BRANDING_R3_END -->
+
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
@@ -19,7 +26,7 @@ Usa R17.2 existente. Las sugerencias son limitadas y requieren revisión humana.
 
 ### Primer resultado en 3 pasos: revisa un archivo Markdown
 
-**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_0.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
+**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_1.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Descomprime el ZIP y abre `START_HERE.html` en el navegador local.** **③ Abre el asistente R17.2, carga el ejemplo original o un Markdown propio, acepta o conserva cada sugerencia y descarga un archivo nuevo tras revisar los cambios protegidos.**
 
@@ -98,6 +105,6 @@ Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEA
 
 **R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** La herramienta de revisión R17.2 no cambia; los ZIP integrales antiguos 17.1/17.2 se retiraron tras una revisión del alcance público. Utiliza Suite 17.3.0 para la descarga completa actual.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 La validación compara los archivos reales y descargados con el SHA256 original fijado y la revisión de Git. Se descargan por separado los archivos del borrador y los publicados; una etiqueta existente se verifica sin sobrescribirla. Las seis guías siguen pendientes de revisión humana (HUMAN_TRANSLATION_REVIEW_PENDING).

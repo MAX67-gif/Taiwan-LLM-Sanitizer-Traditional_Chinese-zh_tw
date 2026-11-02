@@ -1,7 +1,14 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
+
+<!-- TLS_BRANDING_R3_BEGIN -->
+![Taiwan-LLM-Sanitizer — context-aware Taiwanese wording review](assets/branding/TLS_Premium_Banner_R3_2800x960.png)
+
+*Workflow illustration, not an actual app screenshot. You review every proposed edit.*
+<!-- TLS_BRANDING_R3_END -->
+
 
 **语言 / Languages：** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
@@ -19,7 +26,7 @@
 
 ### 首次使用：3 步完成一份 Markdown
 
-**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_3_1.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
 
 **② 解压后在本地浏览器打开 `START_HERE.html`**，再选择 R17.2 离线修稿助手。**③ 加载原创练习或粘贴有权处理的 Markdown，逐项选择采用/保留，检查安全预览并下载新稿。**
 
@@ -98,6 +105,6 @@
 
 **R17.3 公平比较研究（不是新版翻译器）：**请阅读[相同可编辑区域的安全比较、OpenCC／AI 离线导入和自愿试用协议](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前没有 OpenCC、LLM 或真人品质方面的胜出证据。**R17.2 修稿工具原版保持不变；历史 17.1/17.2 的完整整合 ZIP 已撤回，当前完整下载请使用 Suite 17.3.0。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 发布完整性检查会直接核对原始工具的锁定 SHA256、实际下载内容与 Git 提交。草稿阶段和公开后分别下载一次；同一标签已发布时只验证相同内容，不覆盖。六种语言的说明仍等待人工审阅（HUMAN_TRANSLATION_REVIEW_PENDING）。

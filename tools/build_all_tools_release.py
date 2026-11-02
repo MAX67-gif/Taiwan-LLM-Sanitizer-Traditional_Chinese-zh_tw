@@ -21,8 +21,8 @@ import publication_guard as P
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / 'release/all_tools_registry.json'
-DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_3_0.zip'
-SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_3_0.zip'
+DEVELOPER_BUNDLE = 'TLS_DEVELOPER_CLI_SKILL_17_3_1.zip'
+SUITE_FILENAME = 'TLS_ALL_TOOLS_SUITE_17_3_1.zip'
 HEADER_FILES = ('ALL_TOOLS_MANIFEST.json', 'BUILD_PROVENANCE.json')
 HEX64 = re.compile(r'^[0-9a-f]{64}$')
 GIT_SHA = re.compile(r'^[0-9a-f]{40}$')
@@ -171,7 +171,7 @@ def tracked_files() -> list[str]:
     return result
 
 def validate_registry(reg: dict, fixture: bool) -> list[dict]:
-    if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.3.0' or reg.get('release_tag') != 'all-tools-suite-v17.3.0':
+    if reg.get('schema') != 'tls.all-tools-registry.v1' or reg.get('suite_version') != '17.3.1' or reg.get('release_tag') != 'all-tools-suite-v17.3.1':
         fail('REGISTRY_SCHEMA_VERSION')
     if reg.get('project') != 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw' or reg.get('locales') != list(LOCALES):
         fail('REGISTRY_PROJECT_OR_LOCALES')
@@ -303,8 +303,10 @@ def validate_catalog_docs(contents: dict[str, bytes], registry: dict) -> None:
 def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     # Include exact, locally runnable CLI and all their dependencies + six-language docs.
     prefixes = ('src/','tools/','skills/','.agents/skills/','.claude/skills/','benchmarks/r6/','docs/','lexicon/','tests/','examples/',)
+    branding_image='assets/branding/TLS_Premium_Banner_R3_2800x960.png'
+    if branding_image not in all_tracked:fail('R3_BANNER_NOT_TRACKED')
     names = sorted(p for p in all_tracked if p.startswith(prefixes) or p in
-                   ('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md','LICENSE','AGENTS.md','CLAUDE.md','PRIVACY.md','SECURITY.md','CONTRIBUTING.md','CHANGELOG.md','START_HERE.html','release/all_tools_registry.json'))
+                   ('README.md','README.zh-CN.md','README.en.md','README.ja.md','README.ko.md','README.es.md',branding_image,'LICENSE','AGENTS.md','CLAUDE.md','PRIVACY.md','SECURITY.md','CONTRIBUTING.md','CHANGELOG.md','START_HERE.html','release/all_tools_registry.json'))
     contents = {}
     for p in names:
         if not safe_archive_path(p):fail('DEVELOPER_BUNDLE_UNSAFE_PATH:'+p)
@@ -312,6 +314,7 @@ def developer_contents(all_tracked: list[str]) -> dict[str, bytes]:
     for needed in ('tools/localize_cli.js','tools/r14_capability_cli.js','tools/r15_structured_localizer_cli.js','tools/r16_local_workbench_cli.js','tools/r17_document_trust_cli.js','skills/taiwan-zh-tw-localization/SKILL.md'):
         if needed not in contents:fail('DEVELOPER_CLI_MISSING:'+needed)
     validate_catalog_docs(contents, strict_json(REGISTRY.read_bytes(), 'registry'))
+    if digest(contents[branding_image]) != '4949e243b525e5a82af7fb53d254495b34ef15617233bc1b42db2bc1f2d7a1bb':fail('R3_BANNER_SHA')
     contents['START_HERE_ALL_TOOLS.txt'] = ('Taiwan-LLM-Sanitizer developer CLI + Skill source bundle\n'
         'Extract this ZIP before running Node. Node.js 22+ required. CLI usage is documented under docs/.\n'
         'Public source includes R17.7 MRFT DOM Preview, the R17.2 offline wording assistant and Codex/Claude/Grok guides; no remote model API, game assets or private records.\n'
@@ -397,9 +400,9 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
     members.update(metadata)
     members['VALIDATION.json'] = json_bytes(inner_validation)
     members['ALL_TOOLS_REGISTRY.json'] = registry_path.read_bytes()
-    members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.3.0 / 全工具套件\n'
+    members['README_6_LANGUAGES.txt']= ('TLS Full Suite v17.3.1 / 全工具套件\n'
        'zh-TW / zh-CN / English / 日本語 / 한국어 / Español usage guides are inside developer source bundle.\n'
-       'All 27 previous tools retain their original versions and bytes; one new R17.7 MRFT Chrome Preview is added.\n'
+       'All 28 tools retain their Suite 17.3.0 versions and bytes; R17.7 MRFT Chrome Preview is preserved.\n'
        'Manual opt-in only; never install conflicting R5/R11/R13 versions on one site.\n'
        'Retired third-party game-specific packages are excluded. No remote translation or model-quality certification.\n').encode('utf-8')
     bundle_checksum = ''.join(digest(v) + '  ' + k + '\n' for k, v in sorted(members.items())).encode('utf-8')
@@ -409,9 +412,9 @@ def build(registry_path: Path, stage: Path, cache: Path, *, fixture: bool=False,
     validation={
        'schema':'tls.all-tools-validation.v1','release_tag':reg['release_tag'],'suite_version':reg['suite_version'],
        'status':'FIXTURE_TEST_ONLY' if fixture else 'PACKAGE_READY_NOT_PUBLISHED',
-       'fixture':fixture,'tool_count_expected':28,'tool_count_present':28,'tool_count_updated':1,
+       'fixture':fixture,'tool_count_expected':28,'tool_count_present':28,'tool_count_updated':0,
        'source_git_sha': source_sha or 'LOCAL_PREVIEW_UNPUBLISHED',
-       'tool_count_reused_from_origins':27,'tool_count_unchanged_from_previous_suite':27,
+       'tool_count_reused_from_origins':28,'tool_count_unchanged_from_previous_suite':28,
        'tool_count_legacy':2,'standalone_asset_count':23,
        'suite_file':SUITE_FILENAME,'suite_bytes':len(suite),'suite_sha256':digest(suite),
        'sha256_verified':True,'crc_valid':True,'privacy_guard':'PUBLIC_SOURCE_ONLY',

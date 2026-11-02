@@ -1,7 +1,14 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:09f3b253a13237d4908c2e11dbfbe4901bab4a0c57a4fc29bc0adaf8e12b6699 -->
+<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
+
+<!-- TLS_BRANDING_R3_BEGIN -->
+![Taiwan-LLM-Sanitizer — context-aware Taiwanese wording review](assets/branding/TLS_Premium_Banner_R3_2800x960.png)
+
+*Workflow illustration, not an actual app screenshot. You review every proposed edit.*
+<!-- TLS_BRANDING_R3_END -->
+
 
 **Languages:** [繁體中文](README.md) · [简体中文](README.zh-CN.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
 
@@ -19,7 +26,7 @@
 
 ### 初回利用：3 ステップで Markdown の修正を確認
 
-**[① GitHub の最新正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_3_0.zip`（現在の確認済み版。今後はリリース内の実際の名前を確認）、または `TW_Wording_Assistant_R172_20261027.html` をダウンロードします。
+**[① GitHub の最新正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_3_1.zip`（現在の確認済み版。今後はリリース内の実際の名前を確認）、または `TW_Wording_Assistant_R172_20261027.html` をダウンロードします。
 
 **② ZIP を展開し、`START_HERE.html` をローカルブラウザーで開く。** **③ R17.2 でオリジナル例または権利のある Markdown を入力し、候補を一つずつ確認・保留して差分をプレビュー、別ファイルとして保存。**
 
@@ -98,6 +105,6 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 
 **R17.3 は研究段階：** [同じ編集可能範囲での公平な比較と任意参加の調査](docs/R173_COMPARISON_AND_ADOPTION.en.md)を参照してください。**OpenCC／LLM に対する優位性や人間の翻訳品質評価は未検証です。** R17.2 の修正ツール自体は変更していません。旧 17.1/17.2 の統合 ZIP は公開配布範囲の見直しにより撤回されました。現在の完全版は Suite 17.3.0 を利用してください。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 リリース検証では、実際のツールとダウンロードしたファイルを、固定された元の SHA256 と Git コミットに照合します。Draft と公開後にそれぞれダウンロードし、既存タグは上書きせず検証します。6 言語の説明は引き続き人によるレビュー待ちです（HUMAN_TRANSLATION_REVIEW_PENDING）。

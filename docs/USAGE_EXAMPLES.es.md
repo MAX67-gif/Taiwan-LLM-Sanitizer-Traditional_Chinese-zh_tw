@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:3a7ad38727e421556466f409dc2ce6b8e2db5ed0535e44344c9334be467f1fd7 -->
+<!-- SOURCE_EXAMPLES_SHA256:ec39face113d030cfd5ba631284a22db7aa794894426f4d827d24d23aec6e918 -->
 
 # Nueve ejemplos originales de localización al chino tradicional de Taiwán
 
@@ -65,7 +65,7 @@ Abra el [estudio R16 sin conexión](../examples/TW_Localization_Safety_Studio_R1
 
 Genera Markdown chino autorizado mediante tu IA y luego revisa los términos en [R17.2 local](../examples/TW_Wording_Assistant_R172_20261027.html); confirma cada cambio y guarda el resultado. [Guía de IA (inglés)](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). No es un complemento nativo de Grok.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.0; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 ## Descarga de todas las herramientas
 
