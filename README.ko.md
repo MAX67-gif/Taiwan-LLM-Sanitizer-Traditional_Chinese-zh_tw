@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
+<!-- SOURCE_README_SHA256:256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -26,7 +26,7 @@
 
 ### 처음 사용하기: Markdown 문서 하나를 3단계로 검토
 
-**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_3_1.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
+**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_3_2.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
 
 **② ZIP 압축 해제 후 로컬 브라우저에서 `START_HERE.html` 열기.** **③ R17.2에서 자체 예제 또는 편집 권한이 있는 Markdown을 입력하고, 각 제안을 채택하거나 원문 유지한 다음 안전 미리보기를 확인하고 새 파일로 저장합니다.**
 
@@ -48,6 +48,12 @@
 
 **[전체 Suite 17.3.0 다운로드](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**: 도구 28개, 독립 도구 자산 23개, Release 첨부 파일 28개입니다. 기존 도구 27개의 버전과 바이트는 유지됩니다. 새 설치 파일 `TLS_Chrome_MV3_MRFT_R177_20261031.zip`에는 자체 제작 연습 페이지가 포함됩니다. **[설치, 사용법, 제한 사항](docs/mrft/MRFT_DOM_PREVIEW.md)** (번체 중국어). Chrome Web Store 심사나 사람에 의한 언어 품질 인증을 받은 것은 아닙니다.
 <!-- R177_MRFT_END -->
+
+### TCR 2.0｜선택형 오프라인 문맥 검토 Skill
+
+[TCR 2.0 안내](skills/taiwan-context-reviewer/README.en.md)에서는 대만 용어 후보를 검토하고 권한 있는 Markdown 초안과 수정본의 코드, 숫자, 링크 보존 여부를 확인할 수 있습니다. 자동 수정이나 번역 품질 인증은 제공하지 않습니다. 처음 사용한다면 위의 오프라인 문서 수정 도구부터 시작하세요.
+
+
 
 
 ## 사용 가능한 기능
@@ -105,6 +111,6 @@
 
 **R17.3은 연구 전용:** [동일한 편집 가능 구간의 공정한 비교 및 자발적 사용 검증 계획](docs/R173_COMPARISON_AND_ADOPTION.en.md)을 참고하세요. **OpenCC·LLM 대비 우월성 또는 독립적인 사람의 언어 품질 검증 결과는 아직 없습니다.** R17.2 검토 도구 자체는 변경하지 않습니다. 이전 17.1/17.2 통합 ZIP은 공개 범위 검토 후 철회되었으므로 최신 전체 다운로드는 Suite 17.3.0을 사용하세요.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 배포 검사는 실제 도구와 다운로드한 파일을 원본에 고정된 SHA256 및 Git 커밋과 대조합니다. Draft 단계와 공개 후 각각 다운로드하며, 기존 태그는 덮어쓰지 않고 검증합니다. 여섯 언어 안내는 아직 사람의 검토를 기다립니다(HUMAN_TRANSLATION_REVIEW_PENDING).

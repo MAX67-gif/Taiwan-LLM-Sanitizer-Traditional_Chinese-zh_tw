@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
+<!-- SOURCE_README_SHA256:256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -26,7 +26,7 @@ Uses existing R17.2, with limited suggestions and human review still required. T
 
 ### First result in 3 steps: one safer Markdown edit
 
-**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_1.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
+**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_2.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Unzip and open `START_HERE.html` in your local browser**, then launch the R17.2 offline assistant. **③ Load an original sample or paste Markdown you may edit, review each term or keep it, preview protected changes, and download a new file.**
 
@@ -48,6 +48,12 @@ The default route is **manually pasted translation**. Enable the local Translato
 
 **[Download full Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**: 28 tools, 23 standalone tool assets and 28 Release assets; the original 27 tools retain their versions and bytes. New installer `TLS_Chrome_MV3_MRFT_R177_20261031.zip` includes an original practice page. **[Installation, operation and limits](docs/mrft/MRFT_DOM_PREVIEW.md)** (Traditional Chinese). No Chrome Web Store or human language-quality certification.
 <!-- R177_MRFT_END -->
+
+### TCR 2.0 | Optional offline context-review Skill
+
+For Codex, Claude or local Python workflows, use the [TCR 2.0 guide](skills/taiwan-context-reviewer/README.en.md) to review Taiwan wording candidates and compare authorized Markdown drafts for protected code, numbers and links. No API key, automatic rewriting or language-quality certification. First-time users should start with the offline wording assistant above.
+
+
 
 
 ## What is available
@@ -105,6 +111,6 @@ Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md)
 
 **R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** The R17.2 wording-assistant runtime remains unchanged; historical Suite 17.1/17.2 combined ZIPs have been withdrawn, so use Suite 17.3.0 for the current complete download.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).

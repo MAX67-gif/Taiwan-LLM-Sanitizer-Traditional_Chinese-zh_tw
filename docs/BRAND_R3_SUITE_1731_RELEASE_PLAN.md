@@ -1,3 +1,12 @@
+> **2026-11-02 正式發布後狀態更新（已驗證）**
+>
+> 本頁下方的「CANDIDATE／未發布」屬於發行前的歷史計畫，不是目前上線狀態。
+> [PR #44](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/pull/44) 已合併至受保護 main，固定提交 `fda5159c82426308f02dc8843292535e3d9049cd`。
+> [Suite 17.3.1](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.1) 已公開，包含 28 件附件；正式 [GitHub CI #41388046651](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/actions/runs/41388046651) 的 verify、browser-integration、OpenCC 唯讀及完整發行工作均成功。
+> 舊 Suite 17.3.0 保留不變；GitHub Social Preview 另於 [Issue #45](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/issues/45) 追蹤。**下列原始計劃保留作審計與追溯，不應解讀為未發行。**
+
+---
+
 # TLS Brand R3｜Suite 17.3.1 安全發行契約（工程候選）
 
 狀態：**CANDIDATE／未發布**。本文件不授權略過 main 規則或直接發布。

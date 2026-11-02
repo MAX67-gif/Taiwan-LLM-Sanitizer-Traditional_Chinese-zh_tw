@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:47645529f16744e4b5237e1689dc38e584c917195b5bbd5bc0f24494e39bab8b -->
+<!-- SOURCE_README_SHA256:256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -26,7 +26,7 @@ Usa R17.2 existente. Las sugerencias son limitadas y requieren revisión humana.
 
 ### Primer resultado en 3 pasos: revisa un archivo Markdown
 
-**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_1.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
+**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_2.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
 
 **② Descomprime el ZIP y abre `START_HERE.html` en el navegador local.** **③ Abre el asistente R17.2, carga el ejemplo original o un Markdown propio, acepta o conserva cada sugerencia y descarga un archivo nuevo tras revisar los cambios protegidos.**
 
@@ -48,6 +48,12 @@ La opción predeterminada es **pegar una traducción manualmente**. Activa la Tr
 
 **[Descargar Suite 17.3.0 completo](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**: 28 herramientas, 23 recursos de herramientas independientes y 28 adjuntos de Release. Las 27 herramientas anteriores conservan sus versiones y bytes. El nuevo instalador `TLS_Chrome_MV3_MRFT_R177_20261031.zip` incluye una página de práctica original. **[Instalación, uso y límites](docs/mrft/MRFT_DOM_PREVIEW.md)** (chino tradicional). Sin certificación de Chrome Web Store ni de calidad lingüística por personas.
 <!-- R177_MRFT_END -->
+
+### TCR 2.0 | Skill opcional de revisión contextual sin conexión
+
+La [guía TCR 2.0](skills/taiwan-context-reviewer/README.en.md) explica cómo revisar términos de Taiwán y comprobar código, números y enlaces protegidos entre borradores Markdown autorizados. No modifica el texto automáticamente ni certifica su calidad lingüística. Para empezar, use primero el asistente sin conexión de arriba.
+
+
 
 
 ## Funciones disponibles
@@ -105,6 +111,6 @@ Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEA
 
 **R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** La herramienta de revisión R17.2 no cambia; los ZIP integrales antiguos 17.1/17.2 se retiraron tras una revisión del alcance público. Utiliza Suite 17.3.0 para la descarga completa actual.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 La validación compara los archivos reales y descargados con el SHA256 original fijado y la revisión de Git. Se descargan por separado los archivos del borrador y los publicados; una etiqueta existente se verifica sin sobrescribirla. Las seis guías siguen pendientes de revisión humana (HUMAN_TRANSLATION_REVIEW_PENDING).

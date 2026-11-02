@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:ec39face113d030cfd5ba631284a22db7aa794894426f4d827d24d23aec6e918 -->
+<!-- SOURCE_EXAMPLES_SHA256:e325e7b3b973eee471dc5abef0e948c7b631c8c8a4c907dbc73b2d2c19bc4383 -->
 
 # 台湾繁体字中国語ローカライズ：9 つのオリジナル利用例
 
@@ -65,7 +65,7 @@ HTML／DOM の通常テキスト `Open settings` や `Start` は、規約に適�
 
 AI で権利を持つ中国語 Markdown を作成し、[R17.2 オフラインレビュー](../examples/TW_Wording_Assistant_R172_20261027.html)で用語と保護対象を確認したうえで保存します。[英語版 AI ガイド](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。Grok 用の直接プラグインではありません。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 ## 全ツールのダウンロード
 

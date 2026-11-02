@@ -21,8 +21,8 @@ import check_all_tools_release as C
 
 REPOSITORY = 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw'
 API_BASE = 'repos/' + REPOSITORY
-RELEASE_TAG = 'all-tools-suite-v17.3.1'
-SUITE_VERSION = '17.3.1'
+RELEASE_TAG = 'all-tools-suite-v17.3.2'
+SUITE_VERSION = '17.3.2'
 COMMIT_SHA = re.compile(r'^[0-9a-f]{40}$')
 
 
@@ -138,7 +138,7 @@ class GitHubCLI:
         arguments = ['release', 'create', RELEASE_TAG,
                      *(str(p) for p in sorted(stage.iterdir())),
                      '--repo', REPOSITORY, '--draft', '--target', expected_sha,
-                     '--title', 'Taiwan-LLM-Sanitizer All Tools Suite v17.3.1',
+                     '--title', 'Taiwan-LLM-Sanitizer All Tools Suite v17.3.2',
                      '--notes', '28 registered tools, 23 standalone tool assets, one complete suite ZIP, '
                      'and four integrity attachments (28 Release assets). Original version-locked browser tools, 14 offline '
                      'workbenches, R6 public quality kit and runnable CLI/Skill sources with six-language '

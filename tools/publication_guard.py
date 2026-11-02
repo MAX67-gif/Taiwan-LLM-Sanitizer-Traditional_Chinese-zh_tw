@@ -20,6 +20,7 @@ ROOT_PUBLIC={
     ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
+    "docs/TCR20_SUITE1732_INTEGRATION.md",
     "docs/BRAND_R3_SUITE_1731_RELEASE_PLAN.md",
     "docs/showcase/source.md", "docs/showcase/preview.md",
     "docs/showcase/decisions.json", "docs/showcase/verification.json",

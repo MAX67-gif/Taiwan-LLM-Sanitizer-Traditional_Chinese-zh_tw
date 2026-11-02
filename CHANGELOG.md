@@ -1,3 +1,11 @@
+## 2026-11-02｜Suite 17.3.2 — TCR 2.0 可攜式離線語境檢查（選配）
+
+- 新增 PR #41 原始 TCR 2.0 Skill 原始檔與可重現原創測例，原始 Git Blob 保留。既有 28 項工具 ID、版本、固定 SHA 均不改變。
+- 加入臺灣用詞語境建議、Markdown 程式碼與連結、數值等原稿／修稿完整性檢查。無雲端模型、無自動改稿、無原文上傳。
+- 六語 README 增加選配入口，主流程仍以 R17.2 人工修稿為起點；新 Suite 17.3.2 不覆寫 17.3.0／17.3.1。
+- 修正跨版本下載名稱與固定斷言；加入 TCR 2.0 完整性和發行回歸。
+- 功能是保守完整性稽核，並不保證語意等價、母語自然度或真人採用。R19 未完成原生驗收，因此維持工程預覽。
+
 ## 2026-10-31 — R17.8 B0 download routing and public-boundary follow-up
 
 - Correct the six-language first-edit entry, onboarding, showcase and comparison links to the current complete Suite 17.3.0 while keeping the R17.2 tool bytes unchanged.

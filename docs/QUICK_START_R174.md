@@ -10,7 +10,7 @@
 
 **[點選最新正式 Release（GitHub 官方資產頁）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。
 
-在該頁 **Assets** 找到 **`TLS_ALL_TOOLS_SUITE_17_3_1.zip`**（目前可完整取得的 Suite 17.3.0；日後新版以 GitHub 實際附件名稱為準）。也可以只下載獨立 **`TW_Wording_Assistant_R172_20261027.html`**。
+在該頁 **Assets** 找到 **`TLS_ALL_TOOLS_SUITE_17_3_2.zip`**（目前可完整取得的 Suite 17.3.0；日後新版以 GitHub 實際附件名稱為準）。也可以只下載獨立 **`TW_Wording_Assistant_R172_20261027.html`**。
 
 **舊版下載說明：**Suite 17.1／17.2 的舊完整套件及開發者 ZIP 已撤回，其歷史清單可能仍列有撤回附件。使用 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 才能取得現行完整包；R17.2 修稿工具本身未改版。
 

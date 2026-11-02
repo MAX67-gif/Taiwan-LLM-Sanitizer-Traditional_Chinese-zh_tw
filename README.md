@@ -23,7 +23,7 @@
 
 ### 第一次使用：只要 3 步，先完成一份 Markdown
 
-**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_3_1.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_3_2.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
 
 **② 解壓 ZIP，使用本機瀏覽器開啟 `START_HERE.html`** → 選「R17.2 離線修稿助手」。**③ 載入原創示例或自己的 Markdown → 逐項採用／保留 → 產生安全預覽 → 下載新稿。**
 
@@ -47,6 +47,12 @@
 
 **[下載完整 Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)**：28 項工具、23 個獨立工具資產、28 個 Release 附件；原 27 項工具的版本與位元組保留。新安裝檔 `TLS_Chrome_MV3_MRFT_R177_20261031.zip` 內含原創練習頁。**[安裝、操作與限制](docs/mrft/MRFT_DOM_PREVIEW.md)**。尚未經 Chrome Web Store 或真人語言品質認證。
 <!-- R177_MRFT_END -->
+
+### TCR 2.0｜選配的離線語境檢查 Skill
+
+需要檢查臺灣用語及 AI 修稿保真時，可以使用 [TCR 2.0 繁中教學](skills/taiwan-context-reviewer/README.zh-TW.md)。它提供有限的語境候選，並可比對有權處理的 Markdown 原稿與修稿中的程式碼、數值和連結。不會自動改稿、不需要 API Key，也不代表母語品質認證。第一次使用仍建議先選上面的離線修稿助手。
+
+
 
 
 ## 現在能使用什麼？
@@ -110,6 +116,6 @@
 
 **R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，未變動 R17.2 修稿引擎；現行完整下載請用 Suite 17.3.0。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.1; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
 發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

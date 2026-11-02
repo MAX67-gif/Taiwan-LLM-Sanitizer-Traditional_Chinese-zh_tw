@@ -43,10 +43,10 @@
     "tls.skill.taiwan-zh-tw-localization"
   ],
   "project": "MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw",
-  "release_tag": "all-tools-suite-v17.3.1",
+  "release_tag": "all-tools-suite-v17.3.2",
   "rights_policy": "docs/THIRD_PARTY_RIGHTS_POLICY.md",
   "schema": "tls.all-tools-registry.v1",
-  "suite_version": "17.3.1",
+  "suite_version": "17.3.2",
   "tools": [
     {
       "artifact_filename": "TLS_Chrome_MV3_R5_20261024.zip",
