@@ -34,3 +34,13 @@ The GitHub Actions artifacts contain only synthetic counts/boolean evidence. The
 No new suite version, no tool registry change, no historic asset modifications and no R19 product promotion are authorized by this PR. Current published Suite 17.3.2 and all 28 registered tools remain frozen. This module may be reused only after the original R19 files are available for integration and their **unchanged native ten-scenario runner** passes in an authorized browser environment.
 
 The independent R19 acceptance standard is tracked at [issue #47](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/issues/47). Human linguistic quality and user adoption are **NOT_MEASURED**.
+
+
+## Independent evidence contract
+
+The native subsystem report has a separate, standard-library-only fail-closed verifier:
+`python tests/test_r19_file_io_receipt.py --self-test`
+and
+`python tests/test_r19_file_io_receipt.py --report <synthetic-native-json>`.
+
+The verifier requires the exact synthetic fixture SHA256, real `file://` navigation, all expected rejection/CRLF/race flags, zero egress, zero page errors, expected byte/CR counts, an actual Chromium version, and `r19_full_studio_native_acceptance=NOT_RUN`. It rejects 16 adversarial/forged report mutations in self-test. This protects against accidentally promoting a positive *subsystem* result as the still-unverified R19 First-Result Studio.

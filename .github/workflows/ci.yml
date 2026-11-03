@@ -354,6 +354,12 @@ jobs:
         run: python tests/test_r19_file_io_boundary.browser.py
         env:
           TLS_R19_FILEIO_REPORT: ${{ runner.temp }}/TLS_R19_FILEIO_RESEARCH.json
+      - name: Refuse forged or incomplete R19 subsystem browser receipts (NOT full R19 native acceptance)
+        run: |
+          python tests/test_r19_file_io_receipt.py --self-test
+          python tests/test_r19_file_io_receipt.py --report "$TLS_R19_FILEIO_REPORT"
+        env:
+          TLS_R19_FILEIO_REPORT: ${{ runner.temp }}/TLS_R19_FILEIO_RESEARCH.json
       - name: Preserve R19 boundary subsystem evidence
         if: always()
         uses: actions/upload-artifact@v4
