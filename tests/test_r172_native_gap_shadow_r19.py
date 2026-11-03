@@ -98,7 +98,40 @@ def run():
             "no_choice_download_equals_original": downloaded == raw,
             "download_len": len(downloaded),
             "input_len": len(raw),
+            "input_cr_count": raw.count(b"\r"),
+            "download_cr_count": downloaded.count(b"\r"),
+            "input_lf_count": raw.count(b"\n"),
+            "download_lf_count": downloaded.count(b"\n"),
         }
+
+        # This last observation deliberately instruments File.text timing.
+        # It tests the stale-result guard, NOT native OS file chooser behavior.
+        page.evaluate("""() => {
+          const oldText = File.prototype.text;
+          window.__tlsR19ShadowRestore = () => { File.prototype.text = oldText; };
+          File.prototype.text = function () {
+            return new Promise(resolve => {
+              window.__tlsR19ShadowResolve = () => resolve('synthetic stale file');
+            });
+          };
+        }""")
+        page.locator("#file").set_input_files({
+            "name": "delayed.md", "mimeType": "text/markdown",
+            "buffer": b"synthetic stale file",
+        })
+        page.wait_for_function("() => typeof window.__tlsR19ShadowResolve === 'function'")
+        page.locator("#clear").click()
+        expect(page.locator("#source")).to_have_value("")
+        page.evaluate("() => window.__tlsR19ShadowResolve()")
+        expect(page.locator("#status")).to_contain_text("已於本機載入文字")
+        stale_after_clear = page.locator("#source").input_value()
+        observations["stale_async_file_after_clear"] = {
+            "instrumented_file_text_timing": True,
+            "cleared_source_remained_empty": stale_after_clear == "",
+            "stale_upload_resurrected_source": bool(stale_after_clear),
+            "os_file_chooser_tested": False,
+        }
+        page.evaluate("() => window.__tlsR19ShadowRestore()")
 
         browser_version = browser.version
         context.close()
