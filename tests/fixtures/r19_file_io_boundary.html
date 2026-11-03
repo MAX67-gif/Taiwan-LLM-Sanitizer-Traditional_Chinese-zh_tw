@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>TLS R19 File I/O Boundary — Evaluation Fixture Only</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:640px;margin:1rem auto;padding:1rem}
+textarea{width:100%;min-height:200px}
+button,input{padding:.55rem;margin:.4rem}
+#status{display:block;background:#f1f5f9;padding:1rem}
+</style>
+</head>
+<body>
+<main>
+<h1>R19 File I/O Boundary (Evaluation Only)</h1>
+<p>Pure subsystem rehearsal; this is not the R19 First-Result Studio.</p>
+<input id="file" type="file" accept=".md,.markdown,.txt">
+<button id="clear" type="button">清除所有內容</button>
+<button id="mark" type="button">模擬本處已選擇</button>
+<button id="replace" type="button">替換一處軟件為軟體</button>
+<button id="download" type="button">下載受保護預覽</button>
+<output id="status" role="status">IDLE</output>
+<output id="decision">NONE</output>
+<textarea id="source"></textarea>
+</main>
+<script src="../../src/r19/file_io_boundary_r19.js"></script>
+<script>
+(function(){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const api=window.TLSR19FileIOBoundary;
+  let originalBytes=null,originalText=null;
+  if(!api) throw Error('R19_BOUNDARY_MISSING');
+  const driver=api.createImportGate({
+    commit: data=>{
+      originalBytes=data.bytes;
+      originalText=data.text;
+      $('source').value=data.text;
+      $('decision').textContent='NONE';
+      $('status').textContent='IMPORTED';
+    },
+    reject: code=>{$('status').textContent=code;},
+    settle: ()=>{$('file').value='';}
+  });
+  $('file').addEventListener('change',event=>{
+    const file=event.target.files && event.target.files[0];
+    if(file) driver.open(file);
+  });
+  $('source').addEventListener('input',()=>{
+    driver.invalidate();
+    originalBytes=null;originalText=null;
+    $('decision').textContent='NONE';
+    $('status').textContent='SOURCE_CHANGED';
+  });
+  $('clear').addEventListener('click',()=>{
+    driver.invalidate();
+    originalBytes=null;originalText=null;
+    $('source').value='';
+    $('file').value='';
+    $('decision').textContent='NONE';
+    $('status').textContent='CLEARED';
+  });
+  $('mark').addEventListener('click',()=>{
+    $('decision').textContent='SELECTED';
+  });
+  $('replace').addEventListener('click',()=>{
+    if(originalBytes){
+      $('source').value=$('source').value.replace('軟件','軟體');
+      $('decision').textContent='SELECTED';
+    }
+  });
+  $('download').addEventListener('click',()=>{
+    try{
+      if(!originalBytes)throw Error('NO_IMPORT');
+      const raw=api.encodeReview({originalBytes,originalText,reviewedText:$('source').value});
+      const blob=new Blob([raw],{type:'text/markdown;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const anchor=document.createElement('a');
+      anchor.href=url;
+      anchor.download='TLS_R19_FILEIO_EVALUATION.md';
+      anchor.click();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      $('status').textContent='DOWNLOADED';
+    }catch(_){$('status').textContent='EXPORT_REJECTED';}
+  });
+})();
+</script>
+</body>
+</html>

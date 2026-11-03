@@ -110,7 +110,7 @@ EXFIL_APIS=(
     "chrome.history.", "chrome.cookies.", "document.cookie",
 )
 # Only production JS, not test examples that intentionally name forbidden APIs.
-RUNTIME_PREFIXES=("src/r177/","dist/r177/","src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
+RUNTIME_PREFIXES=("src/r19/","src/r177/","dist/r177/","src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
 RUNTIME_SUFFIXES=(".js",".user.js")
 
 def allowed_path(name:str)->bool:

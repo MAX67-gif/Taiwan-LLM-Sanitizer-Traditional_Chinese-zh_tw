@@ -38,6 +38,10 @@ jobs:
         run: python tests/test_mrft_build_r177.py
       - name: Verify additive R17.7 suite and executable gate contract
         run: python -m unittest tests/test_all_tools_mrft_r177.py -v
+      - name: Verify optional R19 file I/O boundary unit tests (evaluation only)
+        run: |
+          node --check src/r19/file_io_boundary_r19.js
+          node --test tests/test_r19_file_io_boundary.test.js
       - name: Preflight All-Tools registry, fail-closed suite completeness and immutable publishing gates
         run: |
           python -m unittest discover -s tests -p 'test_all_tools*.py' -v
@@ -346,6 +350,17 @@ jobs:
         run: python tests/test_structured_integrity_browser_r151.py
       - name: Test R17 explicitly authorized offline folder audit in Chromium
         run: python tests/test_document_trust_browser_r17.py
+      - name: Test R19 file I/O boundary using actual Chromium file URL (NOT R19 native acceptance)
+        run: python tests/test_r19_file_io_boundary.browser.py
+        env:
+          TLS_R19_FILEIO_REPORT: ${{ runner.temp }}/TLS_R19_FILEIO_RESEARCH.json
+      - name: Preserve R19 boundary subsystem evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_FILEIO_SUBSYSTEM_SHADOW
+          path: ${{ runner.temp }}/TLS_R19_FILEIO_RESEARCH.json
+          if-no-files-found: warn
       - name: Test R17.2 real Chromium offline selection and download
         run: python tests/test_wording_assistant_browser_r172.py
       - name: Test R17.6 original showcase in the shipped offline HTML
