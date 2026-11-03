@@ -141,6 +141,40 @@
     return Object.freeze({open, invalidate});
   }
 
+  function createStagedImportGate({commit, reject} = {}) {
+    if (typeof commit !== 'function') throw new TypeError('INVALID_CALLBACK');
+    let generation = 0, staged = null, index = 0;
+    const invalidate = () => {generation++; staged = null;};
+    async function stage(file) {
+      const current = ++generation; staged = null;
+      try {
+        const invalid = metadataCode(file);
+        if (invalid) fail(invalid);
+        const raw = await file.arrayBuffer();
+        if (current !== generation) return Object.freeze({status:'STALE'});
+        const decoded = decodeBytes(raw);
+        if (current !== generation) return Object.freeze({status:'STALE'});
+        if (decoded.bytes.length !== file.size) fail('FILE_SIZE_MISMATCH');
+        const ticket = 'stage-' + (++index) + '-' + current;
+        staged = {ticket, decoded};
+        return Object.freeze({status:'STAGED', ticket, byte_count:decoded.bytes.length});
+      } catch (error) {
+        if (current !== generation) return Object.freeze({status:'STALE'});
+        const code = error instanceof BoundaryError ? error.code : 'FILE_READ_FAILED';
+        if (typeof reject === 'function') reject(code);
+        return Object.freeze({status:'REJECTED', code});
+      }
+    }
+    function accept(ticket) {
+      if (!staged || staged.ticket !== ticket) return Object.freeze({status:'STALE'});
+      const data = staged.decoded;
+      invalidate();
+      commit({text:data.text, bytes:cloneBytes(data.bytes)});
+      return Object.freeze({status:'IMPORTED', byte_count:data.bytes.length});
+    }
+    function cancel() {invalidate(); return Object.freeze({status:'CANCELLED'});}
+    return Object.freeze({stage,accept,cancel,invalidate});
+  }
   return {MAX_BYTES, PUBLIC_CODES, metadataCode, decodeBytes,
-          encodeReview, createImportGate};
+          encodeReview, createImportGate, createStagedImportGate};
 });

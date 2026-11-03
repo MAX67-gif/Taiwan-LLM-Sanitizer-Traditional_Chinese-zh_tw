@@ -363,15 +363,15 @@ jobs:
       - name: Assemble deterministic R19 file-I/O evaluation ZIP after native receipt validation
         run: |
           python tools/package_r19_fileio_shadow.py --self-test
-          python tools/package_r19_fileio_shadow.py --native-report "$TLS_R19_FILEIO_REPORT" --output "${{ runner.temp }}/TLS_R19_FileIO_Evaluation_R1_20261103.zip"
+          python tools/package_r19_fileio_shadow.py --native-report "$TLS_R19_FILEIO_REPORT" --output "${{ runner.temp }}/TLS_R19_FileIO_AB_Stage_Evaluation_R2_20261103.zip"
         env:
           TLS_R19_FILEIO_REPORT: ${{ runner.temp }}/TLS_R19_FILEIO_RESEARCH.json
       - name: Upload R19 file-I/O evaluation package (NOT a product Release)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: TLS_R19_FILEIO_EVALUATION_R1
-          path: ${{ runner.temp }}/TLS_R19_FileIO_Evaluation_R1_20261103.zip
+          name: TLS_R19_FILEIO_AB_STAGE_EVALUATION_R2
+          path: ${{ runner.temp }}/TLS_R19_FileIO_AB_Stage_Evaluation_R2_20261103.zip
           if-no-files-found: warn
       - name: Preserve R19 boundary subsystem evidence
         if: always()

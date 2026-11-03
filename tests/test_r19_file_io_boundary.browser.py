@@ -160,6 +160,71 @@ def run():
         checks["stale_rejection_after_clear_ignored"] = True
         page.evaluate("() => window.__restoreR19Guard()")
 
+        # A/B option S3: staged source is read without touching existing decisions.
+        page.locator("#file").set_input_files(source_blob("current.md", raw))
+        expect(page.locator("#status")).to_have_text("IMPORTED")
+        page.locator("#mark").click()
+        expect(page.locator("#decision")).to_have_text("SELECTED")
+        original_work = page.locator("#source").input_value()
+        page.locator("#stageFile").set_input_files(
+            source_blob("alternative.md", "新的候選原稿".encode("utf-8"))
+        )
+        expect(page.locator("#stageStatus")).to_have_text("STAGED")
+        assert page.locator("#source").input_value() == original_work
+        expect(page.locator("#decision")).to_have_text("SELECTED")
+        checks["stage_read_preserves_work"] = True
+
+        page.locator("#cancelStage").click()
+        expect(page.locator("#stageStatus")).to_have_text("CANCELLED")
+        assert page.locator("#source").input_value() == original_work
+        expect(page.locator("#decision")).to_have_text("SELECTED")
+        checks["stage_cancel_preserves_work"] = True
+
+        page.locator("#stageFile").set_input_files(
+            source_blob("approved.md", "明確確認的新原稿".encode("utf-8"))
+        )
+        expect(page.locator("#stageStatus")).to_have_text("STAGED")
+        page.locator("#applyStage").click()
+        expect(page.locator("#stageStatus")).to_have_text("APPLIED")
+        expect(page.locator("#source")).to_have_value("明確確認的新原稿")
+        expect(page.locator("#decision")).to_have_text("NONE")
+        checks["stage_accept_changes_only_on_approval"] = True
+
+        page.locator("#stageFile").set_input_files(
+            source_blob("not-approved.md", "不應覆蓋".encode("utf-8"))
+        )
+        expect(page.locator("#stageStatus")).to_have_text("STAGED")
+        page.locator("#mark").click()
+        page.locator("#applyStage").click()
+        expect(page.locator("#stageStatus")).to_have_text("STALE")
+        expect(page.locator("#source")).to_have_value("明確確認的新原稿")
+        checks["stage_invalidated_by_new_review_action"] = True
+
+        # Synthetic deferred file I/O: Cancel/Clear wins, not a native OS dialog.
+        page.evaluate("""() => {
+          const original = File.prototype.arrayBuffer;
+          window.__restoreStageBuffer = () => { File.prototype.arrayBuffer = original; };
+          File.prototype.arrayBuffer = function () {
+            return new Promise(resolve => {
+              window.__resolveStageLate = () => resolve(
+                new TextEncoder().encode('stale staged text').buffer
+              );
+            });
+          };
+        }""")
+        page.locator("#stageFile").set_input_files(
+            source_blob("pending-stage.md", b"stale staged text")
+        )
+        page.wait_for_function("() => typeof window.__resolveStageLate === 'function'")
+        page.locator("#clear").click()
+        expect(page.locator("#stageStatus")).to_have_text("CLEARED")
+        page.evaluate("() => window.__resolveStageLate()")
+        page.wait_for_timeout(100)
+        expect(page.locator("#source")).to_have_value("")
+        expect(page.locator("#stageStatus")).to_have_text("CLEARED")
+        checks["stage_late_reader_after_clear_is_stale"] = True
+        page.evaluate("() => window.__restoreStageBuffer()")
+
         browser_version = browser.version
         context.close()
         browser.close()

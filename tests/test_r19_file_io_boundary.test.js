@@ -186,3 +186,108 @@ test('source bytes do not alias returned mutable arrays', () => {
   out[0]=0;
   assert.notEqual(input[0],out[0]);
 });
+
+test('staged import keeps existing decisions until explicitly accepted', async () => {
+  const state={source:'既有原稿',choices:3,commits:0};
+  const gate=api.createStagedImportGate({commit:data=>{
+    state.source=data.text;state.choices=0;state.commits++;
+  }});
+  const preview=await gate.stage(file('new.md','新的安全原稿'));
+  assert.equal(preview.status,'STAGED');
+  assert.equal(preview.byte_count,bytes('新的安全原稿').length);
+  assert(!JSON.stringify(preview).includes('新的安全原稿'));
+  assert.equal(state.source,'既有原稿');assert.equal(state.choices,3);
+  assert.equal(state.commits,0);
+});
+test('accept with current staged ticket applies exactly once', async () => {
+  const state={source:'舊稿',choices:2,commits:0};
+  const gate=api.createStagedImportGate({commit:data=>{
+    state.source=data.text;state.choices=0;state.commits++;
+  }});
+  const staged=await gate.stage(file('new.md','更新稿'));
+  assert.equal(gate.accept(staged.ticket).status,'IMPORTED');
+  assert.equal(state.source,'更新稿');assert.equal(state.commits,1);
+  assert.equal(gate.accept(staged.ticket).status,'STALE');
+  assert.equal(state.commits,1);
+});
+test('cancel staged import preserves previous working text and choices', async () => {
+  const state={source:'原稿',choices:4,commits:0};
+  const gate=api.createStagedImportGate({commit:()=>state.commits++});
+  const pending=await gate.stage(file('new.md','新稿'));
+  assert.equal(gate.cancel().status,'CANCELLED');
+  assert.equal(gate.accept(pending.ticket).status,'STALE');
+  assert.deepEqual(state,{source:'原稿',choices:4,commits:0});
+});
+test('invalid extension never creates staged acceptance', async () => {
+  let commits=0;const errors=[];
+  const gate=api.createStagedImportGate({commit:()=>commits++,reject:code=>errors.push(code)});
+  const res=await gate.stage(file('bad.json','{"a":1}'));
+  assert.deepEqual(res,{status:'REJECTED',code:'UNSUPPORTED_EXTENSION'});
+  assert.deepEqual(errors,['UNSUPPORTED_EXTENSION']);
+  assert.equal(gate.accept('stage-1-1').status,'STALE');
+  assert.equal(commits,0);
+});
+test('invalid UTF8 and NUL file readers refuse stage', async () => {
+  let commits=0;const gate=api.createStagedImportGate({commit:()=>commits++});
+  assert.equal((await gate.stage(file('bad.md',new Uint8Array([255,254])))).code,'INVALID_UTF8');
+  assert.equal((await gate.stage(file('bad.md',new Uint8Array([65,0,66])))).code,'NUL_BYTE');
+  assert.equal(commits,0);
+});
+test('mismatched file size is rejected before staged commit', async () => {
+  let commits=0;const gate=api.createStagedImportGate({commit:()=>commits++});
+  const bad={name:'mismatch.md',size:1,arrayBuffer:async()=>bytes('字元數量').buffer};
+  assert.equal((await gate.stage(bad)).code,'FILE_SIZE_MISMATCH');
+  assert.equal(commits,0);
+});
+test('cancel while staged reader pending makes late completion stale', async () => {
+  let commits=0;const gate=api.createStagedImportGate({commit:()=>commits++});
+  const deferredRead=deferred();
+  const active=gate.stage({name:'pending.md',size:5,arrayBuffer:()=>deferredRead.pending});
+  gate.cancel();
+  deferredRead.resolve(bytes('檔案').buffer);
+  assert.equal((await active).status,'STALE');
+  assert.equal(commits,0);
+});
+test('cancel while staged reader pending ignores late errors and rejection callback', async () => {
+  let commits=0;const errors=[];
+  const gate=api.createStagedImportGate({commit:()=>commits++,reject:code=>errors.push(code)});
+  const d=deferred();
+  const active=gate.stage({name:'pending.md',size:4,arrayBuffer:()=>d.pending});
+  gate.cancel();
+  d.reject(new Error('/private/document-path'));
+  assert.equal((await active).status,'STALE');
+  assert.deepEqual(errors,[]);
+  assert.equal(commits,0);
+});
+test('concurrent staged readers only grant the latest accepted ticket', async () => {
+  let content='previous';let commits=0;
+  const gate=api.createStagedImportGate({commit:record=>{content=record.text;commits++;}});
+  const d=deferred();
+  const first=gate.stage({name:'old.md',size:3,arrayBuffer:()=>d.pending});
+  const second=await gate.stage(file('new.md','最新稿'));
+  d.resolve(bytes('舊稿').buffer);
+  assert.equal((await first).status,'STALE');
+  assert.equal(gate.accept('stage-1-1').status,'STALE');
+  assert.equal(content,'previous');
+  assert.equal(gate.accept(second.ticket).status,'IMPORTED');
+  assert.equal(content,'最新稿');assert.equal(commits,1);
+});
+test('staged bytes are copied before passing to editor callback', async () => {
+  const raw=bytes('保持原樣');let captured=null;
+  const gate=api.createStagedImportGate({commit:item=>captured=item.bytes});
+  const candidate=await gate.stage({name:'safe.md',size:raw.length,arrayBuffer:async()=>raw.buffer});
+  raw[0]=0;
+  const applied=gate.accept(candidate.ticket);
+  assert.equal(applied.status,'IMPORTED');
+  assert.equal(new TextDecoder().decode(captured),'保持原樣');
+});
+test('stage is invalid after a new attempt or editor invalidation', async () => {
+  let commits=0;
+  const gate=api.createStagedImportGate({commit:()=>commits++});
+  const old=await gate.stage(file('first.md','第一稿'));
+  const now=await gate.stage(file('second.md','第二稿'));
+  assert.equal(gate.accept(old.ticket).status,'STALE');
+  gate.invalidate();
+  assert.equal(gate.accept(now.ticket).status,'STALE');
+  assert.equal(commits,0);
+});

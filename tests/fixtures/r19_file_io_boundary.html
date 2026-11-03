@@ -17,6 +17,13 @@ button,input{padding:.55rem;margin:.4rem}
 <h1>R19 File I/O Boundary (Evaluation Only)</h1>
 <p>Pure subsystem rehearsal; this is not the R19 First-Result Studio.</p>
 <input id="file" type="file" accept=".md,.markdown,.txt">
+<section aria-label="兩段式匯入研究測試">
+  <p>這是測試用的安全預備流程，並非正式 R19 工作台。</p>
+  <input id="stageFile" type="file" accept=".md,.markdown,.txt">
+  <button id="applyStage" type="button">確認預備檔案</button>
+  <button id="cancelStage" type="button">取消預備</button>
+  <output id="stageStatus" role="status">NONE</output>
+</section>
 <button id="clear" type="button">清除所有內容</button>
 <button id="mark" type="button">模擬本處已選擇</button>
 <button id="replace" type="button">替換一處軟件為軟體</button>
@@ -33,6 +40,19 @@ button,input{padding:.55rem;margin:.4rem}
   const api=window.TLSR19FileIOBoundary;
   let originalBytes=null,originalText=null;
   if(!api) throw Error('R19_BOUNDARY_MISSING');
+  let preparedTicket=null;
+  const stagedGate=api.createStagedImportGate({
+    commit: data=>{
+      driver.invalidate();
+      originalBytes=data.bytes;
+      originalText=data.text;
+      $('source').value=data.text;
+      $('decision').textContent='NONE';
+      $('stageStatus').textContent='APPLIED';
+      $('status').textContent='IMPORTED';
+    },
+    reject: code=>{ $('stageStatus').textContent=code; }
+  });
   const driver=api.createImportGate({
     commit: data=>{
       originalBytes=data.bytes;
@@ -46,15 +66,50 @@ button,input{padding:.55rem;margin:.4rem}
   });
   $('file').addEventListener('change',event=>{
     const file=event.target.files && event.target.files[0];
-    if(file) driver.open(file);
+    if(file){
+      stagedGate.invalidate();
+      preparedTicket=null;
+      $('stageStatus').textContent='INVALIDATED';
+      driver.open(file);
+    }
+  });
+  $('stageFile').addEventListener('change',async event=>{
+    const file=event.target.files && event.target.files[0];
+    if(!file)return;
+    preparedTicket=null;
+    $('stageStatus').textContent='PREPARING';
+    const result=await stagedGate.stage(file);
+    if(result.status==='STAGED'){
+      preparedTicket=result.ticket;
+      $('stageStatus').textContent='STAGED';
+    }
+    if(result.status!=='STALE')event.target.value='';
+  });
+  $('applyStage').addEventListener('click',()=>{
+    const result=stagedGate.accept(preparedTicket);
+    if(result.status==='IMPORTED')preparedTicket=null;
+    else $('stageStatus').textContent='STALE';
+  });
+  $('cancelStage').addEventListener('click',()=>{
+    stagedGate.cancel();
+    preparedTicket=null;
+    $('stageFile').value='';
+    $('stageStatus').textContent='CANCELLED';
   });
   $('source').addEventListener('input',()=>{
+    stagedGate.invalidate();
+    preparedTicket=null;
+    $('stageStatus').textContent='INVALIDATED';
     driver.invalidate();
     originalBytes=null;originalText=null;
     $('decision').textContent='NONE';
     $('status').textContent='SOURCE_CHANGED';
   });
   $('clear').addEventListener('click',()=>{
+    stagedGate.cancel();
+    preparedTicket=null;
+    $('stageFile').value='';
+    $('stageStatus').textContent='CLEARED';
     driver.invalidate();
     originalBytes=null;originalText=null;
     $('source').value='';
@@ -63,9 +118,13 @@ button,input{padding:.55rem;margin:.4rem}
     $('status').textContent='CLEARED';
   });
   $('mark').addEventListener('click',()=>{
+    stagedGate.invalidate();
+    preparedTicket=null;
     $('decision').textContent='SELECTED';
   });
   $('replace').addEventListener('click',()=>{
+    stagedGate.invalidate();
+    preparedTicket=null;
     if(originalBytes){
       $('source').value=$('source').value.replace('軟件','軟體');
       $('decision').textContent='SELECTED';

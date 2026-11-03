@@ -59,3 +59,12 @@ The research guard validates a buffer's `byteLength` **before cloning it**, avoi
 ## Real-browser metadata-mismatch coverage
 
 The independent synthetic `file://` Chromium suite now intentionally instruments `File.arrayBuffer()` to return a payload one byte larger than `File.size`. It must receive `FILE_SIZE_MISMATCH` without destroying previously selected review decisions. This is an adversarial file-reader test, **not** a claim that native browser File objects ordinarily misreport sizes. Its success is required by the fail-closed evidence receipt. The full original R19 Studio native ten scenarios remain NOT_RUN until independently verified.
+
+
+## A/B staged import choice — evaluation only (2026-11-03)
+
+The existing one-step `createImportGate.open(file)` remains unchanged. The optional `createStagedImportGate` supports a two-phase flow when unsaved work is present: `stage(file)` validates data without calling the editor's commit callback, then `accept(ticket)` applies only the current staged choice once. `cancel()` and `invalidate()` discard pending work while preserving previous source text and selections.
+
+The synthetic HTML fixture offers Prepare, Accept, and Cancel alongside its unchanged direct-import control. Its native Chromium tests cover staged preservation, cancellation, explicit confirmation, stale choices, and late file reads after Clear.
+
+This does not replace the original R19 Studio, certify human first-use completion, test the operating system's native file chooser, or authorize full Suite publication. Real users' E1/E2/E3/D7 observations are not collected. All wording remains human-controlled.

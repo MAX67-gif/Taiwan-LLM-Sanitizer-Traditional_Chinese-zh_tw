@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
 from test_r19_file_io_receipt import synthetic_good, verify
 
-NAME = "TLS_R19_FileIO_Evaluation_R1_20261103.zip"
+NAME = "TLS_R19_FileIO_AB_Stage_Evaluation_R2_20261103.zip"
 FILES = (
     "LICENSE",
     "src/r19/file_io_boundary_r19.js",
@@ -100,7 +100,7 @@ def build(report: dict) -> bytes:
         "files": sorted(manifest_files, key=lambda x: x["path"]),
         "native_report_sha256": sha(evidence),
         "native_report_path": REPORT_NAME,
-        "report_check_count": 12,
+        "report_check_count": 17,
         "input_source_file_count": len(FILES),
     })
     bio = io.BytesIO()
