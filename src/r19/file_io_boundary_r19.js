@@ -14,7 +14,7 @@
   const PUBLIC_CODES = Object.freeze([
     'INVALID_FILE', 'UNSUPPORTED_EXTENSION', 'INVALID_FILE_SIZE',
     'INPUT_EMPTY', 'INPUT_LIMIT', 'UTF8_BOM', 'NUL_BYTE',
-    'INVALID_UTF8', 'FILE_READ_FAILED', 'INVALID_REVIEW',
+    'INVALID_UTF8', 'FILE_READ_FAILED', 'FILE_SIZE_MISMATCH', 'INVALID_REVIEW',
     'SOURCE_BYTES_MISMATCH', 'LINE_ENDING_SHAPE_CHANGED',
     'OUTPUT_LIMIT'
   ]);
@@ -37,9 +37,15 @@
     return null;
   }
   function cloneBytes(raw) {
+    // Bound raw byteLength BEFORE cloning: a dishonest File-like object must
+    // never cause a large extra allocation while validation is in progress.
+    const size = raw instanceof ArrayBuffer || raw instanceof Uint8Array
+      ? raw.byteLength : null;
+    if (size === null) fail('FILE_READ_FAILED');
+    if (size === 0) fail('INPUT_EMPTY');
+    if (size > MAX_BYTES) fail('INPUT_LIMIT');
     if (raw instanceof ArrayBuffer) return new Uint8Array(raw.slice(0));
-    if (raw instanceof Uint8Array) return new Uint8Array(raw);
-    fail('FILE_READ_FAILED');
+    return new Uint8Array(raw);
   }
   function decodeBytes(raw) {
     const bytes = cloneBytes(raw);
@@ -118,6 +124,8 @@
         if (token !== epoch) return Object.freeze({status: 'STALE'});
         const decoded = decodeBytes(buffer);
         if (token !== epoch) return Object.freeze({status: 'STALE'});
+        // Never trust File.size alone. Validate actual content length as well.
+        if (decoded.bytes.length !== file.size) fail('FILE_SIZE_MISMATCH');
         // Commit is the only mutation point and must be atomic in the UI.
         commit({text: decoded.text, bytes: decoded.bytes, name: file.name});
         return Object.freeze({status: 'IMPORTED', byte_count: decoded.bytes.length});

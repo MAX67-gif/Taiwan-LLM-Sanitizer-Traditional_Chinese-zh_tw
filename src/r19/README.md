@@ -49,3 +49,8 @@ The verifier requires the exact synthetic fixture SHA256, real `file://` navigat
 ## Portable GitHub Actions evaluation ZIP
 
 After the actual synthetic Chromium check, CI creates a deterministic, CRC-checked source ZIP with an explicit LICENSE, exact per-file SHA256 manifest and the metadata-only browser receipt. This is a temporary Actions artifact, not a GitHub Release or a full R19 studio package. The original R19 native ten-scenario gate remains NOT_RUN.
+
+
+## Pre-copy byte-length hardening and metadata parity (2026-11-03)
+
+The research guard validates a buffer's `byteLength` **before cloning it**, avoiding an additional large allocation when a synthetic/file-like reader lies about size. It also checks that `file.size` equals the actual valid decoded byte length before invoking the only atomic UI `commit` callback. Oversized inputs retain `INPUT_LIMIT` priority; a smaller, inconsistent payload returns `FILE_SIZE_MISMATCH`. These are standalone subsystem controls, **not** a claim that the original R19 full UI is updated or natively accepted.

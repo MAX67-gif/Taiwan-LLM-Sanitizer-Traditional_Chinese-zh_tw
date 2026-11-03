@@ -47,6 +47,31 @@ test('BOM, NUL, empty, and bytes bigger than metadata limit reject', () => {
   assert.throws(() => api.decodeBytes(new Uint8Array(0)), /INPUT_EMPTY/);
   assert.throws(() => api.decodeBytes(new Uint8Array(65537).fill(65)), /INPUT_LIMIT/);
 });
+
+test('oversized ArrayBuffer is rejected before invoking slice/copy', () => {
+  class NoCopy extends ArrayBuffer {
+    slice() {throw new Error('LARGE_BUFFER_COPY_ATTEMPTED');}
+  }
+  assert.throws(() => api.decodeBytes(new NoCopy(65537)), /INPUT_LIMIT/);
+});
+test('file metadata and actual decoded byte length must agree before state commit', async () => {
+  const {state,driver}=gate();
+  const mismatch={name:'verified.md',size:1,arrayBuffer:async()=>bytes('合法兩字').buffer};
+  const result=await driver.open(mismatch);
+  assert.deepEqual(result,{status:'REJECTED',code:'FILE_SIZE_MISMATCH'});
+  assert.equal(state.source,'先前原稿');
+  assert.equal(state.choices,2);
+  assert.deepEqual(state.errors,['FILE_SIZE_MISMATCH']);
+});
+test('subarray views are decoded only within their intended byte offsets', () => {
+  const wrapped=bytes('ZZ原稿YY');
+  const view=wrapped.subarray(2,wrapped.length-2);
+  const decoded=api.decodeBytes(view);
+  assert.equal(decoded.text,'原稿');
+  assert.deepEqual([...decoded.bytes],[...bytes('原稿')]);
+  decoded.bytes[0]=0;
+  assert.equal(view[0],bytes('原稿')[0]);
+});
 test('Chinese, emoji and true Unicode encoded bytes roundtrip', () => {
   const text='軟體 🦜\n不動原文';
   const result=api.decodeBytes(bytes(text));
