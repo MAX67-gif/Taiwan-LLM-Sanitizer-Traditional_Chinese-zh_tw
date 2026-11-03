@@ -54,3 +54,8 @@ After the actual synthetic Chromium check, CI creates a deterministic, CRC-check
 ## Pre-copy byte-length hardening and metadata parity (2026-11-03)
 
 The research guard validates a buffer's `byteLength` **before cloning it**, avoiding an additional large allocation when a synthetic/file-like reader lies about size. It also checks that `file.size` equals the actual valid decoded byte length before invoking the only atomic UI `commit` callback. Oversized inputs retain `INPUT_LIMIT` priority; a smaller, inconsistent payload returns `FILE_SIZE_MISMATCH`. These are standalone subsystem controls, **not** a claim that the original R19 full UI is updated or natively accepted.
+
+
+## Real-browser metadata-mismatch coverage
+
+The independent synthetic `file://` Chromium suite now intentionally instruments `File.arrayBuffer()` to return a payload one byte larger than `File.size`. It must receive `FILE_SIZE_MISMATCH` without destroying previously selected review decisions. This is an adversarial file-reader test, **not** a claim that native browser File objects ordinarily misreport sizes. Its success is required by the fail-closed evidence receipt. The full original R19 Studio native ten scenarios remain NOT_RUN until independently verified.

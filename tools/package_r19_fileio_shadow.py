@@ -100,7 +100,7 @@ def build(report: dict) -> bytes:
         "files": sorted(manifest_files, key=lambda x: x["path"]),
         "native_report_sha256": sha(evidence),
         "native_report_path": REPORT_NAME,
-        "report_check_count": 11,
+        "report_check_count": 12,
         "input_source_file_count": len(FILES),
     })
     bio = io.BytesIO()

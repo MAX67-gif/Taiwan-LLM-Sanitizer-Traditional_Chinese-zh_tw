@@ -64,6 +64,26 @@ def run():
             expect(page.locator("#decision")).to_have_text("SELECTED")
             checks[key + "_preserved_source_and_decision"] = True
 
+        # A synthetic/file-like reader can disagree with browser File.size.
+        # Only a fully validated size match may trigger the UI commit callback.
+        page.evaluate("""() => {
+          const old = File.prototype.arrayBuffer;
+          window.__tlsRestoreSizeProbe = () => { File.prototype.arrayBuffer = old; };
+          File.prototype.arrayBuffer = async function () {
+            const original = await old.call(this);
+            const inflated = new Uint8Array(original.byteLength + 1);
+            inflated.set(new Uint8Array(original));
+            inflated[inflated.length - 1] = 65;
+            return inflated.buffer;
+          };
+        }""")
+        page.locator("#file").set_input_files(source_blob("mismatch.md", b"abc"))
+        expect(page.locator("#status")).to_have_text("FILE_SIZE_MISMATCH")
+        assert page.locator("#source").input_value() == source_before
+        expect(page.locator("#decision")).to_have_text("SELECTED")
+        checks["metadata_mismatch_preserves_source_and_decision"] = True
+        page.evaluate("() => window.__tlsRestoreSizeProbe()")
+
         # Simulate the empty-change event that cancel/no-selection produces.
         # This is NOT an operating-system chooser cancellation test.
         page.locator("#file").evaluate(
