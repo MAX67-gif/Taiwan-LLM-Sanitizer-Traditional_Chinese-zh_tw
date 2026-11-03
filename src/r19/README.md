@@ -44,3 +44,8 @@ and
 `python tests/test_r19_file_io_receipt.py --report <synthetic-native-json>`.
 
 The verifier requires the exact synthetic fixture SHA256, real `file://` navigation, all expected rejection/CRLF/race flags, zero egress, zero page errors, expected byte/CR counts, an actual Chromium version, and `r19_full_studio_native_acceptance=NOT_RUN`. It rejects 16 adversarial/forged report mutations in self-test. This protects against accidentally promoting a positive *subsystem* result as the still-unverified R19 First-Result Studio.
+
+
+## Portable GitHub Actions evaluation ZIP
+
+After the actual synthetic Chromium check, CI creates a deterministic, CRC-checked source ZIP with an explicit LICENSE, exact per-file SHA256 manifest and the metadata-only browser receipt. This is a temporary Actions artifact, not a GitHub Release or a full R19 studio package. The original R19 native ten-scenario gate remains NOT_RUN.

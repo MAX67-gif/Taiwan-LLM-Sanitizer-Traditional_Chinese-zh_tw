@@ -20,6 +20,7 @@ from test_r19_file_io_receipt import synthetic_good, verify
 
 NAME = "TLS_R19_FileIO_Evaluation_R1_20261103.zip"
 FILES = (
+    "LICENSE",
     "src/r19/file_io_boundary_r19.js",
     "src/r19/README.md",
     "tests/test_r19_file_io_boundary.test.js",
@@ -62,13 +63,8 @@ def zipinfo(path):
     return info
 
 
-def build(report: dict, *, allow_fixture=False) -> bytes:
+def build(report: dict) -> bytes:
     verify(report)   # exact keys, real file://, 43/43 bytes and NOT_RUN status
-    if not allow_fixture and report.get("browser_version") == "140.0.7339.16":
-        # This exact version can be a valid genuine CI browser; do not infer
-        # fake provenance from the version alone. Accept only caller-supplied
-        # report whose SHA is independently established by CI.
-        pass
     tracked = tracked_source()
     payload = {}
     manifest_files = []
@@ -91,6 +87,7 @@ def build(report: dict, *, allow_fixture=False) -> bytes:
         "Original R19 native ten-scenario acceptance: NOT_RUN (0/10).\n"
         "Current public Suite 17.3.2 and its 28 tools remain unchanged.\n"
         "This archive is NOT a release and does NOT contain original R19 HTML.\n"
+        "The included LICENSE records the original MIT open-source terms.\n"
         "No user-supplied documents or personal paths were packaged.\n"
     ).encode("utf-8")
     payload[README_NAME] = info
@@ -139,8 +136,8 @@ def main():
     args = parser.parse_args()
     try:
         if args.self_test:
-            a = build(synthetic_good(), allow_fixture=True)
-            b = build(synthetic_good(), allow_fixture=True)
+            a = build(synthetic_good())
+            b = build(synthetic_good())
             if a != b:
                 fail("NONDETERMINISTIC")
             print(json.dumps({"status": "PASS", "evaluation_only": True,
