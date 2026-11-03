@@ -64,6 +64,15 @@ def run():
             expect(page.locator("#decision")).to_have_text("SELECTED")
             checks[key + "_preserved_source_and_decision"] = True
 
+        # Simulate the empty-change event that cancel/no-selection produces.
+        # This is NOT an operating-system chooser cancellation test.
+        page.locator("#file").evaluate(
+            "(node) => node.dispatchEvent(new Event('change', {bubbles: true}))"
+        )
+        assert page.locator("#source").input_value() == source_before
+        expect(page.locator("#decision")).to_have_text("SELECTED")
+        checks["empty_file_change_preserves_work"] = True
+
         with page.expect_download() as event:
             page.locator("#download").click()
         downloaded = Path(event.value.path()).read_bytes()
@@ -107,6 +116,28 @@ def run():
         expect(page.locator("#source")).to_have_value("")
         expect(page.locator("#status")).to_have_text("CLEARED")
         checks["stale_read_after_clear_did_not_resurrect"] = True
+        page.evaluate("() => window.__restoreR19Guard()")
+
+        # Stale asynchronous rejection must not write an error after Clear.
+        page.evaluate("""() => {
+          const original = File.prototype.arrayBuffer;
+          window.__restoreR19Guard = () => { File.prototype.arrayBuffer = original; };
+          File.prototype.arrayBuffer = function () {
+            return new Promise((_resolve, reject) => {
+              window.__rejectR19LateFile = () => reject(
+                new Error('synthetic local path must not leak')
+              );
+            });
+          };
+        }""")
+        page.locator("#file").set_input_files(source_blob("rejected.md", b"later"))
+        page.wait_for_function("() => typeof window.__rejectR19LateFile === 'function'")
+        page.locator("#clear").click()
+        page.evaluate("() => window.__rejectR19LateFile()")
+        page.wait_for_timeout(100)
+        expect(page.locator("#source")).to_have_value("")
+        expect(page.locator("#status")).to_have_text("CLEARED")
+        checks["stale_rejection_after_clear_ignored"] = True
         page.evaluate("() => window.__restoreR19Guard()")
 
         browser_version = browser.version
