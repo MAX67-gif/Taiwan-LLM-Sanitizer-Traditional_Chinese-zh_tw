@@ -84,9 +84,13 @@ def _valid_archive_name(name):
     for part in parts:
         if not part or part in ('.', '..') or part.endswith(('.', ' ')):
             _bad('ZIP_UNSAFE_NAME')
-        if any(ord(c) < 32 or ord(c) == 127 for c in part):
+        if any(ord(c) < 32 or ord(c) == 127 or
+               unicodedata.category(c) == 'Cf' for c in part):
             _bad('ZIP_UNSAFE_NAME')
-        if part.split('.', 1)[0].upper() in _RESERVED_WINDOWS:
+        # Windows treats superscript 1/2/3 as device digits in COM and LPT.
+        stem = part.split('.', 1)[0].upper().translate(
+            str.maketrans({'¹': '1', '²': '2', '³': '3'}))
+        if stem in _RESERVED_WINDOWS:
             _bad('ZIP_UNSAFE_NAME')
     return '/'.join(parts).casefold()
 
@@ -185,22 +189,30 @@ def _inspect_bytes(task, contract):
     if _sha(html) != contract.html_sha256:
         _bad('HTML_SHA_MISMATCH')
 
-    runners = [
-        blob for name, blob in members.items()
-        if (name == RUNNER_SUFFIX or name.endswith('/' + RUNNER_SUFFIX))
-        and _sha(blob) == contract.runner_sha256
+    # Validate all runner *paths* before checking content. A second runner
+    # with a wrong digest must not be invisible to ambiguity detection.
+    runner_names = [
+        name for name in members
+        if name == RUNNER_SUFFIX or name.endswith('/' + RUNNER_SUFFIX)
     ]
-    if len(runners) == 0:
+    if not runner_names:
         _bad('RUNNER_NOT_FOUND')
-    if len(runners) != 1:
+    if len(runner_names) != 1:
         _bad('RUNNER_AMBIGUOUS')
+    runner_name = runner_names[0]
+    # The HTML and original runner must belong to one source tree.
+    if html_names[0][:-len(HTML_SUFFIX)] != runner_name[:-len(RUNNER_SUFFIX)]:
+        _bad('RUNNER_PATH_MISMATCH')
+    runner = members[runner_name]
+    if _sha(runner) != contract.runner_sha256:
+        _bad('RUNNER_NOT_FOUND')
     return {
         'task_bytes': len(task),
         'outer_entries': n_outer,
         'inner_entries': n_inner,
         'source_bytes': len(source),
         'html_bytes': len(html),
-        'runner_bytes': len(runners[0]),
+        'runner_bytes': len(runner),
     }
 
 
