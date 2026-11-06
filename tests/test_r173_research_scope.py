@@ -227,9 +227,9 @@ class R177ProductScopeTests(unittest.TestCase):
 
 
 class R190ExactLatestLinksTests(unittest.TestCase):
- def test_precise_eight_path_docs_transaction(self):
+ def test_precise_nine_path_docs_transaction(self):
   tx=[(state,path) for path,state in sorted(C.R190_STATES.items())]
-  self.assertEqual(len(tx),8)
+  self.assertEqual(len(tx),9)
   self.assertEqual(C.classify(tx),(True,'R190_PINNED_LINKS_DOCS_ONLY'))
   for i,(st,path) in enumerate(tx):
    self.assertFalse(C.classify(tx[:i]+tx[i+1:])[0])

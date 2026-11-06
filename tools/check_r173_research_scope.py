@@ -86,7 +86,8 @@ R190_READMES = ('README.md','README.en.md','README.zh-CN.md',
                 'README.ja.md','README.ko.md','README.es.md')
 R190_STATES = {**{p:'M' for p in R190_READMES},
                'tools/check_r173_research_scope.py':'M',
-               'tests/test_r173_research_scope.py':'M'}
+               'tests/test_r173_research_scope.py':'M',
+               'tests/test_r176_showcase_contract.py':'M'}
 R190_OLD_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'
 R190_NEW_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest'
 R190_OLD_MASTER_SHA = '256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393'
@@ -133,6 +134,20 @@ def r190_verify_exact(base,head):
             raise ValueError('R190_UNEXPECTED_DOCUMENT_CONTENT:'+path)
         if path == 'README.md' and hashlib.sha256(after.encode('utf-8')).hexdigest() != R190_NEW_MASTER_SHA:
             raise ValueError('R190_NEW_MASTER_SHA_MISMATCH')
+    # A pre-existing R17.6 test pinned the obsolete hero link. Update only
+    # that hero assertion, retaining the historical showcase-guide tag check.
+    path = 'tests/test_r176_showcase_contract.py'
+    original = subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+    actual = subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+    tag = "TAG_URL = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'"
+    expected_assert = '                self.assertEqual(hero.count(TAG_URL), 1)'
+    if original.count(tag) != 1 or original.count(expected_assert) != 1:
+        raise ValueError('R190_ORIGINAL_SHOWCASE_TEST_MISMATCH')
+    expected = original.replace(tag,tag+"\nLATEST_URL = '"+R190_NEW_LINK+"'",1)
+    expected = expected.replace(expected_assert,
+        '                self.assertEqual(hero.count(LATEST_URL), 1)\n                self.assertNotIn(TAG_URL, hero)',1)
+    if actual != expected:
+        raise ValueError('R190_SHOWCASE_TEST_BYTES_MISMATCH')
     return True
 
 
