@@ -1,0 +1,62 @@
+{
+  "schema": "tls.r19.r2-source-sync.v1",
+  "record_date": "2026-11-06",
+  "scope": "DOCUMENTATION_AND_SOURCE_IDENTITY_ONLY",
+  "release_permission": "NONE",
+  "source_payload_uploaded_by_this_change": false,
+  "source_payload_revalidated_by_this_change": false,
+  "formal_baseline": {
+    "suite_version": "17.3.2",
+    "main_sha": "d49eb0d62e60316a502a793e0d61779e77de2b2c",
+    "registered_tools": 28,
+    "modified_by_this_change": false
+  },
+  "subsystem": {
+    "pull_request": 50,
+    "tested_head_sha": "1a44af5603a506d25f24285ac0e23a4a368b6245",
+    "historical_actions_run_id": 41627718513,
+    "scope": "FILE_IO_AND_STAGED_IMPORT_SYNTHETIC_FIXTURE",
+    "does_not_validate_original_studio": true
+  },
+  "studio_r2": {
+    "source_record": "https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/issues/51#issuecomment-6676238890",
+    "sandbox_only_commit": "825e4e1848affdcdba44553fb78dc45a867cdffc",
+    "sandbox_commit_is_github_commit": false,
+    "html_path": "examples/TW_First_Result_Studio_R19_20261101.html",
+    "html_sha256": "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a",
+    "html_bytes": 136680,
+    "runner_path": "tests/browser_first_result_studio_r19.cjs",
+    "runner_sha256": "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8",
+    "node_test_results": {
+      "reported_passed": 557,
+      "reported_failed": 0,
+      "provenance": "PREVIOUS_SANDBOX_REPORT_NOT_RERUN_BY_THIS_CHANGE"
+    },
+    "original_native_scenarios": {
+      "required": 10,
+      "executed": 0,
+      "status": "NOT_RUN"
+    },
+    "human_quality": "NOT_MEASURED",
+    "user_adoption": "NOT_COLLECTED"
+  },
+  "reported_public_source_archives": {
+    "core": {
+      "bytes": 6665780,
+      "sha256": "89a5a4c88bd11802f769e220035e41f55a270fdcc5531be58cb398588514382e"
+    },
+    "cloud_native_task": {
+      "bytes": 3526829,
+      "sha256": "5ef57fa1522245de20a4e14dd2d6698a8c82af294ab1be13f8e8c8611ee9a18d"
+    },
+    "bytes_revalidated_by_this_change": false
+  },
+  "next_gates": [
+    "Read original archived public-source bytes and independently match the recorded archive digests",
+    "Stage a public-only additive R2 source overlay on a separate Draft branch based on the current protected main",
+    "Keep the original native runner byte-identical and run it using Node Playwright 1.55.0 with its matching Chromium in an authorized file:// environment",
+    "Bind the run head, runner digest, HTML digest and actual download/screenshot artifacts to a specific CI run and attempt",
+    "Do not interpret schema-valid JSON or a synthetic verifier self-test as proof of browser execution",
+    "Do not merge or publish R19 until the original native and separately versioned full-Suite gates are satisfied"
+  ]
+}
