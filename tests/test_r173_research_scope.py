@@ -238,10 +238,10 @@ class R190ExactLatestLinksTests(unittest.TestCase):
   for x in ('src/core/wording_assistant_r172.js',
             '.github/workflows/ci.yml'):
    self.assertFalse(C.classify(tx+[('M',x)])[0])
-  # Preserve the pre-existing R17.3 research route; it is not a new R190 exemption.
-  self.assertEqual(
-   C.classify(tx+[('M','research/comparison/r173/methodology.json')])[1],
-   'R173_RESEARCH_ONLY')
+  # This new audited nine-file transaction cannot be merged into a
+  # different historical research route via an extra research file.
+  self.assertFalse(
+   C.classify(tx+[('M','research/comparison/r173/methodology.json')])[0])
 
  def test_expected_links_preserve_historical_r177_release(self):
   for path in C.R190_READMES:
