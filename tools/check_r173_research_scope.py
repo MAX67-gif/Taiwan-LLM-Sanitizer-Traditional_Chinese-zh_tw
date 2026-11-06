@@ -5,6 +5,7 @@ installer, HTML app, generalized tooling, unknown, deleted, or renamed files.
 """
 from __future__ import annotations
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -77,6 +78,94 @@ R178_B0_STATES = {
     'tests/test_r178_b0_release.py': 'A',
 }
 
+
+# One-time approved correction of six misleading first-use download links.
+# No product/runtime/registry paths, and no general docs-only exemption.
+R190_PINNED_BASE = 'd49eb0d62e60316a502a793e0d61779e77de2b2c'
+R190_READMES = ('README.md','README.en.md','README.zh-CN.md',
+                'README.ja.md','README.ko.md','README.es.md')
+R190_STATES = {**{p:'M' for p in R190_READMES},
+               'tools/check_r173_research_scope.py':'M',
+               'tests/test_r173_research_scope.py':'M',
+               'tests/test_r176_showcase_contract.py':'M',
+               'tests/test_r178_b0_release.py':'M'}
+R190_OLD_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'
+R190_NEW_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest'
+R190_OLD_MASTER_SHA = '256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393'
+R190_NEW_MASTER_SHA = 'dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583'
+R190_CURRENT = {
+ 'README.md': (
+  ('完整下載請選 Suite 17.3.0。','完整下載請以 GitHub 最新正式 Release 為準。'),
+  ('現行下載應使用 Suite 17.3.0。','現行下載應以 GitHub 最新正式 Release 為準。'),
+  ('現行完整下載請用 Suite 17.3.0。','現行完整下載請以 GitHub 最新正式 Release 為準。')),
+ 'README.en.md': (('so use Suite 17.3.0 for the current complete download.','so use the latest official GitHub Release for the current complete download.'),),
+ 'README.zh-CN.md': (('当前完整下载请使用 Suite 17.3.0。','当前完整下载请以 GitHub 最新正式 Release 为准。'),),
+ 'README.ja.md': (('現在の完全版は Suite 17.3.0 を利用してください。','現在の完全版は GitHub の最新正式リリースから入手してください。'),),
+ 'README.ko.md': (('최신 전체 다운로드는 Suite 17.3.0을 사용하세요.','전체 패키지는 GitHub 최신 공식 릴리스에서 다운로드하세요.'),),
+ 'README.es.md': (('Utiliza Suite 17.3.0 para la descarga completa actual.','Utiliza la última versión oficial de GitHub para obtener el paquete completo.'),),
+}
+
+def r190_apply_exact(source, path):
+    if path not in R190_CURRENT or source.count(R190_OLD_LINK) != 2:
+        raise ValueError('R190_OLD_LINK_CONTRACT')
+    result = source.replace(R190_OLD_LINK,R190_NEW_LINK,1)
+    for old,new in R190_CURRENT[path]:
+        if result.count(old) != 1:
+            raise ValueError('R190_CURRENT_CLAIM_MISMATCH')
+        result = result.replace(old,new,1)
+    if result.count(R190_OLD_LINK) != 1:
+        raise ValueError('R190_HISTORICAL_LINK_MISSING')
+    if path != 'README.md':
+        old_marker = '<!-- SOURCE_README_SHA256:' + R190_OLD_MASTER_SHA + ' -->'
+        new_marker = '<!-- SOURCE_README_SHA256:' + R190_NEW_MASTER_SHA + ' -->'
+        if result.count(old_marker) != 1:
+            raise ValueError('R190_TRANSLATION_MASTER_SHA_MISMATCH')
+        result = result.replace(old_marker, new_marker, 1)
+    return result
+
+def r190_verify_exact(base,head):
+    if base != R190_PINNED_BASE:
+        raise ValueError('R190_WRONG_BASE')
+    if not re.fullmatch(r'[0-9a-f]{40}',head):
+        raise ValueError('R190_BAD_HEAD')
+    for path in R190_READMES:
+        before=subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+        after=subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+        if r190_apply_exact(before,path) != after:
+            raise ValueError('R190_UNEXPECTED_DOCUMENT_CONTENT:'+path)
+        if path == 'README.md' and hashlib.sha256(after.encode('utf-8')).hexdigest() != R190_NEW_MASTER_SHA:
+            raise ValueError('R190_NEW_MASTER_SHA_MISMATCH')
+    # A pre-existing R17.6 test pinned the obsolete hero link. Update only
+    # that hero assertion, retaining the historical showcase-guide tag check.
+    path = 'tests/test_r176_showcase_contract.py'
+    original = subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+    actual = subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+    tag = "TAG_URL = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'"
+    expected_assert = '                self.assertEqual(hero.count(TAG_URL), 1)'
+    if original.count(tag) != 1 or original.count(expected_assert) != 1:
+        raise ValueError('R190_ORIGINAL_SHOWCASE_TEST_MISMATCH')
+    expected = original.replace(tag,tag+"\nLATEST_URL = '"+R190_NEW_LINK+"'",1)
+    expected = expected.replace(expected_assert,
+        '                self.assertEqual(hero.count(LATEST_URL), 1)\n                self.assertNotIn(TAG_URL, hero)',1)
+    if actual != expected:
+        raise ValueError('R190_SHOWCASE_TEST_BYTES_MISMATCH')
+    # The R17.8 B0 test also pins the original historical hero tag.
+    # Keep its historical GUIDE assertions and change only the hero.
+    path = 'tests/test_r178_b0_release.py'
+    original = subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+    actual = subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+    tag = "URL='https://github.com/'+C.REPO+'/releases/tag/all-tools-suite-v17.3.0'"
+    expected_assert = '    self.assertEqual(block.group(1).count(URL),1)'
+    if original.count(tag) != 1 or original.count(expected_assert) != 1:
+        raise ValueError('R190_ORIGINAL_B0_TEST_MISMATCH')
+    expected = original.replace(tag,tag+"\nLATEST_URL='https://github.com/'+C.REPO+'/releases/latest'",1)
+    expected = expected.replace(expected_assert,
+        '    self.assertEqual(block.group(1).count(LATEST_URL),1)\n    self.assertNotIn(URL,block.group(1))',1)
+    if actual != expected:
+        raise ValueError('R190_B0_TEST_BYTES_MISMATCH')
+    return True
+
+
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
@@ -91,6 +180,10 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    if set(paths) == set(R190_STATES):
+        if not all(R190_STATES[p]==state for state,p in changes):
+            return False,'R190_STATUS_MISMATCH'
+        return True,'R190_PINNED_LINKS_DOCS_ONLY'
     if set(paths)==set(R178_B0_STATES):
         if all(R178_B0_STATES[p] == state for state,p in changes):
             return True,'R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY'
@@ -159,7 +252,10 @@ def main(argv=None):
         print('R173_PINNED_RESEARCH_RECEIPT_PASS');return 0
     if not args.base or not args.head:parser.error('--base and --head required')
     allowed_no_release,reason=classify(changed_files(args.base,args.head))
-    docs_only=(reason=='R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY')
+    if reason=='R190_PINNED_LINKS_DOCS_ONLY':
+        r190_verify_exact(args.base,args.head)
+    docs_only=(reason in ('R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY',
+                         'R190_PINNED_LINKS_DOCS_ONLY'))
     is_research=allowed_no_release and not docs_only
     ghout=os.environ.get('GITHUB_OUTPUT')
     if ghout:

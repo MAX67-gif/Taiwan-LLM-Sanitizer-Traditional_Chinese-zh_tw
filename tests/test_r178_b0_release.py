@@ -9,6 +9,7 @@ import check_r178_b0_release as C
 import publication_guard as G
 
 URL='https://github.com/'+C.REPO+'/releases/tag/all-tools-suite-v17.3.0'
+LATEST_URL='https://github.com/'+C.REPO+'/releases/latest'
 README_FILES=('README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md')
 GUIDES=('docs/QUICK_START_R174.md','docs/QUICK_START_R174.en.md',
         'docs/showcase/README.md','docs/showcase/README.en.md',
@@ -37,7 +38,8 @@ class B0Tests(unittest.TestCase):
    with self.subTest(name=name):
     block=re.search('<!-- R176_SHOWCASE_BEGIN -->(.*?)<!-- R176_SHOWCASE_END -->',text,re.S)
     self.assertIsNotNone(block)
-    self.assertEqual(block.group(1).count(URL),1)
+    self.assertEqual(block.group(1).count(LATEST_URL),1)
+    self.assertNotIn(URL,block.group(1))
     self.assertNotIn('all-tools-suite-v17.2.0',block.group(1))
     self.assertIn('TW_Wording_Assistant_R172_20261027.html',block.group(1))
     self.assertIn('suite=17.3.2; tools=28; standalone=23',text)

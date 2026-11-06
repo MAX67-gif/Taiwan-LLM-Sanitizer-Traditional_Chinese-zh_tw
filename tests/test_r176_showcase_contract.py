@@ -12,6 +12,7 @@ import publication_guard as G
 import check_readme_i18n as I
 
 TAG_URL = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'
+LATEST_URL = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest'
 SHOWCASE_FILES = {
     'docs/showcase/source.md', 'docs/showcase/preview.md',
     'docs/showcase/decisions.json', 'docs/showcase/verification.json',
@@ -28,7 +29,8 @@ class ShowcaseContractTests(unittest.TestCase):
                 matches = re.findall(r'<!-- R176_SHOWCASE_BEGIN -->(.*?)<!-- R176_SHOWCASE_END -->', text, re.S)
                 self.assertEqual(len(matches), 1)
                 hero = matches[0]
-                self.assertEqual(hero.count(TAG_URL), 1)
+                self.assertEqual(hero.count(LATEST_URL), 1)
+                self.assertNotIn(TAG_URL, hero)
                 self.assertIn('docs/showcase/README', hero)
                 self.assertIn('docs/showcase/preview.md', hero)
                 self.assertIn('TW_Wording_Assistant_R172_20261027.html', hero)

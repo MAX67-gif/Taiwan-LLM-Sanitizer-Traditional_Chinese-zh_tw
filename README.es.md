@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393 -->
+<!-- SOURCE_README_SHA256:dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -17,7 +17,7 @@
 
 En un Markdown, elige 選單 para un `menu` de interfaz, 菜單 para uno de comida y conserva una tercera aparición. Revisa cada decisión antes de exportar otra copia; se prioriza proteger los fragmentos técnicos.
 
-**[Empieza tu primera revisión](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0)** — Descarga `TW_Wording_Assistant_R172_20261027.html`，y ábrelo en tu navegador local.
+**[Empieza tu primera revisión](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)** — Descarga `TW_Wording_Assistant_R172_20261027.html`，y ábrelo en tu navegador local.
 
 [Recorrido real (inglés)](docs/showcase/README.en.md) · [Vista previa real](docs/showcase/preview.md)
 
@@ -109,7 +109,7 @@ En una **página ficticia parecida a un juego web**, el texto HTML seleccionable
 
 Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEASE.md). Cada versión oficial debe incluir todas las extensiones de Chrome, los scripts de Tampermonkey, los 13 laboratorios HTML sin conexión, el kit público de calidad R6 y el paquete de CLI/Skill para desarrolladores que sigan admitidos y puedan redistribuirse legalmente. Las herramientas sin cambios conservan su versión y SHA256 originales. Se comprueban todos los adjuntos del borrador antes de publicar. Nunca se reincorporan paquetes específicos de terceros retirados por derechos. La [Release R17.1](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.1.0) solo se considera disponible tras verificarse el CI oficial y sus adjuntos.
 
-**R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** La herramienta de revisión R17.2 no cambia; los ZIP integrales antiguos 17.1/17.2 se retiraron tras una revisión del alcance público. Utiliza Suite 17.3.0 para la descarga completa actual.
+**R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** La herramienta de revisión R17.2 no cambia; los ZIP integrales antiguos 17.1/17.2 se retiraron tras una revisión del alcance público. Utiliza la última versión oficial de GitHub para obtener el paquete completo.
 
 <!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
 
