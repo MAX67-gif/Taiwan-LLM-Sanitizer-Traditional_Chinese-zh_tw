@@ -225,4 +225,48 @@ class R177ProductScopeTests(unittest.TestCase):
     self.assertFalse(C.classify(changes)[0])
     self.assertFalse(C.classify(R176ScopeTests().transaction()+[('A',path)])[0])
 
+
+class R190ExactLatestLinksTests(unittest.TestCase):
+ def test_precise_eight_path_docs_transaction(self):
+  tx=[(state,path) for path,state in sorted(C.R190_STATES.items())]
+  self.assertEqual(len(tx),8)
+  self.assertEqual(C.classify(tx),(True,'R190_PINNED_LINKS_DOCS_ONLY'))
+  for i,(st,path) in enumerate(tx):
+   self.assertFalse(C.classify(tx[:i]+tx[i+1:])[0])
+   for other in ('A','D','R100'):
+    self.assertFalse(C.classify(tx[:i]+[(other,path)]+tx[i+1:])[0])
+  for x in ('src/core/wording_assistant_r172.js',
+            '.github/workflows/ci.yml','research/comparison/r173/methodology.json'):
+   self.assertFalse(C.classify(tx+[('M',x)])[0])
+
+ def test_expected_links_preserve_historical_r177_release(self):
+  for path in C.R190_READMES:
+   oldlink=C.R190_OLD_LINK
+   fixture='First CTA: '+oldlink+'\nHistorical MRFT: '+oldlink+'\n'
+   for old,_ in C.R190_CURRENT[path]:
+    fixture+=old+'\n'
+   result=C.r190_apply_exact(fixture,path)
+   self.assertEqual(result.count(oldlink),1)
+   self.assertEqual(result.count(C.R190_NEW_LINK),1)
+   for old,new in C.R190_CURRENT[path]:
+    self.assertNotIn(old,result)
+    self.assertIn(new,result)
+   with self.assertRaises(ValueError):
+    C.r190_apply_exact(fixture.replace(oldlink,'bad',1),path)
+
+ def test_repo_readmes_have_updated_first_use_links(self):
+  for path in C.R190_READMES:
+   content=(ROOT/path).read_text(encoding='utf-8')
+   self.assertEqual(content.count(C.R190_OLD_LINK),1,path)
+   self.assertGreaterEqual(content.count(C.R190_NEW_LINK),2,path)
+   self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_2.zip',content)
+   for stale,_ in C.R190_CURRENT[path]:
+    self.assertNotIn(stale,content)
+
+ def test_exemption_is_bound_to_one_immutable_main_baseline(self):
+  self.assertEqual(C.R190_PINNED_BASE,'d49eb0d62e60316a502a793e0d61779e77de2b2c')
+  with self.assertRaisesRegex(ValueError,'R190_WRONG_BASE'):
+   C.r190_verify_exact('0'*40,'f'*40)
+  self.assertFalse(C.classify([('M','README.md')])[0])
+
 if __name__=='__main__':unittest.main()
