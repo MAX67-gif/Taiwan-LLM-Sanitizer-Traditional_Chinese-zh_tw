@@ -87,7 +87,8 @@ R190_READMES = ('README.md','README.en.md','README.zh-CN.md',
 R190_STATES = {**{p:'M' for p in R190_READMES},
                'tools/check_r173_research_scope.py':'M',
                'tests/test_r173_research_scope.py':'M',
-               'tests/test_r176_showcase_contract.py':'M'}
+               'tests/test_r176_showcase_contract.py':'M',
+               'tests/test_r178_b0_release.py':'M'}
 R190_OLD_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'
 R190_NEW_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest'
 R190_OLD_MASTER_SHA = '256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393'
@@ -148,6 +149,20 @@ def r190_verify_exact(base,head):
         '                self.assertEqual(hero.count(LATEST_URL), 1)\n                self.assertNotIn(TAG_URL, hero)',1)
     if actual != expected:
         raise ValueError('R190_SHOWCASE_TEST_BYTES_MISMATCH')
+    # The R17.8 B0 test also pins the original historical hero tag.
+    # Keep its historical GUIDE assertions and change only the hero.
+    path = 'tests/test_r178_b0_release.py'
+    original = subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+    actual = subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+    tag = "URL='https://github.com/'+C.REPO+'/releases/tag/all-tools-suite-v17.3.0'"
+    expected_assert = '    self.assertEqual(block.group(1).count(URL),1)'
+    if original.count(tag) != 1 or original.count(expected_assert) != 1:
+        raise ValueError('R190_ORIGINAL_B0_TEST_MISMATCH')
+    expected = original.replace(tag,tag+"\nLATEST_URL='https://github.com/'+C.REPO+'/releases/latest'",1)
+    expected = expected.replace(expected_assert,
+        '    self.assertEqual(block.group(1).count(LATEST_URL),1)\n    self.assertNotIn(URL,block.group(1))',1)
+    if actual != expected:
+        raise ValueError('R190_B0_TEST_BYTES_MISMATCH')
     return True
 
 
