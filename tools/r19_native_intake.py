@@ -1,4 +1,4 @@
-"""R19 exact-source intake. RED-phase scaffold; no extraction or execution."""
+"""R19 strict source-intake validator; no extraction or execution."""
 from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
@@ -213,6 +213,8 @@ def inspect_task(path: Path | None, contract: Contract = OFFICIAL) -> dict:
         p = Path(path)
         if p.is_symlink():
             _bad('INPUT_SYMLINK')
+        if not p.exists():
+            return _receipt('BLOCKED', 'INPUT_MISSING', contract)
         if not p.is_file():
             _bad('INPUT_NOT_REGULAR')
         size = p.stat().st_size
@@ -241,3 +243,21 @@ def inspect_task(path: Path | None, contract: Contract = OFFICIAL) -> dict:
         return _receipt('REJECTED', exc.code, contract)
     except (OSError, ValueError, TypeError):
         return _receipt('REJECTED', 'INPUT_UNREADABLE', contract)
+
+
+def main():
+    """Read-only CLI. Hashes and sizes are always the fixed OFFICIAL contract."""
+    import argparse
+    import json
+    parser = argparse.ArgumentParser(
+        description='R19 R2 exact archive intake: native browser NOT_RUN')
+    parser.add_argument('--task', type=Path, default=None,
+                        help='Unmodified R19 R2 task archive')
+    options = parser.parse_args()
+    receipt = inspect_task(options.task)
+    print(json.dumps(receipt, ensure_ascii=False, sort_keys=True))
+    return {'VERIFIED': 0, 'BLOCKED': 2, 'REJECTED': 3}[receipt['intake_state']]
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

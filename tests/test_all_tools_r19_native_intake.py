@@ -77,6 +77,15 @@ class NativeIntakeTests(unittest.TestCase):
         self.assertEqual(r['native_status'], 'NOT_RUN')
         self.assertEqual(r['promotion'], 'NONE')
 
+    def test_missing_path_reports_blocked_and_preserves_native_not_run(self):
+        with tempfile.TemporaryDirectory() as d:
+            missing = Path(d) / 'not-present.zip'
+            report = I.inspect_task(missing)
+        self.assertEqual(report['intake_state'], 'BLOCKED')
+        self.assertEqual(report['reason_code'], 'INPUT_MISSING')
+        self.assertIs(report['source_identity_verified'], False)
+        self.assertEqual(report['native_status'], 'NOT_RUN')
+
     def test_directory_not_a_regular_task(self):
         with tempfile.TemporaryDirectory() as d:
             r = I.inspect_task(Path(d))

@@ -8,4 +8,25 @@ This Draft is separate from the file-I/O subsystem PR. It does not change Suite 
 
 Tests use newly created synthetic ZIPs with distinct test-only contracts. They do not validate the actual archived R19 Task unless its original bytes are supplied. Official CLI checks must use the hard-coded R2 contract, not a command-line replacement digest.
 
-This commit is a deliberate test-first RED checkpoint. Implementation and genuine result receipts follow separately; no successful validation is claimed yet.
+The deliberately failing RED checkpoint is preserved as an earlier commit. The current candidate implements a read-only validator; its newest CI results must be checked separately.
+
+## Implemented intake and result contract
+
+The verifier now checks the pinned Task SHA256 and size, safe ZIP paths,
+member size/count bounds, CRCs, nested Source ZIP identity, original HTML
+and unchanged native runner SHA. It does not extract or execute archive bytes.
+
+An authorized cloud CI runner can use:
+
+    python tools/r19_native_intake.py --task native-input/R19_R2_TASK.zip
+
+Only the hard-coded OFFICIAL contract is accepted by this CLI. Synthetic
+unit fixtures cannot override the official reference digest.
+
+- Missing archive: BLOCKED / INPUT_MISSING (exit code 2).
+- Invalid or altered archive: REJECTED with bounded reason (exit code 3).
+- Exact archive identity: VERIFIED / IDENTITY_VERIFIED_NATIVE_NOT_RUN (exit code 0).
+
+No result ever grants a native ten-scenario PASS, release permission, or
+human translation-quality claim. No filename, raw text or private paths
+are printed in the receipt. Keep official Playwright 1.55 acceptance separate.
