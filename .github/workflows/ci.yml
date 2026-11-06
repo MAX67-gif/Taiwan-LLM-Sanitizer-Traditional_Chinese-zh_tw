@@ -348,6 +348,17 @@ jobs:
         run: python tests/test_document_trust_browser_r17.py
       - name: Test R17.2 real Chromium offline selection and download
         run: python tests/test_wording_assistant_browser_r172.py
+      - name: R19 shadow baseline - native R17.2 invalid UTF8, oversized file and CRLF (NOT R19 acceptance)
+        run: python tests/test_r172_native_gap_shadow_r19.py
+        env:
+          TLS_R19_BASELINE_REPORT: ${{ runner.temp }}/TLS_R19_R172_NATIVE_SHADOW.json
+      - name: Preserve R19 shadow baseline observation metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_R172_NATIVE_SHADOW
+          path: ${{ runner.temp }}/TLS_R19_R172_NATIVE_SHADOW.json
+          if-no-files-found: warn
       - name: Test R17.6 original showcase in the shipped offline HTML
         run: python tests/test_showcase_browser_r176.py
       - name: Test R16 standalone offline Studio in real Chromium and mobile layout
