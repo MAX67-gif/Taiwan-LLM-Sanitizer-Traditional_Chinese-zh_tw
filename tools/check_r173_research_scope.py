@@ -150,9 +150,7 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
-    if set(R190_STATES).issubset(set(paths)):
-        if len(paths) != len(R190_STATES):
-            return False,'R190_EXTRA_PATH_NOT_DOCS_ONLY'
+    if set(paths) == set(R190_STATES):
         if not all(R190_STATES[p]==state for state,p in changes):
             return False,'R190_STATUS_MISMATCH'
         return True,'R190_PINNED_LINKS_DOCS_ONLY'

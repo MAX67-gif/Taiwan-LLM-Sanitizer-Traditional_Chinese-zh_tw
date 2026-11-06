@@ -236,8 +236,12 @@ class R190ExactLatestLinksTests(unittest.TestCase):
    for other in ('A','D','R100'):
     self.assertFalse(C.classify(tx[:i]+[(other,path)]+tx[i+1:])[0])
   for x in ('src/core/wording_assistant_r172.js',
-            '.github/workflows/ci.yml','research/comparison/r173/methodology.json'):
+            '.github/workflows/ci.yml'):
    self.assertFalse(C.classify(tx+[('M',x)])[0])
+  # Preserve the pre-existing R17.3 research route; it is not a new R190 exemption.
+  self.assertEqual(
+   C.classify(tx+[('M','research/comparison/r173/methodology.json')])[1],
+   'R173_RESEARCH_ONLY')
 
  def test_expected_links_preserve_historical_r177_release(self):
   for path in C.R190_READMES:
