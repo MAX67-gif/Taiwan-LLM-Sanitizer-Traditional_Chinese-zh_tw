@@ -5,6 +5,7 @@ installer, HTML app, generalized tooling, unknown, deleted, or renamed files.
 """
 from __future__ import annotations
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -88,6 +89,8 @@ R190_STATES = {**{p:'M' for p in R190_READMES},
                'tests/test_r173_research_scope.py':'M'}
 R190_OLD_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0'
 R190_NEW_LINK = 'https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest'
+R190_OLD_MASTER_SHA = '256908192f52399e43b06394db894f6d53fd8ca6f4348c9c1d9c98003c12c393'
+R190_NEW_MASTER_SHA = 'dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583'
 R190_CURRENT = {
  'README.md': (
   ('完整下載請選 Suite 17.3.0。','完整下載請以 GitHub 最新正式 Release 為準。'),
@@ -110,6 +113,12 @@ def r190_apply_exact(source, path):
         result = result.replace(old,new,1)
     if result.count(R190_OLD_LINK) != 1:
         raise ValueError('R190_HISTORICAL_LINK_MISSING')
+    if path != 'README.md':
+        old_marker = '<!-- SOURCE_README_SHA256:' + R190_OLD_MASTER_SHA + ' -->'
+        new_marker = '<!-- SOURCE_README_SHA256:' + R190_NEW_MASTER_SHA + ' -->'
+        if result.count(old_marker) != 1:
+            raise ValueError('R190_TRANSLATION_MASTER_SHA_MISMATCH')
+        result = result.replace(old_marker, new_marker, 1)
     return result
 
 def r190_verify_exact(base,head):
@@ -122,6 +131,8 @@ def r190_verify_exact(base,head):
         after=subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
         if r190_apply_exact(before,path) != after:
             raise ValueError('R190_UNEXPECTED_DOCUMENT_CONTENT:'+path)
+        if path == 'README.md' and hashlib.sha256(after.encode('utf-8')).hexdigest() != R190_NEW_MASTER_SHA:
+            raise ValueError('R190_NEW_MASTER_SHA_MISMATCH')
     return True
 
 

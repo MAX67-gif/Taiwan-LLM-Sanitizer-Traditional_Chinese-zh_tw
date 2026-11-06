@@ -243,11 +243,15 @@ class R190ExactLatestLinksTests(unittest.TestCase):
   for path in C.R190_READMES:
    oldlink=C.R190_OLD_LINK
    fixture='First CTA: '+oldlink+'\nHistorical MRFT: '+oldlink+'\n'
+   if path!='README.md':
+    fixture+='<!-- SOURCE_README_SHA256:'+C.R190_OLD_MASTER_SHA+' -->\n'
    for old,_ in C.R190_CURRENT[path]:
     fixture+=old+'\n'
    result=C.r190_apply_exact(fixture,path)
    self.assertEqual(result.count(oldlink),1)
    self.assertEqual(result.count(C.R190_NEW_LINK),1)
+   if path!='README.md':
+    self.assertIn('<!-- SOURCE_README_SHA256:'+C.R190_NEW_MASTER_SHA+' -->',result)
    for old,new in C.R190_CURRENT[path]:
     self.assertNotIn(old,result)
     self.assertIn(new,result)
@@ -260,11 +264,14 @@ class R190ExactLatestLinksTests(unittest.TestCase):
    self.assertEqual(content.count(C.R190_OLD_LINK),1,path)
    self.assertGreaterEqual(content.count(C.R190_NEW_LINK),2,path)
    self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_2.zip',content)
+   if path!='README.md':
+    self.assertIn('<!-- SOURCE_README_SHA256:'+C.R190_NEW_MASTER_SHA+' -->',content)
    for stale,_ in C.R190_CURRENT[path]:
     self.assertNotIn(stale,content)
 
  def test_exemption_is_bound_to_one_immutable_main_baseline(self):
   self.assertEqual(C.R190_PINNED_BASE,'d49eb0d62e60316a502a793e0d61779e77de2b2c')
+  self.assertEqual(C.hashlib.sha256((ROOT/'README.md').read_bytes()).hexdigest(),C.R190_NEW_MASTER_SHA)
   with self.assertRaisesRegex(ValueError,'R190_WRONG_BASE'):
    C.r190_verify_exact('0'*40,'f'*40)
   self.assertFalse(C.classify([('M','README.md')])[0])
