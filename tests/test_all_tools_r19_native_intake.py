@@ -202,6 +202,33 @@ class NativeIntakeTests(unittest.TestCase):
         self.rejected(blob, c, 'ZIP_MEMBER_COUNT')
 
 
+
+    def test_runner_duplicate_path_does_not_hide_wrong_digest(self):
+        entries = [(HTML_NAME, HTML), (RUNNER_NAME, RUNNER),
+                   ('ALTERNATE/' + I.RUNNER_SUFFIX, b'wrong runner content')]
+        blob, c = fixture(entries)
+        self.rejected(blob, c, 'RUNNER_AMBIGUOUS')
+
+    def test_runner_must_share_the_html_source_root(self):
+        entries = [(HTML_NAME, HTML), ('OTHER/' + I.RUNNER_SUFFIX, RUNNER)]
+        blob, c = fixture(entries)
+        self.rejected(blob, c, 'RUNNER_PATH_MISMATCH')
+
+    def test_windows_superscript_device_names_are_unsafe(self):
+        for name in ('COM¹.txt', 'COM²', 'COM³.md',
+                     'LPT¹', 'folder/LPT².log', 'folder/lpt³.txt'):
+            with self.subTest(name=name):
+                blob, c = fixture(outer_extra=[(name, b'x')])
+                self.rejected(blob, c, 'ZIP_UNSAFE_NAME')
+
+    def test_unicode_direction_control_zip_names_are_unsafe(self):
+        for name in ('safe\u202ereadme.txt', 'safe\u2066name.txt',
+                     'safe\u200efile.txt'):
+            with self.subTest(name=name):
+                blob, c = fixture(outer_extra=[(name, b'x')])
+                self.rejected(blob, c, 'ZIP_UNSAFE_NAME')
+
+
 def tearDownModule():
     # This is a real source-presence observation in the CI checkout, not a
     # synthetic native run. Missing archived bytes MUST remain BLOCKED.
