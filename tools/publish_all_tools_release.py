@@ -21,8 +21,8 @@ import check_all_tools_release as C
 
 REPOSITORY = 'MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw'
 API_BASE = 'repos/' + REPOSITORY
-RELEASE_TAG = 'all-tools-suite-v17.3.2'
-SUITE_VERSION = '17.3.2'
+RELEASE_TAG = 'all-tools-suite-v17.4.0'
+SUITE_VERSION = '17.4.0'
 COMMIT_SHA = re.compile(r'^[0-9a-f]{40}$')
 
 
@@ -138,11 +138,11 @@ class GitHubCLI:
         arguments = ['release', 'create', RELEASE_TAG,
                      *(str(p) for p in sorted(stage.iterdir())),
                      '--repo', REPOSITORY, '--draft', '--target', expected_sha,
-                     '--title', 'Taiwan-LLM-Sanitizer All Tools Suite v17.3.2',
-                     '--notes', '28 registered tools, 23 standalone tool assets, one complete suite ZIP, '
-                     'and four integrity attachments (28 Release assets). Original version-locked browser tools, 14 offline '
+                     '--title', 'Taiwan-LLM-Sanitizer All Tools Suite v17.4.0',
+                     '--notes', '29 registered tools, 24 standalone tool assets, one complete suite ZIP, '
+                     'and four integrity attachments (29 Release assets). Original version-locked browser tools, 15 offline '
                      'workbenches, R6 public quality kit and runnable CLI/Skill sources with six-language '
-                     'documentation. New R17.7 MRFT Chrome MV3 DOM Preview v0.1.0 uses explicit public/non-sensitive-content consent, manual pasted translation or optional browser-local Translator API with honest unavailable states. No quality certification. Manual opt-in only; no cloud translation, retired third-party '
+                     'documentation. R19 R2 adds a source-locked local context review engineering preview over the unchanged R17.2 core; all prior 28 tool records and bytes are preserved. R17.7 MRFT Chrome MV3 DOM Preview v0.1.0 retains explicit public/non-sensitive-content consent, manual pasted translation or optional browser-local Translator API with honest unavailable states. No quality certification. Manual opt-in only; no cloud translation, retired third-party '
                      'game-specific assets or human translation-quality certification.']
         result = self.run(arguments)
         require(result.returncode == 0, 'GITHUB_DRAFT_CREATE_OR_UPLOAD_FAILED')

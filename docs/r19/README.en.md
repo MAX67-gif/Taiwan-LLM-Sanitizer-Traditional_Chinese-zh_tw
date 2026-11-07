@@ -1,19 +1,19 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
 # R19 | Read the context, decide each Taiwanese wording choice
 
-R19 is a standalone local engineering preview using the unchanged R17.2 wording engine. It improves occurrence-level context, file intake and difference review. It is not a new full-document translation model or an official new All-Tools Suite release.
+R19 is a standalone local engineering preview using the unchanged R17.2 wording engine. It improves occurrence-level context, file intake and difference review. The Suite 17.4.0 integration candidate adds it to the complete tool suite while R19 retains its `PREVIEW` status. Final suite CI, Draft asset downloads and post-publication download verification must all finish before the release can be recorded as successful.
 
-[繁體中文](README.md) · [Testing and evidence limits](TESTING.md) · [Release gates](RELEASE_GATE.md)
+[繁體中文](README.md) · [Testing and evidence limits](TESTING.md) · [Release gates](RELEASE_GATE.md) · [Suite 17.4.0 integration contract](SUITE_17_4_0_RELEASE.md)
 
 ## Start
 
-Download `TW_First_Result_Studio_R19_20261101.html` and open it in a local browser. In the complete source package it is under `examples/`. A GitHub HTML source view does not run the application.
+Download `TW_First_Result_Studio_R19_20261101.html` and open it in a local browser. When using a complete suite that includes R19, extract the archive first, then use `START_HERE.html` to open `TOOLS/html/TW_First_Result_Studio_R19_20261101.html`. In the complete source package it is under `examples/TW_First_Result_Studio_R19_20261101.html`. A GitHub HTML source view does not run the application.
 
 Choose the original demo or import an authorized UTF-8 `.md`, `.markdown` or `.txt` file. Importing first stages the file; select “使用這份檔案” to replace the text in the editor. Read each occurrence's nearby text, choose a replacement or explicitly keep the original, generate a preview, check the full document and download a new `.md`. The original disk file is not overwritten. Both demo buttons request confirmation when work is already present; cancellation preserves that work.
 
 ## Context and optional document preferences
 
-A UI `menu` and a food `menu` in the same document can independently become 選單 and 菜單. The tool displays context to support your judgment; it does not infer which meaning is correct. It shows the logical line and Unicode character column, with up to 72 characters of context on either side of the match on the same line. Engine offsets remain UTF-16. Ellipses indicate omitted text, and source text is rendered as text rather than executable HTML.
+A UI menu and a food menu in the same document can independently become 選單 and 菜單. The tool displays context to support your judgment; it does not infer which meaning is correct. It shows the 1-based logical line and Unicode character column, with up to 72 characters of context on either side of the match on the same line. Engine offsets remain UTF-16. Ellipses indicate omitted text, and source text is rendered as text rather than executable HTML.
 
 After confirming an existing option, you can remember its wording for that document and named context. Other occurrences of the same original form receive a reference hint. UI and food preferences can coexist. A hint never selects or applies a replacement, changes an explicit keep decision, expands the frozen lexicon, or proves that the surrounding context matches. Every occurrence still requires a decision.
 
@@ -39,4 +39,8 @@ The downloaded JSON contains counts and scope metadata, including detected, show
 
 The existing 67 entries and 9 overlay forms remain unchanged, and unreviewed aliases remain candidates. The frozen engine can reject fenced JSON and unclosed code blocks. R19 does not change those structure rules or provide PDF, OCR, a full AST, complete automatic translation, native-speaker certification, adoption evidence or privacy guarantees for other AI platforms.
 
-Native-browser acceptance code is supplied, but a real execution receipt is required before claiming that gate passed. Consult the testing and release documents.
+## Recorded native evidence and remaining work
+
+On 2026-11-07, [GitHub Actions run 42377187266](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/actions/runs/42377187266) executed the original candidate with the unchanged runner in headless Chromium using an actual local file URL. All ten scenarios passed, establishing `NATIVE_10_SCENARIOS_VERIFIED_WITH_SCOPE` for that run. The exact source, tested merge commit, browser version and original artifacts are listed in the [native acceptance record](NATIVE_ACCEPTANCE_R2.md).
+
+The runner performed actual downloads and compared the output bytes, but the Actions artifact did not retain the individual downloaded files. The operating-system file chooser and its cancellation flow were not tested. Human operation testing, naturalness, completion rates and adoption remain deferred. The final Suite 17.4.0 candidate must separately pass final PR, main and complete publication verification; this earlier candidate result does not establish that publication succeeded.

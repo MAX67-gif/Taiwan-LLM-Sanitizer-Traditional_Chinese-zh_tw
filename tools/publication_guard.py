@@ -22,6 +22,7 @@ ROOT_PUBLIC={
 DOCS_PUBLIC={
     "docs/r19/README.md", "docs/r19/README.en.md", "docs/r19/TESTING.md",
     "docs/r19/RELEASE_GATE.md", "docs/r19/NATIVE_ACCEPTANCE_R2.md",
+    "docs/r19/SUITE_17_4_0_RELEASE.md",
     "docs/TCR20_SUITE1732_INTEGRATION.md",
     "docs/BRAND_R3_SUITE_1731_RELEASE_PLAN.md",
     "docs/showcase/source.md", "docs/showcase/preview.md",

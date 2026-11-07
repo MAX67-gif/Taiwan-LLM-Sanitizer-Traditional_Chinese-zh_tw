@@ -1,42 +1,31 @@
-# 三步完成第一份臺灣繁中 Markdown｜TLS R17.2 正式版入門
+# 三步完成第一份臺灣繁中 Markdown｜R19 離線入門
 
-> 初版核對：2026-10-28；下載位置重新核對：2026-10-31。R17.4 是**入門文件**更新，不是新的翻譯引擎，也不是新的 Release。原有 R17.2 工具不變。此說明的翻譯語意尚待真人審閱。
+> 2026-11-07 更新為 Suite 17.4.0 的 R19 入口。原 R17.2 工具與歷史 Suite 17.3.2 保留；本頁檔名 R174 是原入門指南的識別碼。R19 仍是工程預覽，真人語言品質尚未驗證。
 
-## 先確認要完成什麼
+## 第一步：取得可操作檔案
 
-貼入自己有權處理的中文 Markdown → 查看有限的臺灣用語候選 → **每一處**決定採用或保留 → 產生受保護片段驗證過的差異預覽 → 另存新的 Markdown。不是全面簡繁轉換、全文 AI 翻譯或專業母語品質認證。
+從 **[最新正式 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)** 的 Assets 下載 `TLS_ALL_TOOLS_SUITE_17_4_0.zip`，或單獨下載 `TW_First_Result_Studio_R19_20261101.html`。請先確認該頁已實際發布這些附件；較舊的 Release 不含 R19。原 `TW_Wording_Assistant_R172_20261027.html` 仍可獨立使用。
 
-## 第一步：從正式下載頁取得可操作檔案
+Suite 17.1／17.2 的舊整合與開發者 ZIP 已撤回。歷史 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 僅作版本查核；現行完整下載依最新正式頁面。GitHub 的 HTML 原始碼頁不是線上工具，需下載後用本機瀏覽器開啟。
 
-**[點選最新正式 Release（GitHub 官方資產頁）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。
+## 第二步：開啟 R19 並載入原創內容
 
-在該頁 **Assets** 找到 **`TLS_ALL_TOOLS_SUITE_17_3_2.zip`**（目前可完整取得的 Suite 17.3.0；日後新版以 GitHub 實際附件名稱為準）。也可以只下載獨立 **`TW_Wording_Assistant_R172_20261027.html`**。
+1. 解壓完整 ZIP，以本機瀏覽器開啟 `START_HERE.html`，選「開啟 R19 首份成果工作台」。獨立 HTML 也可直接開啟。
+2. 使用頁面快速導覽的原創範例，或載入／貼入自己有權處理的 Markdown。[原創練習稿](R174_ORIGINAL_FIRST_TASK.md)含軟體、餐飲、程式碼與網址情境。
+3. 檢查載入內容。取消或錯誤編碼匯入會保留既有成果；成功載入新內容後需重新檢視決策。工具不會自動連接 AI 服務。
 
-**舊版下載說明：**Suite 17.1／17.2 的舊完整套件及開發者 ZIP 已撤回，其歷史清單可能仍列有撤回附件。使用 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 才能取得現行完整包；R17.2 修稿工具本身未改版。
+## 第三步：逐處決定，檢查差異並另存
 
-請注意：GitHub 中 `examples/*.html` 是原始檔檢視頁，**不是**已託管的線上工具；不要以為在 GitHub 上看到 HTML 就已開始操作。Release 的 `.html` 需先下載，再由本機瀏覽器開啟。
+查看有限的用語候選與前後文；語境偏好只影響提示，不會替你批次批准。每一處選擇採用或保留：例如軟體 menu 可用「選單」，餐飲 menu 可用「菜單」。不確定時保留原文。
 
-## 第二步：開啟離線修稿工作台
+完成決策後產生安全預覽，核對差異與受保護的程式碼、網址、HTML 註解和模板變數，再下載新稿。原檔不由工具覆寫。處理上限為 64 KiB、最多顯示 120 筆候選；若偵測到更多候選，全部顯示項目已處理仍屬部分審閱，不能宣稱全文完成。預覽處理中或結果過期時需等待新結果，不使用舊下載。
 
-1. 將 ZIP 解壓到自己的電腦，**用瀏覽器開啟壓縮包內的 `START_HERE.html`**。不要只在 ZIP 預覽視窗閱讀它。
-2. 在首頁選「開啟 R17.2 離線修稿助手」；或直接從正式 Release 下載該 `.html`，再用瀏覽器開啟。
-3. 選「載入原創範例」，或者將 [此份自製 Markdown 練習稿](R174_ORIGINAL_FIRST_TASK.md) 貼入工作台。資料由本機瀏覽器處理，工作台本身不主動呼叫 AI 雲端服務。
+沒有候選不表示原文無錯，結構檢查通過不表示語意正確。工具是 Markdown 的保守人工審閱流程，不能當成 JSON／PDF／整篇自動翻譯器。
 
-## 第三步：逐項確認並匯出
+## AI 協作與回饋
 
-1. 選「尋找臺灣用語建議」，查看候選出現的位置與理由。
-2. 每筆手動選擇建議或「保留原文」。同樣是 `menu`，餐飲可能是「菜單」，軟體可能是「選單」；不確定要保留。
-3. 點選「產生安全差異預覽」，檢查程式碼、網址、HTML 註解、模板變數仍保留。若被標記 `LIMITED` 或拒絕，**不要**自行視為成功。
-4. 檢視語意後才選「下載新稿」，原檔不會由工具直接覆寫。
+需要產稿時可參考 [Codex／Claude／Grok 手冊](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)，交回本機 TLS 後仍須人工確認。雲端 AI 的內容傳送由使用者在該平台決定。
 
-**常見誤會：**看不到候選 ≠ 原文無錯；技術結構檢查 PASS ≠ 譯文自然度 PASS。此工具只支援 Markdown 保守掃描的可編輯區段；單稿 64 KiB、候選最多 120 項，不能當成 JSON／Prompt／PDF 的通用翻譯器。
+目前尚未取得 E1／E2／E3／D7 真人操作與採用量測。沒有隱藏追蹤或自動上傳原稿；真人試用依使用者要求延後。請勿將私人文件或完整聊天紀錄放到公開 Issue。
 
-## 想和 AI 協作？
-
-先在 [Codex／Claude／Grok 搭配手冊](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)取得原創或自己有權使用的草稿，再由本機 TLS 驗證與人工選詞。一般網頁 AI 不會自動讀本機 Skill；在 AI 雲端輸入內容前先檢查隱私與授權。
-
-## 自願回饋／真人採用研究
-
-目前尚未取得 E1／E2／E3／D7 的真人測量結果。本專案不內建隱藏追蹤、回傳稿件或蒐集個資。未來研究必須取得明確同意；不得上傳私人文章、個人識別資訊或整份聊天紀錄到公開 Issue。
-
-[返回首頁](../README.md) · [AI 操作手冊](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) · [正式 Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)
+[返回首頁](../README.md) · [R19 功能與限制](r19/README.md) · [正式下載](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)

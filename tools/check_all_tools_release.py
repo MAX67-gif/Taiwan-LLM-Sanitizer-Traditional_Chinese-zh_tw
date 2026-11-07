@@ -71,7 +71,7 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     tools=B.validate_registry(expected_registry,fixture=fixture_ok)
     expected_names={t['artifact_filename'] for t in tools if t['standalone_required']}
     expected_names.add(B.DEVELOPER_BUNDLE)
-    expect(len(expected_names)==23,'EXPECTED_STANDALONE_COUNT')
+    expect(len(expected_names)==24,'EXPECTED_STANDALONE_COUNT')
     expected_names |= REQ_NAMES
     actual_names={p.name for p in stage.iterdir()}
     expect(actual_names==expected_names,'INCOMPLETE_OR_EXTRA_ASSETS missing='+str(sorted(expected_names-actual_names))+' extra='+str(sorted(actual_names-expected_names)))
@@ -81,8 +81,8 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
     prov=readjson(assets['BUILD_PROVENANCE.json'],'provenance')
     valid=readjson(assets['VALIDATION.json'],'validation')
     expect(m.get('schema')=='tls.all-tools-release-manifest.v1','MANIFEST_SCHEMA')
-    expect(m.get('tool_count') == 28 and m.get('asset_count_standalone') == 23, 'CURRENT_INVENTORY_COUNTS')
-    expect(all(valid.get(k) == v for k,v in {'tool_count_expected':28, 'tool_count_present':28, 'tool_count_updated':0, 'tool_count_reused_from_origins':28, 'tool_count_unchanged_from_previous_suite':28, 'standalone_asset_count':23}.items()), 'CURRENT_VALIDATION_COUNTS')
+    expect(m.get('tool_count') == 29 and m.get('asset_count_standalone') == 24, 'CURRENT_INVENTORY_COUNTS')
+    expect(all(valid.get(k) == v for k,v in {'tool_count_expected':29, 'tool_count_present':29, 'tool_count_added':1, 'tool_count_updated':0, 'tool_count_reused_from_origins':29, 'tool_count_unchanged_from_previous_suite':28, 'standalone_asset_count':24}.items()), 'CURRENT_VALIDATION_COUNTS')
     expect(prov.get('schema') == 'tls.all-tools-provenance.v1' and valid.get('schema') == 'tls.all-tools-validation.v1', 'PROVENANCE_VALIDATION_SCHEMA')
     expect(m.get('release_tag')==expected_registry['release_tag'] and valid.get('release_tag')==m.get('release_tag'),'RELEASE_TAG_MISMATCH')
     expect(m.get('suite_version')==expected_registry['suite_version'] and prov.get('suite_version')==m.get('suite_version'),'SUITE_VERSION_MISMATCH')
@@ -124,7 +124,7 @@ def verify_stage(stage: Path, registry:Path=B.REGISTRY, fixture_ok=False, expect
         current={x['tool_id'] for x in m['tools']}
         prior={x['tool_id'] for x in old['tools'] if x.get('status') not in ('EXCLUDED_RIGHTS_WITHDRAWN','PRIVATE_ONLY','BLOCKED_SECURITY')}
         expect(not prior-current,'TOOL_ID_REMOVAL_NOT_AUTHORIZED:'+','.join(sorted(prior-current)))
-    expect(len(m.get('artifacts',[]))==23,'ARTIFACT_MANIFEST_COUNT')
+    expect(len(m.get('artifacts',[]))==24,'ARTIFACT_MANIFEST_COUNT')
     artifacts={x['name']:x for x in m['artifacts']}
     expect(set(artifacts)==expected_names-REQ_NAMES,'ARTIFACT_NAME_LIST')
     for name,entry in artifacts.items():
@@ -231,6 +231,22 @@ def require_unconditional_single_command(job, command):
            and lines[1]=='        run: '+command, 'R176_GATE_MUST_BE_UNCONDITIONAL:'+command)
 
 
+def require_reviewed_r19_step(job, name, expected_lines):
+    """Require the exact executable R19 step, including its reviewed environment.
+
+    The native run needs a Node driver and output path, and the source gate is
+    multiline. Validate those complete closed-schema shapes instead of accepting
+    command text hidden inside a conditional, echo, comment or soft-fail step.
+    """
+    header = '      - name: ' + name
+    steps = re.split(r'(?=^      - )', job, flags=re.M)[1:]
+    matches = [[line for line in step.splitlines() if line.strip()]
+               for step in steps if step.splitlines()[0] == header]
+    expect(len(matches) == 1, 'R19_EXECUTABLE_GATE_MISSING:' + name)
+    expect(matches[0] == [header, *expected_lines], 'R19_GATE_MUST_BE_UNCONDITIONAL:' + name)
+    return job.index(header)
+
+
 def verify_workflow(workflow_text=None):
     """Validate this repository's deliberately restricted workflow layout.
 
@@ -327,6 +343,36 @@ def verify_workflow(workflow_text=None):
     require_unconditional_single_command(jobs['browser-integration'], 'xvfb-run -a python tests/mrft_extension_r177.browser.py')
     for browser_command in ('python tests/mrft_r177.browser.py', 'xvfb-run -a python tests/mrft_extension_r177.browser.py'):
         expect(jobs['browser-integration'].index('run: python tools/build_mrft_r177.py\n') < jobs['browser-integration'].index('run: ' + browser_command), 'MRFT_BUILD_BEFORE_BROWSER_TESTS')
+    # R19 is a released Suite member. Its unchanged original native runner and
+    # independent receipt validation must execute for PRs and main, not only a
+    # named research branch. These are steps inside the existing required jobs.
+    r19_source_lines = [
+        '          node tools/build_first_result_studio_r19.js --check',
+        '          echo "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a  examples/TW_First_Result_Studio_R19_20261101.html" | sha256sum -c -',
+        '          echo "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8  tests/browser_first_result_studio_r19.cjs" | sha256sum -c -',
+    ]
+    require_reviewed_r19_step(verify,
+        'Verify exact R19 R2 public source and complete Node regression (automated, no human tests)',
+        ['        run: |', *r19_source_lines,
+         '          python tests/validate_r19_native_receipt_r2.py --self-test',
+         '          node --test tests/*.js'])
+    browser = jobs['browser-integration']
+    r19_driver = require_reviewed_r19_step(browser,
+        'Prepare pinned Node Playwright 1.55 for R19 original synthetic native gate',
+        ['        run: npm install --prefix "$RUNNER_TEMP/tls-r19-node" --no-audit --no-fund --ignore-scripts --no-save playwright@1.55.0'])
+    r19_source = require_reviewed_r19_step(browser,
+        'Verify original R19 HTML and runner bytes immediately before native test',
+        ['        run: |', *r19_source_lines])
+    r19_run = require_reviewed_r19_step(browser,
+        'Execute unchanged original R19 10 native file URL scenarios',
+        ['        env:',
+         '          NODE_PATH: ${{ runner.temp }}/tls-r19-node/node_modules',
+         '          TLS_R19_BROWSER_OUTPUT: ${{ runner.temp }}/r19-original-native',
+         '        run: node tests/browser_first_result_studio_r19.cjs --run'])
+    r19_receipt = require_reviewed_r19_step(browser,
+        'Validate R19 original native result and saved screenshot/download evidence',
+        ['        run: python tests/validate_r19_native_receipt_r2.py --root . --output "$RUNNER_TEMP/r19-original-native" --node-playwright-package "$RUNNER_TEMP/tls-r19-node/node_modules/playwright/package.json" --receipt "$RUNNER_TEMP/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json"'])
+    expect(r19_driver < r19_source < r19_run < r19_receipt, 'R19_NATIVE_GATE_ORDER')
     require_unconditional_single_command(block, 'python tools/build_mrft_r177.py')
     require_unconditional_single_command(block, 'python tools/build_mrft_r177.py --check')
     expect(block.index('run: python tools/build_mrft_r177.py\n') < block.index('python tools/build_all_tools_release.py'), 'MRFT_BUILD_BEFORE_PUBLISHER_STAGE')

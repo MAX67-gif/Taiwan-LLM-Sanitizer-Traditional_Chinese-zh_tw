@@ -21,13 +21,15 @@
 展示使用既有 R17.2，不是新翻譯引擎。有限候選仍需人工確認；60 秒是導覽設計長度，不是實測完成時間。
 <!-- R176_SHOWCASE_END -->
 
-### 第一次使用：只要 3 步，先完成一份 Markdown
+<!-- R19_FIRST_USE_BEGIN -->
+### 第一次使用：以 R19 完成一份 Markdown
 
-**[① 前往正式最新版下載頁（GitHub Release）](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 下載完整 `TLS_ALL_TOOLS_SUITE_17_3_2.zip`（目前已確認版號；新版本請依頁面實際檔名），或選獨立的 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往最新正式下載頁](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 Assets 取得完整 `TLS_ALL_TOOLS_SUITE_17_4_0.zip`，或單獨下載 `TW_First_Result_Studio_R19_20261101.html`；請以頁面實際發布的附件為準。
 
-**② 解壓 ZIP，使用本機瀏覽器開啟 `START_HERE.html`** → 選「R17.2 離線修稿助手」。**③ 載入原創示例或自己的 Markdown → 逐項採用／保留 → 產生安全預覽 → 下載新稿。**
+**② 解壓並用本機瀏覽器開啟 `START_HERE.html` → 選「R19 首份成果工作台」。③ 載入原創範例或自己的 Markdown → 逐處採用／保留 → 檢查差異 → 下載新稿。** 語境偏好只提供提示，每一處仍由你決定。
 
-[三步圖文式操作說明](docs/QUICK_START_R174.md) · [原創 Markdown 練習稿](docs/R174_ORIGINAL_FIRST_TASK.md) · [Codex／Claude／Grok 使用教學](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。**GitHub 裡的 `.html` 原始碼檢視頁不是已託管的線上工具，需下載正式 HTML 後在自己瀏覽器開啟。** 只提供有限用語候選與結構保護，仍須人工確認原意；不是完整翻譯或母語審稿認證。
+[三步操作說明](docs/QUICK_START_R174.md) · [原創練習稿](docs/R174_ORIGINAL_FIRST_TASK.md) · [R19 使用與限制](docs/r19/README.md)。Suite 17.4.0 含 **29 工具／24 個獨立工具資產**，保留原 28 工具。R19 是離線工程預覽，真人操作與語言品質尚未驗證；GitHub 的 HTML 原始碼頁需先下載，才能在本機使用。
+<!-- R19_FIRST_USE_END -->
 
 
 > **本專案的工作是提供使用者可控的臺灣中文用語、翻譯顯示與技術內容保真工具，不是語言審查器，也不宣稱是任何第三方服務的官方產品。** 原創開源核心採 [MIT](LICENSE)；Founder／Steward：CA L.。
@@ -116,6 +118,6 @@
 
 **R17.3 公平比較研究（非新版翻譯器）：**我們新增 [相同可編輯區段的安全比較、OpenCC／AI 離線匯入與自願使用紀錄規格](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前沒有 OpenCC、LLM 或真人品質比較勝利結果**；這是研究工具，未變動 R17.2 修稿引擎；現行完整下載請以 GitHub 最新正式 Release 為準。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 發布完整性檢查會直接核對原始工具的鎖定 SHA256、實際下載內容與 Git 提交。草稿與公開後各下載一次；同一標籤若已發布，只能驗證相同內容，不會覆寫。六語說明仍待真人審閱（HUMAN_TRANSLATION_REVIEW_PENDING）。

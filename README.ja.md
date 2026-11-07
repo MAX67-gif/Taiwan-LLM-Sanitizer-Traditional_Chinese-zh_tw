@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583 -->
+<!-- SOURCE_README_SHA256:ddaeab0c6f5c8edb959806dc517e51d3734d1aa57bf8728d264ca0d5a0b360b4 -->
 
 # Taiwan-LLM-Sanitizer — 安全性を重視した台湾繁体字中国語ローカライズ
 
@@ -24,13 +24,15 @@
 既存の R17.2 を使う例です。候補には限りがあり、人による確認が必要です。60 秒はガイドの設計上の長さで、実測作業時間ではありません。
 <!-- R176_SHOWCASE_END -->
 
-### 初回利用：3 ステップで Markdown の修正を確認
+<!-- R19_FIRST_USE_BEGIN -->
+### 初回利用：R19 で Markdown を確認
 
-**[① GitHub の最新正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_3_2.zip`（現在の確認済み版。今後はリリース内の実際の名前を確認）、または `TW_Wording_Assistant_R172_20261027.html` をダウンロードします。
+**[① 最新の正式リリースへ](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**。Assets から `TLS_ALL_TOOLS_SUITE_17_4_0.zip` または `TW_First_Result_Studio_R19_20261101.html` を取得します。実際に公開された添付ファイル名を確認してください。
 
-**② ZIP を展開し、`START_HERE.html` をローカルブラウザーで開く。** **③ R17.2 でオリジナル例または権利のある Markdown を入力し、候補を一つずつ確認・保留して差分をプレビュー、別ファイルとして保存。**
+**② ZIP を展開し、ローカルで `START_HERE.html` を開いて R19 First Result Studio を選択。③ オリジナル例または自分の Markdown を読み込み、箇所ごとに採用・保留し、差分を確認して別ファイルに保存。** 文脈設定はヒントのみで、各編集は自分で決めます。
 
-[英語の詳しい手順](docs/QUICK_START_R174.en.md) · [オリジナル練習文](docs/R174_ORIGINAL_FIRST_TASK.md) · [AI との併用](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。GitHub 上の `.html` ソース表示はホストされた Web アプリではありません。翻訳の自然さや意味の正確さを保証せず、人による言語レビューは未完了です。
+[3 ステップガイド](docs/QUICK_START_R174.en.md) · [練習文](docs/R174_ORIGINAL_FIRST_TASK.md) · [R19 の制限](docs/r19/README.en.md)。Suite 17.4.0 は **29 ツール／24 個の独立ツール資産**を含み、従来の 28 ツールを保持します。R19 はオフラインの技術プレビューで、人による操作性・言語品質は未検証です。GitHub の HTML ソースはダウンロードしてローカルで開きます。
+<!-- R19_FIRST_USE_END -->
 
 
 ユーザー自身が選べる台湾の用語、原文と訳文の対照表示、技術文書の構造保護を目的とするオープンソースツールです。第三者の公式製品ではありません。 **MIT** · Founder / Steward: CA L.
@@ -111,6 +113,6 @@ R15 の[オフライン構造保護ツール](examples/TW_Structured_Integrity_L
 
 **R17.3 は研究段階：** [同じ編集可能範囲での公平な比較と任意参加の調査](docs/R173_COMPARISON_AND_ADOPTION.en.md)を参照してください。**OpenCC／LLM に対する優位性や人間の翻訳品質評価は未検証です。** R17.2 の修正ツール自体は変更していません。旧 17.1/17.2 の統合 ZIP は公開配布範囲の見直しにより撤回されました。現在の完全版は GitHub の最新正式リリースから入手してください。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 リリース検証では、実際のツールとダウンロードしたファイルを、固定された元の SHA256 と Git コミットに照合します。Draft と公開後にそれぞれダウンロードし、既存タグは上書きせず検証します。6 言語の説明は引き続き人によるレビュー待ちです（HUMAN_TRANSLATION_REVIEW_PENDING）。

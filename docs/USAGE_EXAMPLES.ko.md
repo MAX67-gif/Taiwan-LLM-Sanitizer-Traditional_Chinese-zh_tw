@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:e325e7b3b973eee471dc5abef0e948c7b631c8c8a4c907dbc73b2d2c19bc4383 -->
+<!-- SOURCE_EXAMPLES_SHA256:f66125170245b6757ec24c561547fc7e566b8ffd5e4e57b49827e64720c59775 -->
 
 # 대만 번체 중국어 현지화: 독창적인 사용 사례 9가지
 
@@ -65,7 +65,7 @@ DOM에 표시된 `Open settings`나 `Start` 같은 단순 문구는 사이트 �
 
 원본 사용 권한이 있는 중국어 Markdown을 AI로 작성하고 [R17.2 오프라인 도구](../examples/TW_Wording_Assistant_R172_20261027.html)에서 단어를 직접 검토한 뒤 새 파일로 내보냅니다. [AI 가이드(영어)](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Grok 네이티브 플러그인은 제공하지 않습니다.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 ## 전체 도구 다운로드
 
@@ -76,3 +76,8 @@ DOM에 표시된 `Open settings`나 `Start` 같은 단순 문구는 사이트 �
 
 기존 EX01–EX09는 유지됩니다. [MRFT 사용법과 자체 제작 연습](mrft/MRFT_DOM_PREVIEW.md)에서는 최대 8개 영역, 두 위치 모드, 수동 번역문 또는 명시적으로 활성화한 로컬 모델을 다룹니다. OCR이나 클라우드 전송은 없습니다. Suite 17.3.0에는 도구 28개／독립 도구 자산 23개／Release 첨부 파일 28개가 있으며 기존 27개 도구의 바이트는 유지됩니다. 모델 기능과 사람의 언어 품질 평가는 별도로 검증해야 합니다.
 <!-- R177_MRFT_EXAMPLE_END -->
+
+
+## R19｜항목별 결정과 비파괴 가져오기
+
+[R19 First Result Studio](../examples/TW_First_Result_Studio_R19_20261101.html)에서 원본 Markdown을 불러와 문맥 힌트를 확인하고 각 항목을 채택하거나 유지한 뒤 차이를 검토하여 새로 저장하세요. 가져오기를 취소하거나 잘못된 인코딩을 사용하면 기존 결과가 유지됩니다. 후보 목록이 일부만 표시될 때 표시 항목을 모두 검토해도 전체 문서 검토가 끝난 것은 아닙니다. 사람의 품질 평가는 아직 없습니다.

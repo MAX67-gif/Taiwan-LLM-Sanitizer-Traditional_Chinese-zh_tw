@@ -95,7 +95,7 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 使用者可讓 Codex、Claude 或 Grok 協助產生有權處理的中文 Markdown，再開啟 [R17.2 修稿助手](../examples/TW_Wording_Assistant_R172_20261027.html)，逐項確認「點選」「選單／菜單」等建議，透過 R16 核對後下載新稿；對照安全區塊與保留原文。完整 AI 使用教學：[臺灣繁中](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md) · [English](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。**這是可操作程序，不是原生 Grok 插件或自動翻譯品質認證。**
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 ## 完整工具下載
 
@@ -106,3 +106,8 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 原有 EX01–EX09 保留。新增 [MRFT 操作與原創多框練習](mrft/MRFT_DOM_PREVIEW.md)：最多 8 框、兩種位置模式、手動譯文或明確啟用本機模型；不含 OCR 或雲端傳輸。Suite 17.3.0 有 28 工具／23 獨立工具資產／28 Release 附件，原 27 工具位元組不變。模型與真人品質仍需分別驗證。
 <!-- R177_MRFT_EXAMPLE_END -->
+
+
+## R19｜逐處決策與非破壞匯入
+
+使用 [R19 首份成果工作台](../examples/TW_First_Result_Studio_R19_20261101.html) 載入原創 Markdown，依語境查看提示、逐處採用或保留，再檢查差異並另存。取消或錯誤編碼匯入會保留現有成果；只顯示部分候選時，不能把全部已顯示項目處理完視為全文審閱完成。這是有限工程預覽，真人品質仍未測量。

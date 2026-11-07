@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583 -->
+<!-- SOURCE_README_SHA256:ddaeab0c6f5c8edb959806dc517e51d3734d1aa57bf8728d264ca0d5a0b360b4 -->
 
 # Taiwan-LLM-Sanitizer｜更安全的台湾繁体中文本地化工具
 
@@ -24,13 +24,15 @@
 演示使用既有 R17.2，不是新翻译引擎。候选有限，仍需人工确认；60 秒指演示设计长度，不是实测完成时间。
 <!-- R176_SHOWCASE_END -->
 
-### 首次使用：3 步完成一份 Markdown
+<!-- R19_FIRST_USE_BEGIN -->
+### 首次使用：用 R19 完成一份 Markdown
 
-**[① 前往 GitHub 最新正式 Release 下载](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 **Assets** 选择 `TLS_ALL_TOOLS_SUITE_17_3_2.zip`（当前已核实的版本；新版本以实际文件名为准）或单独下载 `TW_Wording_Assistant_R172_20261027.html`。
+**[① 前往最新正式下载页](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**，在 Assets 下载完整 `TLS_ALL_TOOLS_SUITE_17_4_0.zip` 或独立 `TW_First_Result_Studio_R19_20261101.html`；以页面实际发布的附件为准。
 
-**② 解压后在本地浏览器打开 `START_HERE.html`**，再选择 R17.2 离线修稿助手。**③ 加载原创练习或粘贴有权处理的 Markdown，逐项选择采用/保留，检查安全预览并下载新稿。**
+**② 解压并在本地浏览器打开 `START_HERE.html`，选择 R19 首份成果工作台。③ 加载原创示例或自己的 Markdown，逐处采用／保留，检查差异并下载新稿。** 语境偏好只提供提示，每一处仍由用户决定。
 
-[详细繁体中文操作指南](docs/QUICK_START_R174.md) · [原创 Markdown 练习](docs/R174_ORIGINAL_FIRST_TASK.md) · [AI 协作教学](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。GitHub 的 `.html` 源码页面并非已部署的在线应用；需先下载到本地。工具并非完整翻译或母语质量认证，人工审阅仍待完成。
+[三步说明](docs/QUICK_START_R174.md) · [原创练习稿](docs/R174_ORIGINAL_FIRST_TASK.md) · [R19 使用与限制](docs/r19/README.md)。Suite 17.4.0 包含 **29 工具／24 个独立工具资产**，保留原 28 工具。R19 仍是离线工程预览，真人操作和语言质量未验证；GitHub HTML 源码页需要先下载再本地使用。
+<!-- R19_FIRST_USE_END -->
 
 
 > **产品定位：**提供面向台湾繁体中文（zh-TW）的用户自主选词、只读双语阅读和技术文档结构保护；不是文字审查工具，也不是任何第三方平台的官方产品。原创开源核心使用 [MIT 许可证](LICENSE)，Founder / Steward：CA L.。
@@ -111,6 +113,6 @@
 
 **R17.3 公平比较研究（不是新版翻译器）：**请阅读[相同可编辑区域的安全比较、OpenCC／AI 离线导入和自愿试用协议](docs/R173_COMPARISON_AND_ADOPTION.md)。**目前没有 OpenCC、LLM 或真人品质方面的胜出证据。**R17.2 修稿工具原版保持不变；历史 17.1/17.2 的完整整合 ZIP 已撤回，当前完整下载请以 GitHub 最新正式 Release 为准。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 发布完整性检查会直接核对原始工具的锁定 SHA256、实际下载内容与 Git 提交。草稿阶段和公开后分别下载一次；同一标签已发布时只验证相同内容，不覆盖。六种语言的说明仍等待人工审阅（HUMAN_TRANSLATION_REVIEW_PENDING）。

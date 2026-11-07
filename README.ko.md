@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583 -->
+<!-- SOURCE_README_SHA256:ddaeab0c6f5c8edb959806dc517e51d3734d1aa57bf8728d264ca0d5a0b360b4 -->
 
 # Taiwan-LLM-Sanitizer — 안전을 우선하는 대만 번체 중국어 현지화
 
@@ -24,13 +24,15 @@
 기존 R17.2를 사용한 예시입니다. 제안 범위는 제한적이며 사람의 검토가 필요합니다. 60초는 안내의 설계 길이이며 측정된 작업 시간이 아닙니다.
 <!-- R176_SHOWCASE_END -->
 
-### 처음 사용하기: Markdown 문서 하나를 3단계로 검토
+<!-- R19_FIRST_USE_BEGIN -->
+### 처음 사용: R19로 Markdown 한 문서 검토
 
-**[① 공식 GitHub 최신 Release 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_3_2.zip`(현재 확인된 버전, 이후에는 실제 파일명을 확인) 또는 `TW_Wording_Assistant_R172_20261027.html`을 다운로드합니다.
+**[① 최신 공식 릴리스 열기](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Assets에서 `TLS_ALL_TOOLS_SUITE_17_4_0.zip` 또는 `TW_First_Result_Studio_R19_20261101.html`을 받으세요. 실제 공개된 첨부 파일 이름을 확인하세요.
 
-**② ZIP 압축 해제 후 로컬 브라우저에서 `START_HERE.html` 열기.** **③ R17.2에서 자체 예제 또는 편집 권한이 있는 Markdown을 입력하고, 각 제안을 채택하거나 원문 유지한 다음 안전 미리보기를 확인하고 새 파일로 저장합니다.**
+**② 압축을 풀고 로컬 브라우저에서 `START_HERE.html`을 열어 R19 First Result Studio를 선택하세요. ③ 원본 예제나 자신의 Markdown을 불러와 각 항목을 채택 또는 유지하고, 차이를 확인한 뒤 새 파일로 저장하세요.** 문맥 설정은 힌트이며 편집은 매번 직접 결정합니다.
 
-[영어 상세 안내](docs/QUICK_START_R174.en.md) · [원본 연습 문서](docs/R174_ORIGINAL_FIRST_TASK.md) · [AI 연계 가이드](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). GitHub의 `.html` 소스 보기 화면은 호스팅된 웹 앱이 아닙니다. 의미나 번역 자연스러움의 인증이 아니며 사람의 언어 검토는 아직 완료되지 않았습니다.
+[3단계 안내](docs/QUICK_START_R174.en.md) · [연습 문서](docs/R174_ORIGINAL_FIRST_TASK.md) · [R19 안내와 제한](docs/r19/README.en.md). Suite 17.4.0은 기존 28개 도구를 유지하며 **29개 도구 / 독립 도구 자산 24개**를 포함합니다. R19는 오프라인 엔지니어링 미리보기이며 사람의 사용성 및 언어 품질은 검증되지 않았습니다. GitHub HTML 소스는 다운로드한 뒤 로컬에서 여세요.
+<!-- R19_FIRST_USE_END -->
 
 
 사용자가 대만 용어를 직접 선택하고 원문과 번역문을 비교하며 기술 문서의 구조를 보호할 수 있는 오픈소스 도구입니다. 제3자 서비스의 공식 제품이 아닙니다. **MIT** · Founder / Steward: CA L.
@@ -111,6 +113,6 @@
 
 **R17.3은 연구 전용:** [동일한 편집 가능 구간의 공정한 비교 및 자발적 사용 검증 계획](docs/R173_COMPARISON_AND_ADOPTION.en.md)을 참고하세요. **OpenCC·LLM 대비 우월성 또는 독립적인 사람의 언어 품질 검증 결과는 아직 없습니다.** R17.2 검토 도구 자체는 변경하지 않습니다. 이전 17.1/17.2 통합 ZIP은 공개 범위 검토 후 철회되었으므로 전체 패키지는 GitHub 최신 공식 릴리스에서 다운로드하세요.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 배포 검사는 실제 도구와 다운로드한 파일을 원본에 고정된 SHA256 및 Git 커밋과 대조합니다. Draft 단계와 공개 후 각각 다운로드하며, 기존 태그는 덮어쓰지 않고 검증합니다. 여섯 언어 안내는 아직 사람의 검토를 기다립니다(HUMAN_TRANSLATION_REVIEW_PENDING).

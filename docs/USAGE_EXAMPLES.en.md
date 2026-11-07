@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:e325e7b3b973eee471dc5abef0e948c7b631c8c8a4c907dbc73b2d2c19bc4383 -->
+<!-- SOURCE_EXAMPLES_SHA256:f66125170245b6757ec24c561547fc7e566b8ffd5e4e57b49827e64720c59775 -->
 
 # Nine original examples of Taiwanese Chinese localization (offline concepts)
 
@@ -65,7 +65,7 @@ Open the [R16 offline studio](../examples/TW_Localization_Safety_Studio_R16_2026
 
 Draft authorized Chinese Markdown with Codex, Claude or Grok; inspect it in the [R17.2 offline assistant](../examples/TW_Wording_Assistant_R172_20261027.html), manually confirm options, export, and review changes. [AI workflow guide](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). This is not a direct Grok plugin or quality certification.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 ## Complete tool download
 
@@ -76,3 +76,8 @@ The legally distributable tools used by these examples are collected in the [R17
 
 EX01–EX09 are preserved. See [MRFT instructions and original multi-region practice](mrft/MRFT_DOM_PREVIEW.md): up to 8 regions, two positioning modes, manual translations or explicitly enabled local models; no OCR or cloud transport. Suite 17.3.0 has 28 tools / 23 standalone tool assets / 28 Release assets, preserving all original 27 tool bytes. Model capability and human language quality still require separate verification.
 <!-- R177_MRFT_EXAMPLE_END -->
+
+
+## R19 | Per-occurrence decisions and non-destructive import
+
+Open [R19 First Result Studio](../examples/TW_First_Result_Studio_R19_20261101.html), load original Markdown, inspect context hints, accept or keep each occurrence, review the diff and save a new file. Cancelled or invalid-encoding imports preserve the existing result. Reviewing every displayed candidate does not imply the entire document was reviewed when the candidate list is partial. This engineering preview has no measured human quality results.

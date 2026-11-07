@@ -1,5 +1,25 @@
 # All-Tools Full Suite｜每次 Release 都要有所有合法且受支援的工具
 
+## Suite 17.4.0｜R19 首份成果工作台與完整發行契約
+
+本版新增 R19 R2 離線工作台，原 28 工具的身分、版本及鎖定來源保持不變。完整包為 `TLS_ALL_TOOLS_SUITE_17_4_0.zip`；首次使用解壓後開啟 `START_HERE.html`。獨立 R19 HTML 為 `TW_First_Result_Studio_R19_20261101.html`，仍標示 PREVIEW。
+
+| 本版內容 | 數量 |
+| --- | ---: |
+| Chrome ZIP / Tampermonkey 單檔 | 4 / 3 |
+| 離線 HTML / R6 品質套件 | 15 / 1 |
+| CLI/Skill 身分（共一個開發者 ZIP） | 6 |
+| 工具身分 / 獨立工具資產 / Release 附件 | **29 / 24 / 29** |
+| 從上一 Suite 保留 / 新增 / 更新的工具 | **28 / 1 / 0** |
+
+[最新正式下載](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest) · [R19 使用指南](r19/README.md) · [本版來源、驗收與發布契約](r19/SUITE_17_4_0_RELEASE.md)。此文件描述版本契約；只有最終 PR、main CI 及 Draft／公開後全附件實際下載均通過，才算正式發布完成。原候選的十情境證據不能取代最終版本 gates。
+
+R19 來源固定於 439041ceaae40f8c985d4c5ba3b34c37dcb61302，HTML SHA256 為 33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a。前 28 項原工具不重新改版；套件與開發者 ZIP 因加入新檔案而採新版本。發布器不覆寫既有 tag，缺件或回驗失敗即停止。真人操作、母語品質與採用率仍未驗證。
+
+## 以下為歷史發行紀錄
+
+以下的「本輪」「現行」與數量屬各節原記錄日期；現在的版本契約以本頁上方與最新正式 Release 為準。
+
 > **2026-10-31 下載更新：**Suite 17.1／17.2 的完整套件 ZIP 與 Developer ZIP 已撤回；舊版 Manifest 與 Checksum 僅供歷史查核，可能仍列出這些附件。請從 [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) 下載目前完整工具包。下方舊版章節保留版本背景，不是現行下載清單。
 
 ## Suite 17.3.0｜新增 MRFT DOM 多框閱讀預覽

@@ -121,14 +121,14 @@ class MRFTAdditiveContract(unittest.TestCase):
  def registry(self):return json.loads(B.REGISTRY.read_bytes())
  def test_exact_current_inventory(self):
   r=self.registry()
-  self.assertEqual(r['suite_version'],'17.3.2')
-  self.assertEqual(r['release_tag'],'all-tools-suite-v17.3.2')
-  self.assertEqual(len(r['tools']),28)
+  self.assertEqual(r['suite_version'],'17.4.0')
+  self.assertEqual(r['release_tag'],'all-tools-suite-v17.4.0')
+  self.assertEqual(len(r['tools']),29)
   self.assertEqual([(x['tool_id'],x['tool_version'],x['artifact_filename'],x['expected_sha256']) for x in r['tools'][:27]],OLD)
   self.assertEqual(r['tools'][27]['tool_id'],NEW_ID)
   self.assertEqual(r['tools'][27]['expected_sha256'],EXPECTED_MRFT_SHA)
   self.assertEqual(B.MRFT_SHA256,EXPECTED_MRFT_SHA)
-  self.assertEqual(sum(x['standalone_required'] for x in r['tools'])+1,23)
+  self.assertEqual(sum(x['standalone_required'] for x in r['tools'])+1,24)
  def test_r172_keeps_original_source_authority(self):
   x=self.registry()['tools'][26]
   self.assertEqual(x.get('original_commit_sha'),'a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4')
@@ -136,20 +136,20 @@ class MRFTAdditiveContract(unittest.TestCase):
   self.assertNotIn('source_commit_mode',x)
  def test_prior_version_or_hash_cannot_change(self):
   for key,value in [('tool_version','changed'),('expected_sha256','f'*64)]:
-   for i in range(27):
+   for i in range(28):
     with self.subTest(key=key,i=i):
      r=self.registry();r['tools'][i][key]=value
      with self.assertRaises(B.ReleaseBlock):B.validate_registry(r,False)
  def test_old_and_new_omission_block(self):
-  for i in (0,26,27):
+  for i in (0,26,27,28):
    r=self.registry();r['tools'].pop(i if i<len(r['tools']) else -1)
    with self.assertRaises(B.ReleaseBlock):B.validate_registry(r,True)
  def test_only_reviewed_generated_artifact_allowed(self):
-  r=self.registry();self.assertEqual(len(r['tools']),28)
-  self.assertEqual(r['tools'][-1]['source_kind'],'generated_local_artifact')
+  r=self.registry();self.assertEqual(len(r['tools']),29)
+  self.assertEqual(next(x for x in r['tools'] if x['tool_id']==NEW_ID)['source_kind'],'generated_local_artifact')
   for key,value in [('source_path','dist/arbitrary.zip'),('artifact_filename','arbitrary.zip'),('expected_sha256','f'*64),('source_kind','official_release_asset'),('tool_version','99')]:
    with self.subTest(key=key):
-    bad=deepcopy(r);bad['tools'][-1][key]=value
+    bad=deepcopy(r);next(x for x in bad['tools'] if x['tool_id']==NEW_ID)[key]=value
     with self.assertRaises(B.ReleaseBlock):B.validate_registry(bad,True)
  def test_generated_manifest_excess_permissions_fail_even_after_resealing(self):
   from unittest.mock import patch

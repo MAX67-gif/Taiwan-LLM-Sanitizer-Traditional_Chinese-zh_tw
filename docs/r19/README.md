@@ -1,12 +1,12 @@
 # R19｜看上下文，逐處決定臺灣用語
 
-R19 是獨立的本機工程預覽，使用原封不動的 R17.2 修稿引擎。它改善逐項判讀、檔案匯入與差異檢查；不是新的全文翻譯模型，也尚未成為正式 All-Tools Suite 版本。
+R19 是獨立的本機工程預覽，使用原封不動的 R17.2 修稿引擎，改善逐項判讀、檔案匯入與差異檢查。本次 Suite 17.4.0 整合候選將它加入完整工具套件，R19 本身維持 `PREVIEW`。最終套件的 CI、Draft 附件下載及公開後下載驗證仍須全部完成，才能記錄正式發行成功。
 
-[English](README.en.md) · [測試與驗證邊界](TESTING.md) · [發行條件](RELEASE_GATE.md)
+[English](README.en.md) · [測試與驗證邊界](TESTING.md) · [發行條件](RELEASE_GATE.md) · [Suite 17.4.0 整合契約](SUITE_17_4_0_RELEASE.md)
 
 ## 開始使用
 
-1. 將 `TW_First_Result_Studio_R19_20261101.html` 下載到自己的電腦，再用瀏覽器開啟。GitHub 的 HTML 原始碼頁不會執行工具。完整原始碼包內的位置是 `examples/TW_First_Result_Studio_R19_20261101.html`。
+1. 將 `TW_First_Result_Studio_R19_20261101.html` 下載到自己的電腦，再用瀏覽器開啟。使用包含 R19 的完整套件時，先解壓縮，再由 `START_HERE.html` 開啟 `TOOLS/html/TW_First_Result_Studio_R19_20261101.html`。完整原始碼包內的位置則是 `examples/TW_First_Result_Studio_R19_20261101.html`。GitHub 的 HTML 原始碼頁不會執行工具。
 2. 按「直接體驗第一份修稿」，或匯入自己有權編輯的 UTF-8 `.md`、`.markdown`、`.txt`。匯入後仍要按「使用這份檔案」，才會取代畫面上的稿件。
 3. 每張候選卡會顯示原稿所在行、欄位及附近文字。依真實語境選擇用詞，或保留原文；再產生預覽、核對差異與全文，下載新的 `.md`。
 
@@ -53,4 +53,8 @@ R19 是獨立的本機工程預覽，使用原封不動的 R17.2 修稿引擎。
 
 67 個既有詞條與 9 個 overlay forms 維持原樣；未審 alias 仍是候選。凍結引擎可能拒絕含 JSON 的 fenced code，也會拒絕未閉合的程式碼區塊。這版不修改其結構判讀規則，不支援 PDF、OCR、完整 AST 或全文自動翻譯。工程測試不是母語審稿、自然度比較、使用者採用或外部平台隱私保證。
 
-原生瀏覽器的新增驗收腳本已提供，必須取得實際執行收據後才能宣稱該項通過；詳見測試與發行條件。
+## 已取得的原生證據與待完成事項
+
+2026-11-07 的 [GitHub Actions run 42377187266](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/actions/runs/42377187266) 已使用原樣的 runner，在 headless Chromium 以真實本機檔案網址執行原候選，十個情境全部通過。其狀態為 `NATIVE_10_SCENARIOS_VERIFIED_WITH_SCOPE`；精確來源、實際測試的合併提交、瀏覽器版本與原始附件列於[原生驗收紀錄](NATIVE_ACCEPTANCE_R2.md)。
+
+該次 runner 實際下載並比對輸出 bytes，但 Actions 附件未保留各次下載的原始檔案。作業系統選檔視窗及其取消流程未測；真人操作、語意自然度、完成率與採用率仍延後。最終 Suite 17.4.0 必須另通過最終 PR、main 及完整發行驗證，不能只引用這次原候選結果宣稱已發布。

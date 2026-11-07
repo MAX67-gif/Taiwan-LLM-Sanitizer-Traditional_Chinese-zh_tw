@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583 -->
+<!-- SOURCE_README_SHA256:ddaeab0c6f5c8edb959806dc517e51d3734d1aa57bf8728d264ca0d5a0b360b4 -->
 
 # Taiwan-LLM-Sanitizer — Safer Taiwanese Traditional Chinese localization
 
@@ -24,13 +24,15 @@ In one Markdown file, choose 選單 for a UI `menu`, 菜單 for a food `menu`, a
 Uses existing R17.2, with limited suggestions and human review still required. The 60-second tour is a design length, not a measured task time.
 <!-- R176_SHOWCASE_END -->
 
-### First result in 3 steps: one safer Markdown edit
+<!-- R19_FIRST_USE_BEGIN -->
+### First use: review one Markdown file with R19
 
-**[① Get the latest verified GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, download `TLS_ALL_TOOLS_SUITE_17_3_2.zip` (current verified suite; check actual versioned filenames on newer releases), or the standalone `TW_Wording_Assistant_R172_20261027.html`.
+**[① Open the latest official release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Download `TLS_ALL_TOOLS_SUITE_17_4_0.zip` or the standalone `TW_First_Result_Studio_R19_20261101.html` from Assets; use filenames actually published on that page.
 
-**② Unzip and open `START_HERE.html` in your local browser**, then launch the R17.2 offline assistant. **③ Load an original sample or paste Markdown you may edit, review each term or keep it, preview protected changes, and download a new file.**
+**② Unzip, open `START_HERE.html` locally and choose R19 First Result Studio. ③ Load an original sample or your Markdown, accept or keep each occurrence, inspect the diff and download a new file.** Context preferences offer hints; you decide every edit.
 
-[Detailed 3-step guide](docs/QUICK_START_R174.en.md) · [Original Markdown example](docs/R174_ORIGINAL_FIRST_TASK.md) · [Codex / Claude / Grok workflow](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). A GitHub `.html` source link is **not** a hosted web app. The local assistant has limited term coverage and cannot certify semantic or linguistic quality. Human language review is pending.
+[Three-step guide](docs/QUICK_START_R174.en.md) · [Original practice text](docs/R174_ORIGINAL_FIRST_TASK.md) · [R19 guide and limits](docs/r19/README.en.md). Suite 17.4.0 has **29 tools / 24 standalone tool assets**, retaining all previous 28 tools. R19 remains an offline engineering preview; human usability and language quality are unverified. GitHub HTML source views must be downloaded for local use.
+<!-- R19_FIRST_USE_END -->
 
 
 An open-source, privacy-minded layer for user-controlled Taiwanese terminology, bilingual reading and technical-content integrity; not affiliated with third-party services. **MIT** · Founder / Steward: CA L.
@@ -111,6 +113,6 @@ Read the [All-Tools installation and integrity guide](docs/ALL_TOOLS_RELEASE.md)
 
 **R17.3 research only:** Read the [fair editable-span comparison and opt-in usage evidence guide](docs/R173_COMPARISON_AND_ADOPTION.en.md). **No native OpenCC/LLM superiority or independent human quality results exist yet.** The R17.2 wording-assistant runtime remains unchanged; historical Suite 17.1/17.2 combined ZIPs have been withdrawn, so use the latest official GitHub Release for the current complete download.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 Release checks compare the actual tool and downloaded bytes with the original pinned SHA256 and Git revision. Draft and published assets are downloaded separately; an existing tag is verified without overwriting it. All six language guides still require human review (HUMAN_TRANSLATION_REVIEW_PENDING).

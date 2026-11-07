@@ -95,7 +95,7 @@ jobs:
         run: python -m unittest tests/test_r176_showcase_contract.py -v
       - name: Verify R3 branding and six-language image contract
         run: python -m unittest tests/test_branding_r3.py -v
-      - name: Verify Suite 17.3.2 R3 release and latest-download consistency
+      - name: Verify Suite 17.4.0 additive R19 release and latest-download consistency
         run: python -m unittest tests/test_all_tools_brand_r3_release_r1732.py -v
       - name: Verify R17.8 B0 current-release link recovery and withdrawn archive hard gates
         run: python -m unittest tests/test_r178_b0_release.py -v
@@ -324,25 +324,21 @@ jobs:
       - run: python -m pip install playwright==1.55.0
       - run: python -m playwright install --with-deps chromium
       - name: Prepare pinned Node Playwright 1.55 for R19 original synthetic native gate
-        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
         run: npm install --prefix "$RUNNER_TEMP/tls-r19-node" --no-audit --no-fund --ignore-scripts --no-save playwright@1.55.0
       - name: Verify original R19 HTML and runner bytes immediately before native test
-        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
         run: |
           node tools/build_first_result_studio_r19.js --check
           echo "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a  examples/TW_First_Result_Studio_R19_20261101.html" | sha256sum -c -
           echo "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8  tests/browser_first_result_studio_r19.cjs" | sha256sum -c -
       - name: Execute unchanged original R19 10 native file URL scenarios
-        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
         env:
           NODE_PATH: ${{ runner.temp }}/tls-r19-node/node_modules
           TLS_R19_BROWSER_OUTPUT: ${{ runner.temp }}/r19-original-native
         run: node tests/browser_first_result_studio_r19.cjs --run
       - name: Validate R19 original native result and saved screenshot/download evidence
-        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
         run: python tests/validate_r19_native_receipt_r2.py --root . --output "$RUNNER_TEMP/r19-original-native" --node-playwright-package "$RUNNER_TEMP/tls-r19-node/node_modules/playwright/package.json" --receipt "$RUNNER_TEMP/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json"
       - name: Upload original R19 native evidence (synthetic only, evaluation not release)
-        if: always() && github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: TLS_R19_R2_ORIGINAL_NATIVE_10_SCENARIOS

@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_README_SHA256:dcb476d616a61e08fdb088d9a853ed157df20b2e97a513a821350c08b259e583 -->
+<!-- SOURCE_README_SHA256:ddaeab0c6f5c8edb959806dc517e51d3734d1aa57bf8728d264ca0d5a0b360b4 -->
 
 # Taiwan-LLM-Sanitizer — Localización segura al chino tradicional de Taiwán
 
@@ -24,13 +24,15 @@ En un Markdown, elige 選單 para un `menu` de interfaz, 菜單 para uno de comi
 Usa R17.2 existente. Las sugerencias son limitadas y requieren revisión humana. Los 60 segundos son la duración prevista de la guía, no un tiempo de trabajo medido.
 <!-- R176_SHOWCASE_END -->
 
-### Primer resultado en 3 pasos: revisa un archivo Markdown
+<!-- R19_FIRST_USE_BEGIN -->
+### Primer uso: revisar un Markdown con R19
 
-**[① Abre la última publicación oficial en GitHub](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En **Assets**, descarga `TLS_ALL_TOOLS_SUITE_17_3_2.zip` (versión actualmente verificada; comprueba el nombre real en futuras versiones) o el archivo `TW_Wording_Assistant_R172_20261027.html`.
+**[① Abrir la última versión oficial](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. En Assets, descarga `TLS_ALL_TOOLS_SUITE_17_4_0.zip` o `TW_First_Result_Studio_R19_20261101.html`; comprueba los nombres realmente publicados.
 
-**② Descomprime el ZIP y abre `START_HERE.html` en el navegador local.** **③ Abre el asistente R17.2, carga el ejemplo original o un Markdown propio, acepta o conserva cada sugerencia y descarga un archivo nuevo tras revisar los cambios protegidos.**
+**② Descomprime, abre `START_HERE.html` localmente y elige R19 First Result Studio. ③ Carga un ejemplo original o tu Markdown, acepta o conserva cada aparición, revisa las diferencias y descarga un archivo nuevo.** Las preferencias de contexto solo orientan; tú decides cada cambio.
 
-[Guía detallada en inglés](docs/QUICK_START_R174.en.md) · [Ejemplo Markdown original](docs/R174_ORIGINAL_FIRST_TASK.md) · [Guía de Codex, Claude y Grok](docs/AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Una página de código `.html` en GitHub **no** es una aplicación web alojada. El asistente no certifica calidad lingüística ni traducción completa; falta revisión humana.
+[Guía de tres pasos](docs/QUICK_START_R174.en.md) · [Texto de práctica](docs/R174_ORIGINAL_FIRST_TASK.md) · [Guía y límites de R19](docs/r19/README.en.md). Suite 17.4.0 incluye **29 herramientas / 24 recursos independientes**, conservando las 28 anteriores. R19 sigue siendo una vista previa técnica sin validación humana de usabilidad ni calidad lingüística. Descarga el HTML de GitHub para abrirlo localmente.
+<!-- R19_FIRST_USE_END -->
 
 
 Herramienta de código abierto para elegir vocabulario taiwanés, leer textos bilingües y preservar estructuras técnicas. No es un producto oficial de terceros. **MIT** · Founder / Steward: CA L.
@@ -111,6 +113,6 @@ Consulta la [guía de distribución e integridad All-Tools](docs/ALL_TOOLS_RELEA
 
 **R17.3, solo investigación:** Consulta la [comparación imparcial y el protocolo voluntario](docs/R173_COMPARISON_AND_ADOPTION.en.md). **Aún no existen resultados verificados que demuestren superioridad frente a OpenCC, LLM o revisión humana.** La herramienta de revisión R17.2 no cambia; los ZIP integrales antiguos 17.1/17.2 se retiraron tras una revisión del alcance público. Utiliza la última versión oficial de GitHub para obtener el paquete completo.
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 La validación compara los archivos reales y descargados con el SHA256 original fijado y la revisión de Git. Se descargan por separado los archivos del borrador y los publicados; una etiqueta existente se verifica sin sobrescribirla. Las seis guías siguen pendientes de revisión humana (HUMAN_TRANSLATION_REVIEW_PENDING).
