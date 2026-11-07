@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:e325e7b3b973eee471dc5abef0e948c7b631c8c8a4c907dbc73b2d2c19bc4383 -->
+<!-- SOURCE_EXAMPLES_SHA256:f66125170245b6757ec24c561547fc7e566b8ffd5e4e57b49827e64720c59775 -->
 
 # 台湾繁体字中国語ローカライズ：9 つのオリジナル利用例
 
@@ -65,7 +65,7 @@ HTML／DOM の通常テキスト `Open settings` や `Start` は、規約に適�
 
 AI で権利を持つ中国語 Markdown を作成し、[R17.2 オフラインレビュー](../examples/TW_Wording_Assistant_R172_20261027.html)で用語と保護対象を確認したうえで保存します。[英語版 AI ガイド](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md)。Grok 用の直接プラグインではありません。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 ## 全ツールのダウンロード
 
@@ -76,3 +76,8 @@ AI で権利を持つ中国語 Markdown を作成し、[R17.2 オフラインレ
 
 従来の EX01–EX09 は保持します。[MRFT の操作とオリジナル練習](mrft/MRFT_DOM_PREVIEW.md)では、最大 8 枠、2 種類の位置指定、手動の訳文または明示的に有効化するローカルモデルを扱います。OCR とクラウド送信は含みません。Suite 17.3.0 は 28 ツール／23 個の独立ツール資産／28 個の Release 添付ファイルを含み、元の 27 ツールのバイト列を保持します。モデルの能力と言語品質の人による評価は別途必要です。
 <!-- R177_MRFT_EXAMPLE_END -->
+
+
+## R19｜箇所ごとの判断と非破壊インポート
+
+[R19 First Result Studio](../examples/TW_First_Result_Studio_R19_20261101.html) でオリジナル Markdown を読み込み、文脈のヒントを確認し、各箇所を採用・保留して差分を確認後に別保存します。キャンセルや不正な文字コードの入力では既存の結果を保持します。候補一覧が一部のみの場合、表示項目の確認完了は全文の確認完了を意味しません。人による品質評価は未実施です。

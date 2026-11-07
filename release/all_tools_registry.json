@@ -43,10 +43,10 @@
     "tls.skill.taiwan-zh-tw-localization"
   ],
   "project": "MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw",
-  "release_tag": "all-tools-suite-v17.3.2",
+  "release_tag": "all-tools-suite-v17.4.0",
   "rights_policy": "docs/THIRD_PARTY_RIGHTS_POLICY.md",
   "schema": "tls.all-tools-registry.v1",
-  "suite_version": "17.3.2",
+  "suite_version": "17.4.0",
   "tools": [
     {
       "artifact_filename": "TLS_Chrome_MV3_R5_20261024.zip",
@@ -604,6 +604,25 @@
       "source_commit_mode": "CURRENT_SOURCE_COMMIT",
       "expected_sha256": "5cf0023f26a990bc0c8d0eef499f9bad843d4257e76a1615a033a7bacab973c7",
       "build_command_or_reuse_reason": "Deterministic tools/build_mrft_r177.py fixed source map, exact ZIP hash and source parity required",
+      "changelog_ref": "CHANGELOG.md"
+    },
+    {
+      "tool_id": "tls.html.tw-first-result-studio-r19-20261101",
+      "family": "offline_html",
+      "status": "PREVIEW",
+      "tool_version": "R19 R2 engineering preview",
+      "artifact_filename": "TW_First_Result_Studio_R19_20261101.html",
+      "source_kind": "git_source",
+      "source_path": "examples/TW_First_Result_Studio_R19_20261101.html",
+      "package_subdir": "html",
+      "rights_review": "PUBLIC_ORIGINAL_CHECKED_NO_GAME_SPECIFIC",
+      "license_review": "MIT_ORIGINAL_PUBLIC",
+      "last_verified_at_utc": "2026-11-07T15:05:19Z",
+      "standalone_required": true,
+      "original_tag": null,
+      "original_commit_sha": "439041ceaae40f8c985d4c5ba3b34c37dcb61302",
+      "expected_sha256": "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a",
+      "build_command_or_reuse_reason": "Exact audited R19 R2 public HTML; tools/build_first_result_studio_r19.js --check verifies parity with the immutable R17.2 core and frozen lexicon",
       "changelog_ref": "CHANGELOG.md"
     }
   ]

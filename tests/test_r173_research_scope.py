@@ -262,20 +262,22 @@ class R190ExactLatestLinksTests(unittest.TestCase):
    with self.assertRaises(ValueError):
     C.r190_apply_exact(fixture.replace(oldlink,'bad',1),path)
 
- def test_repo_readmes_have_updated_first_use_links(self):
+ def test_current_readmes_preserve_latest_links_and_sync_to_current_master(self):
+  # Current product docs can advance. The preceding fixture test keeps R190's
+  # immutable transformation and old/new hashes separate from today's catalog.
+  current_master=C.hashlib.sha256((ROOT/'README.md').read_bytes()).hexdigest()
   for path in C.R190_READMES:
    content=(ROOT/path).read_text(encoding='utf-8')
    self.assertEqual(content.count(C.R190_OLD_LINK),1,path)
    self.assertGreaterEqual(content.count(C.R190_NEW_LINK),2,path)
-   self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_2.zip',content)
+   self.assertIn('TLS_ALL_TOOLS_SUITE_17_4_0.zip',content)
    if path!='README.md':
-    self.assertIn('<!-- SOURCE_README_SHA256:'+C.R190_NEW_MASTER_SHA+' -->',content)
+    self.assertIn('<!-- SOURCE_README_SHA256:'+current_master+' -->',content)
    for stale,_ in C.R190_CURRENT[path]:
     self.assertNotIn(stale,content)
 
  def test_exemption_is_bound_to_one_immutable_main_baseline(self):
   self.assertEqual(C.R190_PINNED_BASE,'d49eb0d62e60316a502a793e0d61779e77de2b2c')
-  self.assertEqual(C.hashlib.sha256((ROOT/'README.md').read_bytes()).hexdigest(),C.R190_NEW_MASTER_SHA)
   with self.assertRaisesRegex(ValueError,'R190_WRONG_BASE'):
    C.r190_verify_exact('0'*40,'f'*40)
   self.assertFalse(C.classify([('M','README.md')])[0])

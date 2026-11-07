@@ -1,5 +1,5 @@
 <!-- HUMAN_TRANSLATION_REVIEW: pending independent native-speaker review -->
-<!-- SOURCE_EXAMPLES_SHA256:e325e7b3b973eee471dc5abef0e948c7b631c8c8a4c907dbc73b2d2c19bc4383 -->
+<!-- SOURCE_EXAMPLES_SHA256:f66125170245b6757ec24c561547fc7e566b8ffd5e4e57b49827e64720c59775 -->
 
 # 台湾繁体中文工具的九个使用示例（原创／概念示范）
 
@@ -87,7 +87,7 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 先用所选 AI 生成你有权使用的中文 Markdown，再用 [R17.2 离线助手](../examples/TW_Wording_Assistant_R172_20261027.html) 确认台湾用词、保护代码/网址，下载修订稿。详细：[多平台 AI 指南](AI_WORKFLOWS_CODEX_CLAUDE_GROK.md)。此流程需人工操作，Grok 不是 TLS 内置插件。
 
-<!-- ALL_TOOLS_CATALOG: suite=17.3.2; tools=28; standalone=23; tool_ids_sha256=22cb8ad7ccdc6b9d468e2652407ee15e6288ce2c4a5e4f61fdf88b2cef9a0a57 -->
+<!-- ALL_TOOLS_CATALOG: suite=17.4.0; tools=29; standalone=24; tool_ids_sha256=cf54846ecef37ae118b8bba1325f5214e8db00c9f4c404093eef69e664820404 -->
 
 ## 完整工具下载
 
@@ -98,3 +98,8 @@ user: Explain the settings for {{ACCOUNT_ID}}.
 
 原有 EX01–EX09 保留。新增 [MRFT 操作与原创多框练习](mrft/MRFT_DOM_PREVIEW.md)：最多 8 框、两种位置模式、手动译文或明确启用本地模型；不含 OCR 或云端传输。Suite 17.3.0 包含 28 工具／23 独立工具资产／28 Release 附件，原 27 工具字节不变。模型和真人语言质量仍需分别验证。
 <!-- R177_MRFT_EXAMPLE_END -->
+
+
+## R19｜逐处决策与非破坏导入
+
+在 [R19 首份成果工作台](../examples/TW_First_Result_Studio_R19_20261101.html) 加载原创 Markdown，查看语境提示，逐处采用或保留，检查差异后另存。取消或错误编码导入会保留现有成果；候选列表不完整时，审完显示项不等于审完全文。工程预览不代表真人质量验证。

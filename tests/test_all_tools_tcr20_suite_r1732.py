@@ -1,4 +1,4 @@
-"""Optional TCR 2.0 integration into Suite 17.3.2, without product/semantic claims."""
+"""Preserve the Suite 17.3.2 TCR 2.0 integration without semantic-quality claims."""
 import hashlib, io, json, pathlib, subprocess, sys, unittest
 from zipfile import ZipFile
 
@@ -28,10 +28,11 @@ class TCR20SuiteTests(unittest.TestCase):
    self.assertIn(SKILL+'/README.zh-TW.md',z.namelist())
    self.assertIn(SKILL+'/assets/COMPARE_REVISED_OK.md',z.namelist())
   r=json.loads(B.REGISTRY.read_bytes())
-  self.assertEqual((r['suite_version'],r['release_tag']),('17.3.2','all-tools-suite-v17.3.2'))
-  self.assertEqual(len(B.validate_registry(r,False)),28)
+  self.assertEqual((r['suite_version'],r['release_tag']),('17.4.0','all-tools-suite-v17.4.0'))
+  self.assertEqual(len(B.validate_registry(r,False)),29)
   self.assertEqual(B.digest('\n'.join(t['tool_id'] for t in r['tools']).encode()),B.CURRENT_IDS_SHA256)
-  self.assertFalse(any('r19' in t['tool_id'].lower() for t in r['tools']))
+  self.assertEqual(B.digest(B.json_bytes(r['tools'][:28])),
+   '340de86fdb49ca201aad6317c7769c6dfefde2d3ad997172cc2bbc97ca1bb5cb')
  def test_offline_original_sample_is_metadata_only(self):
   cmd=[sys.executable,str(ROOT/SKILL/'scripts/audit_markdown.py'),'--input',str(ROOT/SKILL/'assets/ORIGINAL_PRACTICE.md')]
   p=subprocess.run(cmd,capture_output=True,text=True,timeout=20)

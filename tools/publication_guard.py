@@ -20,6 +20,9 @@ ROOT_PUBLIC={
     ".github/ISSUE_TEMPLATE/term_proposal.yml","AGENTS.md","CLAUDE.md",
 }
 DOCS_PUBLIC={
+    "docs/r19/README.md", "docs/r19/README.en.md", "docs/r19/TESTING.md",
+    "docs/r19/RELEASE_GATE.md", "docs/r19/NATIVE_ACCEPTANCE_R2.md",
+    "docs/r19/SUITE_17_4_0_RELEASE.md",
     "docs/TCR20_SUITE1732_INTEGRATION.md",
     "docs/BRAND_R3_SUITE_1731_RELEASE_PLAN.md",
     "docs/showcase/source.md", "docs/showcase/preview.md",
@@ -110,7 +113,7 @@ EXFIL_APIS=(
     "chrome.history.", "chrome.cookies.", "document.cookie",
 )
 # Only production JS, not test examples that intentionally name forbidden APIs.
-RUNTIME_PREFIXES=("src/r177/","dist/r177/","src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
+RUNTIME_PREFIXES=("src/r19/","src/r177/","dist/r177/","src/core/","src/chrome/","src/userscript/","src/r13/","dist/chrome/","dist/userscript/","dist/r13/")
 RUNTIME_SUFFIXES=(".js",".user.js")
 
 def allowed_path(name:str)->bool:

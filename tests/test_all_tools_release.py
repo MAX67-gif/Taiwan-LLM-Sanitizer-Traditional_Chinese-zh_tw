@@ -71,7 +71,7 @@ class FullSuiteSafetyContract(unittest.TestCase):
     for p in self.stage.iterdir()]}
 
  def test_01_full_fixture_passes(self):
-  x=self.verify();self.assertEqual(x['tools'],28);self.assertEqual(x['github_assets_expected'],28)
+  x=self.verify();self.assertEqual(x['tools'],29);self.assertEqual(x['github_assets_expected'],29)
  def test_02_production_refuses_fixture(self):
   with self.assertRaisesRegex(B.ReleaseBlock,'FIXTURE_NOT_PUBLISHABLE'):C.verify_stage(self.stage,self.fixture_registry,fixture_ok=False)
  def test_03_production_rejects_replacement_R5_release_zip(self):
@@ -169,8 +169,8 @@ class FullSuiteSafetyContract(unittest.TestCase):
   rows={r['tool_id']:r for r in m['tools']}
   self.assertEqual(rows[B.R172_TOOL_ID]['original_commit_sha'],'a1265254f6a8e7d98a9c91d83d74dbf12bf3c4b4')
   self.assertEqual(rows[B.NEW_TOOL_ID]['original_commit_sha'],m['source_git_sha'])
-  self.assertEqual(len(m['artifacts']),23)
-  self.assertEqual(len(list(self.stage.iterdir())),28)
+  self.assertEqual(len(m['artifacts']),24)
+  self.assertEqual(len(list(self.stage.iterdir())),29)
  def test_false_count_metadata_blocks(self):
   def edit(d):
    p=d/'VALIDATION.json';v=json.loads(p.read_bytes());v['tool_count_present']=27;p.write_bytes(B.json_bytes(v))

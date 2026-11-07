@@ -1,27 +1,27 @@
-# First result in 3 steps | Taiwan-LLM-Sanitizer R17.2
+# First result in three steps | R19 offline guide
 
-> First checked 2026-10-28; download location reverified 2026-10-31. R17.4 is an **onboarding documentation update**, not a new translation engine or new release. The R17.2 app stays unchanged. Native-speaker translation validation remains pending.
+> Updated 2026-11-07 for the R19 entry in Suite 17.4.0. The original R17.2 tool and historical Suite 17.3.2 remain available. R174 in this guide's filename is its original documentation identifier. R19 is an engineering preview; human language quality remains unverified.
 
-## 1. Download a runnable file from the official release
+## 1. Download a runnable file
 
-**[Open the latest official GitHub Release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under **Assets**, choose the full `TLS_ALL_TOOLS_SUITE_17_3_2.zip` for the verified complete Suite 17.3.0, or `TW_Wording_Assistant_R172_20261027.html` on its own. Future releases may use new names; check the actual assets.
+Open the **[latest official release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)**. Under Assets choose `TLS_ALL_TOOLS_SUITE_17_4_0.zip` or `TW_First_Result_Studio_R19_20261101.html`. Confirm those assets have actually been published; older releases do not contain R19. The original `TW_Wording_Assistant_R172_20261027.html` remains available separately.
 
-**Historical download notice:** The combined Suite and Developer ZIP files for 17.1/17.2 were withdrawn after a public-distribution review. Their old manifests may still list these archives; use the [verified Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) for the current complete download. The R17.2 assistant tool itself remains unchanged.
+The combined and developer ZIP files for Suite 17.1/17.2 were withdrawn. Historical [Suite 17.3.0](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tag/all-tools-suite-v17.3.0) is a version reference; use the latest official page for current downloads. A GitHub HTML source view is not a hosted app. Download the file and open it locally.
 
-A repository link ending in `examples/*.html` opens the **source file view** on GitHub, not a hosted web app. Download the release HTML first and open it locally in your browser.
+## 2. Open R19 and load original content
 
-## 2. Open the offline assistant and try original content
+Unzip the suite, open `START_HERE.html` in your browser and choose R19 First Result Studio. A standalone HTML file also opens directly. Follow its original quick-start sample or load/paste Markdown you may edit. The [original practice text](R174_ORIGINAL_FIRST_TASK.md) includes UI, food, code and URL examples.
 
-Unzip the suite, open `START_HERE.html` in your local browser, then choose the R17.2 wording assistant. Load the original sample or paste Markdown you are entitled to edit. The [original practice text](R174_ORIGINAL_FIRST_TASK.md) includes UI, food and technical terms along with code/URLs/templates that should remain protected. No AI service is called by the local assistant itself.
+Cancelled or invalid-encoding imports preserve the existing result. After successfully loading new content, review the new decisions. The local tool does not automatically call AI services.
 
-## 3. Review each proposed term before exporting
+## 3. Decide per occurrence, review the diff and save a copy
 
-Choose **find suggestions**, then decide **accept** or **keep original** for each occurrence. The word `menu` may mean an app menu or a restaurant menu. If its context is uncertain, leave it unchanged. Inspect the protected-structure diff; only export a new Markdown file after manual meaning review. The original is not overwritten by the app.
+Inspect limited wording suggestions and surrounding context. Context preferences only provide hints; they do not approve edits. Accept or keep each occurrence, leaving uncertain wording unchanged. Preview the result, verify code, URLs, comments and placeholders, then download a new Markdown file. The app does not overwrite the source.
 
-No suggestions does **not** mean perfect Chinese. Structure checks are not semantic certification. The app uses a conservative Markdown scan, with a 64 KiB input limit and at most 120 candidate occurrences; it is not a general JSON, PDF or full-document translation tool.
+The input limit is 64 KiB and at most 120 candidates are shown. If more candidates are detected, reviewing all visible items still means partial review. Wait for a current preview instead of using stale results or downloads. No suggestions does not mean perfect wording; structural checks do not certify meaning. This is a conservative Markdown review tool, not a general JSON/PDF translator.
 
-For AI-authored drafts, use the [Codex / Claude / Grok workflow guide](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Cloud AI may receive user-submitted text; the TLS local browser tool does not automatically submit it.
+For AI-authored drafts, see the [Codex / Claude / Grok guide](AI_WORKFLOWS_CODEX_CLAUDE_GROK.en.md). Cloud AI may receive text submitted on its platform; TLS does not automatically submit it.
 
-Human first-use and retention metrics have **not been collected**. No hidden telemetry, personal document uploads or identity tracking are part of this quick start.
+Human first-use, quality and retention metrics have **not been collected**; human trials are deferred. There is no hidden telemetry or automatic manuscript upload. Do not post private documents or complete conversations in public issues.
 
-[README](../README.en.md) · [Official release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)
+[README](../README.en.md) · [R19 guide](r19/README.en.md) · [Official release](https://github.com/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/latest)

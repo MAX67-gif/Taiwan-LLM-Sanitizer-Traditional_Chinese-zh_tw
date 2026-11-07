@@ -17,23 +17,26 @@ class R174FirstUseTests(unittest.TestCase):
                 self.assertIn(LATEST,txt[:2000],f'{name}: missing visible real Release link')
                 self.assertIn('docs/QUICK_START_R174',txt[:2500])
                 self.assertNotIn('github.io/Taiwan-LLM-Sanitizer',txt)
-                self.assertIn('suite=17.3.2; tools=28; standalone=23',txt)
+                self.assertIn('suite=17.4.0; tools=29; standalone=24',txt)
+                self.assertIn('TW_First_Result_Studio_R19_20261101.html',txt[:3000])
                 self.assertIn('HUMAN_TRANSLATION_REVIEW',txt if name!='README.md' else txt+' HUMAN_TRANSLATION_REVIEW')
     def test_02_honest_local_file_instruction_and_guide_links(self):
         zh=(ROOT/'docs/QUICK_START_R174.md').read_text(encoding='utf-8')
         en=(ROOT/'docs/QUICK_START_R174.en.md').read_text(encoding='utf-8')
         for s in (zh,en):
             self.assertIn(LATEST,s)
-            self.assertIn('TLS_ALL_TOOLS_SUITE_17_3_2.zip',s)
+            self.assertIn('TLS_ALL_TOOLS_SUITE_17_4_0.zip',s)
             self.assertNotIn('TLS_ALL_TOOLS_SUITE_17_2_0.zip',s)
             self.assertIn('START_HERE.html',s)
             self.assertIn('TW_Wording_Assistant_R172_20261027.html',s)
+            self.assertIn('TW_First_Result_Studio_R19_20261101.html',s)
             self.assertIn('R174_ORIGINAL_FIRST_TASK.md',s)
             self.assertTrue('Markdown' in s)
         self.assertIn('GitHub',zh);self.assertIn('source',en.lower())
     def test_03_real_repo_entry_and_local_start_links(self):
         self.assertTrue(START.is_file())
         html=START.read_text(encoding='utf-8')
+        self.assertIn('examples/TW_First_Result_Studio_R19_20261101.html',html)
         hrefs=re.findall(r'<a\b[^>]*\bhref="([^"]+)"',html)
         self.assertGreaterEqual(len(hrefs),5)
         for href in hrefs:

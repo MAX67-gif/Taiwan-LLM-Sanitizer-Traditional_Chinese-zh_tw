@@ -240,7 +240,9 @@ class ReleaseRecovery(unittest.TestCase):
 
     def test_stale_six_language_suite_catalog_is_blocked(self):
         contents = B.developer_contents(B.tracked_files())
-        contents['README.en.md'] = contents['README.en.md'].replace(b'suite=17.3.2;', b'suite=17.0.0;')
+        original = contents['README.en.md']
+        contents['README.en.md'] = original.replace(b'suite=17.4.0;', b'suite=17.3.2;')
+        self.assertNotEqual(contents['README.en.md'], original)
         with self.assertRaisesRegex(B.ReleaseBlock, 'SIX_LANGUAGE_CATALOG'):
             B.validate_catalog_docs(contents, self.fixture_reg)
 
