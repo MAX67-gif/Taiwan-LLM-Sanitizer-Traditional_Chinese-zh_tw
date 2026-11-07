@@ -323,6 +323,35 @@ jobs:
           node-version: '22'
       - run: python -m pip install playwright==1.55.0
       - run: python -m playwright install --with-deps chromium
+      - name: Prepare pinned Node Playwright 1.55 for R19 original synthetic native gate
+        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
+        run: npm install --prefix "$RUNNER_TEMP/tls-r19-node" --no-audit --no-fund --ignore-scripts --no-save playwright@1.55.0
+      - name: Verify original R19 HTML and runner bytes immediately before native test
+        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
+        run: |
+          node tools/build_first_result_studio_r19.js --check
+          echo "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a  examples/TW_First_Result_Studio_R19_20261101.html" | sha256sum -c -
+          echo "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8  tests/browser_first_result_studio_r19.cjs" | sha256sum -c -
+      - name: Execute unchanged original R19 10 native file URL scenarios
+        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
+        env:
+          NODE_PATH: ${{ runner.temp }}/tls-r19-node/node_modules
+          TLS_R19_BROWSER_OUTPUT: ${{ runner.temp }}/r19-original-native
+        run: node tests/browser_first_result_studio_r19.cjs --run
+      - name: Validate R19 original native result and saved screenshot/download evidence
+        if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
+        run: python tests/validate_r19_native_receipt_r2.py --root . --output "$RUNNER_TEMP/r19-original-native" --node-playwright-package "$RUNNER_TEMP/tls-r19-node/node_modules/playwright/package.json" --receipt "$RUNNER_TEMP/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json"
+      - name: Upload original R19 native evidence (synthetic only, evaluation not release)
+        if: always() && github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_R2_ORIGINAL_NATIVE_10_SCENARIOS
+          path: |
+            ${{ runner.temp }}/r19-original-native/R19_NATIVE_BROWSER_REPORT.json
+            ${{ runner.temp }}/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json
+            ${{ runner.temp }}/r19-original-native/R19_DESKTOP_NATIVE.png
+            ${{ runner.temp }}/r19-original-native/R19_MOBILE_NATIVE.png
+          if-no-files-found: warn
       - run: python tools/build.py
       - name: Install headful R17.7 activation test dependencies
         run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends xvfb xauth xdotool
@@ -365,52 +394,6 @@ jobs:
         run: python tests/test_bilingual_reader_browser_r13.py
       - run: python tests/test_r6_browser.py
  
-  r19-original-native-evaluation:
-    name: R19 original ten native Chromium scenarios (PR-only, no release)
-    if: github.event_name == 'pull_request' && github.head_ref == 'research/r19-r2-native-eval-20261107'
-    needs: verify
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install pinned Playwright 1.55.0 and matching Chromium
-        run: |
-          python -m pip install playwright==1.55.0
-          python -m playwright install --with-deps chromium
-          npm install --prefix "$RUNNER_TEMP/tls-r19-node" --no-audit --no-fund --ignore-scripts --no-save playwright@1.55.0
-      - name: Verify unchanged R19 R2 sources and original test runner before native execution
-        run: |
-          node tools/build_first_result_studio_r19.js --check
-          echo "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a  examples/TW_First_Result_Studio_R19_20261101.html" | sha256sum -c -
-          echo "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8  tests/browser_first_result_studio_r19.cjs" | sha256sum -c -
-          python tests/validate_r19_native_receipt_r2.py --self-test
-      - name: Run unchanged original R19 ten scenarios directly on file URL
-        env:
-          NODE_PATH: ${{ runner.temp }}/tls-r19-node/node_modules
-          TLS_R19_BROWSER_OUTPUT: ${{ runner.temp }}/r19-original-native
-        run: node tests/browser_first_result_studio_r19.cjs --run
-      - name: Verify original native report, real downloads, screenshot PNGs and scope
-        run: |
-          python tests/validate_r19_native_receipt_r2.py --root . --output "$RUNNER_TEMP/r19-original-native" --node-playwright-package "$RUNNER_TEMP/tls-r19-node/node_modules/playwright/package.json" --receipt "$RUNNER_TEMP/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json"
-      - name: Preserve original R19 synthetic-only native proof even after failure
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TLS_R19_R2_ORIGINAL_NATIVE_10_SCENARIOS
-          path: |
-            ${{ runner.temp }}/r19-original-native/R19_NATIVE_BROWSER_REPORT.json
-            ${{ runner.temp }}/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json
-            ${{ runner.temp }}/r19-original-native/R19_DESKTOP_NATIVE.png
-            ${{ runner.temp }}/r19-original-native/R19_MOBILE_NATIVE.png
-          if-no-files-found: warn
-
   # HISTORICAL RELEASE JOBS ARE PERMANENTLY DISABLED FOR NEW PUBLISHING.
   # Their old tags/assets remain available; only the central Full Suite job publishes new versions.
   release:
