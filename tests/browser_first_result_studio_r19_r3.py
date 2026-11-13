@@ -97,6 +97,7 @@ def run():
             check("\u202e" not in page.locator("#message").inner_text(),"APPLY_REINTRODUCED_BIDI")
         scenario("apply_uses_safe_label_but_real_file_contents",apply)
         def mobile():
+            page.screenshot(path=str(OUTPUT/"R19_R3_DESKTOP_SYNTHETIC.png"),full_page=True)
             page.set_viewport_size({"width":390,"height":844})
             page.screenshot(path=str(OUTPUT/"R19_R3_MOBILE_SYNTHETIC.png"),full_page=True)
             check(page.locator("#source").is_visible(),"MOBILE_SOURCE_INVISIBLE")
@@ -106,7 +107,6 @@ def run():
         REPORT["scenario_count"]=len(REPORT["scenarios"])
         REPORT["passed"]=sum(s["status"]=="PASS" for s in REPORT["scenarios"])
         REPORT["status"]="PASS" if REPORT["passed"]==REPORT["scenario_count"]==9 and not network and not errors else "FAIL"
-        page.screenshot(path=str(OUTPUT/"R19_R3_DESKTOP_SYNTHETIC.png"),full_page=True)
         context.close();browser.close()
     (OUTPUT/"R19_R3_CANDIDATE_NATIVE_REPORT.json").write_text(json.dumps(REPORT,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("R19_R3_NATIVE_CANDIDATE",REPORT["status"],str(REPORT["passed"])+"/9",flush=True)
