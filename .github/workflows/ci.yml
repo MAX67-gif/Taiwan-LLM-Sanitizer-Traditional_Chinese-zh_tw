@@ -57,6 +57,10 @@ jobs:
           node tools/build_first_result_studio_r19_r3.js --check
           python tests/validate_r19_r3_candidate_receipt.py --self-test
           python -m unittest tests/test_r19_r3_candidate_package.py -v
+      - name: R195 additive Suite 17.5 no-publish contract and adversarial historical tool tests
+        run: |
+          python tools/check_suite_175_promotion_plan.py --check
+          python -m unittest tests/test_suite_175_promotion_plan.py -v
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
