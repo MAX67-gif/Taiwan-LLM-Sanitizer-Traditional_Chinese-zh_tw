@@ -74,6 +74,17 @@ jobs:
       - name: R198 full 30-tool Suite 17.5 synthetic fixture build and adversarial integrity
         run: |
           python -m unittest tests/test_suite_175_fixture.py -v
+      - name: Verify SHA-pinned 30-tool full Suite fixture and emit metadata-only receipt
+        run: |
+          python tools/receipt_suite_175_fixture.py \
+            --receipt "$RUNNER_TEMP/r198-suite-fixture/R198_SYNTHETIC_30_ASSET_RECEIPT.json" \
+            --expected-sha "$GITHUB_SHA"
+      - name: Upload synthetic Suite 17.5 full fixture receipt (NO RELEASE)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R198_SUITE175_FULL_30_ASSET_FIXTURE_RECEIPT_ONLY
+          path: ${{ runner.temp }}/r198-suite-fixture/R198_SYNTHETIC_30_ASSET_RECEIPT.json
+          if-no-files-found: error
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
