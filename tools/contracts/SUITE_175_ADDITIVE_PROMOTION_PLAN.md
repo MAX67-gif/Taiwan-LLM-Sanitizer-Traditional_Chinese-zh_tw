@@ -23,6 +23,13 @@
 7. `publication_permission=NONE`、`merge_permission=NONE`，唯讀 CLI 不得呼叫 GitHub 發行 API 或寫入任何產物。
 8. 新增加的負面測試會竄改舊 ID、Tag、數量、來源雜湊、權利、完整性、曾發布狀態等，檢查會直接失敗。
 
+## 可直接審查的 30 項候選清單（本輪完成）
+
+- 執行 `python tools/render_suite_175_registry_preview.py --check`，會核對舊 29 項、提案第 30 項、來源 SHA 與權限，不輸出正式產品。
+- GitHub CI 另會把 `SUITE_175_THIRTY_TOOLS_REGISTRY_PREVIEW.json` 放入 `TLS_SUITE_175_30_TOOL_REGISTRY_REVIEW_ONLY` Actions 附件。包含**完整舊 29 項原始註冊資料＋新增 R19 R3 一項**，方便逐欄查差異。
+- 因官方 17.4.0 註冊表中的 6 個開發工具共用一個 Developer Bundle，所以獨立附件數計算為 **24 個直接 standalone 候選＋1 個 Developer Bundle＝25**；不是把 30 個工具全部當成 30 個獨立檔案。
+- 此 JSON 的 schema 是 `tls.suite-175-registry-preview.v1`，**不是目前正式 `tls.all-tools-registry.v1` 的可直接發布替代檔**。內容強制記錄 `publication_permission:NONE`、`complete_future_suite_generated:false`，不得跳過新版 Builder/Validator/Publisher 正式開發。
+
 ## 仍未完成、不可繞過的正式升版工作
 
 | 範圍 | 目前狀態 | 要求 |
