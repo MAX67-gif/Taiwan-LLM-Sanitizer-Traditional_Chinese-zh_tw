@@ -1,0 +1,956 @@
+{
+  "schema": "tls.r194.context-contrast-research.v1",
+  "language": "zh-TW",
+  "kind": "ORIGINAL_SYNTHETIC_RESEARCH",
+  "research_only": true,
+  "auto_rewrite": false,
+  "automatic_translation": false,
+  "human_quality_verified": false,
+  "adoption_measured": false,
+  "legal_claim": "SELF_AUTHORED_EXAMPLES_ONLY",
+  "taxonomy": [
+    "PREFERRED_SUGGESTION",
+    "FORBIDDEN_IN_WRONG_CONTEXT",
+    "UNTRANSLATABLE_PROTECTED",
+    "AMBIGUOUS_KEEP_ORIGINAL"
+  ],
+  "limitations": "Synthetic positive/counterexample pairs are teaching and test material, never global rules, dictionaries of certified translations, or user adoption measurements.",
+  "cases": [
+    {
+      "id": "CTX001",
+      "term": "menu",
+      "domain": "software_ui",
+      "positive": {
+        "text": "在編輯器右上角的 menu 開啟設定。",
+        "suggested_tw": "選單",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "餐館的 menu 列著今日套餐。",
+        "contextual_term": "菜單",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"menu\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX002",
+      "term": "click",
+      "domain": "software_ui",
+      "positive": {
+        "text": "請在對話框 click「繼續」。",
+        "suggested_tw": "點選",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "廣告報表把 click 當作點閱事件計數。",
+        "contextual_term": "點擊",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"click\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX003",
+      "term": "default",
+      "domain": "settings",
+      "positive": {
+        "text": "輸入框的 default 值可以修改。",
+        "suggested_tw": "預設",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "借款合約的 default 是未履行還款義務。",
+        "contextual_term": "違約",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"default\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX004",
+      "term": "cache",
+      "domain": "browser",
+      "positive": {
+        "text": "瀏覽器 cache 過期需要清除。",
+        "suggested_tw": "快取",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "戶外尋寶的 cache 藏在樹洞裡。",
+        "contextual_term": "藏匿物",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"cache\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX005",
+      "term": "thread",
+      "domain": "operating_system",
+      "positive": {
+        "text": "背景 thread 正在處理工作。",
+        "suggested_tw": "執行緒",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "論壇的 thread 有新回覆。",
+        "contextual_term": "討論串",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"thread\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX006",
+      "term": "process",
+      "domain": "operating_system",
+      "positive": {
+        "text": "系統會列出每個 process 的記憶體用量。",
+        "suggested_tw": "行程",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "團隊採購 process 仍有兩關待核准。",
+        "contextual_term": "流程",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"process\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX007",
+      "term": "instance",
+      "domain": "cloud",
+      "positive": {
+        "text": "新建雲端 instance 後再設定防火牆。",
+        "suggested_tw": "執行個體",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "老師用這個 instance 說明語法例外。",
+        "contextual_term": "實例",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"instance\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX008",
+      "term": "interface",
+      "domain": "software_api",
+      "positive": {
+        "text": "這個 interface 定義模組公開的方法。",
+        "suggested_tw": "介面",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "電路板的 interface 是實體連接接點。",
+        "contextual_term": "連接介面",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"interface\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX009",
+      "term": "save",
+      "domain": "software_ui",
+      "positive": {
+        "text": "按下 save 才會建立新稿。",
+        "suggested_tw": "儲存",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "每月 save 一筆備用金。",
+        "contextual_term": "存下",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"save\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX010",
+      "term": "run",
+      "domain": "software_cli",
+      "positive": {
+        "text": "先 run 測試再提交版本。",
+        "suggested_tw": "執行",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "選手沿著操場 run 一圈。",
+        "contextual_term": "跑",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"run\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX011",
+      "term": "screen",
+      "domain": "devices",
+      "positive": {
+        "text": "調整 screen 的顯示亮度。",
+        "suggested_tw": "螢幕",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "觀眾看著電影院的巨大 screen。",
+        "contextual_term": "銀幕",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"screen\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX012",
+      "term": "video",
+      "domain": "media",
+      "positive": {
+        "text": "剪輯完 video 再匯出檔案。",
+        "suggested_tw": "影片",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "會議室用 video 連線遠方同事。",
+        "contextual_term": "視訊",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"video\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX013",
+      "term": "feedback",
+      "domain": "product",
+      "positive": {
+        "text": "產品經理整理使用者 feedback。",
+        "suggested_tw": "回饋",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "電子控制器靠 feedback 修正輸出。",
+        "contextual_term": "回授",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"feedback\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX014",
+      "term": "cloud",
+      "domain": "infrastructure",
+      "positive": {
+        "text": "這份備份放在 cloud 儲存空間。",
+        "suggested_tw": "雲端",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "午後天空的 cloud 擋住陽光。",
+        "contextual_term": "雲",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"cloud\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX015",
+      "term": "profile",
+      "domain": "accounts",
+      "positive": {
+        "text": "在帳號 profile 更新顯示名稱。",
+        "suggested_tw": "個人檔案",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "畫家描繪模特兒的側面 profile。",
+        "contextual_term": "側面輪廓",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"profile\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX016",
+      "term": "model",
+      "domain": "ai",
+      "positive": {
+        "text": "這個 AI model 只用於示範。",
+        "suggested_tw": "模型",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "車廠推出新的 model 車款。",
+        "contextual_term": "車款",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"model\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX017",
+      "term": "prompt",
+      "domain": "ai",
+      "positive": {
+        "text": "請檢查這份 AI prompt 的角色設定。",
+        "suggested_tw": "提示詞",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "主持人要 prompt 來賓補充說明。",
+        "contextual_term": "提示",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"prompt\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX018",
+      "term": "window",
+      "domain": "desktop",
+      "positive": {
+        "text": "將編輯器 window 移到第二螢幕。",
+        "suggested_tw": "視窗",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "打開房間的 window 讓空氣流通。",
+        "contextual_term": "窗戶",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"window\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX019",
+      "term": "table",
+      "domain": "database",
+      "positive": {
+        "text": "SQL table 儲存使用者設定。",
+        "suggested_tw": "資料表",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "服務生整理餐廳的 table。",
+        "contextual_term": "餐桌",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"table\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX020",
+      "term": "field",
+      "domain": "forms",
+      "positive": {
+        "text": "表單的 field 必填姓名。",
+        "suggested_tw": "欄位",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "農人在 field 種植稻米。",
+        "contextual_term": "田地",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"field\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX021",
+      "term": "branch",
+      "domain": "git",
+      "positive": {
+        "text": "從主線建立 feature branch。",
+        "suggested_tw": "分支",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "鳥停在樹木的 branch 上。",
+        "contextual_term": "樹枝",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"branch\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX022",
+      "term": "commit",
+      "domain": "git",
+      "positive": {
+        "text": "完成檢查再 commit 程式變更。",
+        "suggested_tw": "提交",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "志工願意 commit 長期投入服務。",
+        "contextual_term": "承諾",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"commit\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX023",
+      "term": "issue",
+      "domain": "github",
+      "positive": {
+        "text": "請開一個 issue 追蹤介面缺陷。",
+        "suggested_tw": "議題",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "雜誌的春季 issue 已上市。",
+        "contextual_term": "期號",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"issue\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX024",
+      "term": "token",
+      "domain": "api_security",
+      "positive": {
+        "text": "不要在公開紀錄貼出 API token。",
+        "suggested_tw": "權杖",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "分詞器將句子切成數個 token。",
+        "contextual_term": "詞元",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"token\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX025",
+      "term": "key",
+      "domain": "data_structure",
+      "positive": {
+        "text": "JSON 的 key 名稱不可改寫。",
+        "suggested_tw": "鍵",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "出門前確認門鎖的 key 還在。",
+        "contextual_term": "鑰匙",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"key\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX026",
+      "term": "port",
+      "domain": "network",
+      "positive": {
+        "text": "服務改用 port 8443 連線。",
+        "suggested_tw": "連接埠",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "船舶在南部 port 靠岸。",
+        "contextual_term": "港口",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"port\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX027",
+      "term": "terminal",
+      "domain": "developer_tools",
+      "positive": {
+        "text": "打開 terminal 查看檔案。",
+        "suggested_tw": "終端機",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "旅客在機場的 terminal 等候登機。",
+        "contextual_term": "航廈",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"terminal\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX028",
+      "term": "asset",
+      "domain": "web_design",
+      "positive": {
+        "text": "將網站 asset 放進公開圖片目錄。",
+        "suggested_tw": "素材",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "財務報表的 asset 包含機器設備。",
+        "contextual_term": "資產",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"asset\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX029",
+      "term": "host",
+      "domain": "network",
+      "positive": {
+        "text": "檢查這台 host 的 DNS 記錄。",
+        "suggested_tw": "主機",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "活動 host 正在介紹來賓。",
+        "contextual_term": "主持人",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"host\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX030",
+      "term": "log",
+      "domain": "software_debugging",
+      "positive": {
+        "text": "檢查程式 log 找出錯誤。",
+        "suggested_tw": "紀錄",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "小屋外的 log 被鋸成木柴。",
+        "contextual_term": "原木",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"log\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX031",
+      "term": "snapshot",
+      "domain": "database",
+      "positive": {
+        "text": "還原之前先建立資料庫 snapshot。",
+        "suggested_tw": "快照",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "旅客拍了一張街景 snapshot。",
+        "contextual_term": "隨手拍",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"snapshot\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX032",
+      "term": "filter",
+      "domain": "ui",
+      "positive": {
+        "text": "打開列表 filter 只顯示未完成。",
+        "suggested_tw": "篩選器",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "飲水機的 filter 需要更換。",
+        "contextual_term": "濾芯",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"filter\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX033",
+      "term": "date",
+      "domain": "form",
+      "positive": {
+        "text": "在表單的 date 欄選擇星期五。",
+        "suggested_tw": "日期",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "兩人安排週末 date。",
+        "contextual_term": "約會",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"date\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX034",
+      "term": "菜单",
+      "domain": "software_ui",
+      "positive": {
+        "text": "桌面程式的 菜单 可以切換偏好設定。",
+        "suggested_tw": "選單",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "餐廳的 菜单 印著季節餐點。",
+        "contextual_term": "菜單",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"菜单\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX035",
+      "term": "点击",
+      "domain": "software_ui",
+      "positive": {
+        "text": "請 点击 視窗右上角的確認按鈕。",
+        "suggested_tw": "點選",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "廣告後台的 点击率 代表點閱比例。",
+        "contextual_term": "點擊",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"点击\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX036",
+      "term": "默认",
+      "domain": "software_ui",
+      "positive": {
+        "text": "將 默认 語言設成繁體中文。",
+        "suggested_tw": "預設",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "在會議上保持沉默不表示 默认 對方主張。",
+        "contextual_term": "默認",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"默认\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX037",
+      "term": "设置",
+      "domain": "software_ui",
+      "positive": {
+        "text": "請進入 设置 頁調整字幕語言。",
+        "suggested_tw": "設定",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "工作人員把設備 设置 在牆邊。",
+        "contextual_term": "設置",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"设置\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX038",
+      "term": "指针",
+      "domain": "programming",
+      "positive": {
+        "text": "C 語言的 指针 可以存放記憶體位址。",
+        "suggested_tw": "指標",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "鐘面上的 指针 正指向十二點。",
+        "contextual_term": "指針",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"指针\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX039",
+      "term": "线程",
+      "domain": "operating_system",
+      "positive": {
+        "text": "背景 线程 執行計算工作。",
+        "suggested_tw": "執行緒",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "論壇裡的討論 线程 有十則新留言。",
+        "contextual_term": "討論串",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"线程\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX040",
+      "term": "实例",
+      "domain": "cloud",
+      "positive": {
+        "text": "雲端服務建立了新的 实例。",
+        "suggested_tw": "執行個體",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "講義用這個 实例 解釋概念。",
+        "contextual_term": "實例",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"实例\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX041",
+      "term": "程序",
+      "domain": "software",
+      "positive": {
+        "text": "啟動這個 程序 檢查文件。",
+        "suggested_tw": "程式",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "申請補助要依照既定 程序 辦理。",
+        "contextual_term": "程序",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"程序\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX042",
+      "term": "文件",
+      "domain": "desktop",
+      "positive": {
+        "text": "把這份 Markdown 文件 存到資料夾。",
+        "suggested_tw": "檔案",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "主管機關發布正式 文件 說明新規定。",
+        "contextual_term": "文件",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"文件\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX043",
+      "term": "质量",
+      "domain": "content_quality",
+      "positive": {
+        "text": "請檢查字幕的翻譯 质量。",
+        "suggested_tw": "品質",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "物理課討論物體的 质量 與慣性。",
+        "contextual_term": "質量",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"质量\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX044",
+      "term": "进程",
+      "domain": "operating_system",
+      "positive": {
+        "text": "工作管理員列出所有 进程。",
+        "suggested_tw": "行程",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "改革 进程 需要各方長期協調。",
+        "contextual_term": "進程",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"进程\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX045",
+      "term": "反馈",
+      "domain": "product",
+      "positive": {
+        "text": "請留下對介面的使用 反馈。",
+        "suggested_tw": "回饋",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "電路利用 反馈 訊號調整輸出。",
+        "contextual_term": "回授",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"反馈\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX046",
+      "term": "视频",
+      "domain": "media",
+      "positive": {
+        "text": "把教學 视频 存成離線檔案。",
+        "suggested_tw": "影片",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "遠端 视频 會議需要麥克風。",
+        "contextual_term": "視訊",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"视频\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX047",
+      "term": "账号",
+      "domain": "software_accounts",
+      "positive": {
+        "text": "先建立使用者 账号 才能登入。",
+        "suggested_tw": "帳號",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "會計人員核對總帳 账号 分類。",
+        "contextual_term": "會計科目",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"账号\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX048",
+      "term": "保存",
+      "domain": "software_ui",
+      "positive": {
+        "text": "按下 保存 才能下載新稿。",
+        "suggested_tw": "儲存",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "文化館努力 保存 古老工藝。",
+        "contextual_term": "保存",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"保存\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX049",
+      "term": "撤销",
+      "domain": "editor",
+      "positive": {
+        "text": "誤改段落後按 撤销。",
+        "suggested_tw": "復原",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "主管機關依法 撤销 已核發的資格。",
+        "contextual_term": "撤銷",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"撤销\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX050",
+      "term": "恢复",
+      "domain": "backup",
+      "positive": {
+        "text": "從備份 恢复 原有設定。",
+        "suggested_tw": "還原",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "病人逐漸 恢复 正常呼吸。",
+        "contextual_term": "恢復",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"恢复\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX051",
+      "term": "登录",
+      "domain": "web_auth",
+      "positive": {
+        "text": "請 登录 後修改帳號設定。",
+        "suggested_tw": "登入",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "太空船預計明天 登录 火星表面。",
+        "contextual_term": "登陸",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"登录\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    },
+    {
+      "id": "CTX052",
+      "term": "屏幕",
+      "domain": "devices",
+      "positive": {
+        "text": "更改筆電 屏幕 的解析度。",
+        "suggested_tw": "螢幕",
+        "mode": "SUGGEST_ONLY"
+      },
+      "counterexample": {
+        "text": "電影院的巨大 屏幕 放映影片。",
+        "contextual_term": "銀幕",
+        "mode": "DO_NOT_APPLY_POSITIVE"
+      },
+      "protected_example": "`const label = \"屏幕\";`",
+      "provenance": "ORIGINAL_SYNTHETIC_EXAMPLE",
+      "status": "NEEDS_HUMAN_REVIEW"
+    }
+  ]
+}
