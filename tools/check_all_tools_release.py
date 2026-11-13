@@ -323,6 +323,16 @@ def verify_workflow(workflow_text=None):
         expect(fragment in block, 'R178_B0_RELEASE_METADATA_GATE_MISSING:' + fragment)
     expect(block.count("if: steps.r173_scope.outputs.docs_only == 'true'") == 1,
            'R178_B0_UNEXPECTED_RELEASE_GATE_COUNT')
+    # R193 is a read-only metadata safeguard on research/docs-only main updates.
+    # It cannot replace the old R17.1-R17.3 withdrawal audit or run publisher.
+    import check_r173_research_scope as R193
+    expect(block.count(R193.R193_RELEASE_STEPS) == 1,
+           'R193_PINNED_CURRENT_RELEASE_METADATA_GATE_MISSING_OR_MUTATED')
+    expect(block.index(R193.R193_RELEASE_STEPS) >
+           block.index('tools/check_r178_b0_release.py'),
+           'R193_CURRENT_RELEASE_CHECK_ORDER')
+    expect('continue-on-error:' not in R193.R193_RELEASE_STEPS,
+           'R193_CANNOT_SOFT_FAIL')
     expect(block.count("if: steps.r173_scope.outputs.product_changed == 'true'") == 2,
            'RESEARCH_SCOPE_MUST_GUARD_BOTH_BUILD_AND_PUBLISH')
     for fragment in ('tools/build_all_tools_release.py', 'tools/check_all_tools_release.py',
@@ -332,6 +342,7 @@ def verify_workflow(workflow_text=None):
         gate_header = jobs[job].split('\n    steps:', 1)[0]
         expect(not re.search(r'^    (?:if|continue-on-error):', gate_header, re.M), 'MRFT_REQUIRED_JOB_MUST_EXECUTE:' + job)
     verify = jobs['verify']
+    require_unconditional_single_command(verify, 'python -m unittest tests/test_r193_release_snapshot.py -v')
     for command in ('python tools/build_mrft_r177.py', 'python tools/build_mrft_r177.py --check',
                     'python tests/test_mrft_build_r177.py',
                     'python -m unittest tests/test_all_tools_mrft_r177.py -v'):
