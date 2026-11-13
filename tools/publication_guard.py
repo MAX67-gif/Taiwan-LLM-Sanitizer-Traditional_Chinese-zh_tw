@@ -82,6 +82,7 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/fixtures_first_task.md", "research/comparison/r173/naive_baseline.js",
     "research/comparison/r173/prepare_spans.js", "research/comparison/r173/opencc_adapter.py",
     "research/comparison/r173/import_model_result.py", "research/comparison/r173/score_and_audit.py",
+    "research/comparison/r173/r19_filename_display_shadow.js",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
@@ -244,6 +245,8 @@ def self_test():
     assert allowed_path("README.md")
     assert allowed_path("README.zh-CN.md")
     assert allowed_path("research/comparison/r173/methodology.json")
+    assert allowed_path("research/comparison/r173/r19_filename_display_shadow.js")
+    assert not allowed_path("research/comparison/r173/r19_filename_display_SHADOW.py")
     assert not allowed_path("research/comparison/r173/actual_private_outputs.jsonl")
     assert allowed_path("docs/USAGE_EXAMPLES.zh-CN.md")
     assert allowed_path("docs/ROADMAP.md")
