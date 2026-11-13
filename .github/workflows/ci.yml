@@ -42,6 +42,8 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_all_tools*.py' -v
           python tools/check_all_tools_release.py --check-workflow
+      - name: Verify R193 pinned release snapshot validator with synthetic counterexamples
+        run: python -m unittest tests/test_r193_release_snapshot.py -v
       - name: Verify exact R19 R2 public source and complete Node regression (automated, no human tests)
         run: |
           node tools/build_first_result_studio_r19.js --check
@@ -960,6 +962,26 @@ jobs:
             --r172-json "$RUNNER_TEMP/tls-r178-existing-r172.json" \
             --r173-json "$RUNNER_TEMP/tls-r178-existing-r173.json" \
             --receipt "$RUNNER_TEMP/tls_all_tools_publication_receipt.json"
+      - name: Verify published Suite 17.4.0 tag and all 29 asset digests on non-product main updates
+        if: steps.r173_scope.outputs.research_only == 'true' || steps.r173_scope.outputs.docs_only == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          gh api "repos/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tags/all-tools-suite-v17.4.0" > "$RUNNER_TEMP/tls-r193-official-release.json"
+          gh api "repos/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/git/ref/tags/all-tools-suite-v17.4.0" > "$RUNNER_TEMP/tls-r193-official-ref.json"
+          python tools/verify_release_snapshot_r193.py \
+            --release-json "$RUNNER_TEMP/tls-r193-official-release.json" \
+            --tag-ref-json "$RUNNER_TEMP/tls-r193-official-ref.json" \
+            --receipt "$RUNNER_TEMP/tls-r193-published-suite-receipt.json"
+      - name: Upload published Suite 17.4.0 read-only metadata receipt
+        if: steps.r173_scope.outputs.research_only == 'true' || steps.r173_scope.outputs.docs_only == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R193_Current_Suite_1740_Immutable_Metadata
+          path: ${{ runner.temp }}/tls-r193-published-suite-receipt.json
+          if-no-files-found: error
       - name: Preserve verified publication outcome or blocking reason
         if: always()
         uses: actions/upload-artifact@v4
