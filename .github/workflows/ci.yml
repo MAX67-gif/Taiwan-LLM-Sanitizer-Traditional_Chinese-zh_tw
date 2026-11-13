@@ -56,6 +56,7 @@ jobs:
           node --check src/r19/first_result_studio_r19_r3.js
           node tools/build_first_result_studio_r19_r3.js --check
           python tests/validate_r19_r3_candidate_receipt.py --self-test
+          python -m unittest tests/test_r19_r3_candidate_package.py -v
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
@@ -361,6 +362,19 @@ jobs:
         run: python tests/browser_first_result_studio_r19_r3.py
       - name: Independently validate R19 R3 candidate native report and screenshot widths
         run: python tests/validate_r19_r3_candidate_receipt.py --root . --output "$RUNNER_TEMP/r19-r3-candidate-native" --receipt "$RUNNER_TEMP/r19-r3-candidate-native/R19_R3_CANDIDATE_VALIDATION_RECEIPT.json"
+      - name: Build SHA-locked R19 R3 candidate artifact after native receipt
+        run: |
+          python tools/package_r19_r3_candidate.py \
+            --root . \
+            --evidence "$RUNNER_TEMP/r19-r3-candidate-native" \
+            --stage "$RUNNER_TEMP/tls-r19-r3-offline-candidate" \
+            --expected-sha "$GITHUB_SHA"
+      - name: Upload R19 R3 offline HTML engineering candidate (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_R3_OFFLINE_HTML_CANDIDATE_NOT_RELEASED
+          path: ${{ runner.temp }}/tls-r19-r3-offline-candidate/
+          if-no-files-found: error
       - name: Upload R19 R3 candidate evidence (not released, no human QA)
         if: always()
         uses: actions/upload-artifact@v4
