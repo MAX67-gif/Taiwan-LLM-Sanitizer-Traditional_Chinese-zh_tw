@@ -157,7 +157,8 @@ class CandidatePackageSafety(unittest.TestCase):
         self.assertLess(workflow.index(evidence), workflow.index(stage))
         self.assertLess(workflow.index(stage), workflow.index(upload))
         excerpt = workflow[workflow.index("      - name: " + upload):]
-        self.assertIn("if-no-files-found: error", excerpt.split("      - name:", 1)[0])
+        excerpt = excerpt.split("\n      - ", 1)[0]
+        self.assertIn("if-no-files-found: error", excerpt)
         self.assertIn("TLS_R19_R3_OFFLINE_HTML_CANDIDATE_NOT_RELEASED", excerpt)
         self.assertIn("tools/package_r19_r3_candidate.py", workflow)
         self.assertNotIn("gh release create", excerpt.split("      - name:", 1)[0])
