@@ -51,6 +51,10 @@ jobs:
           echo "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8  tests/browser_first_result_studio_r19.cjs" | sha256sum -c -
           python tests/validate_r19_native_receipt_r2.py --self-test
           node --test tests/*.js
+      - name: Check isolated R19 R3 candidate exact standalone builder (not a release)
+        run: |
+          node --check src/r19/first_result_studio_r19_r3.js
+          node tools/build_first_result_studio_r19_r3.js --check
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
@@ -349,6 +353,20 @@ jobs:
             ${{ runner.temp }}/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json
             ${{ runner.temp }}/r19-original-native/R19_DESKTOP_NATIVE.png
             ${{ runner.temp }}/r19-original-native/R19_MOBILE_NATIVE.png
+          if-no-files-found: warn
+      - name: R19 R3 candidate synthetic filename safety — real Chromium file URL
+        env:
+          TLS_R19_R3_BROWSER_OUTPUT: ${{ runner.temp }}/r19-r3-candidate-native
+        run: python tests/browser_first_result_studio_r19_r3.py
+      - name: Upload R19 R3 candidate evidence (not released, no human QA)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_R3_FILENAME_SAFETY_CANDIDATE
+          path: |
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_CANDIDATE_NATIVE_REPORT.json
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_DESKTOP_SYNTHETIC.png
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_MOBILE_SYNTHETIC.png
           if-no-files-found: warn
       - run: python tools/build.py
       - name: Install headful R17.7 activation test dependencies
