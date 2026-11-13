@@ -304,3 +304,113 @@ test('R196 prohibits source exposure, network, disk writes and claimed quality',
  assert(!Object.keys(result).includes('prompt'));
  assert.equal(result.scope,'EXACT_ORIGINAL_SYNTHETIC_FIXTURES_ONLY');
 });
+
+
+// R197: synthetic 260-item human review queue, deliberately not user text.
+const R197=require('../research/comparison/r173/context_review_queue_r197.js');
+test('R197 emits exactly 52x5 conflict/protected/unknown review reasons without text',()=>{
+ const report=R197.createReviewQueue();
+ assert.equal(report.summary.case_count,52);
+ assert.equal(report.summary.review_item_count,260);
+ assert.equal(report.items.length,260);
+ assert.deepEqual(Object.values(report.summary.state_count),[52,52,52,52,52]);
+ assert.equal(report.summary.human_review_done,0);
+ assert.equal(report.summary.automatic_rewrite_enabled,false);
+ assert.equal(report.summary.release_permission,'NONE');
+ assert.equal(report.summary.source_bytes_in_queue,false);
+ assert.equal(report.summary.private_user_text_in_queue,false);
+ assert.equal(report.summary.user_adoption_measured,false);
+ assert.equal(report.summary.external_requests,0);
+ assert(R197.validateQueue(report));
+});
+
+test('R197 review IDs, risks and fixture states are stable, source-free and distinct',()=>{
+ const corpus=R194.load(),queue=R197.createReviewQueue();
+ const ids=new Set(),pairIds=new Set(corpus.cases.map(c=>c.id));
+ for(const item of queue.items){
+  assert(!ids.has(item.review_id),item.review_id);ids.add(item.review_id);
+  assert(pairIds.has(item.case_id));
+  assert(/^CTX\d{3}__[a-z_]+$/.test(item.review_id));
+  assert.equal(item.safe_to_auto_apply,false);
+  assert.equal(item.human_review_status,'NOT_COLLECTED');
+  assert.equal(item.suggested_action,'HUMAN_REVIEW_OR_KEEP');
+  assert.equal(item.original_text_in_queue,false);
+  assert(/^P[012]_REVIEW_[A-Z_]+$/.test(item.risk_priority));
+  assert(!Object.hasOwn(item,'text'));
+  assert(!Object.hasOwn(item,'source'));
+  assert(!Object.hasOwn(item,'prompt'));
+ }
+ for(const row of corpus.cases){
+  const subset=queue.items.filter(x=>x.case_id===row.id);
+  assert.equal(subset.length,5);
+  for(const text of [row.positive.text,row.counterexample.text,row.protected_example]){
+   assert(!JSON.stringify(subset).includes(text),row.id+' leaked');
+  }
+ }
+});
+
+test('R197 prioritizes structure and contradictions before routine suggestions',()=>{
+ const a=R197.createReviewQueue();
+ assert.equal(a.summary.priority_count.P0_REVIEW_STRUCTURE,52);
+ assert.equal(a.summary.priority_count.P0_REVIEW_CONFLICT,52);
+ assert.equal(a.summary.priority_count.P1_REVIEW_WRONG_DOMAIN,52);
+ assert.equal(a.summary.priority_count.P1_REVIEW_UNSEEN_CONTEXT,52);
+ assert.equal(a.summary.priority_count.P2_REVIEW_WORDED_OPTION,52);
+ const expected={
+  protected_example:['PROTECTED_KEEP','P0_REVIEW_STRUCTURE'],
+  positive_negative_conflict:['CONFLICT_KEEP','P0_REVIEW_CONFLICT'],
+  negative_counterexample:['COUNTEREXAMPLE_BLOCK','P1_REVIEW_WRONG_DOMAIN'],
+  unseen_context:['UNKNOWN_KEEP','P1_REVIEW_UNSEEN_CONTEXT'],
+  positive_suggestion_only:['PREFERRED_SUGGESTION','P2_REVIEW_WORDED_OPTION'],
+ };
+ for(const item of a.items){
+  assert.deepEqual([item.route,item.risk_priority],expected[item.fixture_kind],item.review_id);
+ }
+});
+
+test('R197 rejects forged review approval, changed priority or omitted queue item',()=>{
+ const original=R197.createReviewQueue();
+ const changes=[
+  x=>{x.summary.human_review_done=1;},
+  x=>{x.summary.automatic_rewrite_enabled=true;},
+  x=>{x.summary.release_permission='YES';},
+  x=>{x.summary.full_language_accuracy_verified=true;},
+  x=>{x.items[0].risk_priority='P3_AUTO_APPROVE';},
+  x=>{x.items[0].safe_to_auto_apply=true;},
+  x=>{x.items[0].source='CONFIDENTIAL';},
+  x=>{x.items.pop();},
+  x=>{x.items[1].review_id=x.items[0].review_id;},
+ ];
+ for(const mutate of changes){
+  const cloned=structuredClone(original);mutate(cloned);
+  assert.throws(()=>R197.validateQueue(cloned),/R197_/);
+ }
+});
+
+test('R197 must reject R194 unapproved dataset changes instead of normalizing',()=>{
+ const baseline=R194.load();
+ for(const mutate of [
+  d=>d.cases.pop(),
+  d=>{d.cases[0].status='HUMAN_APPROVED';},
+  d=>{d.cases[0].provenance='THIRD_PARTY_SCRAPE';},
+  d=>{d.auto_rewrite=true;},
+ ]){
+  const d=structuredClone(baseline);mutate(d);
+  assert.throws(()=>R197.createReviewQueue(d),/R194_|R197_/);
+ }
+});
+
+test('R197 research-only queue source has no network or disk writer',()=>{
+ const content=require('node:fs').readFileSync(
+  require('node:path').join(__dirname,'../research/comparison/r173/context_review_queue_r197.js'),'utf8');
+ for(const danger of ['fetch(', 'XMLHttpRequest','WebSocket(', 'sendBeacon(',
+                      'writeFileSync(', 'writeFile(', 'gh release',
+                      'auto_apply:true','license_review: "CERTIFIED"']){
+  assert(!content.includes(danger),danger);
+ }
+ const q1=R197.createReviewQueue(),q2=R197.createReviewQueue();
+ assert.equal(JSON.stringify(q1),JSON.stringify(q2));
+ assert(Object.isFrozen(q1.summary));
+ assert(Object.isFrozen(q1.items));
+ assert(Object.isFrozen(q1.items[0]));
+});
