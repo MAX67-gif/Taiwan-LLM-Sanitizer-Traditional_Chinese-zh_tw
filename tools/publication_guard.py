@@ -85,6 +85,8 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/context_contrasts_r194.json",
     "research/comparison/r173/context_contrasts_r194.js",
     "research/comparison/r173/R194_CONTEXT_CONTRAST_README.md",
+    "research/comparison/r173/context_conflict_router_r196.js",
+    "research/comparison/r173/R196_CONTRADICTION_FIRST_README.md",
     "research/comparison/r173/r19_filename_display_shadow.js",
 }
 PUBLIC_R175_RESEARCH={
@@ -252,6 +254,9 @@ def self_test():
     assert allowed_path("research/comparison/r173/context_contrasts_r194.json")
     assert allowed_path("research/comparison/r173/context_contrasts_r194.js")
     assert allowed_path("research/comparison/r173/R194_CONTEXT_CONTRAST_README.md")
+    assert allowed_path("research/comparison/r173/context_conflict_router_r196.js")
+    assert allowed_path("research/comparison/r173/R196_CONTRADICTION_FIRST_README.md")
+    assert not allowed_path("research/comparison/r173/context_conflict_router_r196_private.js")
     assert not allowed_path("research/comparison/r173/context_contrasts_r194_PRIVATE.json")
     assert not allowed_path("research/comparison/r173/r19_filename_display_SHADOW.py")
     assert not allowed_path("research/comparison/r173/actual_private_outputs.jsonl")
