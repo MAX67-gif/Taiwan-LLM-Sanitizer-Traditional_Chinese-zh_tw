@@ -6,7 +6,7 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
-from tests.test_all_tools_release import FullSuiteSafetyContract as OldFixture
+from tests import test_all_tools_release as LegacyTestModule
 import build_suite_175_fixture as New
 import check_suite_175_promotion_plan as Plan
 import check_all_tools_release as OldValidator
@@ -15,15 +15,15 @@ import check_all_tools_release as OldValidator
 class Suite175FullFixtureEvidence(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        OldFixture.setUpClass()
-        cls.old = OldFixture
+        LegacyTestModule.FullSuiteSafetyContract.setUpClass()
+        cls.old = LegacyTestModule.FullSuiteSafetyContract
         cls.stage = cls.old.root / "stage175"
         cls.manifest = New.prepare_fixture(
             cls.old.stage, cls.stage, cls.old.fixture_registry)
 
     @classmethod
     def tearDownClass(cls):
-        OldFixture.tearDownClass()
+        LegacyTestModule.FullSuiteSafetyContract.tearDownClass()
 
     def mut_stage(self, change):
         stage = self.old.root / ("tampered175_" +
