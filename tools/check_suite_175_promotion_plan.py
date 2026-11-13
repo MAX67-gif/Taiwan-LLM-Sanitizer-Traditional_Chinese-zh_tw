@@ -19,7 +19,7 @@ import build_all_tools_release as B
 import verify_release_snapshot_r193 as R193
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT = ROOT / "release/candidates/suite_175_r19_r3_proposal.json"
+CONTRACT = ROOT / "tools/contracts/suite_175_r19_r3_proposal.json"
 LEGACY_REGISTRY = ROOT / "release/all_tools_registry.json"
 R2_SOURCE = ROOT / "examples/TW_First_Result_Studio_R19_20261101.html"
 R3_SOURCE = ROOT / "examples/TW_First_Result_Studio_R19_R3_CANDIDATE_20261113.html"
