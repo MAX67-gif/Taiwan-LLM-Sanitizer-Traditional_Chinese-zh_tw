@@ -129,5 +129,66 @@ class SuiteNextPromotionContractTests(unittest.TestCase):
         self.assertEqual(self.check()["status"],
                          "CONTRACT_ONLY_STRUCTURAL_PASS_NO_RELEASE")
 
+
+class SuiteNextPreviewRendererTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import render_suite_175_registry_preview as R
+        cls.R = R
+        cls.plan = Next.safe_json(Next.CONTRACT)
+
+    def test_09_preview_copies_29_exact_rows_and_adds_one(self):
+        import build_all_tools_release as B
+        data = self.R.render(self.plan)
+        old = B.strict_json(Next.LEGACY_REGISTRY.read_bytes(), "original")
+        self.assertEqual(data["status"], "STRUCTURAL_PREVIEW_ONLY_NOT_PUBLISHABLE")
+        self.assertEqual(data["tools"][:29], old["tools"])
+        self.assertEqual(data["tools"][29], self.plan["proposed"]["new_tool"])
+        self.assertEqual(data["total_proposed_tools"], 30)
+        self.assertEqual(data["standalone_assets_planned"], 25)
+        self.assertEqual(data["github_release_assets_planned"], 30)
+        self.assertFalse(data["complete_future_suite_generated"])
+        self.assertEqual(data["publication_permission"], "NONE")
+        self.assertEqual(data["merge_permission"], "NONE")
+
+    def test_10_preview_is_deterministic_and_never_writes_to_original_registry(self):
+        import hashlib
+        before = Next.LEGACY_REGISTRY.read_bytes()
+        one = self.R.encoded(self.plan)
+        two = self.R.encoded(deepcopy(self.plan))
+        self.assertEqual(one, two)
+        self.assertEqual(hashlib.sha256(one).hexdigest(), hashlib.sha256(two).hexdigest())
+        self.assertEqual(Next.LEGACY_REGISTRY.read_bytes(), before)
+        self.assertNotIn(b"USER_PRIVATE_TEXT", one)
+
+    def test_11_renderer_refuses_unreviewed_output_and_bad_count(self):
+        with tempfile.TemporaryDirectory(prefix="tls-r195-preview-") as folder:
+            folder = Path(folder)
+            out = folder / self.R.OUTPUT_FILE
+            self.assertEqual(self.R.preview_output_path(out), out)
+            out.write_text("keep existing", encoding="utf-8")
+            with self.assertRaisesRegex(self.R.PreviewBlocked, "OUTPUT_ALREADY_EXISTS"):
+                self.R.preview_output_path(out)
+            with self.assertRaisesRegex(self.R.PreviewBlocked, "OUTPUT_FILENAME_NOT_CANONICAL"):
+                self.R.preview_output_path(folder / "other.json")
+            with self.assertRaisesRegex(self.R.PreviewBlocked, "OUTPUT_INSIDE_GIT_CHECKOUT"):
+                self.R.preview_output_path(ROOT / self.R.OUTPUT_FILE)
+        data=deepcopy(self.plan)
+        data["proposed"]["new_tool"]["expected_sha256"]="0"*64
+        with self.assertRaises(Next.NotPromotable):
+            self.R.render(data)
+
+    def test_12_ci_preview_is_only_a_normal_actions_artifact_not_release(self):
+        text=(ROOT/".github/workflows/ci.yml").read_text("utf-8")
+        self.assertEqual(text.count(
+            "Upload additive Suite 17.5 thirty-tool registry REVIEW ONLY"), 1)
+        self.assertEqual(text.count(
+            "Render additive Suite 17.5 review-only 30-tool registry"), 1)
+        self.assertIn("tools/render_suite_175_registry_preview.py --output",text)
+        self.assertIn("TLS_SUITE_175_30_TOOL_REGISTRY_REVIEW_ONLY",text)
+        self.assertIn("if-no-files-found: error",text)
+        self.assertIn("tools/check_suite_175_promotion_plan.py --check",text)
+        self.assertNotIn("gh release create all-tools-suite-v17.5.0",text)
+
 if __name__ == "__main__":
     unittest.main()
