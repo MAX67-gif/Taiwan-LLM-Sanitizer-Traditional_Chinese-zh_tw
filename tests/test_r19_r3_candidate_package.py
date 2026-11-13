@@ -164,5 +164,44 @@ class CandidatePackageSafety(unittest.TestCase):
         self.assertNotIn("gh release create", excerpt.split("      - name:", 1)[0])
 
 
+    def test_07_png_receipt_rejects_fake_header_crc_zlib_filters_and_trailing(self):
+        import zlib
+
+        def chunk(kind, payload):
+            return (len(payload).to_bytes(4, "big") + kind + payload
+                    + (zlib.crc32(kind + payload) & 0xffffffff).to_bytes(4, "big"))
+
+        width, height = 350, 400
+        rgb = b"".join(
+            b"\x00" + bytes(((j * 13 + i * 17) & 255 for j in range(width * 3)))
+            for i in range(height)
+        )
+        ihdr = (width.to_bytes(4, "big") + height.to_bytes(4, "big")
+                + bytes([8, 2, 0, 0, 0]))
+        prefix = b"\x89PNG\r\n\x1a\n"
+        png = prefix + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(rgb)) + chunk(b"IEND", b"")
+        self.assertGreater(len(png), 1024)
+        with tempfile.TemporaryDirectory(prefix="tls-r19-r3-png-") as folder:
+            path = Path(folder) / "synthetic.png"
+            path.write_bytes(png)
+            self.assertEqual(P.Native.png(path, width=350)["height"], height)
+            with self.assertRaisesRegex(P.Native.Rejected, "PNG_WRONG_VIEWPORT_WIDTH"):
+                P.Native.png(path, width=390)
+            bad_crc = bytearray(png)
+            bad_crc[29] ^= 1
+            mutations = [
+                bytes(bad_crc),
+                prefix + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(b"\x00")) + chunk(b"IEND", b""),
+                prefix + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(b"\x05" + rgb[1:])) + chunk(b"IEND", b""),
+                png[:-12],
+                png + b"extra",
+                prefix + b"\x00" * 1500,
+            ]
+            for idx, altered in enumerate(mutations):
+                with self.subTest(mutation=idx), self.assertRaises(P.Native.Rejected):
+                    path.write_bytes(altered)
+                    P.Native.png(path)
+
+
 if __name__ == "__main__":
     unittest.main()
