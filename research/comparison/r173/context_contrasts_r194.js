@@ -20,10 +20,11 @@ function validate(data){
   ||data.legal_claim!=='SELF_AUTHORED_EXAMPLES_ONLY')reject('SCHEMA_OR_PROMOTION');
  if(!Array.isArray(data.taxonomy)||!Array.isArray(data.cases)||
    data.cases.length<40||data.cases.length>120)reject('CASE_COUNT');
- const expected=Object.values(STATES);
+ const allowedTaxonomy=['PREFERRED_SUGGESTION','FORBIDDEN_IN_WRONG_CONTEXT',
+                        'UNTRANSLATABLE_PROTECTED','AMBIGUOUS_KEEP_ORIGINAL'];
  const tax=new Set(data.taxonomy);
- if(tax.size!==data.taxonomy.length||!expected.filter(s=>s!=='COUNTEREXAMPLE_BLOCK'&&s!=='UNKNOWN_KEEP').every(tax.has)
-   ||!tax.has('AMBIGUOUS_KEEP_ORIGINAL')||!tax.has('FORBIDDEN_IN_WRONG_CONTEXT'))reject('TAXONOMY');
+ if(tax.size!==allowedTaxonomy.length||allowedTaxonomy.some(state=>!tax.has(state)))
+   reject('TAXONOMY');
  const seen=new Set(),domains=new Set(),terms=new Set();
  for(const item of data.cases){
   if(!item||typeof item!=='object'||!/^CTX\d{3}$/.test(item.id||'')||seen.has(item.id))
@@ -72,6 +73,6 @@ function routeExactSynthetic(item,input,{protectedExample=false}={}){
 }
 if(require.main===module){
  if(process.argv.length!==3||process.argv[2]!=='--check')reject('USAGE_ONLY_CHECK');
- console.log(JSON.stringify(load()&&validate(load()),null,2));
+ console.log(JSON.stringify(validate(load()),null,2));
 }
 module.exports=Object.freeze({load,validate,routeExactSynthetic,STATES});
