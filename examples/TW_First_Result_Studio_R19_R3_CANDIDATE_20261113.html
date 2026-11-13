@@ -1173,8 +1173,20 @@ function discardStaged(){
  stageSerial++;stagedFile=null;
  $('stagedFilePanel').hidden=true;$('stagedFileSummary').textContent='';$('file').value='';
 }
+// Display-only sanitization: never alter File.name, extension validation or content.
+// Strip invisible direction/control characters; preserve Arabic letters and emoji ZWJ.
 function safeDisplayName(name){
- return String(name||'未命名檔案').replace(/[\u0000-\u001f\u007f]/g,'').slice(0,90);
+ const raw=typeof name==='string'?name:'';
+ const cleaned=raw.replace(/[\u0000-\u001f\u007f-\u009f\u061c\u200b\u200e\u200f\u2028\u2029\u202a-\u202e\u2060\u2066-\u2069\ufeff]/gu,'');
+ const removed=Array.from(raw).length-Array.from(cleaned).length;
+ let label=cleaned||'未命名檔案';
+ const limit=90,chars=Array.from(label),truncated=chars.length>limit;
+ if(truncated){
+  const ext=/\.(?:md|markdown|txt)$/iu.exec(label)?.[0]||'';
+  const stem=ext?label.slice(0,-ext.length):label;
+  label=Array.from(stem).slice(0,Math.max(4,limit-Array.from(ext).length-1)).join('')+'…'+ext;
+ }
+ return Object.freeze({label,removed,truncated});
 }
 async function stageFile(file){
  const ticket=++stageSerial;
@@ -1187,8 +1199,16 @@ async function stageFile(file){
   const bytes=await file.arrayBuffer();
   if(ticket!==stageSerial)return;
   const source=Helpers.decodeMarkdownBytes(bytes,file.size,API.MAX_BYTES);
-  stagedFile={source,name:safeDisplayName(file.name),bytes:bytes.byteLength};
-  $('stagedFileSummary').textContent='待載入：'+stagedFile.name+'（'+stagedFile.bytes+' 位元組）。目前文字及所有決策尚未被覆蓋。';
+  const label=safeDisplayName(file.name);
+  stagedFile={source,name:label.label,display:label,bytes:bytes.byteLength};
+  const summary=$('stagedFileSummary');
+  summary.textContent='待載入：';
+  const isolated=create('bdi',label.label);isolated.setAttribute('dir','auto');summary.appendChild(isolated);
+  const notes=[];
+  if(label.removed)notes.push('檔名含特殊控制字元，已隱藏 '+label.removed+' 個');
+  if(label.truncated)notes.push('檔名過長，已縮短顯示並保留副檔名');
+  summary.appendChild(create('span','（'+stagedFile.bytes+' 位元組）。'+
+   (notes.length?notes.join('；')+'。':'')+'目前文字及所有決策尚未被覆蓋。'));
   $('stagedFilePanel').hidden=false;
   announce('已在本機檢查檔案。請選擇「使用這份檔案」才會取代目前文字。','ok');
   $('applyFile').focus({preventScroll:true});
