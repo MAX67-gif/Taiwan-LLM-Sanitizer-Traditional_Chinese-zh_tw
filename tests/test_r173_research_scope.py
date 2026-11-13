@@ -334,4 +334,68 @@ class R191BrowserRunnerCompatibilityTests(unittest.TestCase):
   self.assertFalse(C.classify([('M','README.md'),('M','tools/check_r173_research_scope.py')])[0])
 
 
+
+class R193ImmutablePublishedSuiteRouteTests(unittest.TestCase):
+ def transaction(self):
+  return [(state,path) for path,state in sorted(C.R193_STATES.items())]
+
+ def test_r193_exact_six_file_route_only(self):
+  tx=self.transaction()
+  self.assertEqual(len(tx),6)
+  self.assertEqual(C.classify(tx),(True,'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX'))
+  for i,(state,path) in enumerate(tx):
+   with self.subTest(path=path):
+    self.assertNotEqual(C.classify(tx[:i]+tx[i+1:])[1],
+                        'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX')
+    for bad in ('A' if state=='M' else 'M','D','R100'):
+     self.assertNotEqual(C.classify(tx[:i]+[(bad,path)]+tx[i+1:])[1],
+                         'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX')
+  for extra in ('README.md','src/r19/first_result_studio_r19.js',
+                'release/all_tools_registry.json',
+                'research/comparison/r173/methodology.json',
+                'docs/ROADMAP.md','tools/publish_all_tools_release.py'):
+   self.assertNotEqual(C.classify(tx+[('M',extra)])[1],
+                       'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX')
+  self.assertNotEqual(C.classify(tx+[tx[0]])[1],
+                      'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX')
+
+ def test_r193_pinned_baseline_and_immutable_new_steps(self):
+  self.assertEqual(C.R193_PINNED_MAIN_BASE,
+                   '373704bfa11fb75c16ef4c05b3bb4286c3aa703a')
+  path=ROOT/'.github/workflows/ci.yml'
+  workflow=path.read_text('utf-8')
+  self.assertEqual(workflow.count(C.R193_SELFTEST_STEP),1)
+  self.assertEqual(workflow.count(C.R193_RELEASE_STEPS),1)
+  self.assertIn('ubuntu-24.04',workflow)
+  self.assertIn('tools/check_r178_b0_release.py',workflow)
+  self.assertIn("Verify published Suite 17.4.0",workflow)
+  with self.assertRaisesRegex(ValueError,'R193_WRONG_BASE'):
+   C.r193_verify_exact('0'*40,'f'*40)
+  with self.assertRaisesRegex(ValueError,'R193_BAD_HEAD'):
+   C.r193_verify_exact(C.R193_PINNED_MAIN_BASE,'invalid')
+
+ def test_r193_publisher_cannot_omit_or_soften_current_release_check(self):
+  workflow=(ROOT/'.github/workflows/ci.yml').read_text('utf-8')
+  self.assertTrue(F.verify_workflow(workflow))
+  original=C.R193_RELEASE_STEPS
+  for wrong in (workflow.replace(original,'',1),
+                workflow.replace('gh api "repos/', 'echo "repos/',1),
+                workflow.replace('tls-r193-official-ref.json',
+                                 'tls-r193-synthetic-ref.json',1),
+                workflow.replace(
+                    'python tools/verify_release_snapshot_r193.py \\',
+                    'echo no-snapshot-verify \\',1),
+                workflow.replace(original,
+                                 original.replace('if-no-files-found: error',
+                                                  'if-no-files-found: warn'),1)):
+   with self.assertRaises(F.GuardError):
+    F.verify_workflow(wrong)
+
+ def test_r193_does_not_weaken_original_r19_native_gate(self):
+  workflow=(ROOT/'.github/workflows/ci.yml').read_text('utf-8')
+  needle='run: node tests/browser_first_result_studio_r19.cjs --run'
+  self.assertIn(needle,workflow)
+  with self.assertRaises(F.GuardError):
+   F.verify_workflow(workflow.replace(needle,'run: echo R19_NOT_RUN',1))
+
 if __name__=='__main__':unittest.main()

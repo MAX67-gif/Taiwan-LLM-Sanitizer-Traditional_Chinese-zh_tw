@@ -33,6 +33,21 @@ R191_RUNNER_PIN_STATES={
 }
 R191_RUNNER_BEFORE='  browser-integration:\n    runs-on: ubuntu-latest\n'
 R191_RUNNER_AFTER='  browser-integration:\n    runs-on: ubuntu-24.04\n'
+# R193: exact non-product release integrity enhancement, not generic CI bypass.
+R193_PINNED_MAIN_BASE="373704bfa11fb75c16ef4c05b3bb4286c3aa703a"
+R193_STATES={
+    '.github/workflows/ci.yml':'M',
+    'tools/check_r173_research_scope.py':'M',
+    'tests/test_r173_research_scope.py':'M',
+    'tools/check_all_tools_release.py':'M',
+    'tools/verify_release_snapshot_r193.py':'A',
+    'tests/test_r193_release_snapshot.py':'A',
+}
+R193_SELFTEST_ANCHOR="      - name: Verify exact R19 R2 public source and complete Node regression (automated, no human tests)\n"
+R193_RELEASE_ANCHOR="      - name: Preserve verified publication outcome or blocking reason\n"
+R193_SELFTEST_STEP="      - name: Verify R193 pinned release snapshot validator with synthetic counterexamples\n        run: python -m unittest tests/test_r193_release_snapshot.py -v\n"
+R193_RELEASE_STEPS="      - name: Verify published Suite 17.4.0 tag and all 29 asset digests on non-product main updates\n        if: steps.r173_scope.outputs.research_only == 'true' || steps.r173_scope.outputs.docs_only == 'true'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: |\n          set -euo pipefail\n          test \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\n          gh api \"repos/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/releases/tags/all-tools-suite-v17.4.0\" > \"$RUNNER_TEMP/tls-r193-official-release.json\"\n          gh api \"repos/MAX67-gif/Taiwan-LLM-Sanitizer-Traditional_Chinese-zh_tw/git/ref/tags/all-tools-suite-v17.4.0\" > \"$RUNNER_TEMP/tls-r193-official-ref.json\"\n          python tools/verify_release_snapshot_r193.py \\\n            --release-json \"$RUNNER_TEMP/tls-r193-official-release.json\" \\\n            --tag-ref-json \"$RUNNER_TEMP/tls-r193-official-ref.json\" \\\n            --receipt \"$RUNNER_TEMP/tls-r193-published-suite-receipt.json\"\n      - name: Upload published Suite 17.4.0 read-only metadata receipt\n        if: steps.r173_scope.outputs.research_only == 'true' || steps.r173_scope.outputs.docs_only == 'true'\n        uses: actions/upload-artifact@v4\n        with:\n          name: TLS_R193_Current_Suite_1740_Immutable_Metadata\n          path: ${{ runner.temp }}/tls-r193-published-suite-receipt.json\n          if-no-files-found: error\n"
+
 # The *one* explicitly audited R17.4 first-use documentation delta. Changing
 # even one other path requires the fail-closed complete-suite publication route.
 R174_FIRST_USE_EXACT={
@@ -191,6 +206,24 @@ def r191_verify_exact(base,head):
     return True
 
 
+def r193_verify_exact(base,head):
+    """Verify the exact two reviewed workflow inserts on an immutable main base."""
+    if base != R193_PINNED_MAIN_BASE:
+        raise ValueError('R193_WRONG_BASE')
+    if not re.fullmatch(r'[0-9a-f]{40}',head):
+        raise ValueError('R193_BAD_HEAD')
+    path='.github/workflows/ci.yml'
+    before=subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+    after=subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+    if before.count(R193_SELFTEST_ANCHOR)!=1 or before.count(R193_RELEASE_ANCHOR)!=1:
+        raise ValueError('R193_ANCHOR_DRIFT')
+    expected=before.replace(R193_SELFTEST_ANCHOR,R193_SELFTEST_STEP+R193_SELFTEST_ANCHOR,1)
+    expected=expected.replace(R193_RELEASE_ANCHOR,R193_RELEASE_STEPS+R193_RELEASE_ANCHOR,1)
+    if expected!=after:
+        raise ValueError('R193_WORKFLOW_UNEXPECTED_CONTENT')
+    return True
+
+
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
@@ -205,6 +238,10 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    if set(paths) == set(R193_STATES):
+        if not all(R193_STATES[p] == state for state,p in changes):
+            return False,'R193_STATUS_MISMATCH'
+        return True,'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX'
     if set(paths) == set(R191_RUNNER_PIN_STATES):
         if not all(R191_RUNNER_PIN_STATES[p] == state for state,p in changes):
             return False,'R191_STATUS_MISMATCH'
@@ -285,11 +322,14 @@ def main(argv=None):
         r190_verify_exact(args.base,args.head)
     if reason=='R191_PINNED_BROWSER_RUNNER_HOTFIX':
         r191_verify_exact(args.base,args.head)
+    if reason=='R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX':
+        r193_verify_exact(args.base,args.head)
     # Route the exact infrastructure hotfix through the existing read-only
     # release-metadata check; never attempt to republish the immutable 17.4.0.
     docs_only=(reason in ('R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY',
                          'R190_PINNED_LINKS_DOCS_ONLY',
-                         'R191_PINNED_BROWSER_RUNNER_HOTFIX'))
+                         'R191_PINNED_BROWSER_RUNNER_HOTFIX',
+                         'R193_EXACT_CURRENT_RELEASE_METADATA_HOTFIX'))
     is_research=allowed_no_release and not docs_only
     ghout=os.environ.get('GITHUB_OUTPUT')
     if ghout:
