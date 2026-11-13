@@ -18,6 +18,10 @@ import build_all_tools_release as Legacy
 
 
 ROOT = Path(__file__).resolve().parents[1]
+# Executing 'python tools/receipt_suite_175_fixture.py' places tools/ first on sys.path.
+# The repository root must be explicit to import the existing tests fixture.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 
 class ReceiptBlocked(ValueError):
