@@ -61,6 +61,16 @@ jobs:
         run: |
           python tools/check_suite_175_promotion_plan.py --check
           python -m unittest tests/test_suite_175_promotion_plan.py -v
+      - name: Render additive Suite 17.5 review-only 30-tool registry
+        run: |
+          python tools/render_suite_175_registry_preview.py --check
+          python tools/render_suite_175_registry_preview.py --output "$RUNNER_TEMP/tls-suite-175-review/SUITE_175_THIRTY_TOOLS_REGISTRY_PREVIEW.json" --expected-sha "$GITHUB_SHA"
+      - name: Upload additive Suite 17.5 thirty-tool registry REVIEW ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_SUITE_175_30_TOOL_REGISTRY_REVIEW_ONLY
+          path: ${{ runner.temp }}/tls-suite-175-review/SUITE_175_THIRTY_TOOLS_REGISTRY_PREVIEW.json
+          if-no-files-found: error
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
