@@ -311,7 +311,7 @@ jobs:
           if-no-files-found: error
 
   browser-integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: verify
     steps:
       - uses: actions/checkout@v4
