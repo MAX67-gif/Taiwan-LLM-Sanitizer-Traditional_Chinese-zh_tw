@@ -90,7 +90,7 @@ def run():
             check(page.locator("#source").input_value()==original,"INVALID_UTF8_CHANGED_SOURCE")
         scenario("invalid_utf8_keeps_work",invalid)
         def apply():
-            upload("安全\u202e文件.md",b"# Trial\r\n臺灣原創。\r\n")
+            upload("安全\u202e文件.md","# Trial\r\n臺灣原創。\r\n".encode("utf-8"))
             staged()
             page.locator("#applyFile").click()
             check("臺灣原創。" in page.locator("#source").input_value(),"APPLY_DROPPED_SOURCE")
