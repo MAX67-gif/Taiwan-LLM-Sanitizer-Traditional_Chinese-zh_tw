@@ -33,7 +33,7 @@ function validate(data){
   if(typeof item.term!=='string'||!item.term.trim()||item.term.length>48||
     !/^[\p{L}\p{N}_-]+$/u.test(item.term))reject('TERM_INVALID');
   terms.add(item.term);
-  if(typeof item.domain!=='string'||!/[a-z]/.test(item.domain)||!/^[a-z][a-z0-9_]{2,40}$/.test(item.domain))reject('DOMAIN');
+  if(typeof item.domain!=='string'||!/[a-z]/.test(item.domain)||!/^[a-z][a-z0-9_]{1,40}$/.test(item.domain))reject('DOMAIN');
   domains.add(item.domain);
   const p=item.positive,n=item.counterexample;
   if(!p||!n||p.mode!=='SUGGEST_ONLY'||n.mode!=='DO_NOT_APPLY_POSITIVE')
