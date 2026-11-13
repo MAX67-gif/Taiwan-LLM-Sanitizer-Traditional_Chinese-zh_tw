@@ -113,3 +113,93 @@ test('empty metadata and invalid limits fail predictably, never disclose source 
   assert.equal(JSON.stringify(out).includes(synthetic.source), false);
   assert.equal(Object.keys(out).includes('source'), false);
 });
+
+/* R194: 52 original counterexample pairs. Research/Shadow: no lexical promotion. */
+const R194=require('../research/comparison/r173/context_contrasts_r194.js');
+
+test('R194 52 contrast pairs are synthetic, rights-scoped, and structurally validated',()=>{
+ const data=R194.load(),meta=R194.validate(data);
+ assert.equal(data.cases.length,52);
+ assert.equal(meta.case_count,52);
+ assert.equal(meta.synthetic_positive_examples,52);
+ assert.equal(meta.synthetic_negative_examples,52);
+ assert.equal(meta.protected_examples,52);
+ assert.equal(meta.auto_rewrite,false);
+ assert.equal(meta.human_quality_verified,false);
+ assert.equal(meta.source_text_in_receipt,false);
+ assert.equal(meta.network_requests,0);
+ assert(!JSON.stringify(meta).includes('餐館的 menu'));
+});
+
+test('R194 nonbinary: each positive, wrong-domain, protected and unknown routes stay manual',()=>{
+ const data=R194.load();
+ for(const row of data.cases){
+  const modes=[
+   [row.positive.text,R194.STATES.PREFERRED_SUGGESTION,false],
+   [row.counterexample.text,R194.STATES.COUNTEREXAMPLE_BLOCK,false],
+   [row.protected_example,R194.STATES.PROTECTED_KEEP,true],
+   ['完全無關的未知句子',R194.STATES.UNKNOWN_KEEP,false],
+  ];
+  for(const [input,state,protectedExample] of modes){
+   const result=R194.routeExactSynthetic(row,input,{protectedExample});
+   assert.equal(result.id,row.id);
+   assert.equal(result.state,state,row.id+' route');
+   assert.equal(result.auto_apply,false,row.id+' must never self-approve');
+   assert(!JSON.stringify(result).includes(row.positive.text));
+  }
+ }
+});
+
+test('R194 arbitrary new text is UNKNOWN_KEEP even if it contains a known term',()=>{
+ const data=R194.load();
+ for(const row of data.cases.slice(0,16)){
+  const novel='這是剛寫的不同句子，包含 '+row.term+'，但尚未檢視。';
+  assert.equal(R194.routeExactSynthetic(row,novel).state,R194.STATES.UNKNOWN_KEEP);
+ }
+});
+
+test('R194 rejects duplicate IDs, deleted counterexample and false provenance',()=>{
+ const baseline=R194.load();
+ const mutations=[
+  d=>{d.cases[1].id=d.cases[0].id;},
+  d=>{d.cases[1].counterexample.text='沒有該術語';},
+  d=>{d.cases[1].positive.mode='AUTO_REPLACE';},
+  d=>{d.cases[1].provenance='SCRAPED_THIRD_PARTY';},
+  d=>{d.cases[1].protected_example='not code';},
+  d=>{d.cases[1].status='HUMAN_APPROVED';},
+  d=>{d.cases[1].positive.suggested_tw=d.cases[1].counterexample.contextual_term;},
+  d=>{d.research_only=false;},
+  d=>{d.auto_rewrite=true;},
+  d=>{d.human_quality_verified=true;},
+  d=>{d.taxonomy=['PREFERRED_SUGGESTION'];},
+  d=>{d.cases=d.cases.slice(0,15);},
+ ];
+ for(let index=0;index<mutations.length;index++){
+  const copy=structuredClone(baseline);mutations[index](copy);
+  assert.throws(()=>R194.validate(copy),/R194_/,String(index));
+ }
+});
+
+test('R194 term patterns and domain count are bounded and no secret/user file is in cases',()=>{
+ const data=R194.load();
+ assert(new Set(data.cases.map(x=>x.domain)).size>=20);
+ for(const row of data.cases){
+  assert(!row.positive.text.includes('https://'));
+  assert(!row.counterexample.text.includes('https://'));
+  assert(!row.positive.text.includes('ghp_'));
+  assert(!row.counterexample.text.includes('sk-proj-'));
+  assert.equal(row.provenance,'ORIGINAL_SYNTHETIC_EXAMPLE');
+  assert.equal(row.status,'NEEDS_HUMAN_REVIEW');
+ }
+});
+
+test('R194 research-only source does not write outputs, call cloud models or translate',()=>{
+ const src=require('node:fs').readFileSync(
+   require('node:path').join(__dirname,'../research/comparison/r173/context_contrasts_r194.js'),'utf8');
+ for(const api of ['fetch(', 'XMLHttpRequest', 'sendBeacon(', 'WebSocket(', 'writeFileSync(', 'chrome.cookies']){
+  assert(!src.includes(api),api);
+ }
+ const data=R194.load();
+ assert.equal(data.auto_rewrite,false);
+ assert.equal(data.automatic_translation,false);
+});
