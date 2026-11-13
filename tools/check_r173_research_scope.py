@@ -22,6 +22,17 @@ EXACT={'.github/workflows/ci.yml',
        'CHANGELOG.md','README.md','README.en.md','README.es.md','README.ja.md','README.ko.md','README.zh-CN.md'}
 PREFIX=('docs/','research/comparison/r173/')
 HOTFIX_ONLY={'tools/check_r173_research_scope.py','tests/test_r173_research_scope.py'}
+# R191: single reviewed CI infrastructure repair. The only product-side delta
+# is pinning browser-integration to the Ubuntu image supported by Playwright
+# 1.55.0. All existing native gates, source pins and release assets stay fixed.
+R191_RUNNER_PIN_BASE='92924ba947c1a5dd14ad79b8937f0f9aa9c23de0'
+R191_RUNNER_PIN_STATES={
+    '.github/workflows/ci.yml':'M',
+    'tools/check_r173_research_scope.py':'M',
+    'tests/test_r173_research_scope.py':'M',
+}
+R191_RUNNER_BEFORE='  browser-integration:\n    runs-on: ubuntu-latest\n'
+R191_RUNNER_AFTER='  browser-integration:\n    runs-on: ubuntu-24.04\n'
 # The *one* explicitly audited R17.4 first-use documentation delta. Changing
 # even one other path requires the fail-closed complete-suite publication route.
 R174_FIRST_USE_EXACT={
@@ -166,6 +177,20 @@ def r190_verify_exact(base,head):
     return True
 
 
+def r191_verify_exact(base,head):
+    """Allow just one byte-exact browser runner fix on the frozen 17.4.0 main."""
+    if base != R191_RUNNER_PIN_BASE:
+        raise ValueError('R191_WRONG_BASE')
+    if not re.fullmatch(r'[0-9a-f]{40}',head):
+        raise ValueError('R191_BAD_HEAD')
+    path='.github/workflows/ci.yml'
+    old=subprocess.check_output(['git','show',f'{base}:{path}'],cwd=ROOT).decode('utf-8')
+    new=subprocess.check_output(['git','show',f'{head}:{path}'],cwd=ROOT).decode('utf-8')
+    if old.count(R191_RUNNER_BEFORE)!=1 or old.replace(R191_RUNNER_BEFORE,R191_RUNNER_AFTER,1)!=new:
+        raise ValueError('R191_UNEXPECTED_WORKFLOW_DELTA')
+    return True
+
+
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
@@ -180,6 +205,10 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    if set(paths) == set(R191_RUNNER_PIN_STATES):
+        if not all(R191_RUNNER_PIN_STATES[p] == state for state,p in changes):
+            return False,'R191_STATUS_MISMATCH'
+        return True,'R191_PINNED_BROWSER_RUNNER_HOTFIX'
     if set(paths) == set(R190_STATES):
         if not all(R190_STATES[p]==state for state,p in changes):
             return False,'R190_STATUS_MISMATCH'
@@ -254,8 +283,13 @@ def main(argv=None):
     allowed_no_release,reason=classify(changed_files(args.base,args.head))
     if reason=='R190_PINNED_LINKS_DOCS_ONLY':
         r190_verify_exact(args.base,args.head)
+    if reason=='R191_PINNED_BROWSER_RUNNER_HOTFIX':
+        r191_verify_exact(args.base,args.head)
+    # Route the exact infrastructure hotfix through the existing read-only
+    # release-metadata check; never attempt to republish the immutable 17.4.0.
     docs_only=(reason in ('R178_B0_PUBLIC_ONBOARDING_SECURITY_ONLY',
-                         'R190_PINNED_LINKS_DOCS_ONLY'))
+                         'R190_PINNED_LINKS_DOCS_ONLY',
+                         'R191_PINNED_BROWSER_RUNNER_HOTFIX'))
     is_research=allowed_no_release and not docs_only
     ghout=os.environ.get('GITHUB_OUTPUT')
     if ghout:
