@@ -43,9 +43,10 @@ def render(plan):
            [x["tool_id"] for x in rows[:29]] == plan["baseline"]["existing_tool_ids"],
            "APPEND_ONLY_MISMATCH")
     expect(original["tools"] == rows[:29], "HISTORICAL_ROWS_CHANGED")
-    expect(sum(x.get("standalone_required") is True for x in rows) == 25,
-           "STANDALONE_COUNT")
-    expect(len({x["artifact_filename"] for x in rows if x.get("standalone_required")}) == 25,
+    expect(sum(x.get("standalone_required") is True for x in rows) == 24
+           and sum(x["source_kind"] == "developer_bundle" for x in rows) == 6,
+           "STANDALONE_AND_DEVELOPER_BUNDLE_COUNT")
+    expect(len({x["artifact_filename"] for x in rows if x.get("standalone_required")}) == 24,
            "STANDALONE_FILENAME_COLLISION")
     return {
         "schema": "tls.suite-175-registry-preview.v1",
