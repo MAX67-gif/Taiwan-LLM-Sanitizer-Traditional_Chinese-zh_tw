@@ -203,3 +203,104 @@ test('R194 research-only source does not write outputs, call cloud models or tra
  assert.equal(data.auto_rewrite,false);
  assert.equal(data.automatic_translation,false);
 });
+
+
+// R196 research-only contradiction-first semantics. Entirely on original
+// synthetic R194 examples; no shipped dictionary or automatic replacement.
+const R196=require('../research/comparison/r173/context_conflict_router_r196.js');
+
+test('R196 all 52 synthetic contrasts route to five safe states, never auto-apply',()=>{
+ const corpus=R194.load(),route=(row,texts)=>R196.routeContrastGroup(
+   texts.map(text=>({id:row.id,text})),corpus);
+ for(const row of corpus.cases){
+  const positive=row.positive.text,negative=row.counterexample.text;
+  const protectedText=row.protected_example;
+  const unknown='這是新的未審核情境；'+row.term+' 應保持原詞。';
+  const expectations=[
+   [[positive],R196.STATES.PREFERRED_SUGGESTION],
+   [[negative],R196.STATES.COUNTEREXAMPLE_BLOCK],
+   [[protectedText],R196.STATES.PROTECTED_KEEP],
+   [[unknown],R196.STATES.UNKNOWN_KEEP],
+   [[positive,negative],R196.STATES.CONFLICT_KEEP],
+   [[negative,positive],R196.STATES.CONFLICT_KEEP],
+   [[positive,unknown],R196.STATES.UNKNOWN_KEEP],
+   [[negative,unknown],R196.STATES.COUNTEREXAMPLE_BLOCK],
+   [[positive,protectedText],R196.STATES.PROTECTED_KEEP],
+   [[protectedText,negative],R196.STATES.PROTECTED_KEEP],
+  ];
+  for(const [samples,expected] of expectations){
+   const decision=route(row,samples);
+   assert.equal(decision.state,expected,row.id+' '+samples.length);
+   assert.equal(decision.auto_apply,false);
+   assert.equal(decision.promotion_permission,'NONE');
+   assert.equal(decision.human_quality_verified,false);
+   assert.equal(decision.network_requested,false);
+   assert.equal(decision.source_text_in_result,false);
+   assert(!JSON.stringify(decision).includes(positive));
+   assert(!JSON.stringify(decision).includes(negative));
+   assert(!JSON.stringify(decision).includes(unknown));
+  }
+ }
+});
+
+test('R196 exact-match only: unseen prose that contains a term abstains',()=>{
+ const corpus=R194.load();
+ for(const row of corpus.cases){
+  const input='陌生語境中出現 '+row.term+' 並不等於正確替換。';
+  const output=R196.routeContrastGroup([{id:row.id,text:input}],corpus);
+  assert.equal(output.state,R196.STATES.UNKNOWN_KEEP,row.id);
+  assert.equal(output.counts.unknown,1);
+  assert.equal(output.auto_apply,false);
+ }
+});
+
+test('R196 malformed and cross-term observations fail closed, not blended',()=>{
+ const corpus=R194.load(),a=corpus.cases[0],other=corpus.cases[1];
+ const cases=[
+  null,{},[],[{}],[null],[undefined],
+  [{id:'MISSING',text:a.positive.text}],
+  [{id:a.id,text:null}],[{id:a.id,text:NaN}],
+  [{id:a.id,text:a.positive.text,rule_override:'AUTO_APPROVE'}],
+  [{id:a.id,text:a.positive.text},{id:other.id,text:other.positive.text}],
+  [{id:a.id,text:a.positive.text},{id:a.id,text:a.positive.text}],
+  Array.from({length:13},(_,i)=>({id:a.id,text:'不同原創句'+i+' '+a.term})),
+  [{id:a.id,text:'x'.repeat(321)}],
+  [{id:a.id,text:'\ud800'}],
+  [{id:a.id,text:'\udc00'}],
+  [{id:a.id,text:'bad\0file'}],
+ ];
+ for(let i=0;i<cases.length;i++)assert.throws(
+  ()=>R196.routeContrastGroup(cases[i],corpus),/R196_/,
+  'expected fail-closed case '+i);
+});
+
+test('R196 positive + unknown is abstention, negative + unknown remains blocked',()=>{
+ const corpus=R194.load(),row=corpus.cases.find(x=>x.term==='menu');
+ assert(row);
+ const pack=texts=>R196.routeContrastGroup(texts.map(text=>({id:row.id,text})),corpus);
+ const unknown='menu 是否真的代表軟體功能，需要另外判斷。';
+ const p=pack([row.positive.text,unknown]);
+ const n=pack([row.counterexample.text,unknown]);
+ assert.equal(p.state,R196.STATES.UNKNOWN_KEEP);
+ assert.equal(n.state,R196.STATES.COUNTEREXAMPLE_BLOCK);
+ assert.equal(n.counts.negative,1);
+ assert.equal(p.counts.positive,1);
+ assert.equal(p.counts.unknown,1);
+ assert.equal(Object.isFrozen(n),true);
+ assert.equal(Object.isFrozen(n.counts),true);
+});
+
+test('R196 prohibits source exposure, network, disk writes and claimed quality',()=>{
+ const file=require('node:fs').readFileSync(
+   require('node:path').join(__dirname,'../research/comparison/r173/context_conflict_router_r196.js'),'utf8');
+ for(const unsafe of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'sendBeacon(',
+                      'writeFileSync(', 'writeFile(', 'gh release', 'AUTO_APPROVE']){
+  assert(!file.includes(unsafe),'unsafe R196 source '+unsafe);
+ }
+ const row=R194.load().cases[0];
+ const result=R196.routeContrastGroup([{id:row.id,text:row.positive.text}]);
+ assert(!Object.keys(result).includes('text'));
+ assert(!Object.keys(result).includes('source'));
+ assert(!Object.keys(result).includes('prompt'));
+ assert.equal(result.scope,'EXACT_ORIGINAL_SYNTHETIC_FIXTURES_ONLY');
+});
