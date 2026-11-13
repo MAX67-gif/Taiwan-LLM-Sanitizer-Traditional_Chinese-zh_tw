@@ -5,7 +5,7 @@ Checks actual browser report + local HTML SHA + desktop/mobile PNG dimensions.
 Synthetic --self-test rejects altered metadata but is not browser evidence.
 """
 from __future__ import annotations
-import argparse,copy,hashlib,json,re,sys
+import argparse,copy,hashlib,json,re,sys,zlib
 from pathlib import Path
 
 EXPECTED_HTML_SHA="e0e9f895d01e75cac43a3bcd1a8312b2a5b39f74eb92b366508e98c92a40fed1"
@@ -31,11 +31,55 @@ def checked_bytes(path,limit=10_000_000):
  return path.read_bytes()
 def png(path,width=None):
  raw=checked_bytes(path)
- require(len(raw)>1024 and raw[:8]==b'\x89PNG\r\n\x1a\n' and raw[12:16]==b'IHDR',"INVALID_PNG")
- x=int.from_bytes(raw[16:20],"big");y=int.from_bytes(raw[20:24],"big")
- require(300<=x<=16000 and 350<=y<=60000,"PNG_UNEXPECTED_DIMENSIONS")
- if width is not None:require(x==width,"PNG_WRONG_VIEWPORT_WIDTH")
- return {"sha256":sha(raw),"bytes":len(raw),"width":x,"height":y}
+ require(len(raw)>1024 and raw[:8]==b'\x89PNG\r\n\x1a\n',"INVALID_PNG_SIGNATURE")
+ offset=8;seen_header=False;seen_end=False;idat=[]
+ width_actual=height=bitdepth=colortype=None
+ channel_counts={0:1,2:3,3:1,4:2,6:4}
+ # PNG chunk CRC and zlib content are checked; merely writing a fake IHDR
+ # is insufficient. This is structural screenshot evidence, not UI semantics.
+ while offset<len(raw):
+  require(offset+12<=len(raw),"PNG_TRUNCATED_CHUNK_HEADER")
+  size=int.from_bytes(raw[offset:offset+4],"big")
+  ctype=raw[offset+4:offset+8]
+  end=offset+12+size
+  require(end<=len(raw) and size<=len(raw),"PNG_TRUNCATED_OR_OVERSIZE_CHUNK")
+  payload=raw[offset+8:offset+8+size]
+  given=int.from_bytes(raw[offset+8+size:end],"big")
+  require((zlib.crc32(ctype+payload)&0xffffffff)==given,"PNG_CRC_MISMATCH")
+  if not seen_header:
+   require(ctype==b'IHDR' and size==13,"PNG_MISSING_FIRST_IHDR")
+   width_actual=int.from_bytes(payload[0:4],"big")
+   height=int.from_bytes(payload[4:8],"big")
+   bitdepth=payload[8];colortype=payload[9]
+   require(300<=width_actual<=16000 and 350<=height<=60000,"PNG_DIMENSIONS")
+   require(colortype in channel_counts and bitdepth==8 and payload[10:]==b'\x00\x00\x00',
+           "PNG_UNSUPPORTED_ENCODING_OR_INTERLACE")
+   seen_header=True
+  elif ctype==b'IHDR':
+   raise Rejected("PNG_DUPLICATE_IHDR")
+  elif ctype==b'IDAT':
+   require(not seen_end,"PNG_IDAT_AFTER_END")
+   idat.append(payload)
+  elif ctype==b'IEND':
+   require(size==0 and bool(idat),"PNG_MISSING_IMAGE_DATA")
+   require(end==len(raw),"PNG_TRAILING_BYTES")
+   seen_end=True
+   break
+  offset=end
+ require(seen_end and seen_header and bool(idat),"PNG_MISSING_END_OR_DATA")
+ if width is not None:require(width_actual==width,"PNG_WRONG_VIEWPORT_WIDTH")
+ stride=width_actual*channel_counts[colortype]
+ expected=height*(stride+1)
+ require(expected<=120_000_000,"PNG_DECOMPRESSED_SIZE_EXCESS")
+ decoder=zlib.decompressobj()
+ try:decoded=decoder.decompress(b"".join(idat),expected+1)
+ except zlib.error as exc:raise Rejected("PNG_IDAT_ZLIB_INVALID") from exc
+ require(len(decoded)==expected and decoder.eof and not decoder.unused_data
+         and not decoder.unconsumed_tail,"PNG_PIXEL_DATA_INVALID")
+ require(all(decoded[row*(stride+1)]<=4 for row in range(height)),
+         "PNG_SCANLINE_FILTER_INVALID")
+ return {"sha256":sha(raw),"bytes":len(raw),"width":width_actual,"height":height}
+
 def validate_report(report):
  require(type(report) is dict and report.get("schema")=="tls.r19-r3.native-preview.v1","REPORT_SCHEMA")
  require(report.get("status")=="PASS" and "failure" not in report,"REPORT_NOT_PASS")
