@@ -282,4 +282,50 @@ class R190ExactLatestLinksTests(unittest.TestCase):
    C.r190_verify_exact('0'*40,'f'*40)
   self.assertFalse(C.classify([('M','README.md')])[0])
 
+
+class R191BrowserRunnerCompatibilityTests(unittest.TestCase):
+ def transaction(self):
+  return [(state,path) for path,state in sorted(C.R191_RUNNER_PIN_STATES.items())]
+
+ def test_exact_three_modified_file_infrastructure_hotfix_only(self):
+  tx=self.transaction()
+  self.assertEqual(len(tx),3)
+  self.assertEqual(C.classify(tx),(True,'R191_PINNED_BROWSER_RUNNER_HOTFIX'))
+  for i,(state,path) in enumerate(tx):
+   with self.subTest(path=path):
+    self.assertFalse(C.classify(tx[:i]+tx[i+1:])[0])
+    for bad_status in ('A','D','R100'):
+     self.assertFalse(C.classify(tx[:i]+[(bad_status,path)]+tx[i+1:])[0])
+  for extra in ('README.md','docs/ROADMAP.md','src/r19/first_result_studio_r19.js',
+                'release/all_tools_registry.json','tools/build_all_tools_release.py',
+                'research/comparison/r173/methodology.json'):
+   self.assertFalse(C.classify(tx+[('M',extra)])[0])
+  self.assertFalse(C.classify(tx+[tx[0]])[0])
+
+ def test_pinned_release_base_and_native_browser_os_are_exact(self):
+  self.assertEqual(C.R191_RUNNER_PIN_BASE,
+                   '92924ba947c1a5dd14ad79b8937f0f9aa9c23de0')
+  text=(ROOT/'.github/workflows/ci.yml').read_text('utf-8')
+  self.assertEqual(text.count(C.R191_RUNNER_AFTER),1)
+  self.assertNotIn(C.R191_RUNNER_BEFORE,text)
+  self.assertIn('  verify:\n    runs-on: ubuntu-latest\n',text)
+  self.assertIn('  r175-native-evidence:\n',text)
+  # Do not mistake a failed old-baseline check for current verified execution.
+  with self.assertRaisesRegex(ValueError,'R191_WRONG_BASE'):
+   C.r191_verify_exact('0'*40,'f'*40)
+  with self.assertRaisesRegex(ValueError,'R191_BAD_HEAD'):
+   C.r191_verify_exact(C.R191_RUNNER_PIN_BASE,'invalid')
+
+ def test_original_r19_native_steps_and_publisher_gates_remain_required(self):
+  text=(ROOT/'.github/workflows/ci.yml').read_text('utf-8')
+  self.assertTrue(F.verify_workflow(text))
+  needle='run: node tests/browser_first_result_studio_r19.cjs --run'
+  self.assertIn(needle,text)
+  with self.assertRaises(F.GuardError):
+   F.verify_workflow(text.replace(needle,'run: echo R19_NATIVE_BYPASS',1))
+  # No broad standalone docs or CI skip: only the exact three-file change.
+  self.assertFalse(C.classify([('M','.github/workflows/ci.yml')])[0])
+  self.assertFalse(C.classify([('M','README.md'),('M','tools/check_r173_research_scope.py')])[0])
+
+
 if __name__=='__main__':unittest.main()
