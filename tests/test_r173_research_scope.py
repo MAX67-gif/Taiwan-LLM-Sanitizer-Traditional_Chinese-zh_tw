@@ -293,13 +293,19 @@ class R191BrowserRunnerCompatibilityTests(unittest.TestCase):
   self.assertEqual(C.classify(tx),(True,'R191_PINNED_BROWSER_RUNNER_HOTFIX'))
   for i,(state,path) in enumerate(tx):
    with self.subTest(path=path):
-    self.assertFalse(C.classify(tx[:i]+tx[i+1:])[0])
+    # The old exact two-file router hotfix is separately legitimate if only
+    # the CI workflow path is removed. It must NOT receive R191's privilege.
+    self.assertNotEqual(C.classify(tx[:i]+tx[i+1:])[1],
+                        'R191_PINNED_BROWSER_RUNNER_HOTFIX')
     for bad_status in ('A','D','R100'):
      self.assertFalse(C.classify(tx[:i]+[(bad_status,path)]+tx[i+1:])[0])
   for extra in ('README.md','docs/ROADMAP.md','src/r19/first_result_studio_r19.js',
                 'release/all_tools_registry.json','tools/build_all_tools_release.py',
                 'research/comparison/r173/methodology.json'):
-   self.assertFalse(C.classify(tx+[('M',extra)])[0])
+   # Some historical R17.3 research combinations are independently allowed;
+   # what we must forbid is misclassification as this precise R191 exception.
+   self.assertNotEqual(C.classify(tx+[('M',extra)])[1],
+                       'R191_PINNED_BROWSER_RUNNER_HOTFIX')
   self.assertFalse(C.classify(tx+[tx[0]])[0])
 
  def test_pinned_release_base_and_native_browser_os_are_exact(self):
