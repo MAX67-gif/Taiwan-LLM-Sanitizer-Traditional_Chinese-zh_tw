@@ -398,4 +398,66 @@ class R193ImmutablePublishedSuiteRouteTests(unittest.TestCase):
   with self.assertRaises(F.GuardError):
    F.verify_workflow(workflow.replace(needle,'run: echo R19_NOT_RUN',1))
 
+class R201R200PinnedResearchRecoveryTests(unittest.TestCase):
+ def transaction(self):
+  return [(s,p) for p,s in sorted(C.R200_REVIEWED_STATES.items())]
+
+ def test_r200_exact_four_research_only_files_are_history_pinned(self):
+  tx=self.transaction()
+  self.assertEqual(len(tx),4)
+  self.assertEqual(C.R200_REVIEWED_BASE_SHA,
+                   '1f45f4d559f2efb10002b2f82ecc104b4880dd42')
+  self.assertEqual(C.R200_REVIEWED_HEAD_SHA,
+                   'a079ce5687a6f666c6f5aebc34fba645fa66d131')
+  self.assertEqual(C.classify(tx,base=C.R200_REVIEWED_BASE_SHA,
+                             head=C.R200_REVIEWED_HEAD_SHA),
+                   (True,'R200_EXACT_SYNTHETIC_RESEARCH_ONLY'))
+
+ def test_r200_new_commit_or_missing_pin_never_gets_research_skip(self):
+  tx=self.transaction()
+  for base,head in ((None,None),
+                    (C.R200_REVIEWED_BASE_SHA,None),
+                    (None,C.R200_REVIEWED_HEAD_SHA),
+                    ('0'*40,C.R200_REVIEWED_HEAD_SHA),
+                    (C.R200_REVIEWED_BASE_SHA,'f'*40)):
+   self.assertFalse(C.classify(tx,base=base,head=head)[0])
+
+ def test_r200_missing_extra_duplicate_and_changed_status_fail_closed(self):
+  tx=self.transaction()
+  for i,(status,path) in enumerate(tx):
+   self.assertFalse(C.classify(tx[:i]+tx[i+1:],
+                               base=C.R200_REVIEWED_BASE_SHA,
+                               head=C.R200_REVIEWED_HEAD_SHA)[0])
+   other='M' if status=='A' else 'A'
+   self.assertFalse(C.classify(tx[:i]+[(other,path)]+tx[i+1:],
+                               base=C.R200_REVIEWED_BASE_SHA,
+                               head=C.R200_REVIEWED_HEAD_SHA)[0])
+  for extra in (('M','src/core/engine.js'),
+                ('M','release/all_tools_registry.json'),
+                ('A','tests/malicious_new_test.js'),
+                ('M','README.md')):
+   self.assertFalse(C.classify(tx+[extra],
+                               base=C.R200_REVIEWED_BASE_SHA,
+                               head=C.R200_REVIEWED_HEAD_SHA)[0])
+  self.assertFalse(C.classify(tx+[tx[0]],
+                              base=C.R200_REVIEWED_BASE_SHA,
+                              head=C.R200_REVIEWED_HEAD_SHA)[0])
+
+ def test_r201_hotfix_itself_is_exact_pair_not_general_release_bypass(self):
+  pair=[('M','tools/check_r173_research_scope.py'),
+        ('M','tests/test_r173_research_scope.py')]
+  self.assertEqual(C.classify(pair),
+                   (True,'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY'))
+  for changed in (pair[:1],pair+[('M','README.md')],
+                  pair+[('A','research/comparison/r173/extra.js')]):
+   self.assertFalse(C.classify(changed)[0])
+
+ def test_r200_repair_keeps_original_publisher_release_guard_and_source_pin(self):
+  self.assertTrue(F.verify_workflow())
+  text=(ROOT/'.github/workflows/ci.yml').read_text('utf-8')
+  self.assertIn('Verify published Suite 17.4.0 tag and all 29 asset digests',text)
+  self.assertIn('python tools/verify_release_snapshot_r193.py',text)
+  self.assertIn('python tools/publish_all_tools_release.py',text)
+  self.assertEqual(C.R193_RELEASE_STEPS in text,True)
+
 if __name__=='__main__':unittest.main()
