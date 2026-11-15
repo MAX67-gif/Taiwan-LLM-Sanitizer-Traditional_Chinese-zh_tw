@@ -258,6 +258,11 @@ def classify(changes, base=None, head=None):
         if base != R200_REVIEWED_BASE_SHA or head != R200_REVIEWED_HEAD_SHA:
             return False,'R200_PINNED_COMMIT_MISMATCH'
         return True,'R200_EXACT_SYNTHETIC_RESEARCH_ONLY'
+    # Reject future partial/mutated R200-specific paths unless separately reviewed.
+    # The shared publication_guard path is not itself R200-specific.
+    if any(p in R200_REVIEWED_STATES and p != 'tools/publication_guard.py'
+           for p in paths):
+        return False,'R200_NONEXACT_RESEARCH_CHANGED'
     if set(paths) == set(R193_STATES):
         if not all(R193_STATES[p] == state for state,p in changes):
             return False,'R193_STATUS_MISMATCH'
