@@ -33,6 +33,18 @@ R191_RUNNER_PIN_STATES={
 }
 R191_RUNNER_BEFORE='  browser-integration:\n    runs-on: ubuntu-latest\n'
 R191_RUNNER_AFTER='  browser-integration:\n    runs-on: ubuntu-24.04\n'
+# R201: historical R200 release-scope repair, limited to the exact reviewed
+# synthetic research squash commit. Generic new tests/paths NEVER qualify.
+# This is a deterministic research-only attribution, NOT approval of Suite17.5.
+R200_REVIEWED_BASE_SHA='1f45f4d559f2efb10002b2f82ecc104b4880dd42'
+R200_REVIEWED_HEAD_SHA='a079ce5687a6f666c6f5aebc34fba645fa66d131'
+R200_REVIEWED_STATES={
+    'research/comparison/r173/R200_DOMAIN_DIVERSE_REVIEW_PLAN.md':'A',
+    'research/comparison/r173/context_review_plan_r200.js':'A',
+    'tests/test_review_plan_r200.js':'A',
+    'tools/publication_guard.py':'M',
+}
+
 # R193: exact non-product release integrity enhancement, not generic CI bypass.
 R193_PINNED_MAIN_BASE="373704bfa11fb75c16ef4c05b3bb4286c3aa703a"
 R193_STATES={
@@ -227,7 +239,7 @@ def r193_verify_exact(base,head):
 def allowed_path(p):
     return p in EXACT or p.startswith(PREFIX) and '..' not in p.split('/')
 
-def classify(changes):
+def classify(changes, base=None, head=None):
     """Input (status, path) from trusted git diff; unknown is product-critical."""
     if not changes:
         return False,'EMPTY_DIFF_NOT_RESEARCH'
@@ -238,6 +250,19 @@ def classify(changes):
         paths.append(p)
     if len(set(paths)) != len(paths):
         return False,'DUPLICATE_CHANGED_PATH'
+    # One historically verified R200 transaction. New / tampered heads,
+    # changed statuses or extra test files stay product-critical.
+    if set(paths) == set(R200_REVIEWED_STATES):
+        if not all(R200_REVIEWED_STATES[p] == state for state,p in changes):
+            return False,'R200_STATUS_MISMATCH'
+        if base != R200_REVIEWED_BASE_SHA or head != R200_REVIEWED_HEAD_SHA:
+            return False,'R200_PINNED_COMMIT_MISMATCH'
+        return True,'R200_EXACT_SYNTHETIC_RESEARCH_ONLY'
+    # Reject future partial/mutated R200-specific paths unless separately reviewed.
+    # The shared publication_guard path is not itself R200-specific.
+    if any(p in R200_REVIEWED_STATES and p != 'tools/publication_guard.py'
+           for p in paths):
+        return False,'R200_NONEXACT_RESEARCH_CHANGED'
     if set(paths) == set(R193_STATES):
         if not all(R193_STATES[p] == state for state,p in changes):
             return False,'R193_STATUS_MISMATCH'
@@ -317,7 +342,7 @@ def main(argv=None):
         Path(args.receipt).write_text(json.dumps(outcome,indent=2)+'\n',encoding='utf-8')
         print('R173_PINNED_RESEARCH_RECEIPT_PASS');return 0
     if not args.base or not args.head:parser.error('--base and --head required')
-    allowed_no_release,reason=classify(changed_files(args.base,args.head))
+    allowed_no_release,reason=classify(changed_files(args.base,args.head),base=args.base,head=args.head)
     if reason=='R190_PINNED_LINKS_DOCS_ONLY':
         r190_verify_exact(args.base,args.head)
     if reason=='R191_PINNED_BROWSER_RUNNER_HOTFIX':
