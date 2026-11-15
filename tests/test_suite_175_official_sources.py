@@ -26,7 +26,7 @@ class OfficialPriorByteGate(unittest.TestCase):
             lambda x: x.update(human_quality_verified=True),
             lambda x: x["assets"].pop(),
             lambda x: x["assets"].append(x["assets"][0].copy()),
-            lambda x: x["assets"][0].update(sha256="0" * 64),
+            lambda x: next(a for a in x["assets"] if a["name"] == "TLS_Chrome_MV3_R5_20261024.zip").update(sha256="0" * 64),
             lambda x: x["assets"][0].update(size=-1),
             lambda x: x["assets"][0].update(name="../../bad"),
         ):
@@ -76,10 +76,9 @@ class OfficialPriorByteGate(unittest.TestCase):
 
     def test_05_symlink_to_outside_never_accepted(self):
         blobs, pinned, _ = self.synthetic()
-        with tempfile.TemporaryDirectory() as d:
+        with tempfile.TemporaryDirectory() as d, tempfile.TemporaryDirectory() as ext:
             root = Path(d)
-            external = root / "outside"
-            external.mkdir()
+            external = Path(ext)
             (external / "original").write_bytes(blobs["test-a.txt"])
             (root / "test-a.txt").symlink_to(external / "original")
             (root / "test-b.zip").write_bytes(blobs["test-b.zip"])
