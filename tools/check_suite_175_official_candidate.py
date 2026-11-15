@@ -124,11 +124,18 @@ def inspect(stage: Path, official: Path, release_json: Path, expected_sha: str):
          "TOOL_ID_OR_COUNT_MISMATCH")
     source_legacy = Plan.legacy_identity()["tools"]
     for i in range(29):
-        need(all(rows[i].get(k) == source_legacy[i].get(k)
-                 for k in ("tool_id", "artifact_filename", "expected_sha256",
-                           "source_path", "source_kind", "family",
-                           "original_commit_sha", "license_review")),
+        immutable = ("tool_id", "artifact_filename", "expected_sha256",
+                     "source_path", "source_kind", "family", "license_review")
+        need(all(rows[i].get(k) == source_legacy[i].get(k) for k in immutable),
              "LEGACY_REGISTRY_ROW_TAMPERED")
+        # The ONLY generated historical installer (MRFT R17.7) has a null
+        # registry commit marker, which the official 17.4 builder resolves to
+        # its immutable 17.4 publishing source SHA inside the release manifest.
+        expected_origin = (Source.TARGET_SHA
+            if source_legacy[i]["tool_id"] == Old.NEW_TOOL_ID
+            else source_legacy[i].get("original_commit_sha"))
+        need(rows[i].get("original_commit_sha") == expected_origin,
+             "ORIGINAL_GENERATED_COMMIT_SOURCE_TAMPERED")
     need(rows[29].get("artifact_filename") == Candidate.NEW_HTML and
          rows[29].get("artifact_sha256") == Plan.R3_SHA256 and
          rows[29].get("location_in_suite") ==
