@@ -96,7 +96,7 @@ jobs:
           gh release download all-tools-suite-v17.4.0 \
             --repo "$GITHUB_REPOSITORY" \
             --dir "$RUNNER_TEMP/tls-r199-fresh-official-174"
-          gh api "repos/$GITHUB_REPOSITORY/releases/tags/all-tools-suite-v17.4.0" \
+          gh api --method GET "repos/$GITHUB_REPOSITORY/releases/tags/all-tools-suite-v17.4.0" \
             > "$RUNNER_TEMP/tls-r199-release-174.json"
           python tools/check_suite_175_official_sources.py \
             --assets-dir "$RUNNER_TEMP/tls-r199-fresh-official-174" \
