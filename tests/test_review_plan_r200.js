@@ -72,7 +72,7 @@ test('R200 deterministic batching, edge position and alternate valid size',()=>{
 });
 
 test('R200 rejects unbounded, fractional and fake batch sizes',()=>{
- for(const n of [null,undefined,0,1,3,13,17,53,100,Infinity,5.5,'20',NaN]){
+ for(const n of [null,undefined,0,1,3,12,17,53,100,Infinity,5.5,'20',NaN]){
   if(n===undefined)continue; // omitted argument intentionally uses safe default
   assert.throws(()=>R200.createReviewPlan(n),/R200_INVALID_BATCH_SIZE/);
  }
