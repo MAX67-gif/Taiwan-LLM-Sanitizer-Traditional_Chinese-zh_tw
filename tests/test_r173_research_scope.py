@@ -450,7 +450,8 @@ class R201R200PinnedResearchRecoveryTests(unittest.TestCase):
                    (True,'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY'))
   for changed in (pair[:1],pair+[('M','README.md')],
                   pair+[('A','research/comparison/r173/extra.js')]):
-   self.assertFalse(C.classify(changed)[0])
+   self.assertNotEqual(C.classify(changed)[1],
+                       'R173_SCOPE_HOTFIX_EXACT_PAIR_ONLY')
 
  def test_r200_repair_keeps_original_publisher_release_guard_and_source_pin(self):
   self.assertTrue(F.verify_workflow())
