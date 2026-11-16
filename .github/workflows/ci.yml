@@ -92,6 +92,12 @@ jobs:
           node research/comparison/r173/build_review_continuity_r203.js --check
           node --test research/comparison/r173/test_review_continuity_r203.js
           python -m py_compile research/comparison/r173/test_review_continuity_browser_r203.py
+      - name: R204 offline workbench replay safety and decision history
+        run: |
+          node research/comparison/r173/build_review_workbench_r204.js --build
+          node research/comparison/r173/build_review_workbench_r204.js --check
+          node --test research/comparison/r173/test_review_workbench_r204.js
+          python -m py_compile research/comparison/r173/test_review_workbench_browser_r204.py
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v
@@ -395,6 +401,17 @@ jobs:
         with:
           name: TLS_R203_REVIEW_CONTINUITY_OFFLINE_RESEARCH_NOT_RELEASED
           path: research/comparison/r173/TW_Review_Continuity_R203_20261116.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: R204 Chromium file URL undo redo filtering diff and stale work rejection
+        run: |
+          node research/comparison/r173/build_review_workbench_r204.js --build
+          python research/comparison/r173/test_review_workbench_browser_r204.py
+      - name: Upload R204 offline research workbench (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R204_OFFLINE_REVIEW_WORKBENCH_NOT_RELEASED
+          path: research/comparison/r173/TW_Review_Workbench_R204_20261116.html
           if-no-files-found: error
           retention-days: 7
       - name: Test R17.2 real Chromium offline selection and download
