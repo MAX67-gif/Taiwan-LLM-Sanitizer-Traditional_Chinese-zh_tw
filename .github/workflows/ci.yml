@@ -86,6 +86,12 @@ jobs:
           python -m unittest tests/test_comparison_r173.py -v
           python -m unittest tests/test_r173_research_scope.py -v
           python -m py_compile research/comparison/r173/*.py tools/check_r173_research_scope.py
+      - name: R203 research-only portable review choices with exact-source and no-auto-apply guards
+        run: |
+          node research/comparison/r173/build_review_continuity_r203.js --build
+          node research/comparison/r173/build_review_continuity_r203.js --check
+          node --test research/comparison/r173/test_review_continuity_r203.js
+          python -m py_compile research/comparison/r173/test_review_continuity_browser_r203.py
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v
@@ -380,6 +386,17 @@ jobs:
         run: python tests/test_structured_integrity_browser_r151.py
       - name: Test R17 explicitly authorized offline folder audit in Chromium
         run: python tests/test_document_trust_browser_r17.py
+      - name: Test R203 real Chromium offline manual review save and safe resume
+        run: |
+          node research/comparison/r173/build_review_continuity_r203.js --build
+          python research/comparison/r173/test_review_continuity_browser_r203.py
+      - name: Upload R203 research-only single HTML artifact (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R203_REVIEW_CONTINUITY_OFFLINE_RESEARCH_NOT_RELEASED
+          path: research/comparison/r173/TW_Review_Continuity_R203_20261116.html
+          if-no-files-found: error
+          retention-days: 7
       - name: Test R17.2 real Chromium offline selection and download
         run: python tests/test_wording_assistant_browser_r172.py
       - name: Test R17.6 original showcase in the shipped offline HTML

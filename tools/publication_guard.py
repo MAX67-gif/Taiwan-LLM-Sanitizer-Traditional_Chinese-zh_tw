@@ -92,6 +92,13 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/R197_SYNTHETIC_REVIEW_QUEUE.md",
     "research/comparison/r173/R196_CONTRADICTION_FIRST_README.md",
     "research/comparison/r173/r19_filename_display_shadow.js",
+    # R203 additive offline review save/replay; not a distributed 17.5 tool.
+    "research/comparison/r173/build_review_continuity_r203.js",
+    "research/comparison/r173/review_continuity_r203.js",
+    "research/comparison/r173/review_continuity_ui_r203.js",
+    "research/comparison/r173/test_review_continuity_r203.js",
+    "research/comparison/r173/test_review_continuity_browser_r203.py",
+    "research/comparison/r173/R203_OFFLINE_REVIEW_CONTINUITY.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
