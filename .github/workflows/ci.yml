@@ -51,6 +51,92 @@ jobs:
           echo "f3689d92020aec54d8f59e556f83e4dc795d8232499eca750c5f1a8b1b0c1bd8  tests/browser_first_result_studio_r19.cjs" | sha256sum -c -
           python tests/validate_r19_native_receipt_r2.py --self-test
           node --test tests/*.js
+      - name: Check isolated R19 R3 candidate exact standalone builder (not a release)
+        run: |
+          node --check src/r19/first_result_studio_r19_r3.js
+          node tools/build_first_result_studio_r19_r3.js --check
+          python tests/validate_r19_r3_candidate_receipt.py --self-test
+          python -m unittest tests/test_r19_r3_candidate_package.py -v
+      - name: R195 additive Suite 17.5 no-publish contract and adversarial historical tool tests
+        run: |
+          python tools/check_suite_175_promotion_plan.py --check
+          python -m unittest tests/test_suite_175_promotion_plan.py -v
+      - name: Render additive Suite 17.5 review-only 30-tool registry
+        run: |
+          python tools/render_suite_175_registry_preview.py --check
+          python tools/render_suite_175_registry_preview.py --output "$RUNNER_TEMP/tls-suite-175-review/SUITE_175_THIRTY_TOOLS_REGISTRY_PREVIEW.json" --expected-sha "$GITHUB_SHA"
+      - name: Upload additive Suite 17.5 thirty-tool registry REVIEW ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_SUITE_175_30_TOOL_REGISTRY_REVIEW_ONLY
+          path: ${{ runner.temp }}/tls-suite-175-review/SUITE_175_THIRTY_TOOLS_REGISTRY_PREVIEW.json
+          if-no-files-found: error
+      - name: R198 full 30-tool Suite 17.5 synthetic fixture build and adversarial integrity
+        run: |
+          python -m unittest tests/test_suite_175_fixture.py -v
+      - name: Verify SHA-pinned 30-tool full Suite fixture and emit metadata-only receipt
+        run: |
+          python tools/receipt_suite_175_fixture.py \
+            --receipt "$RUNNER_TEMP/r198-suite-fixture/R198_SYNTHETIC_30_ASSET_RECEIPT.json" \
+            --expected-sha "$GITHUB_SHA"
+      - name: Upload synthetic Suite 17.5 full fixture receipt (NO RELEASE)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R198_SUITE175_FULL_30_ASSET_FIXTURE_RECEIPT_ONLY
+          path: ${{ runner.temp }}/r198-suite-fixture/R198_SYNTHETIC_30_ASSET_RECEIPT.json
+          if-no-files-found: error
+      - name: R199 offline original Suite 17.4 source-byte verifier negative controls
+        run: python -m unittest tests/test_suite_175_official_sources.py -v
+      - name: R199 official 17.4 source byte gate (29 fresh downloads, READ ONLY, PR60 only)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/tls-r199-fresh-official-174"
+          gh release download all-tools-suite-v17.4.0 \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir "$RUNNER_TEMP/tls-r199-fresh-official-174"
+          gh api --method GET "repos/$GITHUB_REPOSITORY/releases/tags/all-tools-suite-v17.4.0" \
+            > "$RUNNER_TEMP/tls-r199-release-174.json"
+          python tools/check_suite_175_official_sources.py \
+            --assets-dir "$RUNNER_TEMP/tls-r199-fresh-official-174" \
+            --release-json "$RUNNER_TEMP/tls-r199-release-174.json"
+      - name: R202 official-source 30-asset candidate independent safety regression
+        run: python -m unittest tests/test_suite_175_official_candidate.py -v
+      - name: R202 build and independently check authentic 30-asset Suite 17.5 candidate (PR60 only, NO RELEASE)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
+        run: |
+          python tools/build_suite_175_official_candidate.py \
+            --release-json "$RUNNER_TEMP/tls-r199-release-174.json" \
+            --official-assets "$RUNNER_TEMP/tls-r199-fresh-official-174" \
+            --out "$RUNNER_TEMP/tls-r202-official-candidate" \
+            --expected-sha "$GITHUB_SHA" \
+            > "$RUNNER_TEMP/tls-r202-build-receipt.json"
+          python tools/check_suite_175_official_candidate.py \
+            --stage "$RUNNER_TEMP/tls-r202-official-candidate" \
+            --official-assets "$RUNNER_TEMP/tls-r199-fresh-official-174" \
+            --release-json "$RUNNER_TEMP/tls-r199-release-174.json" \
+            --expected-sha "$GITHUB_SHA" \
+            > "$RUNNER_TEMP/tls-r202-independent-receipt.json"
+          python -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/tls-r202-independent-receipt.json")); assert d["candidate_assets"]==30 and d["tool_count"]==30 and d["release_permission"]=="NONE" and d["released"] is False; print("R202_30_AUTHENTIC_ASSETS_INDEPENDENT_PASS_NOT_RELEASED",d["suite_sha256"])'
+      - name: Upload R202 real-source 30-asset offline candidate (GitHub Actions artifact, NOT Release)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R202_SUITE175_30_OFFICIAL_SOURCE_CANDIDATE_NOT_RELEASED
+          path: ${{ runner.temp }}/tls-r202-official-candidate/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload R202 build and independent verification receipts (NOT Release)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R202_SUITE175_AUTHENTIC_SOURCE_BUILD_AND_CHECK_RECEIPTS
+          path: |
+            ${{ runner.temp }}/tls-r202-build-receipt.json
+            ${{ runner.temp }}/tls-r202-independent-receipt.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
@@ -355,6 +441,36 @@ jobs:
             ${{ runner.temp }}/r19-original-native/R19_NATIVE_VALIDATION_RECEIPT.json
             ${{ runner.temp }}/r19-original-native/R19_DESKTOP_NATIVE.png
             ${{ runner.temp }}/r19-original-native/R19_MOBILE_NATIVE.png
+          if-no-files-found: warn
+      - name: R19 R3 candidate synthetic filename safety — real Chromium file URL
+        env:
+          TLS_R19_R3_BROWSER_OUTPUT: ${{ runner.temp }}/r19-r3-candidate-native
+        run: python tests/browser_first_result_studio_r19_r3.py
+      - name: Independently validate R19 R3 candidate native report and screenshot widths
+        run: python tests/validate_r19_r3_candidate_receipt.py --root . --output "$RUNNER_TEMP/r19-r3-candidate-native" --receipt "$RUNNER_TEMP/r19-r3-candidate-native/R19_R3_CANDIDATE_VALIDATION_RECEIPT.json"
+      - name: Build SHA-locked R19 R3 candidate artifact after native receipt
+        run: |
+          python tools/package_r19_r3_candidate.py \
+            --root . \
+            --evidence "$RUNNER_TEMP/r19-r3-candidate-native" \
+            --stage "$RUNNER_TEMP/tls-r19-r3-offline-candidate" \
+            --expected-sha "$GITHUB_SHA"
+      - name: Upload R19 R3 offline HTML engineering candidate (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_R3_OFFLINE_HTML_CANDIDATE_NOT_RELEASED
+          path: ${{ runner.temp }}/tls-r19-r3-offline-candidate/
+          if-no-files-found: error
+      - name: Upload R19 R3 candidate evidence (not released, no human QA)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R19_R3_FILENAME_SAFETY_CANDIDATE
+          path: |
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_CANDIDATE_NATIVE_REPORT.json
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_CANDIDATE_VALIDATION_RECEIPT.json
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_DESKTOP_SYNTHETIC.png
+            ${{ runner.temp }}/r19-r3-candidate-native/R19_R3_MOBILE_SYNTHETIC.png
           if-no-files-found: warn
       - run: python tools/build.py
       - name: Install headful R17.7 activation test dependencies

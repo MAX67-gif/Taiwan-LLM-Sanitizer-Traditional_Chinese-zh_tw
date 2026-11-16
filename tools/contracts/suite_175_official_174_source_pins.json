@@ -1,0 +1,157 @@
+{
+  "schema": "tls.suite-175.source-bytes-pin.v1",
+  "status": "READ_ONLY_PRIOR_RELEASE_ASSET_PINS",
+  "release_tag": "all-tools-suite-v17.4.0",
+  "release_target_sha": "92924ba947c1a5dd14ad79b8937f0f9aa9c23de0",
+  "tool_count": 29,
+  "asset_count": 29,
+  "promotion_permission": "NONE",
+  "human_quality_verified": false,
+  "assets": [
+    {
+      "name": "ALL_TOOLS_MANIFEST.json",
+      "size": 47149,
+      "sha256": "5a71ef81880cf75012f7d27584ebd1c91032f46df40d59e5498d420f84235797"
+    },
+    {
+      "name": "BUILD_PROVENANCE.json",
+      "size": 729,
+      "sha256": "47c2aa32a8d6a595464c8be51d16032023fb1e8871cb8d5c99d51b7919211d42"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "size": 2899,
+      "sha256": "92fa39df641690814a394a36e09010e38fd96ed8a9419ed676dd62a87bf5c59e"
+    },
+    {
+      "name": "TLS_ALL_TOOLS_SUITE_17_4_0.zip",
+      "size": 3469158,
+      "sha256": "421368ab718528bc23e79b49f158a332f86cd62c03031057c992f5f7bb4ebb75"
+    },
+    {
+      "name": "TLS_Chrome_MV3_MRFT_R177_20261031.zip",
+      "size": 25728,
+      "sha256": "5cf0023f26a990bc0c8d0eef499f9bad843d4257e76a1615a033a7bacab973c7"
+    },
+    {
+      "name": "TLS_Chrome_MV3_R11_20261025.zip",
+      "size": 34141,
+      "sha256": "9ed34dda59e83af35c34f35b61373c7f4057d02cf094ccb50cc46a809733bec8"
+    },
+    {
+      "name": "TLS_Chrome_MV3_R13_20261025.zip",
+      "size": 8820,
+      "sha256": "9543af63e4d1cb0fd33f5f73be1c5a3b48dfc05c41f267c205470b763237439d"
+    },
+    {
+      "name": "TLS_Chrome_MV3_R5_20261024.zip",
+      "size": 25930,
+      "sha256": "0efbc73b661cf28fd04a3cd1a9cdb6ab4ce26110875138c2483f3507119e40f5"
+    },
+    {
+      "name": "TLS_DEVELOPER_CLI_SKILL_17_4_0.zip",
+      "size": 3043737,
+      "sha256": "0c271e62db5c4c9da3bf6e1570268a6ba14ab0132c5d1323cd85fb54068dacb3"
+    },
+    {
+      "name": "TLS_R6_PUBLIC_QUALITY_KIT_V1_20261024.zip",
+      "size": 50142,
+      "sha256": "2d216971eb01b9f982fd7ccb38c0b2070cf1e3da44e4e4bdfcdbc55577b6f92b"
+    },
+    {
+      "name": "TLS_Tampermonkey_R11_20261025.user.js",
+      "size": 75566,
+      "sha256": "4b6e87414557c4309847414fff00c610e7b6fb46691d456e3ad22ad6bdb98aea"
+    },
+    {
+      "name": "TLS_Tampermonkey_R13_20261025.user.js",
+      "size": 12879,
+      "sha256": "49aefa62d068a78e022bac4ac2216f918510523783351aa6fbd8fa8895bfaf58"
+    },
+    {
+      "name": "TLS_Tampermonkey_R5_20261024.user.js",
+      "size": 57728,
+      "sha256": "70c3b575cd0bfc1b34e7f3c95f7b2ac66cfc6eef94531f79aa90d81b0dc425aa"
+    },
+    {
+      "name": "TW_Context_Governance_Lab_R10_20261024.html",
+      "size": 43484,
+      "sha256": "baed42203991bd51f94300271964840ad5260a2264655a39888f1260ee4ec24e"
+    },
+    {
+      "name": "TW_Context_Review_Lab_R8_20261024.html",
+      "size": 125820,
+      "sha256": "96a437720b3c11fc694f37cf5f9650cbc72f3c27f7a0dd9d2794649648c1e999"
+    },
+    {
+      "name": "TW_Document_Trust_Graph_R17_20261026.html",
+      "size": 46034,
+      "sha256": "b2a244ed73a3317e30b5c6419160257c0a592de1b2b1b80c1a55943b0dbadd76"
+    },
+    {
+      "name": "TW_First_Result_Studio_R19_20261101.html",
+      "size": 136680,
+      "sha256": "33c9455b08f4e412fe1f4474482ed9fe013714f36f33ae367e0d39421e094d5a"
+    },
+    {
+      "name": "TW_Lexicon_Explorer_R3_20261024.html",
+      "size": 114824,
+      "sha256": "ccd5b5a1ff9d2480525b3beab76429fa2b1c1844555d6e136f2d5f9769c5cef7"
+    },
+    {
+      "name": "TW_Localization_Safety_Studio_R16_20261026.html",
+      "size": 45334,
+      "sha256": "deaff10d036e628e30e5a2149747ef4e3f1d9a2b49eb98f828b8ccaebc50b47d"
+    },
+    {
+      "name": "TW_Provider_Capability_Lab_R14_20261025.html",
+      "size": 14780,
+      "sha256": "79061ecbc7a529936449b75433c4fc336099b4884eca88ab2b8f950070246a5e"
+    },
+    {
+      "name": "TW_Quality_Audit_Lab_R12_20261025.html",
+      "size": 35850,
+      "sha256": "e3b1663a7ea9979f09cbf85cc2d1dc4bc6b2c71b25b6cca5eaea2cd52996b0e0"
+    },
+    {
+      "name": "TW_R6_Bilingual_Quality_Review_20261024.html",
+      "size": 22252,
+      "sha256": "953510e36720f6c0bc56268077a2ba5dbad1404b2e8f98e0d44b766c2533dbb3"
+    },
+    {
+      "name": "TW_R6_Local_Chrome_Model_Run_20261024.html",
+      "size": 13134,
+      "sha256": "c07f045c63e632add6d5d09954a832db13c3cc35325ff684c20707c8b00d6281"
+    },
+    {
+      "name": "TW_Structured_Integrity_Lab_R15_20261025.html",
+      "size": 33275,
+      "sha256": "214790a4a8b37c9026f65c05072e80d36d43c4110ac3743b399f6a57e6f9c0e2"
+    },
+    {
+      "name": "TW_Structured_Integrity_Lab_R151_20261026.html",
+      "size": 37627,
+      "sha256": "e71c12d2bdc5f645443b8532fede66b7496b9ee5165e16ca74ee796c28417743"
+    },
+    {
+      "name": "TW_Translation_Style_Lab_R3_20261024.html",
+      "size": 8983,
+      "sha256": "f893271798073d430e1811350a092e70e2dc1effe976a91dfb8a5df20f345236"
+    },
+    {
+      "name": "TW_User_Context_Lab_R9_20261024.html",
+      "size": 151902,
+      "sha256": "fd4296de0bb231d96961ffbc00a087ded7fb3451ac3234cc11988539d1a6e138"
+    },
+    {
+      "name": "TW_Wording_Assistant_R172_20261027.html",
+      "size": 86863,
+      "sha256": "4ce1cfae97832937907ec6aa3c56c11b552d2cbd04c7b27c676379637be6b873"
+    },
+    {
+      "name": "VALIDATION.json",
+      "size": 1077,
+      "sha256": "3a37684deaac04c01f7ed5c6ef2d725929a2b80d9afe41c0dc1589d5e01704b6"
+    }
+  ]
+}
