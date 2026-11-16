@@ -99,6 +99,12 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_review_continuity_r203.js",
     "research/comparison/r173/test_review_continuity_browser_r203.py",
     "research/comparison/r173/R203_OFFLINE_REVIEW_CONTINUITY.md",
+    "research/comparison/r173/review_workbench_r204.js",
+    "research/comparison/r173/review_workbench_ui_r204.js",
+    "research/comparison/r173/build_review_workbench_r204.js",
+    "research/comparison/r173/test_review_workbench_r204.js",
+    "research/comparison/r173/test_review_workbench_browser_r204.py",
+    "research/comparison/r173/R204_REVIEW_WORKBENCH.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
