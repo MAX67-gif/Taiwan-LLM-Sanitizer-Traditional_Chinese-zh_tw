@@ -85,6 +85,8 @@ def main():
         page.locator("#source").fill("新的一份資料")
         assert page.locator("#candidatePanel").is_hidden()
         assert page.locator("#download").is_disabled()
+        assert page.locator("#focusNext").is_disabled() and page.locator("#focusPrev").is_disabled()
+        assert "尚未分析原文" in page.locator("#focusSafety").inner_text()
         note("source_change_revokes_old_choices")
         assert traffic==[] and errors==[],{"traffic":traffic,"errors":errors}
         note("zero_external_requests_zero_page_errors")
