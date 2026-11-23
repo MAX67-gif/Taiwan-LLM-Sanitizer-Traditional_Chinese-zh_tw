@@ -126,6 +126,12 @@ jobs:
           node research/comparison/r173/build_first_task_r208.js --check
           node research/comparison/r173/build_context_risk_lens_r205.js --check
           python -m py_compile research/comparison/r173/test_unified_review_browser_r209.py
+      - name: R210 fail-closed volunteer feedback audit and offline artifact parity
+        run: |
+          node research/comparison/r173/build_feedback_audit_r210.js --build
+          node research/comparison/r173/build_feedback_audit_r210.js --check
+          node --test research/comparison/r173/test_feedback_audit_r210.js
+          python -m py_compile research/comparison/r173/test_feedback_audit_browser_r210.py
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v
@@ -484,6 +490,17 @@ jobs:
         with:
           name: TLS_R209_UNIFIED_OFFLINE_REVIEW_NOT_RELEASED
           path: research/comparison/r173/TW_Unified_Review_R209_20261124.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: Test R210 real file URL local volunteer feedback audit with zero HTTP
+        run: |
+          node research/comparison/r173/build_feedback_audit_r210.js --build
+          python research/comparison/r173/test_feedback_audit_browser_r210.py
+      - name: Upload R210 audit-only offline HTML (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R210_LOCAL_FEEDBACK_AUDIT_NOT_RELEASED
+          path: research/comparison/r173/TW_Feedback_Audit_R210_20261124.html
           if-no-files-found: error
           retention-days: 7
       - name: Test R17.2 real Chromium offline selection and download
