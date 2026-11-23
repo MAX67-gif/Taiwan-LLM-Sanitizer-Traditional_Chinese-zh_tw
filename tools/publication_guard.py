@@ -117,6 +117,13 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_review_focus_r207.js",
     "research/comparison/r173/test_review_focus_browser_r207.py",
     "research/comparison/r173/R207_FOCUS_REVIEW_GUIDE.md",
+    # R208 first-run offline guidance and explicit-consent local feedback; no release.
+    "research/comparison/r173/first_task_r208.js",
+    "research/comparison/r173/first_task_ui_r208.js",
+    "research/comparison/r173/build_first_task_r208.js",
+    "research/comparison/r173/test_first_task_r208.js",
+    "research/comparison/r173/test_first_task_browser_r208.py",
+    "research/comparison/r173/R208_FIRST_TASK_GUIDE.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
