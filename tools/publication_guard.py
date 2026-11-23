@@ -130,6 +130,12 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_unified_review_r209.js",
     "research/comparison/r173/test_unified_review_browser_r209.py",
     "research/comparison/r173/R209_UNIFIED_REVIEW_GUIDE.md",
+    # R210 local voluntary feedback audit; strict R208 schema, no telemetry or release.
+    "research/comparison/r173/feedback_audit_r210.js",
+    "research/comparison/r173/build_feedback_audit_r210.js",
+    "research/comparison/r173/test_feedback_audit_r210.js",
+    "research/comparison/r173/test_feedback_audit_browser_r210.py",
+    "research/comparison/r173/R210_FEEDBACK_AUDIT_GUIDE.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
