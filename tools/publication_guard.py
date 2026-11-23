@@ -124,6 +124,12 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_first_task_r208.js",
     "research/comparison/r173/test_first_task_browser_r208.py",
     "research/comparison/r173/R208_FIRST_TASK_GUIDE.md",
+    # R209 explicit research-only integration: no SDK, no official new Suite tool.
+    "research/comparison/r173/review_unified_r209.js",
+    "research/comparison/r173/build_unified_review_r209.js",
+    "research/comparison/r173/test_unified_review_r209.js",
+    "research/comparison/r173/test_unified_review_browser_r209.py",
+    "research/comparison/r173/R209_UNIFIED_REVIEW_GUIDE.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
