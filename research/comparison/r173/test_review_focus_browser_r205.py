@@ -89,7 +89,7 @@ def main():
         assert traffic==[] and errors==[],{"traffic":traffic,"errors":errors}
         note("zero_external_requests_zero_page_errors")
         ctx.close();browser.close()
-    assert len(SCENARIOS)==10
+    assert len(SCENARIOS)==11
     print(json.dumps({
       "schema":"tls.r205.offline-focus-native-browser.v1","status":"PASS",
       "mode":"REAL_FILE_URL","scenarios":SCENARIOS,"checks":len(SCENARIOS),
