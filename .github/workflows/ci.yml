@@ -118,6 +118,14 @@ jobs:
           node --test research/comparison/r173/test_first_task_r208.js
           node research/comparison/r173/build_review_focus_r207.js --check
           python -m py_compile research/comparison/r173/test_first_task_browser_r208.py
+      - name: R209 integrated offline context-risk focus + guided first-task TDD and source guards
+        run: |
+          node research/comparison/r173/build_unified_review_r209.js --build
+          node research/comparison/r173/build_unified_review_r209.js --check
+          node --test research/comparison/r173/test_unified_review_r209.js
+          node research/comparison/r173/build_first_task_r208.js --check
+          node research/comparison/r173/build_context_risk_lens_r205.js --check
+          python -m py_compile research/comparison/r173/test_unified_review_browser_r209.py
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v
@@ -465,6 +473,17 @@ jobs:
         with:
           name: TLS_R208_FIRST_TASK_OFFLINE_RESEARCH_NOT_RELEASED
           path: research/comparison/r173/TW_First_Task_Guided_R208_20261124.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: Test R209 integrated one-page guided manual risk review in native file Chromium
+        run: |
+          node research/comparison/r173/build_unified_review_r209.js --build
+          python research/comparison/r173/test_unified_review_browser_r209.py
+      - name: Upload R209 single offline research HTML (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R209_UNIFIED_OFFLINE_REVIEW_NOT_RELEASED
+          path: research/comparison/r173/TW_Unified_Review_R209_20261124.html
           if-no-files-found: error
           retention-days: 7
       - name: Test R17.2 real Chromium offline selection and download
