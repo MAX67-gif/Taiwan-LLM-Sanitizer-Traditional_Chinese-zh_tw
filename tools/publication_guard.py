@@ -105,6 +105,12 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_review_workbench_r204.js",
     "research/comparison/r173/test_review_workbench_browser_r204.py",
     "research/comparison/r173/R204_REVIEW_WORKBENCH.md",
+    # R205 read-only risk hints, separate from canonical wording/release.
+    "research/comparison/r173/context_risk_lens_r205.js",
+    "research/comparison/r173/build_context_risk_lens_r205.js",
+    "research/comparison/r173/test_context_risk_lens_r205.js",
+    "research/comparison/r173/test_context_risk_lens_browser_r205.py",
+    "research/comparison/r173/R205_CONTEXT_RISK_LENS.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",

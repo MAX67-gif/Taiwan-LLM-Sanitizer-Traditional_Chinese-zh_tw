@@ -98,6 +98,13 @@ jobs:
           node research/comparison/r173/build_review_workbench_r204.js --check
           node --test research/comparison/r173/test_review_workbench_r204.js
           python -m py_compile research/comparison/r173/test_review_workbench_browser_r204.py
+      - name: R205 source-bound Context Lens negative controls and old R204 reproducibility
+        run: |
+          node --test research/comparison/r173/test_context_risk_lens_r205.js
+          node research/comparison/r173/build_review_workbench_r204.js --check
+          node research/comparison/r173/build_context_risk_lens_r205.js --build
+          node research/comparison/r173/build_context_risk_lens_r205.js --check
+          python -m py_compile research/comparison/r173/test_context_risk_lens_browser_r205.py
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v
@@ -412,6 +419,17 @@ jobs:
         with:
           name: TLS_R204_OFFLINE_REVIEW_WORKBENCH_NOT_RELEASED
           path: research/comparison/r173/TW_Review_Workbench_R204_20261116.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: Test R205 native offline Context Lens risk-only presentation in Chromium
+        run: |
+          node research/comparison/r173/build_context_risk_lens_r205.js --build
+          python research/comparison/r173/test_context_risk_lens_browser_r205.py
+      - name: Upload R205 research-only Context Lens HTML (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R205_CONTEXT_RISK_LENS_OFFLINE_RESEARCH_NOT_RELEASED
+          path: research/comparison/r173/TW_Context_Risk_Lens_R205_20261124.html
           if-no-files-found: error
           retention-days: 7
       - name: Test R17.2 real Chromium offline selection and download
