@@ -15,7 +15,7 @@ if(!E||E.SCHEMA!=='tls.r210.local-feedback-evidence.v1')throw Error('TLS_R210_MI
 const $=s=>document.querySelector(s),nodes={};let epoch=0,summary=null,busy=false;
 const el=(name,content,cls)=>{const n=document.createElement(name);if(content!==undefined)n.textContent=content;if(cls)n.className=cls;return n;};
 const note=msg=>{$('#status').textContent=msg;};
-function invalidate(message){++epoch;summary=null;$('#results').hidden=true;$('#downloadSummary').disabled=true;
+function invalidate(message){++epoch;busy=false;summary=null;$('#results').hidden=true;$('#downloadSummary').disabled=true;
  $('#resultsList').replaceChildren();if(message)note(message);update();}
 function update(){const n=$('#feedbackFiles').files.length;$('#selectedCount').textContent='已選擇 '+n+' 個本機檔案（上限 40）；檔名不會進入報告。';
  $('#analyzeFeedback').disabled=busy||!$('#authorized').checked||n===0||n>E.MAX_FILES;

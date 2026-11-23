@@ -117,6 +117,35 @@ def main():
         assert page.locator("#authorized").is_checked() is False
         assert page.locator("#results").is_hidden()
         checks.append("explicit_clear_revokes_all_local_state")
+        # Stale async read must not strand the consent-gated button.
+        page.evaluate("""() => {const base=File.prototype.arrayBuffer;
+          File.prototype.arrayBuffer=async function(){const raw=await base.call(this);
+          if(this.name==='slow.json')return await new Promise(resolve=>{window.releaseRead=()=>resolve(raw);});
+          return raw;};}""")
+        page.locator("#feedbackFiles").set_input_files([
+            {"name":"slow.json", "mimeType":"application/json", "buffer":encoded(a)}])
+        page.locator("#authorized").check()
+        page.locator("#analyzeFeedback").click()
+        for _ in range(50):
+            if page.evaluate("() => typeof window.releaseRead === 'function'"):
+                break
+            page.wait_for_timeout(40)
+        else:
+            raise AssertionError("ASYNC_READ_WAS_NOT_HELD")
+        page.locator("#authorized").uncheck()
+        assert page.locator("#analyzeFeedback").is_disabled()
+        page.locator("#authorized").check()
+        assert page.locator("#analyzeFeedback").is_enabled(), "STALE_BUSY_LOCK_AFTER_CONSENT_RESTORED"
+        page.evaluate("window.releaseRead()")
+        page.wait_for_timeout(100)
+        assert page.locator("#results").is_hidden()
+        page.locator("#feedbackFiles").set_input_files([
+            {"name":"fast.json", "mimeType":"application/json", "buffer":encoded(a)}])
+        page.locator("#analyzeFeedback").click()
+        page.locator("#results:not([hidden])").wait_for()
+        assert page.locator("#metrics").inner_text().count("有效不同內容") == 1
+        checks.append("stale_async_read_cancel_then_reauthorize_never_locks_ui")
+        page.locator("#clearAll").click()
         page.set_viewport_size({"width": 390, "height": 820})
         assert page.locator("html").evaluate("x=>x.scrollWidth") <= 390
         checks.append("mobile_390px_no_horizontal_overflow")
