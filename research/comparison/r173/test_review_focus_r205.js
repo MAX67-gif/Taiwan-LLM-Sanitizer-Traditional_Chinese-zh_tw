@@ -31,6 +31,19 @@ test('R205 focus is a view filter only, no original R204 choices changed',()=>{
  assert.equal(F.nextPending(sample,ids[0]),ids[0]);
  assert.equal(F.nextPending(sample,ids[0],'kept'),null);
 });
+test('R205 unselected-only filter does not skip next first visible decision after previous disappears',()=>{
+ const source=structuredClone(sample);
+ source[0].choice='CONFIRM';
+ source[1].choice='UNSELECTED';
+ source[2].choice='UNSELECTED';
+ const first=F.nextPending(source,ids[0],'unselected');
+ assert.equal(first,ids[1],'must pick c00002, not skip to c00003');
+ const afterLast=F.nextPending(source,ids[3],'unselected');
+ assert.equal(afterLast,ids[1],'wrap to earliest undecided');
+ const only=structuredClone(source);only[1].choice='KEEP_ORIGINAL';only[2].choice='KEEP_ORIGINAL';
+ assert.equal(F.nextPending(only,ids[0],'unselected'),null);
+});
+
 test('R205 partial-coverage report is never document quality certification',()=>{
  const s=F.progress(sample,{omitted_candidate_count:20});
  assert.deepEqual([s.pending,s.confirmed,s.kept,s.blocked,s.omitted],[1,1,1,1,20]);
