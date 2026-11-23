@@ -111,6 +111,12 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_context_risk_lens_r205.js",
     "research/comparison/r173/test_context_risk_lens_browser_r205.py",
     "research/comparison/r173/R205_CONTEXT_RISK_LENS.md",
+    "research/comparison/r173/review_focus_r207.js",
+    "research/comparison/r173/review_focus_ui_r207.js",
+    "research/comparison/r173/build_review_focus_r207.js",
+    "research/comparison/r173/test_review_focus_r207.js",
+    "research/comparison/r173/test_review_focus_browser_r207.py",
+    "research/comparison/r173/R207_FOCUS_REVIEW_GUIDE.md",
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
@@ -279,6 +285,9 @@ def self_test():
     assert allowed_path("research/comparison/r173/R194_CONTEXT_CONTRAST_README.md")
     assert allowed_path("research/comparison/r173/context_conflict_router_r196.js")
     assert allowed_path("research/comparison/r173/context_review_queue_r197.js")
+    assert allowed_path("research/comparison/r173/review_focus_r207.js")
+    assert allowed_path("research/comparison/r173/build_review_focus_r207.js")
+    assert not allowed_path("research/comparison/r173/review_focus_r207_PRIVATE.js")
     assert allowed_path("research/comparison/r173/R197_SYNTHETIC_REVIEW_QUEUE.md")
     assert not allowed_path("research/comparison/r173/context_review_queue_r197_PRIVATE.json")
     assert allowed_path("research/comparison/r173/R196_CONTRADICTION_FIRST_README.md")
