@@ -119,6 +119,25 @@ jobs:
             --expected-sha "$GITHUB_SHA" \
             > "$RUNNER_TEMP/tls-r202-independent-receipt.json"
           python -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/tls-r202-independent-receipt.json")); assert d["candidate_assets"]==30 and d["tool_count"]==30 and d["release_permission"]=="NONE" and d["released"] is False; print("R202_30_AUTHENTIC_ASSETS_INDEPENDENT_PASS_NOT_RELEASED",d["suite_sha256"])'
+      - name: R206 read-only future Suite 17.5 tag and release collision preflight (PR60 only)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python tools/check_suite_175_release_preflight_r206.py \
+            --stage "$RUNNER_TEMP/tls-r202-official-candidate" \
+            --official-assets "$RUNNER_TEMP/tls-r199-fresh-official-174" \
+            --release-json "$RUNNER_TEMP/tls-r199-release-174.json" \
+            --expected-sha "$GITHUB_SHA" \
+            --receipt "$RUNNER_TEMP/r206/TLS_R206_VERSIONED_RELEASE_PREFLIGHT_NOT_READY.json"
+      - name: Upload R206 read-only version collision and source evidence receipt (NO RELEASE)
+        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R206_VERSIONED_RELEASE_TAG_PREFLIGHT_READ_ONLY
+          path: ${{ runner.temp }}/r206/TLS_R206_VERSIONED_RELEASE_PREFLIGHT_NOT_READY.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Upload R202 real-source 30-asset offline candidate (GitHub Actions artifact, NOT Release)
         if: ${{ github.event_name == 'pull_request' && github.event.pull_request.number == 60 }}
         uses: actions/upload-artifact@v4
@@ -137,6 +156,8 @@ jobs:
             ${{ runner.temp }}/tls-r202-independent-receipt.json
           if-no-files-found: error
           retention-days: 7
+      - name: R206 GitHub 404-vs-403 tag collision and no-release adversarial tests
+        run: python -m unittest tests/test_suite_175_release_preflight_r206.py -v
       - name: Check Python syntax before any long Chromium run
         run: python -m py_compile tests/*.py tools/*.py
       - name: Fail fast on R11 release shell syntax (before expensive browser checks)
