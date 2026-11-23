@@ -105,6 +105,12 @@ jobs:
           node research/comparison/r173/build_context_risk_lens_r205.js --build
           node research/comparison/r173/build_context_risk_lens_r205.js --check
           python -m py_compile research/comparison/r173/test_context_risk_lens_browser_r205.py
+      - name: R207 offline focus navigation and partial coverage regressions
+        run: |
+          node research/comparison/r173/build_review_focus_r207.js --build
+          node research/comparison/r173/build_review_focus_r207.js --check
+          node --test research/comparison/r173/test_review_focus_r207.js
+          python -m py_compile research/comparison/r173/test_review_focus_browser_r207.py
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v
@@ -430,6 +436,17 @@ jobs:
         with:
           name: TLS_R205_CONTEXT_RISK_LENS_OFFLINE_RESEARCH_NOT_RELEASED
           path: research/comparison/r173/TW_Context_Risk_Lens_R205_20261124.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: R207 native file URL one-at-a-time human review with zero outgoing requests
+        run: |
+          node research/comparison/r173/build_review_focus_r207.js --build
+          python research/comparison/r173/test_review_focus_browser_r207.py
+      - name: Upload R207 offline focus review research HTML (NOT RELEASED)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TLS_R207_ONE_AT_A_TIME_OFFLINE_REVIEW_NOT_RELEASED
+          path: research/comparison/r173/TW_Review_Focus_R207_20261124.html
           if-no-files-found: error
           retention-days: 7
       - name: Test R17.2 real Chromium offline selection and download
