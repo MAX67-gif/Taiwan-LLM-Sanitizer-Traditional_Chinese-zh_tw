@@ -30,7 +30,7 @@ test('R205 inconsistent manual choice is warned, not silently reversed',async()=
  assert.equal(decision.tier,'HIGH');assert.equal(decision.reason_code,'CHOICE_CONTEXT_CONFLICT');
  assert.equal(updated.choice,'CONFIRM');
  assert.equal(updated.selected_option_id,wrong.id);
- assert.equal((await session.preview({snapshot_id:state.snapshot_id}).approval,'NONE');
+ assert.equal((await session.preview({snapshot_id:state.snapshot_id})).approval,'NONE');
  session.revoke();
 });
 test('R205 high-risk-first queue is deterministic, stable, with no changes to choices',async()=>{
