@@ -7,7 +7,7 @@ const clock=M.createClock(),history=M.createHistory();let active=null,snapshot=n
 const report=text=>{$('#status').textContent=text;};
 const reason=e=>String(e.message||'INVALID_OPERATION').replace(/[^A-Za-z0-9_: -]/g,'').slice(0,120);
 function invalidatePreview(){preview=null;$('#result').value='';$('#resultPanel').hidden=true;$('#previewState').textContent='';$('#diffList').replaceChildren();$('#download').disabled=true;$('#copy').disabled=true;}
-function clearReview(){active?.revoke();active=null;snapshot=null;focusId=null;history.clear();invalidatePreview();$('#candidatePanel').hidden=true;$('#candidates').replaceChildren();$('#stats').replaceChildren();updateButtons();}
+function clearReview(){active?.revoke();active=null;snapshot=null;focusId=null;history.clear();invalidatePreview();$('#candidatePanel').hidden=true;$('#candidates').replaceChildren();$('#stats').replaceChildren();updateButtons();$('#focusPrev').disabled=true;$('#focusNext').disabled=true;$('#focusPosition').textContent=focusMode?'請先分析原文。':'一般清單模式';$('#focusSafety').textContent='尚未分析原文，不會自動選詞或產生新稿。';}
 function updateButtons(){const ready=!!active&&snapshot?.state==='READY',h=history.info();$('#undoReview').disabled=!ready||!h.undo;$('#redoReview').disabled=!ready||!h.redo;
  for(const id of ['previewBtn','exportReview','reportBtn'])$('#'+id).disabled=!ready;}
 function download(name,text,mime){const url=URL.createObjectURL(new Blob([text],{type:mime||'text/plain;charset=utf-8'}));const a=make('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
