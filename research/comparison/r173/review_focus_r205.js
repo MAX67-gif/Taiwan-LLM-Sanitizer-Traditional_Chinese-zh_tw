@@ -69,9 +69,14 @@ function nextPending(candidates,previousId,mode='all',query=''){
  if(typeof previousId!=='string'||!/^c\d{5}$/.test(previousId))err('PREVIOUS_ID');
  if(!rows.length)return null;
  const previous=rows.findIndex(c=>c.id===previousId);
- const start=previous>=0?previous:rows.findIndex(c=>c.id>previousId);
+ // A filter may remove the just-decided card. When it does, the first
+ // undecided card after that ID must not be skipped.
+ if(previous<0){
+  return rows.find(c=>c.id>previousId&&c.resolution==='CONTEXT_REQUIRED'&&c.choice==='UNSELECTED')?.id
+    ||rows.find(c=>c.resolution==='CONTEXT_REQUIRED'&&c.choice==='UNSELECTED')?.id||null;
+ }
  for(let offset=1;offset<=rows.length;offset++){
-  const row=rows[(Math.max(0,start)+offset)%rows.length];
+  const row=rows[(previous+offset)%rows.length];
   if(row.resolution==='CONTEXT_REQUIRED'&&row.choice==='UNSELECTED')return row.id;
  }
  return null;
