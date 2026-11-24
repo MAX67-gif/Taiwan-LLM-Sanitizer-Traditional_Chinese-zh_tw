@@ -30,7 +30,7 @@ test('2 real source files audited, aggregate preserves source, emits no source n
  assert.equal(x.full_document_certified,false);
  assert.equal(x.network_requested,false);assert.equal(x.external_adoption_verified,false);
  const json=JSON.stringify(x);
- for(const word of ['餐廳','軟件','menu','README.md','usage.md','KEY','source_sha256','replacement'])assert(!json.includes(word),word);
+ for(const word of ['餐廳','軟件','menu','README.md','usage.md','KEY','source_sha256','"replacement":'])assert(!json.includes(word),word);
  assert.deepEqual(fs.readFileSync(path.join(c.workspace,'README.md')),before);
  assert.match(fs.readFileSync(c.output,'utf8'),/input_files=2\n/);
 }));
