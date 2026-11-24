@@ -1,0 +1,56 @@
+name: 'TLS Taiwan Markdown Batch Review R213 (Research)'
+description: 'Review up to 20 named Markdown files using the offline R211 protected scan. No rewrite or telemetry.'
+branding:
+  icon: 'files'
+  color: 'blue'
+inputs:
+  files:
+    description: 'Explicit newline-separated relative Markdown/text file paths (no globs or directories)'
+    required: false
+    default: 'README.md'
+  strict:
+    description: 'Opt-in true: exit 2 if any named file requires human review; default report-only'
+    required: false
+    default: 'false'
+  report:
+    description: 'New metadata-only JSON within caller checkout or runner.temp; defaults under runner.temp'
+    required: false
+    default: ''
+outputs:
+  status:
+    description: 'REVIEW_REQUIRED or NO_REVIEW_REQUIRED_NOT_CERTIFIED'
+    value: ${{ steps.audit.outputs.status }}
+  review_required:
+    description: 'true if any document has editable candidates or partial coverage'
+    value: ${{ steps.audit.outputs.review_required }}
+  input_files:
+    description: 'Count of actually checked files (not people)'
+    value: ${{ steps.audit.outputs.input_files }}
+  files_needing_review:
+    description: 'Count of input files with review required (not people)'
+    value: ${{ steps.audit.outputs.files_needing_review }}
+  risk_high:
+    description: 'Total high risk candidate count over all selected files'
+    value: ${{ steps.audit.outputs.risk_high }}
+  risk_medium:
+    description: 'Total medium risk candidate count over all selected files'
+    value: ${{ steps.audit.outputs.risk_medium }}
+  report_path:
+    description: 'New report path on runner, metadata only'
+    value: ${{ steps.audit.outputs.report_path }}
+  exit_code:
+    description: '0 when accepted in report-only/clean strict mode, 2 for opted-in strict review required'
+    value: ${{ steps.audit.outputs.exit_code }}
+runs:
+  using: 'composite'
+  steps:
+    - id: audit
+      shell: bash
+      env:
+        TLS_R213_ACTION_PATH: ${{ github.action_path }}
+        TLS_R213_FILES: ${{ inputs.files }}
+        TLS_R213_STRICT: ${{ inputs.strict }}
+        TLS_R213_REPORT: ${{ inputs.report }}
+      run: |
+        set -euo pipefail
+        node "$TLS_R213_ACTION_PATH/batch_r213.js"
