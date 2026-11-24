@@ -132,6 +132,11 @@ jobs:
           node research/comparison/r173/build_feedback_audit_r210.js --check
           node --test research/comparison/r173/test_feedback_audit_r210.js
           python -m py_compile research/comparison/r173/test_feedback_audit_browser_r210.py
+      - name: R211 local-only PR wording CI audit and strict-review negative controls
+        run: |
+          node --test research/comparison/r173/test_pr_wording_gate_r211.js
+          node research/comparison/r173/pr_wording_gate_r211.js --input research/comparison/r173/fixtures_first_task.md --report "$RUNNER_TEMP/tls-r211-research-only.json"
+          node -e 'const fs=require("node:fs");const p=process.env.RUNNER_TEMP+"/tls-r211-research-only.json";const r=JSON.parse(fs.readFileSync(p,"utf8"));if(r.schema!=="tls.r211.pr-wording-audit.v1"||r.auto_apply!==false||r.approval!=="NONE"||r.network_requested!==false||r.contains_source_text!==false||r.full_document_certified!==false)process.exit(2);console.log("R211_LOCAL_ONLY_PR_AUDIT_PASS",r.candidates_total,r.review_required)'
       - name: Validate R17.5 native evidence contracts without simulating official results
         run: |
           python -m unittest tests/test_r175_native_probe.py -v

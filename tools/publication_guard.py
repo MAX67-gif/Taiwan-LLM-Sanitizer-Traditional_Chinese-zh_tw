@@ -136,6 +136,11 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/test_feedback_audit_r210.js",
     "research/comparison/r173/test_feedback_audit_browser_r210.py",
     "research/comparison/r173/R210_FEEDBACK_AUDIT_GUIDE.md",
+    # R211 self-hosted read-only Markdown PR/CI wording review.
+    "research/comparison/r173/pr_wording_gate_r211.js",
+    "research/comparison/r173/test_pr_wording_gate_r211.js",
+    "research/comparison/r173/R211_OFFLINE_PR_WORDING_GATE.md",
+
 }
 PUBLIC_R175_RESEARCH={
     "research/comparison/r175/native_probe.py",
