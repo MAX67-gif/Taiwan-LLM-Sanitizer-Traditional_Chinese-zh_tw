@@ -132,6 +132,33 @@ jobs:
           node research/comparison/r173/build_feedback_audit_r210.js --check
           node --test research/comparison/r173/test_feedback_audit_r210.js
           python -m py_compile research/comparison/r173/test_feedback_audit_browser_r210.py
+      - name: R212 reusable no-auto-apply GitHub Action and path escape adversarial TDD
+        run: node --test research/comparison/r173/action_r212/test_runner_r212.js
+      - name: R212 GitHub composite Action native self-hosted smoke (no Release)
+        id: r212_smoke
+        uses: ./research/comparison/r173/action_r212
+        with:
+          input: research/comparison/r173/fixtures_first_task.md
+          report: ${{ runner.temp }}/tls-r212-original-fixture-report.json
+          strict: 'false'
+      - name: R212 verify actual action output and read-only local report
+        env:
+          R212_REPORT: ${{ steps.r212_smoke.outputs.report_path }}
+          R212_STATUS: ${{ steps.r212_smoke.outputs.status }}
+        run: |
+          python - <<'PY_R212'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["R212_REPORT"])
+          assert p.parent==Path(os.environ["RUNNER_TEMP"]) and p.is_file()
+          obj=json.loads(p.read_text("utf-8"))
+          assert obj["schema"]=="tls.r211.pr-wording-audit.v1"
+          assert obj["auto_apply"] is False and obj["approval"]=="NONE"
+          assert obj["network_requested"] is False and obj["contains_source_text"] is False
+          assert obj["contains_replacement_text"] is False
+          assert os.environ["R212_STATUS"]==obj["status"]
+          print("R212_REAL_COMPOSITE_ACTION_SMOKE_METADATA_ONLY_PASS")
+          PY_R212
       - name: R211 local-only PR wording CI audit and strict-review negative controls
         run: |
           node --test research/comparison/r173/test_pr_wording_gate_r211.js

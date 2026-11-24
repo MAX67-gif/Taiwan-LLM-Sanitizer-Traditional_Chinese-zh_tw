@@ -140,6 +140,11 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/pr_wording_gate_r211.js",
     "research/comparison/r173/test_pr_wording_gate_r211.js",
     "research/comparison/r173/R211_OFFLINE_PR_WORDING_GATE.md",
+    # R212 specific research-only reusable composite action; no general .github/actions allowance.
+    "research/comparison/r173/action_r212/action.yml",
+    "research/comparison/r173/action_r212/runner_r212.js",
+    "research/comparison/r173/action_r212/test_runner_r212.js",
+    "research/comparison/r173/R212_GITHUB_ACTION_GUIDE.md",
 
 }
 PUBLIC_R175_RESEARCH={

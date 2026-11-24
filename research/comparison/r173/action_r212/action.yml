@@ -1,0 +1,50 @@
+name: 'TLS Taiwan Wording PR Review — R212 Research Action'
+description: 'Local-only, metadata-only Markdown review using R211. No auto-rewrite or network calls by TLS.'
+branding:
+  icon: 'file-text'
+  color: 'blue'
+inputs:
+  input:
+    description: 'Markdown file inside the caller checkout (no symlink, no directory)'
+    required: false
+    default: 'README.md'
+  report:
+    description: 'Fresh JSON report inside workspace or runner.temp (default: runner.temp)'
+    required: false
+    default: ''
+  strict:
+    description: 'Explicit true to make a review-required report fail with exit code 2; default false'
+    required: false
+    default: 'false'
+outputs:
+  status:
+    description: 'REVIEW_REQUIRED / LOCKED_ONLY_NOT_CERTIFIED / NO_CANDIDATES_NOT_CERTIFIED'
+    value: ${{ steps.audit.outputs.status }}
+  review_required:
+    description: 'true when R211 reports reviewable findings or incomplete coverage'
+    value: ${{ steps.audit.outputs.review_required }}
+  review_high:
+    description: 'Number of high-risk findings (metadata only)'
+    value: ${{ steps.audit.outputs.review_high }}
+  review_medium:
+    description: 'Number of medium-risk findings (metadata only)'
+    value: ${{ steps.audit.outputs.review_medium }}
+  report_path:
+    description: 'Absolute path to newly written local metadata-only JSON report'
+    value: ${{ steps.audit.outputs.report_path }}
+  exit_code:
+    description: '0 for report mode/clean, 2 for strict review required'
+    value: ${{ steps.audit.outputs.exit_code }}
+runs:
+  using: 'composite'
+  steps:
+    - id: audit
+      shell: bash
+      env:
+        TLS_R212_ACTION_PATH: ${{ github.action_path }}
+        TLS_R212_INPUT: ${{ inputs.input }}
+        TLS_R212_REPORT: ${{ inputs.report }}
+        TLS_R212_STRICT: ${{ inputs.strict }}
+      run: |
+        set -euo pipefail
+        node "$TLS_R212_ACTION_PATH/runner_r212.js"
