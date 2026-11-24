@@ -132,6 +132,40 @@ jobs:
           node research/comparison/r173/build_feedback_audit_r210.js --check
           node --test research/comparison/r173/test_feedback_audit_r210.js
           python -m py_compile research/comparison/r173/test_feedback_audit_browser_r210.py
+      - name: R213 batch action TDD adversarial boundaries and exact local outputs
+        run: node --test research/comparison/r173/action_r213/test_batch_r213.js
+      - name: R213 invoke real reusable composite Action across two original public Markdown files
+        id: r213_smoke
+        uses: ./research/comparison/r173/action_r213
+        with:
+          files: |
+            research/comparison/r173/fixtures_first_task.md
+            research/comparison/r175/fixture_native_original.md
+          strict: 'false'
+          report: ${{ runner.temp }}/tls-r213-batch-public-fixtures.json
+      - name: R213 check real action report, provenance-free metadata and no automatic edit
+        env:
+          R213_REPORT: ${{ steps.r213_smoke.outputs.report_path }}
+          R213_COUNT: ${{ steps.r213_smoke.outputs.input_files }}
+          R213_STATUS: ${{ steps.r213_smoke.outputs.status }}
+          R213_STRICT: ${{ steps.r213_smoke.outputs.exit_code }}
+        run: |
+          python - <<'PY_R213'
+          import json,os,pathlib
+          path=pathlib.Path(os.environ['R213_REPORT'])
+          assert path.parent==pathlib.Path(os.environ['RUNNER_TEMP']) and path.is_file()
+          obj=json.loads(path.read_text(encoding='utf-8'))
+          assert obj['schema']=='tls.r213.batch-wording-audit.v1'
+          assert obj['input_files']==2 and os.environ['R213_COUNT']=='2'
+          assert obj['status']==os.environ['R213_STATUS']
+          assert os.environ['R213_STRICT']=='0'
+          assert obj['approval']=='NONE' and obj['auto_apply'] is False
+          assert obj['network_requested'] is False and obj['contains_source_text'] is False
+          assert obj['contains_file_names'] is False and obj['linguistic_quality_verified'] is False
+          assert [z['ordinal'] for z in obj['file_summaries']]==[1,2]
+          assert not any(k in obj for k in ('filenames','paths','source_sha256','source_text'))
+          print('R213_TWO_REAL_PUBLIC_FIXTURES_COMPOSITE_PASS')
+          PY_R213
       - name: R212 reusable no-auto-apply GitHub Action and path escape adversarial TDD
         run: node --test research/comparison/r173/action_r212/test_runner_r212.js
       - name: R212 GitHub composite Action native self-hosted smoke (no Release)

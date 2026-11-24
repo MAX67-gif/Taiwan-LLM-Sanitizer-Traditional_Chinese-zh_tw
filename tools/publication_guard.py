@@ -145,6 +145,11 @@ PUBLIC_R173_RESEARCH={
     "research/comparison/r173/action_r212/runner_r212.js",
     "research/comparison/r173/action_r212/test_runner_r212.js",
     "research/comparison/r173/R212_GITHUB_ACTION_GUIDE.md",
+    # R213 opt-in explicit multi-file research Action, not an automatic glob/release.
+    "research/comparison/r173/action_r213/action.yml",
+    "research/comparison/r173/action_r213/batch_r213.js",
+    "research/comparison/r173/action_r213/test_batch_r213.js",
+    "research/comparison/r173/R213_BATCH_ACTION_GUIDE.md",
 
 }
 PUBLIC_R175_RESEARCH={
